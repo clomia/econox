@@ -58,11 +58,13 @@ async def read_item(request: Request, symbol: str):
     from client.fmp import Symbol
 
     sym = Symbol(symbol)
+    data = sym.price.adj_close()
     return templates.TemplateResponse(
         "item.html",
         {
             "request": request,
             "note": sym.note.ko,
-            "data": repr(sym.price.adj_close().daily.attrs),
+            "attrs": repr(data.attrs)
+            "value": repr(data.daily.values[:4]),
         },
     )

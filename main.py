@@ -64,7 +64,7 @@ async def read_item(request: Request, symbol: str):
         {
             "request": request,
             "note": sym.note.ko,
-            "attrs": repr(data.attrs)
+            "attrs": repr(data.attrs),
             "value": repr(data.daily.values[:4]),
         },
     )

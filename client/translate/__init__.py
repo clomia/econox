@@ -1,0 +1,55 @@
+""" Google Translate API 를 사용하는 다국어 객체 구현"""
+
+from functools import lru_cache, partial
+
+from google.cloud import translate_v2
+
+from client.config import LRU_CACHE_SIZE
+
+client = translate_v2.Client()  # client/translate 경로에 gcp_credential.json이 있어야 합니다.
+
+
+@lru_cache(maxsize=LRU_CACHE_SIZE)
+def translator(text: str, to_lang: str, *, from_lang: str = None) -> str:
+    """
+    - 자연어를 번역합니다.
+    - text: 자연어 문자열
+    - to_lang: 목적 언어의 ISO 639-1 코드
+    - from_lang[optional]: text의 언어 ISO 639-1 코드
+        - 기본: None -> 언어감지
+    """
+    response = client.translate(
+        text,
+        source_language=from_lang,
+        target_language=to_lang,
+    )
+    return response["translatedText"]
+
+
+class Multilingual:
+    """문자열에 대한 다국어 객체"""
+
+    supported_langs = client.get_languages()
+
+    def __init__(self, text: str):
+        """
+        - text: 영어 문자열
+            - 영어 -> 다국어가 표현력이 가장 좋기 때문에 base는 무조건 영어로 합니다.
+        """
+        self.text = text
+
+    def __repr__(self) -> str:
+        text_repr = self.text if len(self.text) <= 30 else self.text[:30] + "..."
+        return repr(f"<Multilingual: {text_repr}>")
+
+    def trans(self, to: str):
+        if to == "en":
+            return self.text
+        return translator(self.text, from_lang="en", to_lang=to)
+
+
+# Multilingual 클래스에 번역 가능한 모든 iso 코드로 property를 생성합니다
+for lang in Multilingual.supported_langs:
+    iso_code = lang["language"]
+    obj = property(partial(Multilingual.trans, to=iso_code), doc=lang["name"])
+    setattr(Multilingual, iso_code, obj)

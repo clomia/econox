@@ -1,0 +1,21 @@
+# client
+requests==2.31.0
+wbdata==0.3.0
+google-cloud-translate==3.11.1
+pycountry==22.3.5
+
+# compute
+numpy==1.25.0
+xarray==2023.5.0
+zarr==2.15.0
+dask==2023.6.0
+scipy==1.10.1
+matplotlib==3.7.1
+
+
+# Web
+fastapi==0.97.0
+python-dotenv==1.0.0
+uvicorn==0.22.0
+gunicorn==20.1.0
+Jinja2==3.1.2

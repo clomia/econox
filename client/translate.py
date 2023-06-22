@@ -1,12 +1,26 @@
 """ Google Translate API 를 사용하는 다국어 객체 구현"""
-
+import os
 from functools import lru_cache, partial
 
+import boto3
+from botocore.exceptions import ClientError
 from google.cloud import translate_v2
 
-from client.config import LRU_CACHE_SIZE
+from config import *
 
-client = translate_v2.Client()  # client/translate 경로에 gcp_credential.json이 있어야 합니다.
+try:
+    s3 = boto3.client("s3")
+    credential_path = str(ROOT_PATH / GCP_CREDENTIAL_FILENAME)
+    s3.download_file(SYSTEM_S3_BUCKET_NAME, GCP_CREDENTIAL_FILENAME, credential_path)
+except ClientError as e:
+    if e.response["Error"]["Code"] == "404":
+        raise LookupError(
+            f"S3 {SYSTEM_S3_BUCKET_NAME} 버킷에 {GCP_CREDENTIAL_FILENAME}"
+            "파일이 없어서 GCP 클라우드를 사용할 수 없습니다."
+        )
+
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_path
+client = translate_v2.Client()
 
 
 @lru_cache(maxsize=LRU_CACHE_SIZE)

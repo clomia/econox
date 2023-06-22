@@ -16,9 +16,9 @@ import numpy as np
 import xarray as xr
 
 from compute.scale import standardization
-from client.common import Factor
+from client.factor import Factor
 from client.translate import Multilingual
-from client.config import ROOT_PATH, TIME_SERIES_PATH
+from config import ROOT_PATH, XARRAY_PATH
 
 API_KEY = os.getenv("FMP_API_KEY")
 HOST = "https://financialmodelingprep.com"
@@ -88,7 +88,7 @@ class ClientMeta(type):
         # ========= 기본 속성 구성 =========
         ins = super().__call__()  # 깡통 인스턴스 생성
         ins.symbol = symbol
-        ins.path = TIME_SERIES_PATH / cls.__name__ / symbol
+        ins.path = XARRAY_PATH / cls.__name__ / symbol
         ins.last_loaded = cls.last_loaded.get(symbol)
         ins.missing_factors = cls.missing_factors[symbol]  # set 레퍼런스
         if cls.symbol_in_query:  # symbol을 쿼리스트링으로 넣기

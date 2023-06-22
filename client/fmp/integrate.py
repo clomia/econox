@@ -10,7 +10,7 @@ import requests
 import pycountry
 
 from client.fmp import data_metaclass
-from client.config import LRU_CACHE_SIZE
+from config import LRU_CACHE_SIZE
 from client.translate import Multilingual, translator
 
 API_KEY = os.getenv("FMP_API_KEY")

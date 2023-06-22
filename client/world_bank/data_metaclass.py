@@ -6,9 +6,9 @@ import numpy as np
 import xarray as xr
 
 from compute.scale import standardization
-from client.common import Factor
+from client.factor import Factor
 from client.translate import Multilingual
-from client.config import TIME_SERIES_PATH
+from config import XARRAY_PATH
 
 
 def _xr_meta(element, factor, **kwargs) -> dict:
@@ -31,7 +31,7 @@ class DataManager:
     def __init__(self, country: str, indicator: str):
         self.country = country
         self.indicator = indicator
-        self.zarr_path = TIME_SERIES_PATH / country / f"{indicator}.zarr"
+        self.zarr_path = XARRAY_PATH / country / f"{indicator}.zarr"
         self.last_loaded = self.__class__.last_loaded[country].get(indicator)
         self.loadable = self.__class__.loadable[country].get(indicator, True)
 

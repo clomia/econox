@@ -53,8 +53,16 @@ async def hello_world():
     return html_result
 
 
-@app.get("/items/{id}", response_class=HTMLResponse)
-async def read_item(request: Request, id: str):
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"[{now}] {request}, {id} 요청 들어옴!")
-    return templates.TemplateResponse("item.html", {"request": request, "id": id})
+@app.get("/current-price/{symbol}", response_class=HTMLResponse)
+async def read_item(request: Request, symbol: str):
+    from client.fmp import Symbol
+
+    sym = Symbol(symbol)
+    return templates.TemplateResponse(
+        "item.html",
+        {
+            "request": request,
+            "note": sym.note.ko,
+            "data": repr(sym.price.adj_close().daily.attrs),
+        },
+    )

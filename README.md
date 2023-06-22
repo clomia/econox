@@ -1,4 +1,5 @@
 ## ECONOX  
+[![builder deploy](https://github.com/clomia-group/econox/actions/workflows/deploy.yaml/badge.svg)](https://github.com/clomia-group/econox/actions/workflows/deploy.yaml)
 ### 프로젝트 구조
 - FastAPI를 사용하여 백엔드를 개발합니다. 
 	- Entry point는 main.py입니다.

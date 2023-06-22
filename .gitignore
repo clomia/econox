@@ -1,8 +1,9 @@
-.env
 .vscode
 .DS_Store
-
 __pycache__/
 
+# 서버 실행 & 테스트에 사용되는 경로들
 env
 efs-volume
+gcp_credential.json
+run.sh

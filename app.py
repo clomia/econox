@@ -1,3 +1,4 @@
+""" FastAPI 써서 ASGI app 객체 생성 """
 import os
 import subprocess
 from datetime import datetime
@@ -11,7 +12,8 @@ app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-print("업데이트 버전 서버 작동!")
+key = os.getenv("FMP_API_KEY")
+print("KEY!!", key)
 
 templates = Jinja2Templates(directory="templates")
 

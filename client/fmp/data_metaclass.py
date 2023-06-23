@@ -147,7 +147,6 @@ class ClientMeta(type):
                 ).date()
                 if collected_date == date.today():
                     return
-
         try:
             collected = self.collect()
         except (requests.HTTPError, ValueError):
@@ -155,7 +154,6 @@ class ClientMeta(type):
 
         # 업데이트(덮어쓰기)하는 경우 디렉토리가 이미 존재함
         self.path.mkdir(parents=True, exist_ok=True)
-
         for factor, data_array in collected.items():
             if np.count_nonzero(~np.isnan(data_array.values)) < 2:
                 continue  # nan이 아닌 값 갯수가 2개 미만이면 결측 factor로 취급

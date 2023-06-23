@@ -9,7 +9,6 @@ from datetime import date, datetime
 from functools import partial
 from pathlib import PosixPath
 from typing import Dict
-from collections import defaultdict
 
 import requests
 import numpy as np
@@ -20,9 +19,9 @@ from client.factor import Factor
 from client.translate import Multilingual
 from config import ROOT_PATH, XARRAY_PATH
 
-API_KEY = os.getenv("FMP_API_KEY")
 HOST = "https://financialmodelingprep.com"
 CLASS_PATH = ROOT_PATH / "client" / "fmp" / "data_class.json"
+assert (API_KEY := os.getenv("FMP_API_KEY"))  # FMP_API_KEY 환경변수가 정의되지 않았습니다!
 
 
 def _xr_meta(element, factor, **kwargs) -> dict:
@@ -78,9 +77,6 @@ class ClientMeta(type):
         cls.properties = config  # setting 빼고 나머지는 모두 property임
         cls.factors = {ele["factor"] for ele in config.values()}
         cls.__repr__ = lambda ins: f"<{ins.__class__.__name__}: {ins.symbol}>"
-        # ========= 동적 속성 구성 =========
-        cls.last_loaded = {}
-        cls.missing_factors = defaultdict(set)
         return cls
 
     def __call__(cls, symbol: str):
@@ -89,8 +85,6 @@ class ClientMeta(type):
         ins = super().__call__()  # 깡통 인스턴스 생성
         ins.symbol = symbol
         ins.path = XARRAY_PATH / cls.__name__ / symbol
-        ins.last_loaded = cls.last_loaded.get(symbol)
-        ins.missing_factors = cls.missing_factors[symbol]  # set 레퍼런스
         if cls.symbol_in_query:  # symbol을 쿼리스트링으로 넣기
             ins.api_params = cls.api_params | {"symbol": symbol}
         else:  # symbol을 URL경로로 넣기
@@ -122,7 +116,6 @@ class ClientMeta(type):
         response.raise_for_status()  # FMP 서버의 응답이 잘못된 경우 HTTPError
         if not (series := response.json()):  # 데이터가 없는 경우 ValueError
             raise ValueError(f"FMP에 {self.symbol} symbol에 대한 데이터가 존재하지 않습니다.")
-
         t = np.array([np.datetime64(day[self.t_key], "ns") for day in series])
         collected = {}
         for factor in self.factors:
@@ -143,42 +136,40 @@ class ClientMeta(type):
         assert factor in self.factors  # use_factors.json를 확인해주세요
         return self.path / f"{factor}.zarr"
 
-    def loading(self) -> list:
-        """
-        - zarr 저장소에 최신 데이터가 존재하도록 합니다.
-        - return: 로딩된 factor set
-            - 수집되지 않은 factor는 set에서 제외됩니다.
-        """
-        today = date.today()
-        if self.last_loaded == today:  # do nothing
-            return self.factors - self.missing_factors
+    def loading(self):
+        """zarr 저장소에 최신 데이터가 존재하도록 합니다."""
 
-        self.__class__.last_loaded[self.symbol] = self.last_loaded = today
+        for fac in self.factors:  # 데이터 갱신 여부 확인
+            if self.zarr_path(fac).exists():
+                array = xr.open_zarr(self.zarr_path(fac))
+                collected_date = datetime.strptime(
+                    array.attrs["client"]["collected"], "%Y-%m-%d"
+                ).date()
+                if collected_date == date.today():
+                    return
 
         try:
             collected = self.collect()
         except (requests.HTTPError, ValueError):
-            self.missing_factors.update(self.factors)
-            return self.factors - self.missing_factors  # -> set()
+            return
 
         # 업데이트(덮어쓰기)하는 경우 디렉토리가 이미 존재함
         self.path.mkdir(parents=True, exist_ok=True)
 
         for factor, data_array in collected.items():
             if np.count_nonzero(~np.isnan(data_array.values)) < 2:
-                # nan이 아닌 값 갯수가 2개 미만이면 결측 factor로 취급
-                self.missing_factors.add(factor)
-                continue
+                continue  # nan이 아닌 값 갯수가 2개 미만이면 결측 factor로 취급
             standardization(data_array).to_zarr(self.zarr_path(factor), mode="w")
-        return self.factors - self.missing_factors
 
     def get(self, factor: str, default=None) -> xr.Dataset | None:
         """factor Dataset을 반환합니다. 데이터가 없는 경우 default를 반환합니다."""
         assert factor in self.factors  # JSON에 정의되지 않은 Factor입니다.
-        factors = self.loading()
-        if factor not in factors:  # 결측된 factor
-            return default
-        return xr.open_zarr(self.zarr_path(factor))
+        self.loading()
+        return (
+            xr.open_zarr(self.zarr_path(factor))
+            if self.zarr_path(factor).exists()
+            else default
+        )
 
 
 class SingleClientMeta(ClientMeta):

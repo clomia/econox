@@ -25,15 +25,10 @@ def _xr_meta(element, factor, **kwargs) -> dict:
 
 
 class DataManager:
-    last_loaded = defaultdict(dict)
-    loadable = defaultdict(dict)
-
     def __init__(self, country: str, indicator: str):
         self.country = country
         self.indicator = indicator
         self.zarr_path = XARRAY_PATH / country / f"{indicator}.zarr"
-        self.last_loaded = self.__class__.last_loaded[country].get(indicator)
-        self.loadable = self.__class__.loadable[country].get(indicator, True)
 
     def __repr__(self) -> str:
         return f"<DataManager: {self.country} - {self.indicator}>"
@@ -52,36 +47,28 @@ class DataManager:
             attrs=_xr_meta(element=self.country, factor=self.indicator),
         )
 
-    def loading(self) -> bool:
-        """
-        - zarr 저장소에 최신 데이터가 존재하도록 합니다.
-        - return: 로딩 성공 여부
-        """
-        today = date.today()
-        if self.last_loaded == today:
-            return self.loadable
-
-        self.__class__.last_loaded[self.country][self.indicator] = today
-        self.last_loaded = today
-
+    def loading(self):
+        """zarr 저장소에 최신 데이터가 존재하도록 합니다."""
+        if self.zarr_path.exists():
+            array = xr.open_zarr(self.zarr_path)
+            collected_date = datetime.strptime(
+                array.attrs["client"]["collected"], "%Y-%m-%d"
+            ).date()  # 데이터 갱신 여부 확인
+            if collected_date == date.today():
+                return  # 수집할 필요 없음
         try:
             data_array = self.collect()
         except ValueError:
-            self.loadable = False
+            return  # 데이터가 전혀 없음.
         if np.count_nonzero(~np.isnan(data_array.values)) < 2:
-            self.loadable = False
-        if not self.loadable:
-            self.__class__.loadable[self.country][self.indicator] = False
-            return False
-
+            return  # 데이터에 값이 2개 미만임
         self.zarr_path.parent.mkdir(parents=True, exist_ok=True)
         standardization(data_array).to_zarr(self.zarr_path, mode="w")
-        self.__class__.loadable[self.country][self.indicator] = self.loadable = True
-        return True
 
     def get(self, default=None) -> xr.Dataset | None:
         """데이터가 없는 경우 default를 반환합니다."""
-        return xr.open_zarr(self.zarr_path) if self.loading() else default
+        self.loading()
+        return xr.open_zarr(self.zarr_path) if self.zarr_path.exists() else default
 
 
 class ClientMeta(type):

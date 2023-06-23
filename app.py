@@ -12,9 +12,6 @@ app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-key = os.getenv("FMP_API_KEY")
-print("KEY!!", key)
-
 templates = Jinja2Templates(directory="templates")
 
 

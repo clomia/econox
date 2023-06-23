@@ -7,8 +7,8 @@ import requests
 from client.translate import Multilingual
 from client.fmp.integrate import Symbol
 
-API_KEY = os.getenv("FMP_API_KEY")
 HOST = "https://financialmodelingprep.com"
+assert (API_KEY := os.getenv("FMP_API_KEY"))  # FMP_API_KEY 환경변수가 정의되지 않았습니다!
 
 __all__ = ["news"]
 

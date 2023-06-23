@@ -13,8 +13,8 @@ from client.fmp import data_metaclass
 from config import LRU_CACHE_SIZE
 from client.translate import Multilingual, translator
 
-API_KEY = os.getenv("FMP_API_KEY")
 HOST = "https://financialmodelingprep.com"
+assert (API_KEY := os.getenv("FMP_API_KEY"))  # FMP_API_KEY 환경변수가 정의되지 않았습니다!
 
 # ========= data_class.json에 정의된 클래스들을 생성합니다. =========
 classes = dict(json.load(data_metaclass.CLASS_PATH.open("rb")))

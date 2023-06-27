@@ -10,14 +10,14 @@ import requests
 import pycountry
 
 from client.fmp import data_metaclass
-from config import LRU_CACHE_SIZE
+from config import LRU_CACHE_SIZE, INFO_PATH
 from client.translate import Multilingual, translator
 
 HOST = "https://financialmodelingprep.com"
 assert (API_KEY := os.getenv("FMP_API_KEY"))  # FMP_API_KEY 환경변수가 정의되지 않았습니다!
 
 # ========= data_class.json에 정의된 클래스들을 생성합니다. =========
-classes = dict(json.load(data_metaclass.CLASS_PATH.open("rb")))
+classes = dict(json.load(data_metaclass.CLASS_PATH.open("r")))
 
 
 def create_class(name: str) -> type:
@@ -85,6 +85,9 @@ def request(url: str, default=None, cache=False, **params: dict) -> dict | list 
 class Symbol:
     def __init__(self, symbol: str):
         self.symbol = symbol
+        self.info_path = INFO_PATH / f"symbol/{self.symbol}.json"
+        self.info = self.get_info()
+        self.is_valid = False if not self.info["name"] or self.info["note"] else True
 
         # 주식 관련
         self.price = HistoricalPrice(symbol)
@@ -128,60 +131,43 @@ class Symbol:
     def __repr__(self) -> str:
         return f"<Symbol: {self.symbol}>"
 
-    @property
-    def info(self) -> dict:
+    def get_info(self):
         """
-        - API 호출을 통해 symbol에 대한 name, currency, note, country, is_company를 취득합니다.
-        - 이미 취득된 데이터는 메모리에 캐싱됩니다.
+        - name과 note정보를 수집해서 정제한 뒤 반환합니다.
+        - efs-volume에 캐싱을 하여 API 호출을 반복하지 않도록 합니다.
+        - api/v3/profile API로 검색하고 정보가 없다면 api/v3/search로 다시 검색합니다.
         """
-        info = request(url="api/v4/company-outlook", symbol=self.symbol, cache=True)
-
-        name = note = country = "No information"
-        currency = "USD"
-        is_company = False
-        if profile := info.get("profile"):
-            name = profile["companyName"]
-            currency = profile["currency"]
-            note = profile["description"]
-            if profile["country"]:
-                country = pycountry.countries.get(alpha_2=profile["country"]).alpha_3
-            is_company = bool(profile["industry"])  # company-outlook애 industry있으면 기업임
-        elif info := request(url="api/v3/search", query=self.symbol, cache=True):
-            name = info[0]["name"]
-            currency = info[0]["currency"]
-            note = f"{info[0]['stockExchange']} - {name}"
-        return {
-            "name": name,
-            "note": note,
-            "currency": currency,
-            "country": country,
-            "is_company": is_company,
-        }
+        name = exchange = currency = description = None
+        if self.info_path.exists():
+            return json.load(self.info_path.open("r"))
+        elif response := request(f"api/v3/profile/{self.symbol}"):
+            name = response[0]["companyName"]
+            exchange = response[0]["exchange"]
+            currency = response[0]["currency"]
+            description = response[0]["description"]
+        elif response := request("api/v3/search", query=self.symbol):
+            if matched := [ele for ele in response if ele["symbol"] == self.symbol]:
+                name = matched[0]["name"]
+                exchange = matched[0]["stockExchange"]
+                currency = matched[0]["currency"]
+        if name and exchange and currency:  # 이 3가지 정보는 필수
+            currency_name = pycountry.currencies.get(alpha_3=currency).name
+            note_basic = f"{name}({self.symbol}) is traded at {exchange} and the currency uses {currency_name}."
+            note = f"{note_basic} {description}" if description else note_basic
+            info = {"name": name, "note": note}
+        else:
+            info = {"name": "No information", "note": "No information"}
+        self.info_path.parent.mkdir(parents=True, exist_ok=True)
+        json.dump(info, self.info_path.open("w"))
+        return info
 
     @property
     def name(self):
-        """Symbol 이름"""
         return Multilingual(self.info["name"])
 
     @property
     def note(self):
-        """Symbol 설명"""
         return Multilingual(self.info["note"])
-
-    @property
-    def currency(self):
-        """Symbol에 대해 사용되는 통화"""
-        return self.info["currency"]
-
-    @property
-    def country(self):
-        """Symbol 국가"""
-        return self.info["country"]
-
-    @property
-    def is_company(self) -> bool:
-        """Symbol의 기업 여부"""
-        return self.info["is_company"]
 
     @property
     def peers(self) -> List[Symbol]:
@@ -189,12 +175,10 @@ class Symbol:
         - api/v4/stock_peers
         - 자신과 관련된 Symbol 리스트
         """
-        response = request("api/v4/stock_peers", symbol=self.symbol, cache=True)
-        return (
-            [self.__class__(symbol) for symbol in response[0]["peersList"]]
-            if response
-            else []
-        )
+        if response := request("api/v4/stock_peers", symbol=self.symbol, cache=True):
+            return [self.__class__(symbol) for symbol in response[0]["peersList"]]
+        else:
+            return []
 
     @property
     def current_price(self) -> float | None:
@@ -228,7 +212,63 @@ def search(text: str, limit: int = 10) -> List[Symbol]:
     return [Symbol(ele["symbol"]) for ele in response] if response else []
 
 
-filter_params = {
+def cond_search(
+    min_market_cap: float = None,
+    max_market_cap: float = None,
+    min_price: float = None,
+    max_price: float = None,
+    min_beta: float = None,
+    max_beta: float = None,
+    min_volume: float = None,
+    max_volume: float = None,
+    min_dividend: float = None,
+    max_dividend: float = None,
+    is_etf: bool = None,
+    is_actively: bool = None,
+    sector: str = None,
+    industry: str = None,
+    country: str = None,
+    exchange: str = None,
+    limit: int = None,
+) -> List[Symbol]:
+    """
+    - api/v3/stock-screener
+    - 검색 결과가 없으면 빈 리스트를 반환합니다.
+    - sector, industry, exchange 매개변수에 대해서는 params속성을 참조하세요
+    - country: 국가 코드(ISO 3166-1 alpha-3)
+    """
+
+    assert sector is None or sector in params["sectors"]
+    assert industry is None or industry in params["industries"]
+    assert exchange is None or exchange in params["exchanges"]
+    if country:  # FMP에서는 alpha-2 코드를 쓰기 때문에 변환
+        country = pycountry.countries.get(alpha_3=country).alpha_2
+
+    make_params = lambda *arg_name: {name: arg for name, arg in arg_name if arg}
+    params = make_params(
+        ("marketCapMoreThan", min_market_cap),
+        ("marketCapLowerThan", max_market_cap),
+        ("priceMoreThan", min_price),
+        ("priceLowerThan", max_price),
+        ("betaMoreThan", min_beta),
+        ("betaLowerThan", max_beta),
+        ("volumeMoreThan", min_volume),
+        ("volumeLowerThan", max_volume),
+        ("dividendMoreThan", min_dividend),
+        ("dividendLowerThan", max_dividend),
+        ("isEtf", is_etf),
+        ("isActivelyTrading", is_actively),
+        ("sector", sector),
+        ("industry", industry),
+        ("country", country),
+        ("exchange", exchange),
+        ("limit", limit),
+    )
+    response = request("api/v3/stock-screener", **params, cache=True)
+    return [Symbol(ele["symbol"]) for ele in response] if response else []
+
+
+cond_search.params = {
     "sectors": [
         "Consumer Cyclical",
         "Energy",
@@ -259,62 +299,6 @@ filter_params = {
     ],
     "exchanges": ["nyse", "nasdaq", "amex", "euronext", "tsx", "etf", "mutual_fund"],
 }
-
-
-def cond_search(
-    min_market_cap: float = None,
-    max_market_cap: float = None,
-    min_price: float = None,
-    max_price: float = None,
-    min_beta: float = None,
-    max_beta: float = None,
-    min_volume: float = None,
-    max_volume: float = None,
-    min_dividend: float = None,
-    max_dividend: float = None,
-    is_etf: bool = None,
-    is_actively: bool = None,
-    sector: str = None,
-    industry: str = None,
-    country: str = None,
-    exchange: str = None,
-    limit: int = None,
-) -> List[Symbol]:
-    """
-    - api/v3/stock-screener
-    - 검색 결과가 없으면 빈 리스트를 반환합니다.
-    - sector, industry, exchange 매개변수에 대해서는 filter_params를 참조하세요
-    - country: 국가 코드(ISO 3166-1 alpha-3)
-    """
-
-    assert sector is None or sector in filter_params["sectors"]
-    assert industry is None or industry in filter_params["industries"]
-    assert exchange is None or exchange in filter_params["exchanges"]
-    if country:  # FMP에서는 alpha-2 코드를 쓰기 때문에 변환
-        country = pycountry.countries.get(alpha_3=country).alpha_2
-
-    make_params = lambda *arg_name: {name: arg for name, arg in arg_name if arg}
-    params = make_params(
-        ("marketCapMoreThan", min_market_cap),
-        ("marketCapLowerThan", max_market_cap),
-        ("priceMoreThan", min_price),
-        ("priceLowerThan", max_price),
-        ("betaMoreThan", min_beta),
-        ("betaLowerThan", max_beta),
-        ("volumeMoreThan", min_volume),
-        ("volumeLowerThan", max_volume),
-        ("dividendMoreThan", min_dividend),
-        ("dividendLowerThan", max_dividend),
-        ("isEtf", is_etf),
-        ("isActivelyTrading", is_actively),
-        ("sector", sector),
-        ("industry", industry),
-        ("country", country),
-        ("exchange", exchange),
-        ("limit", limit),
-    )
-    response = request("api/v3/stock-screener", **params, cache=True)
-    return [Symbol(ele["symbol"]) for ele in response] if response else []
 
 
 def _get_list(url: str, key="symbol"):

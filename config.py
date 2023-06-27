@@ -3,6 +3,7 @@ from pathlib import Path
 ROOT_PATH = Path(__file__).parent
 DATA_PATH = ROOT_PATH / "efs-volume"
 XARRAY_PATH = DATA_PATH / "xarray"
+INFO_PATH = DATA_PATH / "info"
 
 LRU_CACHE_SIZE = 512  # lru_cache의 max_size
 

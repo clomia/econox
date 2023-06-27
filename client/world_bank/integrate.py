@@ -1,10 +1,13 @@
 """ 모든 data_class를 Country 객체로 통합 """
 from typing import Tuple, List
+from functools import partial, lru_cache
 
 import wbdata
 
 from client.translate import Multilingual, translator
 from client.world_bank.data_class import Trade, Natural, Population, Industry, Economy
+from compute.parallel import ParallelManager
+from config import LRU_CACHE_SIZE
 
 
 class Country:
@@ -64,7 +67,19 @@ class Country:
         return Multilingual(self.info["income_level"])
 
 
-def search(text: str, limit: int = 10) -> List[Country]:
+@lru_cache(maxsize=LRU_CACHE_SIZE)
+def search(text: str) -> List[Country]:
     en_text = translator(text, to_lang="en")
-    countries = wbdata.search_countries(en_text, cache=True)
-    return [Country(code=country["id"]) for country in countries][:limit]
+    manager = ParallelManager()
+    manager.regist(  # 번역 한거, 안한거 전부 사용해서 검색
+        partial(wbdata.search_countries, text, cache=False),
+        partial(wbdata.get_country, text, cache=False),
+        partial(wbdata.search_countries, en_text, cache=False),
+        partial(wbdata.get_country, en_text, cache=False),
+    )
+    results = manager.execute()
+    countries = []
+    for result in results.values():
+        if result:
+            countries += result
+    return [Country(code=country["id"]) for country in countries]

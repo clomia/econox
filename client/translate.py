@@ -1,12 +1,18 @@
 """ Google Translate API 를 사용하는 다국어 객체 구현"""
 import os
+import html
 from functools import lru_cache, partial
 
 import boto3
 from botocore.exceptions import ClientError
 from google.cloud import translate_v2
 
-from config import *
+from config import (
+    ROOT_PATH,
+    GCP_CREDENTIAL_FILENAME,
+    SYSTEM_S3_BUCKET_NAME,
+    LRU_CACHE_SIZE,
+)
 
 try:
     s3 = boto3.client("s3")
@@ -37,7 +43,8 @@ def translator(text: str, to_lang: str, *, from_lang: str = None) -> str:
         source_language=from_lang,
         target_language=to_lang,
     )
-    return response["translatedText"]
+    # 응답 데이터가 S&P500에서 &을 &amp; 라고 표현하는 등 HTML 이스케이프 표현을 쓰기 때문에 unescape 해야 함
+    return html.unescape(response["translatedText"])
 
 
 class Multilingual:

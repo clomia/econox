@@ -4,13 +4,15 @@ from __future__ import annotations
 import os
 import json
 from typing import List, Any
-from functools import lru_cache
+from functools import lru_cache, partial
 
+import html
 import requests
 import pycountry
 
-from client.fmp import data_metaclass
 from config import LRU_CACHE_SIZE, INFO_PATH
+from compute.parallel import ParallelManager
+from client.fmp import data_metaclass
 from client.translate import Multilingual, translator
 
 HOST = "https://financialmodelingprep.com"
@@ -85,7 +87,7 @@ def request(url: str, default=None, cache=False, **params: dict) -> dict | list 
 class Symbol:
     def __init__(self, symbol: str):
         self.symbol = symbol
-        self.info_path = INFO_PATH / f"symbol/{self.symbol}.json"
+        self.info_path = INFO_PATH / f"symbol/{symbol}.json"
         self.info = self.get_info()
         self.is_valid = False if not self.info["name"] or self.info["note"] else True
 
@@ -137,28 +139,46 @@ class Symbol:
         - efs-volume에 캐싱을 하여 API 호출을 반복하지 않도록 합니다.
         - api/v3/profile API로 검색하고 정보가 없다면 api/v3/search로 다시 검색합니다.
         """
-        name = exchange = currency = description = None
-        if self.info_path.exists():
+
+        # ======= EFS volume 에서 가져오기 =======
+        if self.info_path.exists():  # 볼륨에서 가져오기
             return json.load(self.info_path.open("r"))
-        elif response := request(f"api/v3/profile/{self.symbol}"):
-            name = response[0]["companyName"]
-            exchange = response[0]["exchange"]
-            currency = response[0]["currency"]
-            description = response[0]["description"]
-        elif response := request("api/v3/search", query=self.symbol):
-            if matched := [ele for ele in response if ele["symbol"] == self.symbol]:
+
+        # ======= API 사용해서 데이터 수집 =======
+        manager = ParallelManager()
+        manager.regist(
+            profile_api := partial(request, f"api/v3/profile/{self.symbol}"),
+            search_api := partial(request, "api/v3/search", query=self.symbol),
+        )
+        results = manager.execute()
+        profile_info = results[profile_api]
+        search_info = results[search_api]
+
+        name = exchange = currency = description = str()
+        if profile_info:
+            name = profile_info[0]["companyName"]
+            exchange = profile_info[0]["exchange"]
+            currency = profile_info[0]["currency"]
+            description = profile_info[0]["description"]
+        elif search_info:
+            if matched := [ele for ele in search_info if ele["symbol"] == self.symbol]:
                 name = matched[0]["name"]
                 exchange = matched[0]["stockExchange"]
                 currency = matched[0]["currency"]
-        if name and exchange and currency:  # 이 3가지 정보는 필수
-            currency_name = pycountry.currencies.get(alpha_3=currency).name
-            note_basic = f"{name}({self.symbol}) is traded at {exchange} and the currency uses {currency_name}."
+
+        # ======= 수집된 데이터 정제 =======
+        currency_obj = pycountry.currencies.get(alpha_3=currency)
+        if name and exchange and currency_obj:  # 이 3가지 정보는 필수
+            note_basic = f"{name}({self.symbol}) is traded at {exchange} and the currency uses {currency_obj.name}"
             note = f"{note_basic} {description}" if description else note_basic
             info = {"name": name, "note": note}
+        elif name:
+            info = {"name": name, "note": f"{name}({self.symbol}): No information"}
         else:
-            info = {"name": "No information", "note": "No information"}
+            no_info_expr = f"{self.symbol}: No information"
+            info = {"name": no_info_expr, "note": no_info_expr}
         self.info_path.parent.mkdir(parents=True, exist_ok=True)
-        json.dump(info, self.info_path.open("w"))
+        json.dump(info, self.info_path.open("w"))  # EFS volume에 저장
         return info
 
     @property

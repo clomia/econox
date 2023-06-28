@@ -1,8 +1,7 @@
 import queue
 import threading
 import multiprocessing
-from functools import partial
-from typing import Callable
+from typing import Callable, Any
 
 multiprocessing.set_start_method("fork")
 
@@ -17,7 +16,7 @@ class ParallelManager:
         self.worker_obj = threading.Thread if GIL else multiprocessing.Process
         self.queue = queue.Queue() if GIL else multiprocessing.Queue()
 
-    def regist(self, *functions: Callable):
+    def regist(self, *functions: Callable[[], Any]):
         """
         - 병렬 실행 대상 함수를 등록합니다.
         - 함수는 아무런 인자도 받지 않아야 합니다. functools.partial 모듈을 활용하세요

@@ -6,9 +6,12 @@
 </head>
 
 <body>
-    <h1>note: {{ note }}</h1>
-    <h1>attrs: {{ attrs }}</h1>
-    <h1>value: {{ value }}</h1>
+    <form action="/search" method="GET">
+        <div class="search-form">
+            <label for="text">검색어 입력: </label>
+            <input type="text" name="text" required>
+        </div>
+    </form>
 </body>
 
 </html>

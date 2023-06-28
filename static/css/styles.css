@@ -1,0 +1,16 @@
+.outer-box {
+    border: solid;
+    margin: 10px;
+    padding: 5px;
+    background-color: blanchedalmond;
+}
+
+.inner-box {
+    border: solid;
+    padding: 5px;
+}
+
+.box {
+    background-color: white;
+    margin: 10px;
+}

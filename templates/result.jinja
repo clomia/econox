@@ -1,0 +1,27 @@
+<html>
+
+<head>
+    <title>Item Details</title>
+    <link href="/static/css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="outer-box">
+        {% for symbol in symbols %}
+            <div class="box">
+                <div class="inner-box">{{ symbol.name.ko }}</div>
+                <div class="inner-box">{{ symbol.note.ko }}</div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="outer-box">
+        {% for country in countries %}
+            <div class="box">
+                <div class="inner-box">{{ country.name.ko }}</div>
+                <div class="inner-box">{{ country.note.ko }}</div>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+
+</html>

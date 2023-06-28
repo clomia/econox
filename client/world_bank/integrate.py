@@ -2,13 +2,34 @@
 import json
 from typing import Tuple, List
 from functools import partial, lru_cache
+from concurrent.futures import ThreadPoolExecutor
 
 import wbdata
 
 from config import LRU_CACHE_SIZE, INFO_PATH
-from compute.parallel import ParallelManager
+from compute.parallel import AsyncExecutor
 from client.translate import Multilingual, translator
 from client.world_bank.data_class import Trade, Natural, Population, Industry, Economy
+
+
+def runtime_error_handler(func):
+    """
+    wbdata 모듈을 검색 결과가 없을 때 RuntimeError를 반환합니다.
+    따라서 RuntimeError가 발생하면 빈 리스트를 반환하도록 함수를 감쌉니다.
+    """
+
+    def wrapper(*args, **kwargs):
+        try:
+            result = func(*args, **kwargs)
+        except RuntimeError:
+            result = []
+        return result
+
+    return wrapper
+
+
+search_countries = runtime_error_handler(wbdata.search_countries)
+get_country = runtime_error_handler(wbdata.get_country)
 
 
 class Country:
@@ -32,17 +53,15 @@ class Country:
             return json.load(self.info_path.open("r"))
 
         # ======= API 사용해서 데이터 수집 =======
-        try:
-            info = wbdata.get_country(self.code, cache=False)
-        except RuntimeError:
-            name = region = capital = income = longitude = latitude = None
-        else:
+        if info := get_country(self.code, cache=False):
             name = info[0].get("name")
             region = info[0]["region"].get("value")
             capital = info[0].get("capitalCity")
             income = info[0]["incomeLevel"].get("value")
             longitude = info[0].get("longitude")
             latitude = info[0].get("latitude")
+        else:
+            name = region = capital = income = longitude = latitude = None
 
         # ======= 수집된 데이터 정제 =======
         if name and region and capital and income:  # 이 4가지 정보는 필수
@@ -81,16 +100,12 @@ class Country:
 @lru_cache(maxsize=LRU_CACHE_SIZE)
 def search(text: str) -> List[Country]:
     en_text = translator(text, to_lang="en")
-    manager = ParallelManager()
-    manager.regist(  # 번역 한거, 안한거 전부 사용해서 검색
-        partial(wbdata.search_countries, text, cache=False),
-        partial(wbdata.get_country, text, cache=False),
-        partial(wbdata.search_countries, en_text, cache=False),
-        partial(wbdata.get_country, en_text, cache=False),
-    )
-    results = manager.execute()
-    countries = []
-    for result in results.values():
-        if result:
-            countries += result
-    return [Country(code=country["id"]) for country in countries]
+    results = AsyncExecutor(  # 번역 한거, 안한거 전부 사용해서 검색
+        partial(search_countries, text, cache=True),
+        partial(get_country, text, cache=True),
+        partial(search_countries, en_text, cache=True),
+        partial(get_country, en_text, cache=True),
+    ).execute()
+    iso_code_set = {ele["id"] for result in results.values() for ele in result}
+    pool = ThreadPoolExecutor(max_workers=1000)
+    return list(pool.map(Country, iso_code_set))

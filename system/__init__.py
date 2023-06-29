@@ -1,2 +1,2 @@
-from system.config import *
+from system.settings import *
 from system.logger import *

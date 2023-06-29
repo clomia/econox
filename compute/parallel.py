@@ -17,3 +17,6 @@ def executor(*functions):
     pool = ThreadPoolExecutor(max_workers=len(functions))
     results = list(pool.map(lambda func: func(), functions))
     return dict(zip(functions, results))
+
+
+# todo 추가적으로 CPU 연산 자체를 병렬화 해주는 도구도 구현

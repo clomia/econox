@@ -107,6 +107,6 @@ def search(text: str) -> List[Country]:
         partial(get_country, en_text, cache=True),
     )
     iso_code_set = {ele["id"] for result in results.values() for ele in result}
-    pool = ThreadPoolExecutor(max_workers=1000)
+    pool = ThreadPoolExecutor(max_workers=len(iso_code_set))
     results = list(pool.map(Country, iso_code_set))
     return results

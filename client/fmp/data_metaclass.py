@@ -17,7 +17,7 @@ import xarray as xr
 from compute.scale import standardization
 from client.factor import Factor
 from client.translate import Multilingual
-from config import ROOT_PATH, XARRAY_PATH
+from system import ROOT_PATH, XARRAY_PATH
 
 HOST = "https://financialmodelingprep.com"
 CLASS_PATH = ROOT_PATH / "client" / "fmp" / "data_class.json"

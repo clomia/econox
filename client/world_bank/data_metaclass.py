@@ -8,7 +8,7 @@ import xarray as xr
 from compute.scale import standardization
 from client.factor import Factor
 from client.translate import Multilingual
-from config import XARRAY_PATH
+from system import XARRAY_PATH
 
 
 def _xr_meta(element, factor, **kwargs) -> dict:

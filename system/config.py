@@ -1,6 +1,6 @@
 from pathlib import Path
 
-ROOT_PATH = Path(__file__).parent
+ROOT_PATH = Path(__file__).parent.parent
 DATA_PATH = ROOT_PATH / "efs-volume"
 XARRAY_PATH = DATA_PATH / "xarray"
 INFO_PATH = DATA_PATH / "info"

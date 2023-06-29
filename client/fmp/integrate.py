@@ -11,8 +11,8 @@ from concurrent.futures import ThreadPoolExecutor
 import requests
 import pycountry
 
-from config import LRU_CACHE_SIZE, INFO_PATH
-from compute.parallel import AsyncExecutor
+from system import log, LRU_CACHE_SIZE, INFO_PATH
+from compute import parallel
 from client.fmp import data_metaclass
 from client.translate import Multilingual, translator
 
@@ -88,62 +88,67 @@ def request(url: str, default=None, cache=False, **params: dict) -> dict | list 
         try:
             data = get_func(f"{HOST}/{url}", **params | {"apikey": API_KEY})
         except Exception as error:
+            log.warning(
+                f"FMP API 서버와 통신에 실패했습니다. {interval}초 후 다시 시도합니다... (URL: {url})"
+            )
             time.sleep(interval)  # retry 대기
             continue
         else:  # 성공
             break
     else:  # 끝까지 통신에 실패하면 에러 raise
+        log.error(f"FMP API 서버와 통신에 실패하여 데이터를 수신하지 못했습니다. (URL: {url})")
         raise error
     return data if data else default
 
 
 class Symbol:
-    def __init__(self, symbol: str):
-        self.symbol = symbol
-        self.info_path = INFO_PATH / f"symbol/{symbol}.json"
+    def __init__(self, code: str):
+        self.code = code
+        self.info_path = INFO_PATH / f"symbol/{code}.json"
         self.info = self.get_info()
         self.is_valid = False if not self.info["name"] or self.info["note"] else True
+
         # 주식 관련
-        self.price = HistoricalPrice(symbol)
-        self.dividends = HistoricalDividends(symbol)
-        self.enterprise_value = CompanyEnterpriseValue(symbol)
+        self.price = HistoricalPrice(code)
+        self.dividends = HistoricalDividends(code)
+        self.enterprise_value = CompanyEnterpriseValue(code)
 
         # 재무 요약
-        self.key_metrics = CompanyKeyMetrics(symbol)
-        self.financial_ratio = FinancialRatios(symbol)
-        self.financial_growth = FinancialGrowth(symbol)
+        self.key_metrics = CompanyKeyMetrics(code)
+        self.financial_ratio = FinancialRatios(code)
+        self.financial_growth = FinancialGrowth(code)
 
         # 현금 흐름표
-        self.cash_flow = CashFlowStatement(symbol)
-        self.cash_flow_growth = CashFlowStatementGrowth(symbol)
+        self.cash_flow = CashFlowStatement(code)
+        self.cash_flow_growth = CashFlowStatementGrowth(code)
 
         # 대차대조표
-        self.balance_sheet = BalanceSheetStatement(symbol)
-        self.balance_sheet_growth = BalanceSheetStatementGrowth(symbol)
+        self.balance_sheet = BalanceSheetStatement(code)
+        self.balance_sheet_growth = BalanceSheetStatementGrowth(code)
 
         # 수입
-        self.income = IncomeStatement(symbol)
-        self.reported_income = ReportedIncomeStatements(symbol)
-        self.income_growth = IncomeStatementGrowth(symbol)
-        self.earnings = EarningsCalendar(symbol)
+        self.income = IncomeStatement(code)
+        self.reported_income = ReportedIncomeStatements(code)
+        self.income_growth = IncomeStatementGrowth(code)
+        self.earnings = EarningsCalendar(code)
 
         # 사회적 요소
-        self.institutional_ownership = InstitutionalStockOwnership(symbol)
-        self.employees = NumberOfEmployees(symbol)
+        self.institutional_ownership = InstitutionalStockOwnership(code)
+        self.employees = NumberOfEmployees(code)
 
         # 기업 평가
-        self.dcf = AdvancedDiscountedCashFlow(symbol)
-        self.levered_dcf = AdvancedLeveredDiscountedCashFlow(symbol)
-        self.rating = CompanyRating(symbol)
-        self.esg_score = EsgScore(symbol)
+        self.dcf = AdvancedDiscountedCashFlow(code)
+        self.levered_dcf = AdvancedLeveredDiscountedCashFlow(code)
+        self.rating = CompanyRating(code)
+        self.esg_score = EsgScore(code)
 
         # 분석
-        self.cot_report_analysis = CotReportAnalysis(symbol)
-        self.cot_report = CotReport(symbol)
-        self.analyst_estimates = AnalystEstimates(symbol)
+        self.cot_report_analysis = CotReportAnalysis(code)
+        self.cot_report = CotReport(code)
+        self.analyst_estimates = AnalystEstimates(code)
 
     def __repr__(self) -> str:
-        return f"<Symbol: {self.symbol}>"
+        return f"<Symbol: {self.code}>"
 
     def get_info(self):
         """
@@ -157,10 +162,10 @@ class Symbol:
             return json.load(self.info_path.open("r"))
 
         # ======= API 사용해서 데이터 수집 =======
-        results = AsyncExecutor(
-            profile_api := partial(request, f"api/v3/profile/{self.symbol}"),
-            search_api := partial(request, "api/v3/search", query=self.symbol),
-        ).execute()
+        results = parallel.executor(
+            profile_api := partial(request, f"api/v3/profile/{self.code}"),
+            search_api := partial(request, "api/v3/search", query=self.code),
+        )
         profile_info = results[profile_api]
         search_info = results[search_api]
 
@@ -171,7 +176,7 @@ class Symbol:
             currency = profile_info[0]["currency"]
             description = profile_info[0]["description"]
         elif search_info:
-            if matched := [ele for ele in search_info if ele["symbol"] == self.symbol]:
+            if matched := [ele for ele in search_info if ele["symbol"] == self.code]:
                 name = matched[0]["name"]
                 exchange = matched[0]["stockExchange"]
                 currency = matched[0]["currency"]
@@ -179,13 +184,13 @@ class Symbol:
         # ======= 수집된 데이터 정제 =======
         currency_obj = pycountry.currencies.get(alpha_3=currency) if currency else None
         if name and exchange and currency_obj:  # 이 3가지 정보는 필수
-            note_basic = f"{name}({self.symbol}) is traded at {exchange} and the currency uses {currency_obj.name}"
+            note_basic = f"{name}({self.code}) is traded at {exchange} and the currency uses {currency_obj.name}"
             note = f"{note_basic} {description}" if description else note_basic
             info = {"name": name, "note": note}
         elif name:
-            info = {"name": name, "note": f"{name}({self.symbol}): No information"}
+            info = {"name": name, "note": f"{name}({self.code}): No information"}
         else:
-            no_info_expr = f"{self.symbol}: No information"
+            no_info_expr = f"{self.code}: No information"
             info = {"name": no_info_expr, "note": no_info_expr}
         self.info_path.parent.mkdir(parents=True, exist_ok=True)
         json.dump(info, self.info_path.open("w"))  # EFS volume에 저장
@@ -205,7 +210,7 @@ class Symbol:
         - api/v4/stock_peers
         - 자신과 관련된 Symbol 리스트
         """
-        if response := request("api/v4/stock_peers", symbol=self.symbol, cache=True):
+        if response := request("api/v4/stock_peers", symbol=self.code, cache=True):
             pool = ThreadPoolExecutor()
             return list(pool.map(self.__class__, response[0]["peersList"]))
         else:
@@ -217,7 +222,7 @@ class Symbol:
         - api/v3/quote
         - 현재가격
         """
-        response = request(f"api/v3/quote-short/{self.symbol}")
+        response = request(f"api/v3/quote-short/{self.code}")
         return float(response[0]["price"]) if response else None
 
     @property
@@ -226,7 +231,7 @@ class Symbol:
         - api/v3/quote
         - 현재 가격 변화율 (%)
         """
-        response = request(f"api/v3/quote/{self.symbol}")
+        response = request(f"api/v3/quote/{self.code}")
         return float(response[0]["changesPercentage"]) if response else None
 
 
@@ -256,7 +261,8 @@ def search(text: str, limit: int = 15) -> List[Symbol]:
     """
     en_text = translator(text, to_lang="en")
     response = request("api/v3/search", query=en_text, limit=limit, cache=True)
-    return _response2symbols(response)
+    results = _response2symbols(response)
+    return results
 
 
 def cond_search(

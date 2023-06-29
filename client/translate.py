@@ -7,7 +7,7 @@ import boto3
 from botocore.exceptions import ClientError
 from google.cloud import translate_v2
 
-from config import (
+from system import (
     ROOT_PATH,
     GCP_CREDENTIAL_FILENAME,
     SYSTEM_S3_BUCKET_NAME,

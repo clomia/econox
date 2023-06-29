@@ -6,8 +6,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 import wbdata
 
-from config import LRU_CACHE_SIZE, INFO_PATH
-from compute.parallel import AsyncExecutor
+from system import log, LRU_CACHE_SIZE, INFO_PATH
+from compute import parallel
 from client.translate import Multilingual, translator
 from client.world_bank.data_class import Trade, Natural, Population, Industry, Economy
 
@@ -65,7 +65,7 @@ class Country:
 
         # ======= 수집된 데이터 정제 =======
         if name and region and capital and income:  # 이 4가지 정보는 필수
-            note = f"{name} is located in {region} and its capital is {capital} The income level is {income}"
+            note = f"{name}({self.code}) is located in {region} and its capital is {capital} The income level is {income}"
             info = {"name": name, "note": note}
         elif name:
             info = {"name": name, "note": f"{name}({self.code}): No information"}
@@ -100,12 +100,13 @@ class Country:
 @lru_cache(maxsize=LRU_CACHE_SIZE)
 def search(text: str) -> List[Country]:
     en_text = translator(text, to_lang="en")
-    results = AsyncExecutor(  # 번역 한거, 안한거 전부 사용해서 검색
+    results = parallel.executor(  # 번역 한거, 안한거 전부 사용해서 검색
         partial(search_countries, text, cache=True),
         partial(get_country, text, cache=True),
         partial(search_countries, en_text, cache=True),
         partial(get_country, en_text, cache=True),
-    ).execute()
+    )
     iso_code_set = {ele["id"] for result in results.values() for ele in result}
     pool = ThreadPoolExecutor(max_workers=1000)
-    return list(pool.map(Country, iso_code_set))
+    results = list(pool.map(Country, iso_code_set))
+    return results

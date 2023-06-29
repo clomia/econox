@@ -4,7 +4,6 @@ from fastapi import Request, APIRouter
 from fastapi.templating import Jinja2Templates
 
 from compute import parallel
-from system import templates
 from client import fmp, world_bank
 
 router = APIRouter()

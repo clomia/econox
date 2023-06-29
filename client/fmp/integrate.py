@@ -243,8 +243,8 @@ def _response2symbols(response, key="symbol") -> List[Symbol]:
         - None인 경우 리스트 요소들로 Symbol객체를 생성합니다.
     """  # Symbol 생성시 API I/O작업이 있기 때문에 이런 함수가 필요함
     if response:
-        # 완전 I/O 기반 Thread라서 max_workers 많이 해도 됌
-        pool = ThreadPoolExecutor(max_workers=1000)
+        # max_workers는 0이 될 수 없음
+        pool = ThreadPoolExecutor(max_workers=len(response))
         fn = lambda ele: Symbol(ele[key]) if key else Symbol
         return list(pool.map(fn, response))
     else:

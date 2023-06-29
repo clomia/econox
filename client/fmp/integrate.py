@@ -106,7 +106,7 @@ class Symbol:
         self.code = code
         self.info_path = INFO_PATH / f"symbol/{code}.json"
         self.info = self.get_info()
-        self.is_valid = False if not self.info["name"] or self.info["note"] else True
+        self.is_valid = self.info["name"] and self.info["note"]
 
         # 주식 관련
         self.price = HistoricalPrice(code)
@@ -187,22 +187,26 @@ class Symbol:
             note_basic = f"{name}({self.code}) is traded at {exchange} and the currency uses {currency_obj.name}"
             note = f"{note_basic} {description}" if description else note_basic
             info = {"name": name, "note": note}
-        elif name:
-            info = {"name": name, "note": f"{name}({self.code}): No information"}
         else:
-            no_info_expr = f"{self.code}: No information"
-            info = {"name": no_info_expr, "note": no_info_expr}
+            info = {"name": name, note: None}  # name은 None일 수 있음
         self.info_path.parent.mkdir(parents=True, exist_ok=True)
         json.dump(info, self.info_path.open("w"))  # EFS volume에 저장
         return info
 
     @property
     def name(self):
-        return Multilingual(self.info["name"])
+        _name = self.info["name"]
+        return Multilingual(_name if _name else f"{self.code}: No information")
 
     @property
     def note(self):
-        return Multilingual(self.info["note"])
+        _note, _name = self.info["note"], self.info["name"]
+        if _note:
+            return Multilingual(_note)
+        elif _name:
+            return Multilingual(f"{_name}({self.code}): No information")
+        else:
+            return Multilingual(f"{self.code}: No information")
 
     @property
     def peers(self) -> List[Symbol]:
@@ -241,11 +245,12 @@ def _response2symbols(response, key="symbol") -> List[Symbol]:
     - 비동기 처리를 통해 최대한 빠르게 리스트를 생성합니다.
     - key: API 응답 리스트 각 요소에 대해 symbol을 가져올 수 있는 key
         - None인 경우 리스트 요소들로 Symbol객체를 생성합니다.
+    - is_valid가 False인 Symbol은 리스트에서 제외됩니다.
     """  # Symbol 생성시 API I/O작업이 있기 때문에 이런 함수가 필요함
     if response:
         pool = ThreadPoolExecutor(max_workers=len(response))
         fn = lambda ele: Symbol(ele[key]) if key else Symbol
-        return list(pool.map(fn, response))
+        return [symbol for symbol in list(pool.map(fn, response)) if symbol.is_valid]
     else:
         return []
 

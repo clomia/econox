@@ -38,6 +38,8 @@ class Country:
         self.code = code
         self.info_path = INFO_PATH / f"country/{code}.json"
         self.info = self.get_info()
+        self.is_valid = self.info["name"] and self.info["note"]
+
         self.trade = Trade(code)
         self.natural = Natural(code)
         self.population = Population(code)
@@ -62,16 +64,11 @@ class Country:
             latitude = info[0].get("latitude")
         else:
             name = region = capital = income = longitude = latitude = None
-
         # ======= 수집된 데이터 정제 =======
+        note = None
         if name and region and capital and income:  # 이 4가지 정보는 필수
             note = f"{name}({self.code}) is located in {region} and its capital is {capital} The income level is {income}"
-            info = {"name": name, "note": note}
-        elif name:
-            info = {"name": name, "note": f"{name}({self.code}): No information"}
-        else:
-            no_info_expr = f"{self.code}: No information"
-            info = {"name": no_info_expr, "note": no_info_expr}
+        info = {"name": name, "note": note}
         info |= {  # 경위도 정보 추가
             "longitude": float(longitude) if longitude else None,
             "latitude": float(latitude) if latitude else None,
@@ -82,23 +79,31 @@ class Country:
 
     @property
     def name(self):
-        return Multilingual(self.info["name"])
+        _name = self.info["name"]
+        return Multilingual(_name if _name else f"{self.code}: No information")
 
     @property
     def note(self):
-        return Multilingual(self.info["note"])
+        _note, _name = self.info["note"], self.info["name"]
+        if _note:
+            return Multilingual(_note)
+        elif _name:
+            return Multilingual(f"{_name}({self.code}): No information")
+        else:
+            return Multilingual(f"{self.code}: No information")
 
     @property
-    def longitude(self) -> Tuple[float]:
+    def longitude(self) -> float:
         return self.info["longitude"]
 
     @property
-    def latitude(self):
-        return Multilingual(self.info["latitude"])
+    def latitude(self) -> float:
+        return self.info["latitude"]
 
 
 @lru_cache(maxsize=LRU_CACHE_SIZE)
 def search(text: str) -> List[Country]:
+    """is_valid가 False인 Country는 리스트에서 제외됩니다."""
     en_text = translator(text, to_lang="en")
     results = parallel.executor(  # 번역 한거, 안한거 전부 사용해서 검색
         partial(search_countries, text, cache=True),
@@ -109,6 +114,10 @@ def search(text: str) -> List[Country]:
     iso_code_set = {ele["id"] for result in results.values() for ele in result}
     if iso_code_set:
         pool = ThreadPoolExecutor(max_workers=len(iso_code_set))
-        return list(pool.map(Country, iso_code_set))
+        return [
+            country
+            for country in list(pool.map(Country, iso_code_set))
+            if country.is_valid
+        ]
     else:
         return []

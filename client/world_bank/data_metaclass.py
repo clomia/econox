@@ -1,7 +1,6 @@
-from collections import defaultdict
 from datetime import datetime, date
 
-import wbdata
+import wbdata  #! wbdata 라이브러리의 캐싱 알고리즘은 thread-safe하지 않으므로 항상 cache=False 해줘야 한다!
 import numpy as np
 import xarray as xr
 
@@ -91,7 +90,7 @@ class ClientMeta(type):
         for code, name in cls.indicator_codes.items():
             manager = DataManager(country, code)
             ins.manager[name] = manager  # DataManager 접근을 위한 통로
-            indicator_meta = wbdata.get_indicator(code, cache=True)[0]
+            indicator_meta = wbdata.get_indicator(code, cache=False)[0]
             factor = Factor(
                 get=manager.get,
                 name=indicator_meta["name"],

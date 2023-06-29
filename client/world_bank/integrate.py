@@ -1,12 +1,12 @@
 """ 모든 data_class를 Country 객체로 통합 """
 import json
-from typing import Tuple, List
+from typing import List
 from functools import partial, lru_cache
 from concurrent.futures import ThreadPoolExecutor
 
-import wbdata
+import wbdata  #! wbdata 라이브러리의 캐싱 알고리즘은 thread-safe하지 않으므로 항상 cache=False 해줘야 한다!
 
-from system import log, LRU_CACHE_SIZE, INFO_PATH
+from system import LRU_CACHE_SIZE, INFO_PATH
 from compute import parallel
 from client.translate import Multilingual, translator
 from client.world_bank.data_class import Trade, Natural, Population, Industry, Economy
@@ -106,10 +106,10 @@ def search(text: str) -> List[Country]:
     """is_valid가 False인 Country는 리스트에서 제외됩니다."""
     en_text = translator(text, to_lang="en")
     results = parallel.executor(  # 번역 한거, 안한거 전부 사용해서 검색
-        partial(search_countries, text, cache=True),
-        partial(get_country, text, cache=True),
-        partial(search_countries, en_text, cache=True),
-        partial(get_country, en_text, cache=True),
+        partial(search_countries, text, cache=False),
+        partial(get_country, text, cache=False),
+        partial(search_countries, en_text, cache=False),
+        partial(get_country, en_text, cache=False),
     )
     iso_code_set = {ele["id"] for result in results.values() for ele in result}
     if iso_code_set:

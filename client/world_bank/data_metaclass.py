@@ -1,4 +1,5 @@
 from datetime import datetime, date
+from functools import lru_cache
 
 import wbdata  #! wbdata 라이브러리의 캐싱 알고리즘은 thread-safe하지 않으므로 항상 cache=False 해줘야 한다!
 import numpy as np
@@ -7,7 +8,7 @@ import xarray as xr
 from compute.scale import standardization
 from client.factor import Factor
 from client.translate import Multilingual
-from system import XARRAY_PATH
+from system import XARRAY_PATH, LRU_CACHE_SIZE
 
 
 def _xr_meta(element, factor, **kwargs) -> dict:
@@ -70,6 +71,11 @@ class DataManager:
         return xr.open_zarr(self.zarr_path) if self.zarr_path.exists() else default
 
 
+@lru_cache(maxsize=LRU_CACHE_SIZE)
+def get_indicator(code):  # wbdata cache 알고리즘 말고 쓰레드 안전한 lru_cache 사용
+    return wbdata.get_indicator(code, cache=False)[0]
+
+
 class ClientMeta(type):
     def __new__(meta, name, bases, attrs):
         cls = super().__new__(meta, name, tuple(), dict())
@@ -90,7 +96,7 @@ class ClientMeta(type):
         for code, name in cls.indicator_codes.items():
             manager = DataManager(country, code)
             ins.manager[name] = manager  # DataManager 접근을 위한 통로
-            indicator_meta = wbdata.get_indicator(code, cache=False)[0]
+            indicator_meta = get_indicator(code)
             factor = Factor(
                 get=manager.get,
                 name=indicator_meta["name"],

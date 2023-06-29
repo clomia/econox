@@ -188,7 +188,7 @@ class Symbol:
             note = f"{note_basic} {description}" if description else note_basic
             info = {"name": name, "note": note}
         else:
-            info = {"name": name, note: None}  # name은 None일 수 있음
+            info = {"name": name, "note": None}  # name은 None일 수 있음
         self.info_path.parent.mkdir(parents=True, exist_ok=True)
         json.dump(info, self.info_path.open("w"))  # EFS volume에 저장
         return info

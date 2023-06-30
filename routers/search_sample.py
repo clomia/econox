@@ -7,10 +7,10 @@ from compute import parallel
 from client import fmp, world_bank
 
 router = APIRouter()
-templates = Jinja2Templates(directory="templates")  # 아무리 생각해도 이건 그냥 재사용하셈
+templates = Jinja2Templates(directory="templates/search_sample")
 
 
-@router.get("/")
+@router.get("/search")
 def main_page(request: Request):
     return templates.TemplateResponse("main.jinja", {"request": request})
 
@@ -29,7 +29,7 @@ def get_note_ko(objects):
     return list(results.values())
 
 
-@router.get("/result")
+@router.get("/search/result")
 async def result_page(request: Request, text: str):
     results = await parallel.async_executor(
         fmp_search := partial(fmp.search, text),

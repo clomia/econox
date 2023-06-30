@@ -29,7 +29,7 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_path
 client = translate_v2.Client()
 
 
-@lru_cache(maxsize=LRU_CACHE_SIZE)
+@lru_cache(maxsize=50_000)  # 최대 약 100MB (text 500글자 기준)
 def translator(text: str, to_lang: str, *, from_lang: str = None) -> str:
     """
     - 자연어를 번역합니다.

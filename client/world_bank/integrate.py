@@ -2,7 +2,6 @@
 import json
 from typing import List
 from functools import partial, lru_cache
-from concurrent.futures import ThreadPoolExecutor
 
 import wbdata  #! wbdata 라이브러리의 캐싱 알고리즘은 thread-safe하지 않으므로 항상 cache=False 해줘야 한다!
 
@@ -112,12 +111,7 @@ def search(text: str) -> List[Country]:
         partial(get_country, en_text, cache=False),
     )
     iso_code_set = {ele["id"] for result in results.values() for ele in result}
-    if iso_code_set:
-        pool = ThreadPoolExecutor(max_workers=len(iso_code_set))
-        return [
-            country
-            for country in list(pool.map(Country, iso_code_set))
-            if country.is_valid
-        ]
-    else:
-        return []
+    countires = parallel.executor(
+        *[partial(Country, code) for code in iso_code_set]
+    ).values()
+    return [country for country in countires if country.is_valid]

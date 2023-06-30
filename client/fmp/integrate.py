@@ -6,7 +6,6 @@ import json
 import time
 from typing import List, Any
 from functools import lru_cache, partial
-from concurrent.futures import ThreadPoolExecutor
 
 import requests
 import pycountry
@@ -214,11 +213,8 @@ class Symbol:
         - api/v4/stock_peers
         - 자신과 관련된 Symbol 리스트
         """
-        if response := request("api/v4/stock_peers", symbol=self.code, cache=True):
-            pool = ThreadPoolExecutor()
-            return list(pool.map(self.__class__, response[0]["peersList"]))
-        else:
-            return []
+        response = request("api/v4/stock_peers", symbol=self.code, cache=True)
+        return self._from_list(response[0]["peersList"]) if response else []
 
     @property
     def current_price(self) -> float | None:
@@ -238,21 +234,22 @@ class Symbol:
         response = request(f"api/v3/quote/{self.code}")
         return float(response[0]["changesPercentage"]) if response else None
 
+    @classmethod
+    def _from_list(cls, _list, key=None) -> List[Symbol]:
+        """
+        - FMP API 응답 리스트를 Symbol 리스트로 만들기 위해 사용됩니다.
+        - 비동기 처리를 통해 최대한 빠르게 리스트를 생성합니다.
+        - key: API 응답 리스트 각 요소가 딕셔너리인 경우 symbol을 가져올 수 있는 key
+            - None인 경우 리스트 요소들로 Symbol객체를 생성합니다.
+        - is_valid가 False인 Symbol은 리스트에서 제외됩니다.
+        """
+        if not _list:  # 빈 객체가 입력될 수 있음
+            return []
 
-def _response2symbols(response, key="symbol") -> List[Symbol]:
-    """
-    - API 응답을 Symbol 리스트로 만들어줍니다.
-    - 비동기 처리를 통해 최대한 빠르게 리스트를 생성합니다.
-    - key: API 응답 리스트 각 요소에 대해 symbol을 가져올 수 있는 key
-        - None인 경우 리스트 요소들로 Symbol객체를 생성합니다.
-    - is_valid가 False인 Symbol은 리스트에서 제외됩니다.
-    """  # Symbol 생성시 API I/O작업이 있기 때문에 이런 함수가 필요함
-    if response:
-        pool = ThreadPoolExecutor(max_workers=len(response))
-        fn = lambda ele: Symbol(ele[key]) if key else Symbol
-        return [symbol for symbol in list(pool.map(fn, response)) if symbol.is_valid]
-    else:
-        return []
+        symbols = parallel.executor(
+            *[partial(cls, ele[key] if key else ele) for ele in _list]
+        ).values()
+        return [symbol for symbol in symbols if symbol.is_valid]
 
 
 def search(text: str, limit: int = 15) -> List[Symbol]:
@@ -265,7 +262,7 @@ def search(text: str, limit: int = 15) -> List[Symbol]:
     """
     en_text = translator(text, to_lang="en")
     response = request("api/v3/search", query=en_text, limit=limit, cache=True)
-    results = _response2symbols(response)
+    results = Symbol._from_list(response, key="symbol")
     return results
 
 
@@ -322,7 +319,7 @@ def cond_search(
         ("limit", limit),
     )
     response = request("api/v3/stock-screener", **params, cache=True)
-    return _response2symbols(response)
+    return Symbol._from_list(response, key="symbol")
 
 
 cond_search.params = {
@@ -363,7 +360,8 @@ def list_gainers() -> List[Symbol]:
     - api/v3/stock_market/gainers
     - 급상승 종목들
     """
-    return _response2symbols(request("api/v3/stock_market/gainers"))
+    response = request("api/v3/stock_market/gainers")
+    return Symbol._from_list(response, key="symbol")
 
 
 def list_losers() -> List[Symbol]:
@@ -371,7 +369,8 @@ def list_losers() -> List[Symbol]:
     - api/v3/stock_market/losers
     - 급하락 종목들
     """
-    return _response2symbols(request("api/v3/stock_market/losers"))
+    response = request("api/v3/stock_market/losers")
+    return Symbol._from_list(response, key="symbol")
 
 
 def list_actives() -> List[Symbol]:
@@ -379,7 +378,8 @@ def list_actives() -> List[Symbol]:
     - api/v3/stock_market/actives
     - 현재 거래량이 가장 많은 종목들
     """
-    return _response2symbols(request("api/v3/stock_market/actives"))
+    response = request("api/v3/stock_market/actives")
+    return Symbol._from_list(response, key="symbol")
 
 
 def list_all() -> List[Symbol]:
@@ -389,14 +389,14 @@ def list_all() -> List[Symbol]:
     - 주의: 4분 이상 소요됨.
     - 리스트 길이: 약 7만개
     """
-    return _response2symbols(request("api/v3/stock/list"))
+    response = request("api/v3/stock/list")
+    return Symbol._from_list(response, key="symbol")
 
 
 def list_cot() -> List[Symbol]:
     """api/v4/commitment_of_traders_report/list"""
-    return _response2symbols(
-        request("api/v4/commitment_of_traders_report/list"), key="trading_symbol"
-    )
+    response = request("api/v4/commitment_of_traders_report/list")
+    return Symbol._from_list(response, key="trading_symbol")
 
 
 def list_tradable() -> List[Symbol]:
@@ -405,54 +405,65 @@ def list_tradable() -> List[Symbol]:
     - 주의: 2분 이상 소요됨.
     - 리스트 길이: 약 5만 3천개
     """
-    return _response2symbols(request("api/v3/available-traded/list"))
+    response = request("api/v3/available-traded/list")
+    return Symbol._from_list(response, key="symbol")
 
 
 def list_etf() -> List[Symbol]:
     """api/v3/etf/list"""
-    return _response2symbols(request("api/v3/etf/list"))
+    response = request("api/v3/etf/list")
+    return Symbol._from_list(response, key="symbol")
 
 
 def list_sp500() -> List[Symbol]:
     """api/v3/sp500_constituent"""
-    return _response2symbols(request("api/v3/sp500_constituent"))
+    response = request("api/v3/sp500_constituent")
+    return Symbol._from_list(response, key="symbol")
 
 
 def list_nasdaq() -> List[Symbol]:
     """api/v3/nasdaq_constituent"""
-    return _response2symbols(request("api/v3/nasdaq_constituent"))
+    response = request("api/v3/nasdaq_constituent")
+    return Symbol._from_list(response, key="symbol")
 
 
 def list_dowjones() -> List[Symbol]:
     """api/v3/dowjones_constituent"""
-    return _response2symbols(request("api/v3/dowjones_constituent"))
+    response = request("api/v3/dowjones_constituent")
+    return Symbol._from_list(response, key="symbol")
 
 
 def list_index() -> List[Symbol]:
     """api/v3/symbol/available-indexes"""
-    return _response2symbols(request("api/v3/symbol/available-indexes"))
+    response = request("api/v3/symbol/available-indexes")
+    return Symbol._from_list(response, key="symbol")
 
 
 def list_euronext() -> List[Symbol]:
     """api/v3/symbol/available-euronext"""
-    return _response2symbols(request("api/v3/symbol/available-euronext"))
+    response = request("api/v3/symbol/available-euronext")
+    return Symbol._from_list(response, key="symbol")
 
 
 def list_tsx() -> List[Symbol]:
     """api/v3/symbol/available-tsx"""
-    return _response2symbols(request("api/v3/symbol/available-tsx"))
+    response = request("api/v3/symbol/available-tsx")
+    return Symbol._from_list(response, key="symbol")
 
 
 def list_crypto() -> List[Symbol]:
     """api/v3/symbol/available-cryptocurrencies"""
-    return _response2symbols(request("api/v3/symbol/available-cryptocurrencies"))
+    response = request("api/v3/symbol/available-cryptocurrencies")
+    return Symbol._from_list(response, key="symbol")
 
 
 def list_forex() -> List[Symbol]:
     """api/v3/symbol/available-forex-currency-pairs"""
-    return _response2symbols(request("api/v3/symbol/available-forex-currency-pairs"))
+    response = request("api/v3/symbol/available-forex-currency-pairs")
+    return Symbol._from_list(response, key="symbol")
 
 
 def list_commodity() -> List[Symbol]:
     """api/v3/symbol/available-commodities"""
-    return _response2symbols(request("api/v3/symbol/available-commodities"))
+    response = request("api/v3/symbol/available-commodities")
+    return Symbol._from_list(response, key="symbol")

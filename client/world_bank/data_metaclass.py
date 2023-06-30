@@ -1,10 +1,11 @@
 from datetime import datetime, date
-from functools import lru_cache
+from functools import lru_cache, partial
 
 import wbdata  #! wbdata 라이브러리의 캐싱 알고리즘은 thread-safe하지 않으므로 항상 cache=False 해줘야 한다!
 import numpy as np
 import xarray as xr
 
+from compute import parallel
 from compute.scale import standardization
 from client.factor import Factor
 from client.translate import Multilingual
@@ -72,8 +73,9 @@ class DataManager:
 
 
 @lru_cache(maxsize=LRU_CACHE_SIZE)
-def get_indicator(code):  # wbdata cache 알고리즘 말고 쓰레드 안전한 lru_cache 사용
-    return wbdata.get_indicator(code, cache=False)[0]
+def get_indicator(indicator):  # wbdata cache 알고리즘 말고 쓰레드 안전한 lru_cache 사용
+    """지표에 대한 메타데이터 불러오기"""
+    return wbdata.get_indicator(indicator, cache=False)[0]
 
 
 class ClientMeta(type):
@@ -93,15 +95,27 @@ class ClientMeta(type):
         ins = super().__call__()
         ins.country = country
         ins.manager = {}
-        for code, name in cls.indicator_codes.items():
-            manager = DataManager(country, code)
+
+        def _set_factor(indicator, name):
+            """
+            - ins 객체에 indicator Factor를 name 속성으로 할당합니다.
+            - indicator: Factor에 대한 world bank 지표 코드
+            - get_indicator 사용하기 때문에 무조건 비동기로 실행되어야 하는 함수입니다.
+            """
+            manager = DataManager(country, indicator)
             ins.manager[name] = manager  # DataManager 접근을 위한 통로
-            indicator_meta = get_indicator(code)
+            indicator_meta = get_indicator(indicator)
             factor = Factor(
                 get=manager.get,
                 name=indicator_meta["name"],
                 note=indicator_meta["sourceNote"],
             )
             setattr(ins, name, factor)
+
+        set_factor_functions = [
+            partial(_set_factor, indicator, name)
+            for indicator, name in cls.indicator_codes.items()
+        ]  # 대량의 get_indicator 호출을 모두 비동기로 처리
+        parallel.executor(*set_factor_functions)
         ins.get = lambda code: getattr(ins, cls.indicator_codes[code]).get()
         return ins

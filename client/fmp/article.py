@@ -1,9 +1,11 @@
 import os
 from datetime import datetime
+from functools import partial
 from typing import List
 
 import requests
 
+from compute import parallel
 from client.translate import Multilingual
 from client.fmp.integrate import Symbol
 
@@ -51,6 +53,12 @@ def news(symbol=None, limit=10) -> List[News]:
         - 뉴스가 없는 경우 빈 리스트
     """
     params = {"tickers": symbol, "limit": limit} if symbol else {"limit": limit}
+    response = parallel.executor(
+        request_stock_news := partial(request, "api/v3/stock_news", params=params),
+        request_forex_news := partial(request, "api/v4/forex_news", params=params),
+        request_crypto_news := partial(request, "api/v4/crypto_news", params=params),
+    )
+
     stock_news = [  # 일반 주식 뉴스 수집
         News(
             symbol=news["symbol"],
@@ -59,7 +67,7 @@ def news(symbol=None, limit=10) -> List[News]:
             src=news["url"],
             date=datetime.strptime(news["publishedDate"], "%Y-%m-%d %H:%M:%S"),
         )
-        for news in request("api/v3/stock_news", params=params)
+        for news in response[request_stock_news]
         if news["symbol"]
     ]
     if not symbol:
@@ -70,7 +78,7 @@ def news(symbol=None, limit=10) -> List[News]:
     forex_news = []  # 외환 뉴스 수집
     while len(forex_news) < limit:
         params = {"symbol": symbol, "page": page}
-        for news in request("api/v4/forex_news", params=params):
+        for news in response[request_forex_news]:
             forex_news.append(
                 News(
                     symbol=symbol,
@@ -92,7 +100,7 @@ def news(symbol=None, limit=10) -> List[News]:
     crypto_news = []  # 암호화페 뉴스 수집
     while len(crypto_news) < limit:
         params = {"symbol": symbol, "page": page}
-        for news in request("api/v4/crypto_news", params=params):
+        for news in response[request_crypto_news]:
             crypto_news.append(
                 News(
                     symbol=symbol,

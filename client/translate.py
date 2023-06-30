@@ -1,6 +1,7 @@
 """ Google Translate API 를 사용하는 다국어 객체 구현"""
 import os
 import html
+import logging
 from functools import lru_cache, partial
 
 import boto3
@@ -11,8 +12,11 @@ from system import (
     ROOT_PATH,
     GCP_CREDENTIAL_FILENAME,
     SYSTEM_S3_BUCKET_NAME,
-    LRU_CACHE_SIZE,
 )
+
+# 빠른 병렬 처리로 인해 아래와 같은 경고가 뜨므로 해당 경고 로그가 뜨지 않도록 합니다.
+# WARNING:urllib3.connectionpool:Connection pool is full, discarding connection: translation.googleapis.com. Connection pool size: 10
+logging.getLogger("urllib3.connectionpool").setLevel(logging.ERROR)
 
 try:
     s3 = boto3.client("s3")

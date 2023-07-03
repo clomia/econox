@@ -183,7 +183,10 @@ class HistoricalPriceFullMeta(ClientMeta):
     """api/v3/historical-price-full API 전용 클라이언트"""
 
     def collect(self):  # collect 메서드 재정의
-        response = requests.get(self.api, params=self.api_params)
+        # from 인자가 없다면 기본적으로 5년 전까지의 데이터만 수신합니다.
+        response = requests.get(
+            self.api, params=self.api_params | {"from": "1900-01-01"}
+        )
         response.raise_for_status()
 
         # 재정의 부분: 값이 historical 안에 들어있으며, 값이 없으면 historical 키도 없음

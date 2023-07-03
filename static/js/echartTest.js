@@ -15,43 +15,63 @@ async function fetchData(url) {
     return response.json();
 }
 
-async function renderEchart(symbol) {
-    const url = `${host}/echart/data?element=${symbol}&factor=price.adj_close`;
-    const data = await fetchData(url);
+async function renderEchart(symbols) {
+    const url = `${host}/echart/data?elements=${symbols}`
+    const [sym1, sym2, sym3, sym4] = await fetchData(url);
 
     const chartDom = document.getElementById('echart-test');
     const myChart = echarts.init(chartDom);
 
     const option = {
-        title: {
-            text: symbol
+        tooltip: {
+            trigger: 'axis'
         },
-        tooltip: {},
         legend: {
-            data: ['price']
+            data: [sym1.name, sym2.name, sym3.name, sym4.name]
         },
         xAxis: {
-            data: data.t
+            type: 'category',
+            data: sym1.t
         },
-        yAxis: {},
-        series: [{
-            name: 'price',
-            type: 'line',
-            data: data.values
-        }]
+        yAxis: {
+            type: 'value'
+        },
+        series: [
+            {
+                name: sym1.name,
+                type: 'line',
+                data: sym1.values
+            },
+            {
+                name: sym2.name,
+                type: 'line',
+                data: sym2.values
+            },
+            {
+                name: sym3.name,
+                type: 'line',
+                data: sym3.values
+            },
+            {
+                name: sym4.name,
+                type: 'line',
+                data: sym4.values
+            }
+        ]
     };
 
     myChart.setOption(option);
 }
 
-const input = document.getElementById("symbolInput");
+const btn = document.getElementById("symbolInputBtn");
 
-input.addEventListener("keydown", function (event) {
-    // 'Enter' 키가 눌렸는지 확인합니다.
-    if (event.key === "Enter") {
-        // 'Enter' 키가 눌렸을 때의 동작
-        renderEchart(input.value);
-    }
+const input1 = document.getElementById("symbolInput1");
+const input2 = document.getElementById("symbolInput2");
+const input3 = document.getElementById("symbolInput3");
+const input4 = document.getElementById("symbolInput4");
+
+btn.addEventListener("click", function (event) {
+    renderEchart(`${input1.value},${input2.value},${input3.value},${input4.value}`);
 });
 
 

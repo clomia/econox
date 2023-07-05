@@ -1,1 +1,0 @@
-from client.translate import *

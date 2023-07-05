@@ -4,6 +4,11 @@ __pycache__/
 
 # 서버 실행 & 테스트에 사용되는 경로들
 env
+node_modules
 efs-volume
 gcp_credential.json
 run.sh
+
+# frontend
+frontend/node_modules/
+frontend/public/build/

@@ -1,37 +1,45 @@
 <script>
 	// Echarts
-	// import * as echarts from "echarts";
-	// let chartBox;
-	// const chart = echarts.init(chartBox);
-	// option = {
-	// 	xAxis: {
-	// 		type: "category",
-	// 		data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-	// 	},
-	// 	yAxis: {
-	// 		type: "value",
-	// 	},
-	// 	series: [
-	// 		{
-	// 			data: [150, 230, 224, 218, 135, 147, 260],
-	// 			type: "line",
-	// 		},
-	// 	],
-	// };
-	// chart.setOption(option);
-
-	let searchQuery = ""; // Input field에 입력될 값을 담을 변수
+	import * as echarts from "echarts";
 
 	const host = window.location.origin;
-	function search() {
-		console.log(searchQuery); // Search 버튼 클릭 시 input에 입력된 값을 출력
+
+	let chartBox;
+	let searchText = "";
+
+	async function getData(symbol) {
+		const url = `${host}/api/data/time-series/symbol/adj-close?element=${symbol}`;
+		const res = await fetch(url);
+		return await res.json();
+	}
+
+	async function search() {
+		console.log("요청 발신!");
+		const data = await getData(searchText);
+		const chart = echarts.init(chartBox);
+		const option = {
+			xAxis: {
+				type: "category",
+				data: data.t,
+			},
+			yAxis: {
+				type: "value",
+			},
+			series: [
+				{
+					data: data.values,
+					type: "line",
+				},
+			],
+		};
+		chart.setOption(option);
 	}
 </script>
 
 <main>
-	<input type="text" bind:value={searchQuery} />
+	<input type="text" bind:value={searchText} />
 	<button on:click={search}>Search</button>
-	<!-- <div bind:this={chartBox} /> -->
+	<div id="chart" bind:this={chartBox} style="width: 600px;height:400px;" />
 </main>
 
 <style>

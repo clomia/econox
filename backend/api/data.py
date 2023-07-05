@@ -7,8 +7,9 @@ router = APIRouter()
 
 
 @router.get("/time-series/symbol/adj-close")
-def adj_close(elements: str):
-    symbol = fmp.Symbol(elements)
+def adj_close(element: str):
+    print(f"요청 수신! {element}")
+    symbol = fmp.Symbol(element)
     daily = symbol.price.adj_close().daily
     return {
         "name": symbol.name.ko,

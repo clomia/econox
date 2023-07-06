@@ -2,6 +2,7 @@ FROM node:18.16.1 as frontend-stage
 
 COPY ./frontend /stage/frontend
 COPY package.json /stage
+COPY package-lock.json /stage
 COPY rollup.config.js /stage
 
 WORKDIR /stage

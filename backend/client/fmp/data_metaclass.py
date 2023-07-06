@@ -5,19 +5,19 @@
 
 import os
 import json
-from datetime import date, datetime
-from functools import partial
-from pathlib import PosixPath
 from typing import Dict
+from pathlib import PosixPath
+from functools import partial
+from datetime import date, datetime
 
 import requests
 import numpy as np
 import xarray as xr
 
-from backend.compute.scale import standardization
+from backend.compute import standardization
+from backend.system import ROOT_PATH, XARRAY_PATH
 from backend.client.factor import Factor
 from backend.client.translate import Multilingual
-from backend.system import ROOT_PATH, XARRAY_PATH
 
 HOST = "https://financialmodelingprep.com"
 CLASS_PATH = ROOT_PATH / "backend/client/fmp/data_class.json"
@@ -156,7 +156,7 @@ class ClientMeta(type):
         self.path.mkdir(parents=True, exist_ok=True)
         for factor, data_array in collected.items():
             if np.count_nonzero(~np.isnan(data_array.values)) < 2:
-                continue  # nan이 아닌 값 갯수가 2개 미만이면 결측 factor로 취급
+                continue  # 유효한 값 갯수가 2개 미만이면 결측 factor로 취급
             standardization(data_array).to_zarr(self.zarr_path(factor), mode="w")
 
     def get(self, factor: str, default=None) -> xr.Dataset | None:
@@ -170,20 +170,12 @@ class ClientMeta(type):
         )
 
 
-class SingleClientMeta(ClientMeta):
-    """Symbol 인자를 받지 않는 ClientMeta"""
-
-    def __call__(cls):  # symbol 인자 안받도록 재정의
-        ins = super().__call__(symbol="no_symbol")
-        ins.api = cls.api  # symbol이 없어서 ins.api가 cls.api임
-        return ins
-
-
 class HistoricalPriceFullMeta(ClientMeta):
     """api/v3/historical-price-full API 전용 클라이언트"""
 
     def collect(self):  # collect 메서드 재정의
-        # from 인자가 없다면 기본적으로 5년 전까지의 데이터만 수신합니다.
+        # FMP 서버는 안정적인 응답 시간을 위해 from 인자가 없다면 기본적으로 5년 전까지의 데이터만 수신합니다.
+        # from 인자로 "1900-01-01" 를 넣어서 모든 데이터를 가져올 수 있습니다.(이렇게 하라고 FMP한테 확인받음)
         response = requests.get(
             self.api, params=self.api_params | {"from": "1900-01-01"}
         )
@@ -205,27 +197,3 @@ class HistoricalPriceFullMeta(ClientMeta):
             )
 
         return collected
-
-
-class UsaEconomicIndicatorMeta(ClientMeta):
-    """
-    - Economic Indicator API 전용 클라이언트
-    - 인스턴스를 대표하는 value Factor를 가진다.
-        - 이 구현을 위해 JSON에서 property이름이 API factor이름과 같아야 한다.
-    """
-
-    def __new__(meta, name, *_args):
-        cls = super().__new__(meta, name, *_args)
-        cls.factors.add("value")
-        return cls
-
-    def __call__(cls, indicator: str):  # symbol 말고 name을 사용하도록 재정의
-        ins = super().__call__(symbol=indicator)
-        ins.api_params = cls.api_params | {"name": indicator}  # -> collect 메서드에서 사용
-        factor = Factor(
-            get=partial(ins.get, "value"),
-            name=cls.properties[indicator]["name"],
-            note=cls.properties[indicator]["note"],
-        )
-        setattr(ins, "value", factor)
-        return ins

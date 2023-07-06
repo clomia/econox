@@ -1,7 +1,7 @@
 import os
+from typing import List
 from datetime import datetime
 from functools import partial
-from typing import List
 
 import requests
 
@@ -53,32 +53,34 @@ def news(symbol=None, limit=10) -> List[News]:
         - 뉴스가 없는 경우 빈 리스트
     """
     params = {"tickers": symbol, "limit": limit} if symbol else {"limit": limit}
-    response = parallel.executor(
-        request_stock_news := partial(request, "api/v3/stock_news", params=params),
-        request_forex_news := partial(request, "api/v4/forex_news", params=params),
-        request_crypto_news := partial(request, "api/v4/crypto_news", params=params),
+    res = parallel.executor(
+        stock_news_api := partial(request, "api/v3/stock_news", params=params),
+        forex_news_api := partial(request, "api/v4/forex_news", params=params),
+        crypto_news_api := partial(request, "api/v4/crypto_news", params=params),
     )
 
-    stock_news = [  # 일반 주식 뉴스 수집
-        News(
+    stock_news = []
+    for news in res[stock_news_api]:
+        if not news["symbol"]:
+            continue  # symbol 매칭 가능한 뉴스만 수집할거임
+
+        news = News(
             symbol=news["symbol"],
             title=news["title"],
             content=news["text"],
             src=news["url"],
             date=datetime.strptime(news["publishedDate"], "%Y-%m-%d %H:%M:%S"),
         )
-        for news in response[request_stock_news]
-        if news["symbol"]
-    ]
-    if not symbol:
-        # 다른 API는 최신 뉴스에 symbol이 많이 비어있어서 stock_news만 사용
+        stock_news.append(news)
+
+    if not symbol:  # 다른 API는 최신 뉴스에 symbol이 많이 비어있어서 stock_news만 사용
         return sorted(stock_news, key=lambda news: news.date)
 
     page = 0
     forex_news = []  # 외환 뉴스 수집
     while len(forex_news) < limit:
         params = {"symbol": symbol, "page": page}
-        for news in response[request_forex_news]:
+        for news in res[forex_news_api]:
             forex_news.append(
                 News(
                     symbol=symbol,
@@ -100,7 +102,7 @@ def news(symbol=None, limit=10) -> List[News]:
     crypto_news = []  # 암호화페 뉴스 수집
     while len(crypto_news) < limit:
         params = {"symbol": symbol, "page": page}
-        for news in response[request_crypto_news]:
+        for news in res[crypto_news_api]:
             crypto_news.append(
                 News(
                     symbol=symbol,

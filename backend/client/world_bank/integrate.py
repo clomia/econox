@@ -3,10 +3,10 @@ import json
 from typing import List
 from functools import partial, lru_cache
 
-import wbdata  #! wbdata 라이브러리의 캐싱 알고리즘은 thread-safe하지 않으므로 항상 cache=False 해줘야 한다!
+import wbdata
 
-from backend.system import LRU_CACHE_SIZE, INFO_PATH
 from backend.compute import parallel
+from backend.system import LRU_CACHE_SIZE, INFO_PATH
 from backend.client.translate import Multilingual, translator
 from backend.client.world_bank.data_class import (
     Trade,
@@ -17,24 +17,25 @@ from backend.client.world_bank.data_class import (
 )
 
 
-def runtime_error_handler(func):
+def wbdata_safe_caller(wb_func):
     """
-    wbdata 모듈을 검색 결과가 없을 때 RuntimeError를 반환합니다.
-    따라서 RuntimeError가 발생하면 빈 리스트를 반환하도록 함수를 감쌉니다.
+    - wbdata 함수가 안전하게 작동하도록 감쌉니다.
+    - wbdata 라이브러리의 캐싱 알고리즘은 thread-safe하지 않으므로
+    항상 cache=False 해줘야 하며, 결과가 없을 때 RuntimeError를 발생시키는데
+    에러를 발생시키는 대신에 빈 리스트를 반환하도록 변경합니다.
     """
 
     def wrapper(*args, **kwargs):
         try:
-            result = func(*args, **kwargs)
+            return wb_func(*args, **kwargs, cache=False)
         except RuntimeError:
-            result = []
-        return result
+            return []
 
     return wrapper
 
 
-search_countries = runtime_error_handler(wbdata.search_countries)
-get_country = runtime_error_handler(wbdata.get_country)
+search_countries = wbdata_safe_caller(wbdata.search_countries)
+get_country = wbdata_safe_caller(wbdata.get_country)
 
 
 class Country:
@@ -60,7 +61,7 @@ class Country:
             return json.load(self.info_path.open("r"))
 
         # ======= API 사용해서 데이터 수집 =======
-        if info := get_country(self.code, cache=False):
+        if info := get_country(self.code):
             name = info[0].get("name")
             region = info[0]["region"].get("value")
             capital = info[0].get("capitalCity")
@@ -98,11 +99,11 @@ class Country:
             return Multilingual(f"{self.code}: No information")
 
     @property
-    def longitude(self) -> float:
+    def longitude(self) -> float | None:
         return self.info["longitude"]
 
     @property
-    def latitude(self) -> float:
+    def latitude(self) -> float | None:
         return self.info["latitude"]
 
 
@@ -110,14 +111,13 @@ class Country:
 def search(text: str) -> List[Country]:
     """is_valid가 False인 Country는 리스트에서 제외됩니다."""
     en_text = translator(text, to_lang="en")
-    results = parallel.executor(  # 번역 한거, 안한거 전부 사용해서 검색
-        partial(search_countries, text, cache=False),
-        partial(get_country, text, cache=False),
-        partial(search_countries, en_text, cache=False),
-        partial(get_country, en_text, cache=False),
-    )
-    iso_code_set = {ele["id"] for result in results.values() for ele in result}
-    countires = parallel.executor(
-        *[partial(Country, code) for code in iso_code_set]
-    ).values()
+    res = parallel.executor(  # 번역 한거, 안한거 전부 사용해서 검색
+        partial(search_countries, text),
+        partial(get_country, text),
+        partial(search_countries, en_text),
+        partial(get_country, en_text),
+    )  # 여러 방법으로 검색하므로 합치면 중복 있음, set comprehension을 통해 중복 제거
+    iso_codes = {country["id"] for countries in res.values() for country in countries}
+    country_generators = [partial(Country, code) for code in iso_codes]
+    countires = parallel.executor(*country_generators).values()
     return [country for country in countires if country.is_valid]

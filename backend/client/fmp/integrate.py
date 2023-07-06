@@ -4,13 +4,13 @@ from __future__ import annotations
 import os
 import json
 import time
-from typing import List, Any
+from typing import List
 from functools import lru_cache, partial
 
 import requests
 import pycountry
 
-from backend.system import log, LRU_CACHE_SIZE, INFO_PATH
+from backend.system import LRU_CACHE_SIZE, INFO_PATH, log
 from backend.compute import parallel
 from backend.client.fmp import data_metaclass
 from backend.client.translate import Multilingual, translator
@@ -18,7 +18,7 @@ from backend.client.translate import Multilingual, translator
 HOST = "https://financialmodelingprep.com"
 assert (API_KEY := os.getenv("FMP_API_KEY"))  # FMP_API_KEY 환경변수가 정의되지 않았습니다!
 
-# ========= data_class.json에 정의된 클래스들을 생성합니다. =========
+# ========= data_class.json에 정의된대로 클래스들을 생성합니다. =========
 classes = dict(json.load(data_metaclass.CLASS_PATH.open("r")))
 
 
@@ -30,9 +30,6 @@ def create_class(name: str) -> type:
 
 
 InstitutionalStockOwnership = create_class("InstitutionalStockOwnership")
-UsaEconomicIndicator = create_class("UsaEconomicIndicator")
-UsaTreasuryRates = create_class("UsaTreasuryRates")
-StockMarketSectorsPerformance = create_class("StockMarketSectorsPerformance")
 HistoricalDividends = create_class("HistoricalDividends")
 AdvancedLeveredDiscountedCashFlow = create_class("AdvancedLeveredDiscountedCashFlow")
 AdvancedDiscountedCashFlow = create_class("AdvancedDiscountedCashFlow")
@@ -73,7 +70,7 @@ def _normal_request(url, **params):
     return response.json()
 
 
-def request(url: str, default=None, cache=False, **params: dict) -> dict | list | Any:
+def request(url: str, default=None, cache=False, **params: dict):
     """
     - url: HOST를 제외하고 양 끝 "/"가 없는 url
     - params: apikey를 제외한 URL 쿼리 파라미터들
@@ -161,12 +158,12 @@ class Symbol:
             return json.load(self.info_path.open("r"))
 
         # ======= API 사용해서 데이터 수집 =======
-        results = parallel.executor(
+        res = parallel.executor(
             profile_api := partial(request, f"api/v3/profile/{self.code}"),
             search_api := partial(request, "api/v3/search", query=self.code),
         )
-        profile_info = results[profile_api]
-        search_info = results[search_api]
+        profile_info = res[profile_api]
+        search_info = res[search_api]
 
         name = exchange = currency = description = None
         if profile_info:
@@ -187,7 +184,7 @@ class Symbol:
             note = f"{note_basic} {description}" if description else note_basic
             info = {"name": name, "note": note}
         else:
-            info = {"name": name, "note": None}  # name은 None일 수 있음
+            info = {"name": name, "note": None}  # name은 None일 수도 있음
         self.info_path.parent.mkdir(parents=True, exist_ok=True)
         json.dump(info, self.info_path.open("w"))  # EFS volume에 저장
         return info
@@ -243,12 +240,11 @@ class Symbol:
             - None인 경우 리스트 요소들로 Symbol객체를 생성합니다.
         - is_valid가 False인 Symbol은 리스트에서 제외됩니다.
         """
-        if not _list:  # 빈 객체가 입력될 수 있음
+        if not _list:  # 빈 객체가 입력될 수 있음 빈 객체면 빈 리스트 반환
             return []
 
-        symbols = parallel.executor(
-            *[partial(cls, ele[key] if key else ele) for ele in _list]
-        ).values()
+        symbol_generators = [partial(cls, ele[key] if key else ele) for ele in _list]
+        symbols = parallel.executor(*symbol_generators).values()
         return [symbol for symbol in symbols if symbol.is_valid]
 
 

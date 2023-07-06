@@ -30,7 +30,7 @@ except ClientError as e:
         )
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_path
-client = translate_v2.Client()
+google_translator = translate_v2.Client()
 
 
 @lru_cache(maxsize=50_000)  # 최대 약 100MB (text 500글자 기준)
@@ -42,7 +42,7 @@ def translator(text: str, to_lang: str, *, from_lang: str = None) -> str:
     - from_lang[optional]: text의 언어 ISO 639-1 코드
         - 기본: None -> 언어감지
     """
-    response = client.translate(
+    response = google_translator.translate(
         text,
         source_language=from_lang,
         target_language=to_lang,
@@ -54,7 +54,7 @@ def translator(text: str, to_lang: str, *, from_lang: str = None) -> str:
 class Multilingual:
     """문자열에 대한 다국어 객체"""
 
-    supported_langs = client.get_languages()
+    supported_langs = google_translator.get_languages()
 
     def __init__(self, text: str):
         """

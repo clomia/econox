@@ -7,7 +7,7 @@ from backend.client.translate import Multilingual
 
 class Factor:
     """
-    - factor definition
+    - Element -> Factor = Feature 데이터 모델을 위한 Factor 공통 인터페이스 구현체
     - Factor는 데이터를 가져오는 get함수를 가지며 Multilingual로 name과 note를 가진다.
     """
 

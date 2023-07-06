@@ -14,10 +14,8 @@ matplotlib==3.7.1
 
 # Web
 fastapi==0.97.0
-python-dotenv==1.0.0
 uvicorn==0.22.0
 gunicorn==20.1.0
-Jinja2==3.1.2
 
 # AWS
 boto3==1.26.158

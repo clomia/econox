@@ -1,13 +1,13 @@
-<script>
+<script lang="ts">
 	// Echarts
 	import * as echarts from "echarts";
 
 	const host = window.location.origin;
 
-	let chartBox;
+	let chartBox: HTMLElement | undefined;
 	let searchText = "";
 
-	async function getData(symbol) {
+	async function getData(symbol: string) {
 		const url = `${host}/api/data/time-series/symbol/adj-close?element=${symbol}`;
 		const res = await fetch(url);
 		return await res.json();

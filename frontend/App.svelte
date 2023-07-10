@@ -16,7 +16,7 @@
 	async function search() {
 		console.log("요청 발신!");
 		const data = await getData(searchText);
-		console.log("요청 수신!");
+		console.log("응답 수신!");
 		const chart = echarts.init(chartBox);
 		const option = {
 			xAxis: {

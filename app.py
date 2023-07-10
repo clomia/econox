@@ -17,7 +17,7 @@ app.include_router(api.data.router, prefix="/api/data")
 app.mount("/static", StaticFiles(directory="frontend/static"))
 
 
-@app.get("/{page:path}")
+@app.get("/{page:path}")  # SPA Svelte APP hosting
 def frontend() -> HTMLResponse:
     html = Path("frontend/static/index.html").read_text()
     return HTMLResponse(content=html)

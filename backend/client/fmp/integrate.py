@@ -253,12 +253,17 @@ def search(text: str, limit: int = 15) -> List[Symbol]:
     - api/v3/search
     - text: 검색 문자열
         - 다국어 가능!
-    - limit: 검색 결과 갯수 제한
+    - limit: 검색 결과 갯수 제한 파라미터
     - 검색 결과가 없으면 빈 리스트를 반환합니다.
     """
     en_text = translator(text, to_lang="en")
-    response = request("api/v3/search", query=en_text, limit=limit, cache=True)
-    results = Symbol._from_list(response, key="symbol")
+    search_request = partial(request, "api/v3/search", limit=limit, cache=True)
+    res = parallel.executor(
+        en := partial(search_request, query=en_text),
+        origin := partial(search_request, query=text),
+    )  # 영어로 번역해서 검색 & 원본 텍스트로 검색
+    symbol_codes = {ele["symbol"] for ele in res[en] + res[origin]}  # 중복 제거
+    results = Symbol._from_list(symbol_codes)
     return results
 
 

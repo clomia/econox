@@ -259,10 +259,10 @@ def search(text: str, limit: int = 15) -> List[Symbol]:
     en_text = translator(text, to_lang="en")
     req = partial(request, "api/v3/search", limit=limit, cache=True, default=[])
     res = parallel.executor(
-        en := partial(req, query=en_text),
-        origin := partial(req, query=text),
+        req_en := partial(req, query=en_text),
+        req_origin := partial(req, query=text),
     )  # 영어로 번역해서 검색 & 원본 텍스트로 검색
-    symbol_codes = {ele["symbol"] for ele in res[en] + res[origin]}  # 중복 제거
+    symbol_codes = {ele["symbol"] for ele in res[req_en] + res[req_origin]}  # 중복 제거
     results = Symbol._from_list(symbol_codes)
     return results
 

@@ -10,8 +10,7 @@ from backend import api
 app = FastAPI()
 
 # ================= backend =================
-app.include_router(api.data.router, prefix="/api/data")
-
+app.include_router(api.router)
 
 # ================= frontend =================
 app.mount("/static", StaticFiles(directory="frontend/static"))

@@ -1,20 +1,19 @@
 <script>
 	import { Router, Link, Route } from "svelte-routing";
 	import Home from "./routes/Home.svelte";
-	import SignIn from "./routes/SignIn.svelte";
+	import Signup from "./routes/Signup.svelte";
 	import Head from "./components/Head.svelte";
-
-	export let url = "/";
+	export let path = window.location.pathname;
 </script>
 
 <Head />
-<Router {url}>
+<Router {path}>
 	<nav>
 		<Link to="/">Home</Link>
-		<Link to="/sign-in">SignIn</Link>
+		<Link to="/signup">Signup</Link>
 	</nav>
 	<div>
-		<Route path="/sign-in" component={SignIn} />
+		<Route path="/signup" component={Signup} />
 		<Route path="/" component={Home} />
 	</div>
 </Router>

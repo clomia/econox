@@ -1,1 +1,6 @@
-from backend.api import data  # 모듈은 *에 포함되지 않는다. 이렇게 직접 지정해야 함
+from fastapi import APIRouter
+
+router = APIRouter(prefix="/api")
+
+# 모듈 실행을 통해 라우터에 함수 마운트
+from backend.api import account, data

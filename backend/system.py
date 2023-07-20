@@ -17,6 +17,8 @@ GCP_CREDENTIAL_FILENAME = "gcp_credential.json"  # 시스템 버킷 안에 있�
 
 STORAGE_S3_BUCKET_NAME = "econox-storage"  # 서버 운영에 사용되는 버킷
 
+COGNITO_USER_POOL = "us-east-1_4FfzJH2Zw"  # user pool id
+
 # ==================== logger object ====================
 
 

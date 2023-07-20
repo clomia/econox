@@ -1,3 +1,4 @@
+import json
 from pprint import pprint
 
 import jwt
@@ -105,7 +106,10 @@ def token_auth(request: Request):
         raise HTTPException(status_code=400, detail="idtoken header not found")
 
     # 3. 토큰 헤더에서 kid 가져오기
-    headers = jwt.get_unverified_header(id_token)
+    try:
+        headers = jwt.get_unverified_header(id_token)
+    except:
+        raise HTTPException(status_code=401, detail="토큰 디코딩 에러")
     kid = headers["kid"]
     jwk_key_dict = next((key for key in jwks["keys"] if key["kid"] == kid), None)
     if not jwk_key_dict:

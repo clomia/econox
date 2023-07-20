@@ -37,12 +37,16 @@
     let userInput: string;
     const getInfo = async () => {
         const idToken: string | null = localStorage.getItem("idToken");
-        const response = await axios.post(
-            `${host}/api/user-info`,
-            { text: userInput },
-            { headers: { idToken: idToken } }
-        );
-        console.log(response.data);
+        try {
+            const response = await axios.post(
+                `${host}/api/user-info`,
+                { text: userInput },
+                { headers: { idToken: idToken } }
+            );
+            console.log(response.data);
+        } catch (error) {
+            console.log("이때는 로그아웃 처리!!");
+        }
     };
 </script>
 

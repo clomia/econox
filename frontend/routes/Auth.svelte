@@ -45,7 +45,10 @@
             );
             console.log(response.data);
         } catch (error) {
-            console.log("이때는 로그아웃 처리!!");
+            if (error.response.status) {
+                console.log("로그아웃 실행!");
+                tokenDelete();
+            }
         }
     };
 </script>

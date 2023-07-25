@@ -10,14 +10,12 @@ from functools import lru_cache, partial
 import requests
 import pycountry
 
-from backend.system import LRU_CACHE_SIZE, INFO_PATH, log
+from backend.system import SECRETS, INFO_PATH, log
 from backend.compute import parallel
 from backend.client.fmp import data_metaclass
 from backend.client.translate import Multilingual, translator
 
 HOST = "https://financialmodelingprep.com"
-assert (API_KEY := os.getenv("FMP_API_KEY"))  # FMP_API_KEY 환경변수가 정의되지 않았습니다!
-
 # ========= data_class.json에 정의된대로 클래스들을 생성합니다. =========
 classes = dict(json.load(data_metaclass.CLASS_PATH.open("r")))
 
@@ -57,7 +55,7 @@ HistoricalPrice = create_class("HistoricalPrice")
 # =====================================================================
 
 
-@lru_cache(maxsize=LRU_CACHE_SIZE)
+@lru_cache(maxsize=1024)
 def _cache_request(url, **params):
     response = requests.get(url, params=params)
     response.raise_for_status()
@@ -82,7 +80,9 @@ def request(url: str, default=None, cache=False, **params: dict):
     retry_interval = [0, 0.5, 1, 5, 10, 15, 20, 25, 30, 60]
     for interval in retry_interval + [0]:  # 마지막은 continue 못하니까
         try:
-            data = get_func(f"{HOST}/{url}", **params | {"apikey": API_KEY})
+            data = get_func(
+                f"{HOST}/{url}", **params | {"apikey": SECRETS["FMP_API_KEY"]}
+            )
         except Exception as error:
             log.warning(
                 f"FMP API 서버와 통신에 실패했습니다. {interval}초 후 다시 시도합니다... (URL: {url})"

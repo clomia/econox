@@ -5,12 +5,12 @@ from functools import partial
 
 import requests
 
+from backend.system import SECRETS
 from backend.compute import parallel
 from backend.client.translate import Multilingual
 from backend.client.fmp.integrate import Symbol
 
 HOST = "https://financialmodelingprep.com"
-assert (API_KEY := os.getenv("FMP_API_KEY"))  # FMP_API_KEY 환경변수가 정의되지 않았습니다!
 
 __all__ = ["news"]
 
@@ -20,7 +20,9 @@ def request(url: str, params: dict = {}):
     - url: HOST를 제외하고 양 끝 "/"가 없는 url
     - params: apikey를 제외한 URL 쿼리 파라미터들
     """
-    response = requests.get(f"{HOST}/{url}", params=params | {"apikey": API_KEY})
+    response = requests.get(
+        f"{HOST}/{url}", params=params | {"apikey": SECRETS["FMP_API_KEY"]}
+    )
     response.raise_for_status()  # FMP 서버의 응답이 잘못된 경우 HTTPError
     return response.json()
 

@@ -4,32 +4,19 @@ import html
 import logging
 from functools import lru_cache, partial
 
-import boto3
-from botocore.exceptions import ClientError
 from google.cloud import translate_v2
 
-from backend.system import (
-    ROOT_PATH,
-    GCP_CREDENTIAL_FILENAME,
-    SYSTEM_S3_BUCKET_NAME,
-)
+from backend.system import ROOT_PATH, SECRETS
 
 # 빠른 병렬 처리로 인해 아래와 같은 경고가 뜨므로 해당 경고 로그가 뜨지 않도록 합니다.
 # WARNING:urllib3.connectionpool:Connection pool is full, discarding connection: translation.googleapis.com. Connection pool size: 10
 logging.getLogger("urllib3.connectionpool").setLevel(logging.ERROR)
 
-try:
-    s3 = boto3.client("s3")
-    credential_path = str(ROOT_PATH / "backend/client" / GCP_CREDENTIAL_FILENAME)
-    s3.download_file(SYSTEM_S3_BUCKET_NAME, GCP_CREDENTIAL_FILENAME, credential_path)
-except ClientError as e:
-    if e.response["Error"]["Code"] == "404":
-        raise LookupError(
-            f"S3 {SYSTEM_S3_BUCKET_NAME} 버킷에 {GCP_CREDENTIAL_FILENAME}"
-            "파일이 없어서 GCP 클라우드를 사용할 수 없습니다."
-        )
+# GCP Credential 등록
+gcp_credential_path = ROOT_PATH / "efs-volume/gcp_credential.json"
+gcp_credential_path.write_text(SECRETS["GCP_CREDENTIAL_JSON"])
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(gcp_credential_path)
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credential_path
 google_translator = translate_v2.Client()
 
 

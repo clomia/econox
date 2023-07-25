@@ -6,11 +6,7 @@
 __pycache__/
 env
 efs-volume
-gcp_credential.json
 
 # frontend
 node_modules
 frontend/static/build
-
-# test
-.env

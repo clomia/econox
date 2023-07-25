@@ -15,13 +15,12 @@ import numpy as np
 import xarray as xr
 
 from backend.compute import standardization
-from backend.system import ROOT_PATH, XARRAY_PATH
+from backend.system import SECRETS, ROOT_PATH, XARRAY_PATH
 from backend.client.factor import Factor
 from backend.client.translate import Multilingual
 
 HOST = "https://financialmodelingprep.com"
 CLASS_PATH = ROOT_PATH / "backend/client/fmp/data_class.json"
-assert (API_KEY := os.getenv("FMP_API_KEY"))  # FMP_API_KEY 환경변수가 정의되지 않았습니다!
 
 
 def _xr_meta(element, factor, **kwargs) -> dict:
@@ -69,7 +68,7 @@ class ClientMeta(type):
 
         cls = super().__new__(meta, name, tuple(), dict())
         cls.api = f"{HOST}/{get_setting('api')}"
-        cls.api_params = {"apikey": API_KEY} | get_setting("params")
+        cls.api_params = {"apikey": SECRETS["FMP_API_KEY"]} | get_setting("params")
         cls.t_key = get_setting("t_key")
         cls.symbol_in_query = bool(get_setting("symbol_in_query"))
         cls.note = Multilingual(text=get_setting("note"))

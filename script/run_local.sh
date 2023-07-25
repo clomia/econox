@@ -1,16 +1,5 @@
 #!/bin/bash
-
-# .env 파일의 존재 확인
-if [ ! -f "./test/.env" ]; then
-    echo "오류: ./test 디렉토리에 .env 파일이 존재하지 않습니다."
-    exit 1
-fi
-
-# .env 파일에서 환경변수 읽어오기
-set -a
-source ./test/.env
-set +a
-
+# ---- 로컬에서 서버 실행 ---
 npm run build # svelte 코드 빌드 & 번들링
 
 # 종료 처리기 함수

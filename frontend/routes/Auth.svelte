@@ -51,6 +51,18 @@
             }
         }
     };
+
+    const tokenRefresh = async () => {
+        const refreshToken: string = localStorage.getItem("refreshToken");
+        const response = await axios.post(
+            `${host}/api/token-refresh`,
+            {},
+            {
+                headers: { refreshToken },
+            }
+        );
+        localStorage.setItem("idToken", response.data.idToken);
+    };
 </script>
 
 <button on:click={sendData}>Send Tokens</button>
@@ -58,3 +70,5 @@
 
 <input bind:value={userInput} type="text" />
 <button on:click={getInfo}>Get Info</button>
+
+<button on:click={tokenRefresh}>Token refresh</button>

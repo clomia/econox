@@ -6,7 +6,7 @@ import numpy as np
 import xarray as xr
 
 from backend.compute import parallel, standardization
-from backend.system import XARRAY_PATH, LRU_CACHE_SIZE
+from backend.system import XARRAY_PATH
 from backend.client.factor import Factor
 from backend.client.translate import Multilingual
 
@@ -31,7 +31,7 @@ def wbdata_safe_caller(wb_func):
 get_data = wbdata_safe_caller(wbdata.get_data)
 
 
-@lru_cache(maxsize=LRU_CACHE_SIZE)
+@lru_cache(maxsize=1024)
 def get_indicator(indicator):  # 이건 캐싱이 필요해서 @lru_cache 사용하는 함수로 재정의
     _get_indicator = wbdata_safe_caller(wbdata.get_indicator)
     return _get_indicator(indicator)[0]

@@ -1,27 +1,13 @@
+import json
 import logging
 import logging.config
 from pathlib import Path
 from datetime import datetime
 
-# ==================== CONSTANTS ====================
+import boto3
 
-ROOT_PATH = Path(__file__).parent.parent
-DATA_PATH = ROOT_PATH / "efs-volume"  # EFS volume mount path
-XARRAY_PATH = DATA_PATH / "xarray"  # zarr array path for cache
-INFO_PATH = DATA_PATH / "info"  # json path for cache
-
-LRU_CACHE_SIZE = 1024  # lru_cache의 max_size
-
-SYSTEM_S3_BUCKET_NAME = "econox-system"  # 환경변수파일, gcp_credential.json이 저장된 버킷
-GCP_CREDENTIAL_FILENAME = "gcp_credential.json"  # 시스템 버킷 안에 있어야 함
-
-STORAGE_S3_BUCKET_NAME = "econox-storage"  # 서버 운영에 사용되는 버킷
-
-COGNITO_USER_POOL = "us-east-1_4FfzJH2Zw"  # user pool id
 
 # ==================== logger object ====================
-
-
 class LogHandler(logging.NullHandler):
     def __init__(self):
         super().__init__()
@@ -41,3 +27,26 @@ log_handler = LogHandler()
 log_handler.setFormatter(formatter)
 log_handler.setLevel(logging.DEBUG)
 log.addHandler(log_handler)
+
+# ==================== CONSTANTS ====================
+ROOT_PATH = Path(__file__).parent.parent
+DATA_PATH = ROOT_PATH / "efs-volume"  # EFS volume mount path
+XARRAY_PATH = DATA_PATH / "xarray"  # zarr array path for cache
+INFO_PATH = DATA_PATH / "info"  # json path for cache
+
+S3_BUCKET_NAME = "econox-storage"
+SECRET_MANAGER_NAME = "econox-secret"
+
+# ==================== SECRETS ====================
+# Secret manager에 정의된 보안 데이터를 딕셔너리로 정리합니다.
+secret_manager = boto3.client("secretsmanager")
+data = secret_manager.get_secret_value(SecretId=SECRET_MANAGER_NAME)
+secrets = json.loads(data["SecretString"])
+# DB 비밀번호는 Aurora가 직접 관리하는 다른 secretsmanager에 있음
+db_data = secret_manager.get_secret_value(SecretId=secrets["RDS_SECRET_MANAGER_ARN"])
+db_secrets = json.loads(db_data["SecretString"])
+
+SECRETS = dict(secrets)
+SECRETS["DB_PASSWORD"] = db_secrets["password"]
+
+log.info(f"보안 데이터 {len(SECRETS)}개 로드 완료\n로드된 보안 데이터 목록: {list(SECRETS.keys())}")

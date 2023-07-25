@@ -6,15 +6,9 @@ from functools import partial, lru_cache
 import wbdata
 
 from backend.compute import parallel
-from backend.system import LRU_CACHE_SIZE, INFO_PATH
+from backend.system import INFO_PATH
 from backend.client.translate import Multilingual, translator
-from backend.client.world_bank.data_class import (
-    Trade,
-    Natural,
-    Population,
-    Industry,
-    Economy,
-)
+from backend.client.world_bank.data_class import *
 
 
 def wbdata_safe_caller(wb_func):
@@ -107,7 +101,7 @@ class Country:
         return self.info["latitude"]
 
 
-@lru_cache(maxsize=LRU_CACHE_SIZE)
+@lru_cache(maxsize=1024)
 def search(text: str) -> List[Country]:
     """is_valid가 False인 Country는 리스트에서 제외됩니다."""
     en_text = translator(text, to_lang="en")

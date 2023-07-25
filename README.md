@@ -35,9 +35,10 @@
 	- EFS: 파일 시스템으로 사용 (ECS Task에 볼륨으로 마운트)
 		- 용량 무제한
 		- ECS가 수평 확장되어도 파일 시스템의 일관성 유지
-	- RDS(Aurora)
+	- RDS(Aurora Postgresql)
 		- 수직 확장을 통한 오토스케일링
 		- 데이터 양과 연산량이 적은 비즈니스용 데이터에만 사용
-	- S3: 정적 파일 저장 & 데이터 백업
+	- Secret Manager
+		- 보안데이터 통합 관리
 - CI/CD: GitHub Actions
 	- push -> Docker 빌드 -> ECR로 배포 -> ECS 서비스 생성 & 기존 서비스 중지

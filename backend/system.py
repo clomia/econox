@@ -1,3 +1,4 @@
+import os
 import json
 import logging
 import logging.config
@@ -9,13 +10,15 @@ import boto3
 
 # ==================== logger object ====================
 class LogHandler(logging.NullHandler):
+    pid = os.getpid()
+
     def __init__(self):
         super().__init__()
 
     def handle(self, record):
         now = datetime.now()
         time = f"{now.month}/{now.day} {now.hour}시 {now.minute}분 {now.second}초"
-        content = f"[{record.levelname}][{time}] {self.format(record)}"
+        content = f"[{record.levelname}][{time}][pid:{self.pid}] {self.format(record)}"
         print(content)
 
 
@@ -49,4 +52,9 @@ db_secrets = json.loads(db_data["SecretString"])
 SECRETS = dict(secrets)
 SECRETS["DB_PASSWORD"] = db_secrets["password"]
 
-log.info(f"보안 데이터 {len(SECRETS)}개 로드 완료\n로드된 보안 데이터 목록: {list(SECRETS.keys())}")
+log.debug(
+    f"보안 데이터 {len(SECRETS)}개 로드 완료\n"
+    f"---------- 로드된 보안 데이터 목록 ----------\n"
+    f"{list(SECRETS.keys())}\n"
+    "----------------------------------------------\n"
+)

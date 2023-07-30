@@ -1,0 +1,12 @@
+# 언어별 UI 텍스트 정의 문서
+base: "en"
+feature_hub: 
+  en: "Feature Hub"
+  ko: "피쳐 허브"
+console:
+  en: "Console"
+  ko: "콘솔"
+sign_in_out:
+  en: "Sign In/Out"
+  ko: "로그인/회원가입"
+  ja: "ログイン/会員登録"

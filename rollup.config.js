@@ -56,6 +56,11 @@ export default {
 		// a separate file - better for performance
 		css({ output: 'bundle.css' }),
 
+		typescript({
+			sourceMap: !production,
+			inlineSources: !production
+		}),
+
 		// If you have external dependencies installed from
 		// npm, you'll most likely need these plugins. In
 		// some cases you'll need additional configuration -
@@ -67,10 +72,6 @@ export default {
 			exportConditions: ['svelte']
 		}),
 		commonjs(),
-		typescript({
-			sourceMap: !production,
-			inlineSources: !production
-		}),
 
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated

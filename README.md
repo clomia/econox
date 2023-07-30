@@ -1,6 +1,7 @@
 ## ECONOX  
 [![builder deploy](https://github.com/clomia-group/econox/actions/workflows/deploy.yaml/badge.svg)](https://github.com/clomia-group/econox/actions/workflows/deploy.yaml)  
---> [econox.io](https://www.econox.io/)
+# [econox.io](https://www.econox.io/)  
+[**UI 디자인 스케치**](https://assets.adobe.com/id/urn:aaid:sc:AP:01ecd7d2-71fb-4581-ba0f-c692b42eeba5?view=published)
 ## 프로젝트 구조
 ### 어플리케이션 코드
 - Backend

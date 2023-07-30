@@ -33,9 +33,10 @@ log.addHandler(log_handler)
 
 # ==================== CONSTANTS ====================
 ROOT_PATH = Path(__file__).parent.parent
-DATA_PATH = ROOT_PATH / "efs-volume"  # EFS volume mount path
-XARRAY_PATH = DATA_PATH / "xarray"  # zarr array path for cache
-INFO_PATH = DATA_PATH / "info"  # json path for cache
+XARRAY_PATH = ROOT_PATH / "efs-volume/xarray"  # zarr array path for cache
+INFO_PATH = ROOT_PATH / "efs-volume/info"  # json path for cache
+# UI 텍스트 다국어 정의 파일
+MULTILINGUAL_YAML_PATH = ROOT_PATH / "frontend/static/multilingual.yaml"
 
 S3_BUCKET_NAME = "econox-storage"
 SECRET_MANAGER_NAME = "econox-secret"

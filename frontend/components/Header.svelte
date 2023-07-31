@@ -1,12 +1,13 @@
 <script>
-    // 필요한 JavaScript 코드가 있다면 여기에 작성합니다.
+    import * as lang from "../modules/lang";
+    const multilingual = lang.setup();
 </script>
 
 <header class="header">
     <div>ECONOX</div>
-    <div>콘솔</div>
-    <div>피쳐 허브</div>
-    <div>로그인/회원가입</div>
+    <div>{$multilingual.console}</div>
+    <div>{$multilingual.featureHub}</div>
+    <div>{$multilingual.signInOut}</div>
 </header>
 
 <style>

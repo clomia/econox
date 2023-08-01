@@ -15,3 +15,9 @@ login:
 signup:
   en: "SignUp"
   ko: "회원가입"
+email:
+  en: "Email"
+  ko: "이메일"
+password:
+  en: "Password"
+  ko: "비밀번호"

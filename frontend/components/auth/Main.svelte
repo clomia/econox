@@ -35,9 +35,9 @@
         bottom: 0;
     }
     .window {
-        width: 35rem;
-        padding: 2rem 1rem;
-        border-radius: 0.5rem;
+        width: 34rem;
+        padding: 3rem 4rem;
+        border-radius: 1rem;
         border: solid thin white;
         background: #606c88;
         /* fallback for old browsers */

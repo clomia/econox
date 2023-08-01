@@ -1,22 +1,30 @@
 <script>
+    import * as lang from "../../modules/lang";
+
+    const text = lang.setup();
     function login(event) {
-        // 여기에서 로그인 로직을 처리합니다.
-        console.log("로그인 처리 시작!");
-        console.log(event);
+        const email = event.target.elements.email.value;
+        const password = event.target.elements.password.value;
+
+        console.log(email, password);
     }
 </script>
 
 <form on:submit|preventDefault={login}>
     <section>
-        <label for="email">이메일</label>
-        <input type="email" id="email" name="email" required />
+        <label>
+            <span>{$text.email}</span>
+            <input type="email" name="email" required />
+        </label>
     </section>
     <section>
-        <label for="password">비밀번호</label>
-        <input type="password" id="password" name="password" required />
+        <label>
+            <span>{$text.password}</span>
+            <input type="password" name="password" required />
+        </label>
     </section>
 
-    <button type="submit">로그인</button>
+    <button type="submit">{$text.login}</button>
 </form>
 
 <style>
@@ -25,20 +33,43 @@
         flex-direction: column;
         align-items: center;
         width: 100%;
-        margin-top: 2rem;
+        margin-top: 2.5rem;
     }
     section {
-        width: 25rem;
-        margin-bottom: 1rem;
+        width: 24.5rem;
+        margin-bottom: 1.7rem;
     }
-    label {
+    label span {
         display: block;
-        color: rgba(255, 255, 255, 0.7);
+        color: rgba(255, 255, 255, 0.5);
+        padding-left: 0.7rem;
+        padding-bottom: 0.2rem;
+        transition: color 100ms ease-out;
     }
     input {
         width: 100%;
-        height: 2rem;
+        height: 2.5rem;
         border: solid thin white;
-        border-radius: 0.5rem;
+        border-radius: 0.7rem;
+        color: white;
+        padding-left: 1rem;
+    }
+    section:focus-within label span {
+        color: rgba(255, 255, 255, 1);
+    }
+    button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 15rem;
+        height: 2.5rem;
+        border: solid thin white;
+        border-radius: 1rem;
+        color: white;
+        margin-top: 1.4rem;
+    }
+    button:hover {
+        cursor: pointer;
+        background-color: rgba(255, 255, 255, 0.2);
     }
 </style>

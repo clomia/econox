@@ -9,10 +9,7 @@
         langInfo = await lang.init();
     }); // 새로고침 시 서버의 데이터가 다시 반영되도록
 
-    let langMenuOn = false;
-    function toggleLangMenu() {
-        langMenuOn = !langMenuOn;
-    }
+    let langToggle = false;
     async function langChange(event: Event) {
         const targetLang = (event.target as HTMLSelectElement).value;
         await lang.update(targetLang);
@@ -21,14 +18,14 @@
 </script>
 
 <footer>
-    <div class="lang">
-        <button on:click={toggleLangMenu}> <MultilingualIcon /> </button>
-        <select class="lang__menu" class:none={!langMenuOn} value={langInfo.pin} on:change={langChange}>
+    <section class="lang">
+        <button on:click={() => (langToggle = !langToggle)}> <MultilingualIcon /> </button>
+        <select class="lang__menu" class:none={!langToggle} value={langInfo.pin} on:change={langChange}>
             {#each Object.entries(langInfo.langs) as [code, name]}
                 <option value={code}>{name}</option>
             {/each}
         </select>
-    </div>
+    </section>
 </footer>
 
 <style>
@@ -48,7 +45,6 @@
         height: 3rem;
         border-radius: 0.5rem;
         border: solid thin white;
-        background: none;
         opacity: 0.6;
     }
     .lang button:hover {

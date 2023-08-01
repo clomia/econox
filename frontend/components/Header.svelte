@@ -1,24 +1,32 @@
 <script>
     import * as lang from "../modules/lang";
-    const multilingual = lang.setup();
+    import Auth from "./auth/Main.svelte";
+
+    let authToggle = false;
+
+    const text = lang.setup();
 </script>
 
 <header class="header">
-    <div>ECONOX</div>
-    <div>{$multilingual.console}</div>
-    <div>{$multilingual.featureHub}</div>
-    <div>{$multilingual.signInOut}</div>
+    <button>ECONOX</button>
+    <button>{$text.console}</button>
+    <button>{$text.featureHub}</button>
+    <button on:click={() => (authToggle = !authToggle)}>{$text.signInOut}</button>
 </header>
+
+{#if authToggle}
+    <Auth />
+{/if}
 
 <style>
     .header {
         display: flex;
-        flex-wrap: wrap;
         justify-content: center;
         padding: 3rem 0;
+        white-space: nowrap;
     }
 
-    .header div {
+    .header button {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -30,7 +38,7 @@
         border-radius: 2rem;
     }
 
-    .header div:hover {
+    .header button:hover {
         background-color: rgba(255, 255, 255, 0.16);
         cursor: pointer;
     }

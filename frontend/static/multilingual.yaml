@@ -9,3 +9,9 @@ console:
 signInOut:
   en: "Sign In/Out"
   ko: "로그인/회원가입"
+login:
+  en: "Login"
+  ko: "로그인"
+signup:
+  en: "SignUp"
+  ko: "회원가입"

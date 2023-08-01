@@ -14,5 +14,8 @@ cleanup() {
 # 종료 시그널을 받으면 cleanup 함수 실행
 trap cleanup EXIT
 
+# EFS 볼륨 역할을 대신할 디렉토리
+mkdir -p efs-volume
+
 # FastAPI 서버 실행
 uvicorn app:app --reload

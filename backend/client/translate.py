@@ -14,7 +14,7 @@ logging.getLogger("urllib3.connectionpool").setLevel(logging.ERROR)
 
 # GCP Credential 등록
 gcp_credential_path = ROOT_PATH / "efs-volume/gcp_credential.json"
-gcp_credential_path.write_text(SECRETS["GCP_CREDENTIAL_JSON"])  # 배포될때마다 써주는게 안전함
+gcp_credential_path.write_text(SECRETS["GCP_CREDENTIAL_JSON"])
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(gcp_credential_path)
 
 google_translator = translate_v2.Client()

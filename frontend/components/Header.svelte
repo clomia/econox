@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import * as lang from "../modules/lang";
     import Auth from "./auth/Main.svelte";
 

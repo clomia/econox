@@ -1,5 +1,7 @@
 const dbName = "econox-core";
 const objectStoreNames = ["setting", "general", "data"];
+
+
 class ObjectStore {
     private name: string;
     private conn?: Promise<IDBDatabase>;

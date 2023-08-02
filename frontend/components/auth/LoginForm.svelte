@@ -1,14 +1,17 @@
-<script>
+<script lang="ts">
     import axios from "axios";
+    import type { AxiosResponse } from "axios";
     import * as lang from "../../modules/lang";
+    import LoadingAnimation from "../../assets/LoadingAnimation.svelte";
 
     const text = lang.setup();
 
-    let request = "before"; // 요청 전
-    async function login(event) {
+    let request: string | Promise<AxiosResponse> = "before"; // 요청 전
+    async function login(event: SubmitEvent) {
         const requests = axios.create({ baseURL: window.location.origin });
-        const email = event.target.elements.email.value;
-        const password = event.target.elements.password.value;
+        const form = event.target as HTMLFormElement; //타입스크립트 적용 ㄱ
+        const email = form.email.value;
+        const password = form.password.value;
         request = requests.post("/api/auth/user", { email, password });
         try {
             const token = (await request).data;
@@ -24,7 +27,6 @@
             }
         }
     }
-    console.log(request);
 </script>
 
 <form on:submit|preventDefault={login}>
@@ -41,7 +43,7 @@
         </label>
     </section>
     {#await request}
-        <div>...인증중... 로그인 애니메이션!</div>
+        <LoadingAnimation />
     {/await}
     {#if request == "fail"}
         <div>{$text.loginFailed}</div>
@@ -59,6 +61,7 @@
         flex-direction: column;
         align-items: center;
         width: 100%;
+        height: 16rem;
         margin-top: 2.5rem;
         color: white;
     }

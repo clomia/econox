@@ -4,6 +4,7 @@ import * as yaml from "js-yaml";
 import { onMount } from "svelte";
 import { writable, derived } from "svelte/store";
 import { generalObjectStore, settingObjectStore } from "../modules/storage";
+import type { Readable } from "svelte/store";
 
 const YAML_PATH = "/static/multilingual.yaml" // <- 이곳에 UI 다국어 텍스트 정의가 작성되어있습니다.
 
@@ -24,6 +25,9 @@ export interface LangInfo {
     langs: Langs; // 지원되는 언어들
     contents: Contents; // 텍스트 컨텐츠
 }
+
+// UI요소에 사용되는 객체, 적절한 언어 텍스트를 제공한다!
+export type TextStore = Readable<{ [key: string]: string }>;
 
 /**
     * 언어데이터를 불러옵니다. 브라우저로부터 캐싱됩니다.  
@@ -95,7 +99,7 @@ export async function update(lang: string): Promise<void> {
  * multilingual.yaml 데이터를 svelte 호환 객체로 반환합니다.
  * @returns 설정된 언어 텍스트를 가지는 객체
  */
-export function setup() {
+export function setup(): TextStore {
     const baseStore = writable({}); // 내부적으로 사용되는 기본 저장소
     onMount(async () => {
         const langInfo = await load();

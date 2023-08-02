@@ -1,10 +1,11 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import * as lang from "../modules/lang";
-    import MultilingualIcon from "../svg/MultilingualIcon.svelte";
+    import MultilingualIcon from "../assets/LangIcon.svelte";
+    import type { LangInfo } from "../modules/lang";
 
     // 비동기라서 먼저 초기값을 세팅해야지 undifined 에러가 안남
-    let langInfo = { pin: "", langs: {}, base: "", contents: {} };
+    let langInfo: LangInfo = { pin: "", base: "", langs: {}, contents: {} };
     onMount(async () => {
         langInfo = await lang.init();
     }); // 새로고침 시 서버의 데이터가 다시 반영되도록

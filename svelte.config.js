@@ -1,5 +1,7 @@
 import sveltePreprocess from 'svelte-preprocess';
 
 export default {
-  preprocess: sveltePreprocess()
+  preprocess: sveltePreprocess({
+    typescript: true
+  })
 };

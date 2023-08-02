@@ -16,8 +16,8 @@
         try {
             const token = (await request).data;
             // 여기서는 성공 동작만 처리하면 됌
-            token["idToken"];
-            token["refreshToken"];
+            console.log(token["id_token"]);
+            console.log(token["refresh_token"]);
             console.log("로그인 성공! -> 토큰 저장하고 콘솔로 보내주기!");
         } catch (error) {
             if (error.response.status === 401) {

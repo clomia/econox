@@ -21,7 +21,13 @@ email:
 password:
   en: "Password"
   ko: "비밀번호"
+retypePassword:
+  en: "Retype password"
+  ko: "비밀번호 확인"
 loginFailed:
+  en: "Email or password is incorrect."
+  ko: "이메일 또는 비밀번호가 올바르지 않습니다."
+signupFailed:
   en: "Email or password is incorrect."
   ko: "이메일 또는 비밀번호가 올바르지 않습니다."
 error:

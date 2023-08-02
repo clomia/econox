@@ -1,20 +1,37 @@
 <script>
+    import axios from "axios";
     import * as lang from "../../modules/lang";
 
     const text = lang.setup();
-    function login(event) {
+
+    let request = "before"; // 요청 전
+    async function login(event) {
+        const requests = axios.create({ baseURL: window.location.origin });
         const email = event.target.elements.email.value;
         const password = event.target.elements.password.value;
-
-        console.log(email, password);
+        request = requests.post("/api/auth/user", { email, password });
+        try {
+            const token = (await request).data;
+            // 여기서는 성공 동작만 처리하면 됌
+            token["idToken"];
+            token["refreshToken"];
+            console.log("로그인 성공! -> 토큰 저장하고 콘솔로 보내주기!");
+        } catch (error) {
+            if (error.response.status === 401) {
+                request = "fail"; // 로그인 실패
+            } else {
+                request = "error"; // 에러
+            }
+        }
     }
+    console.log(request);
 </script>
 
 <form on:submit|preventDefault={login}>
     <section>
         <label>
             <span>{$text.email}</span>
-            <input type="email" name="email" required />
+            <input type="text" name="email" required />
         </label>
     </section>
     <section>
@@ -23,8 +40,17 @@
             <input type="password" name="password" required />
         </label>
     </section>
-
-    <button type="submit">{$text.login}</button>
+    {#await request}
+        <div>...인증중... 로그인 애니메이션!</div>
+    {/await}
+    {#if request == "fail"}
+        <div>{$text.loginFailed}</div>
+    {:else if request == "error"}
+        <div>{$text.error}</div>
+    {/if}
+    {#if !(request instanceof Promise)}
+        <button type="submit">{$text.login}</button>
+    {/if}
 </form>
 
 <style>
@@ -34,6 +60,7 @@
         align-items: center;
         width: 100%;
         margin-top: 2.5rem;
+        color: white;
     }
     section {
         width: 24.5rem;

@@ -20,11 +20,13 @@
 <footer>
     <section class="lang">
         <button on:click={() => (langToggle = !langToggle)}> <MultilingualIcon /> </button>
-        <select class="lang__menu" class:none={!langToggle} value={langInfo.pin} on:change={langChange}>
-            {#each Object.entries(langInfo.langs) as [code, name]}
-                <option value={code}>{name}</option>
-            {/each}
-        </select>
+        {#if langToggle}
+            <select class="lang__menu" value={langInfo.pin} on:change={langChange}>
+                {#each Object.entries(langInfo.langs) as [code, name]}
+                    <option value={code}>{name}</option>
+                {/each}
+            </select>
+        {/if}
     </section>
 </footer>
 

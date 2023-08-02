@@ -3,7 +3,6 @@
     export let toggle; // Main 컴포넌트에서 양방향 바인딩으로 할당됩니다.
 
     const text = lang.setup();
-
     const color = {
         activate: "white",
         deactivate: "rgba(255, 255, 255, 0.3)",

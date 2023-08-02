@@ -19,8 +19,3 @@ body {
 	background: -webkit-linear-gradient(to bottom, #533399, #ff00f7);
 	background: linear-gradient(to bottom, #533399, #ff00f7);
 }
-
-/* 요소의 삭제, 생성 구현이 사용 */
-.none {
-	display: none;
-}

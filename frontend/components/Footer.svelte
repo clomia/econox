@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import * as lang from "../modules/lang";
-    import MultilingualIcon from "../assets/LangIcon.svelte";
+    import LanguageIcon from "../assets/LanguageIcon.svelte";
     import type { LangInfo } from "../modules/lang";
 
     // 비동기라서 먼저 초기값을 세팅해야지 undifined 에러가 안남
@@ -20,7 +20,7 @@
 
 <footer>
     <section class="lang">
-        <button on:click={() => (langToggle = !langToggle)}> <MultilingualIcon /> </button>
+        <button on:click={() => (langToggle = !langToggle)}> <LanguageIcon /> </button>
         {#if langToggle}
             <select class="lang__menu" value={langInfo.pin} on:change={langChange}>
                 {#each Object.entries(langInfo.langs) as [code, name]}

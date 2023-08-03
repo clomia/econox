@@ -33,3 +33,12 @@ signupFailed:
 error:
   en: "An unexpected error has occurred"
   ko: "예상치 못한 오류가 발생했습니다"
+sessionInvalid:
+  en: "Your session has expired, please log in again"
+  ko: "세션이 만료되었으니 다시 로그인해주세요"
+loginRequired:
+  en: "Login is required."
+  ko: "로그인이 필요합니다."
+ok:
+  en: "OK"
+  ko: "확인"

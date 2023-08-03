@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "axios"; // api 객체 못씀, api객체가 여기있는걸 써야 함
 import ISO6391 from "iso-639-1";
 import * as yaml from "js-yaml";
 import { generalObjectStore, settingObjectStore } from "../modules/storage";
@@ -92,13 +92,13 @@ export async function update(lang: string): Promise<void> {
 }
 
 /**
- * 언어 설정에 적합한 텍스트 매핑 오브젝트를 제공합니다.
+ * 언어 설정에 적합한 텍스트를 제공합니다.
  */
 export async function loadText(): Promise<{ [key: string]: string }> {
     const langInfo = await load();
     const pairs = Object.entries(langInfo.contents).reduce((acc, [key, value]) => {
         const pair = (value as Langs); // 언어코드 : 텍스트
         return { ...acc, [key]: pair[langInfo.pin] || pair[langInfo.base] }
-    }, {}); // pairs = { 텍스트키: 설정된 언어에 맞는 텍스트 , ... }
+    }, {}); // pairs = { 텍스트키: 설정된 언어로 된 텍스트 , ... }
     return pairs
 }

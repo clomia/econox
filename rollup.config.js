@@ -8,6 +8,7 @@ import css from 'rollup-plugin-css-only';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import replace from '@rollup/plugin-replace';
+import polyfillNode from 'rollup-plugin-polyfill-node';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -72,6 +73,7 @@ export default {
 			exportConditions: ['svelte']
 		}),
 		commonjs(),
+		polyfillNode(),
 
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated
@@ -87,5 +89,17 @@ export default {
 	],
 	watch: {
 		clearScreen: false
+	},
+	onwarn: (warning, warn) => {
+		// polyfill-node 관련 순환 의존성 경고 필터링
+		if (warning.code === 'CIRCULAR_DEPENDENCY' && /polyfill-node/.test(warning.message)) {
+			return;
+		}
+		// Typescript sourceMap 관련 경고 필터링
+		if (warning.plugin === 'typescript' && /sourceMap/.test(warning.message)) {
+			return;
+		}
+		// 나머지 경고는 출력
+		warn(warning);
 	}
 };

@@ -1,10 +1,7 @@
 import axios from "axios";
 import ISO6391 from "iso-639-1";
 import * as yaml from "js-yaml";
-import { onMount } from "svelte";
-import { writable, derived } from "svelte/store";
 import { generalObjectStore, settingObjectStore } from "../modules/storage";
-import type { Readable } from "svelte/store";
 
 const YAML_PATH = "/static/multilingual.yaml" // <- 이곳에 UI 다국어 텍스트 정의가 작성되어있습니다.
 
@@ -27,7 +24,6 @@ export interface LangInfo {
 }
 
 // UI요소에 사용되는 객체, 적절한 언어 텍스트를 제공한다!
-export type TextStore = Readable<{ [key: string]: string }>;
 
 /**
     * 언어데이터를 불러옵니다. 브라우저로부터 캐싱됩니다.  
@@ -36,7 +32,7 @@ export type TextStore = Readable<{ [key: string]: string }>;
 */
 export async function load(): Promise<LangInfo> {
     let multilingual: Contents = await generalObjectStore.get("multilingual");
-    let lang: string = await settingObjectStore.get("lang");
+    let pin: string = await settingObjectStore.get("lang");
 
     if (!multilingual) {
         // 언어 데이터가 없다면 불러오기
@@ -45,11 +41,12 @@ export async function load(): Promise<LangInfo> {
         multilingual = yaml.load(res.data) as Contents;
         await generalObjectStore.put("multilingual", multilingual);
     }
-    if (!lang) {
+    if (!pin) {
         // 언어 지정이 안되어있다면 기본값을 지정
-        lang = multilingual.base;
-        await settingObjectStore.put("lang", lang);
+        pin = multilingual.base;
+        await settingObjectStore.put("lang", pin);
     }
+    const base = multilingual.base
 
     // multilingual 객체에서 사용되는 모든 언어를 Langs 객체로 파싱
     const langs: Langs = {}; // 지원 언어 목록
@@ -60,8 +57,8 @@ export async function load(): Promise<LangInfo> {
             for (const lang in content) {
                 accumulateSet.add(lang);
             }
-            if (!content[multilingual.base]) {
-                throw new Error(`${key} 항목에 대한 기본 언어(${multilingual.base})가 작성되지 않았습니다!`);
+            if (!content[base]) {
+                throw new Error(`${key} 항목에 대한 기본 언어(${base})가 작성되지 않았습니다!`);
             }
         }
     }
@@ -72,13 +69,12 @@ export async function load(): Promise<LangInfo> {
     // contents는 multilingual객체에서 base 속성을 제거한것이다.
     const contents = { ...multilingual };
     delete contents.base;
-
-    return { pin: lang, base: multilingual.base, langs, contents };
+    return { pin, base, langs, contents };
 }
 
 /**
- * 서버로부터 언어데이터를 초기화합니다.
- * 설정값은 변경되지 않습니다.
+ * 언어데이터를 multilingual.yaml 파일과 동기화합니다.
+ * 설정값(기본언어)은 변경되지 않습니다.
  * @returns 언어데이터 (설정언어, 언어목록, 컨텐츠)
 */
 export async function init(): Promise<LangInfo> {
@@ -96,26 +92,13 @@ export async function update(lang: string): Promise<void> {
 }
 
 /**
- * multilingual.yaml 데이터를 svelte 호환 객체로 반환합니다.
- * @returns 설정된 언어 텍스트를 가지는 객체
+ * 언어 설정에 적합한 텍스트 매핑 오브젝트를 제공합니다.
  */
-export function setup(): TextStore {
-    const baseStore = writable({}); // 내부적으로 사용되는 기본 저장소
-    onMount(async () => {
-        const langInfo = await load();
-        const pairs = Object.entries(langInfo.contents).reduce((acc, [key, value]) => {
-            const pair = (value as Langs); // 언어코드 : 텍스트
-            return { ...acc, [key]: pair[langInfo.pin] || pair[langInfo.base] }
-        }, {}); // pairs = { 텍스트키: 설정된 언어에 맞는 텍스트 , ... }
-        baseStore.set(pairs); // 텍스트 매핑 데이터를 저장소에 저장
-    });
-    // get동작에 대해 값이 없으면 ""를 반환하는 프록시를 가지는 baseStore 래핑 저장소를 만들어서 반환
-    const proxyStore = derived(baseStore, $target => {
-        return new Proxy($target, {
-            get: (target, prop) => {
-                return target[prop] || "";
-            }
-        });
-    });
-    return proxyStore
+export async function loadText(): Promise<{ [key: string]: string }> {
+    const langInfo = await load();
+    const pairs = Object.entries(langInfo.contents).reduce((acc, [key, value]) => {
+        const pair = (value as Langs); // 언어코드 : 텍스트
+        return { ...acc, [key]: pair[langInfo.pin] || pair[langInfo.base] }
+    }, {}); // pairs = { 텍스트키: 설정된 언어에 맞는 텍스트 , ... }
+    return pairs
 }

@@ -1,21 +1,19 @@
 <script lang="ts">
-    import * as lang from "../modules/lang";
     import Auth from "./auth/Index.svelte";
+    export let text: { [key: string]: string };
 
     let authToggle = false;
-
-    const text = lang.setup();
 </script>
 
 <header class="header">
     <button>ECONOX</button>
-    <button>{$text.console}</button>
-    <button>{$text.featureHub}</button>
-    <button on:click={() => (authToggle = !authToggle)}>{$text.signInOut}</button>
+    <button>{text.console}</button>
+    <button>{text.featureHub}</button>
+    <button on:click={() => (authToggle = !authToggle)}>{text.signInOut}</button>
 </header>
 
 {#if authToggle}
-    <Auth />
+    <Auth {text} />
 {/if}
 
 <style>

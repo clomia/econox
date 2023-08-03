@@ -1,7 +1,8 @@
-<script>
+<script lang="ts">
     import LoginSignupToggle from "./LoginSignupToggle.svelte";
     import Login from "./Login.svelte";
     import Signup from "./signup/Index.svelte";
+    export let text: { [key: string]: string };
     $: toggle = { login: true, signup: false };
 </script>
 
@@ -12,10 +13,10 @@
 -->
 <div id="fixed-ground">
     <div class="window">
-        <LoginSignupToggle bind:toggle />
+        <LoginSignupToggle bind:toggle {text} />
         <section>
             {#if toggle.login}
-                <Login />
+                <Login {text} />
             {:else}
                 <Signup />
             {/if}

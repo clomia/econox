@@ -1,8 +1,10 @@
+from typing import Dict
+
 import jwt
 import boto3
 import requests
 from pydantic import BaseModel
-from fastapi import HTTPException, Request
+from fastapi import HTTPException
 from fastapi.responses import Response
 
 from backend.api import router
@@ -20,7 +22,7 @@ class UserAuth(BaseModel):
 
 
 @router.post("/auth/user", tags=["user"])
-async def login(item: UserAuth):
+async def login(item: UserAuth):  # todo 올싸인아웃 후 로그인해서 다른 세션 종료시키기
     try:
         result = cognito.initiate_auth(
             ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
@@ -70,3 +72,20 @@ async def signup_email_verification(item: EmailAuth):
     except cognito.exceptions.ExpiredCodeException:
         raise HTTPException(status_code=401)
     return Response(status_code=200)
+
+
+class RefreshToken(BaseModel):
+    refresh_token: str
+
+
+@router.post("/auth/refresh-token", tags=["auth"])
+def token_refresh(item: RefreshToken) -> Dict[str, str]:
+    try:
+        result = cognito.initiate_auth(
+            AuthFlow="REFRESH_TOKEN_AUTH",
+            AuthParameters={"REFRESH_TOKEN": item.refresh_token},
+            ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
+        )
+    except cognito.exceptions.NotAuthorizedException:
+        raise HTTPException(status_code=401)
+    return {"id_token": result["AuthenticationResult"]["IdToken"]}

@@ -30,10 +30,12 @@
   },
   "dependencies": {
     "@tosspayments/payment-widget-sdk": "^0.9.1",
+    "@types/jsonwebtoken": "^9.0.2",
     "axios": "^1.4.0",
     "echarts": "^5.4.2",
     "iso-639-1": "^2.1.15",
     "js-yaml": "^4.1.0",
+    "jsonwebtoken": "^9.0.1",
     "sirv-cli": "^2.0.0"
   }
 }

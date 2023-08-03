@@ -1,10 +1,8 @@
 <script lang="ts">
     import axios from "axios";
     import type { AxiosResponse } from "axios";
-    import * as lang from "../../../modules/lang";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
-
-    const text = lang.setup();
+    export let text: { [key: string]: string };
 
     let request: string | Promise<AxiosResponse> = "before"; // 요청 전
     async function signup(event: SubmitEvent) {
@@ -34,19 +32,19 @@
 <form on:submit|preventDefault={signup}>
     <section>
         <label>
-            <span>{$text.email}</span>
+            <span>{text.email}</span>
             <input type="text" name="email" required />
         </label>
     </section>
     <section>
         <label>
-            <span>{$text.password}</span>
+            <span>{text.password}</span>
             <input type="password" name="password" required />
         </label>
     </section>
     <section>
         <label>
-            <span>{$text.retypePassword}</span>
+            <span>{text.retypePassword}</span>
             <input type="password" name="retypePassword" required />
         </label>
     </section>
@@ -54,12 +52,12 @@
         <LoadingAnimation />
     {/await}
     {#if request == "fail"}
-        <div>{$text.signupFailed}</div>
+        <div>{text.signupFailed}</div>
     {:else if request == "error"}
-        <div>{$text.error}</div>
+        <div>{text.error}</div>
     {/if}
     {#if !(request instanceof Promise)}
-        <button type="submit">{$text.signup}</button>
+        <button type="submit">{text.signup}</button>
     {/if}
 </form>
 

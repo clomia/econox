@@ -37,8 +37,9 @@ async def login(item: UserAuth):  # todo 올싸인아웃 후 로그인해서 다
     }
 
 
-@router.post("/user", tags=["user"])
-async def signup(item: UserAuth):
+@router.post("/user/cognito", tags=["user"])
+async def create_cognito_user(item: UserAuth):
+    """코그니또에만"""
     try:
         cognito.sign_up(
             ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
@@ -50,6 +51,8 @@ async def signup(item: UserAuth):
         )
     except cognito.exceptions.UsernameExistsException:
         raise HTTPException(status_code=409)
+    except cognito.exceptions.InvalidParameterException:
+        raise HTTPException(status_code=400)
     return Response(status_code=200)
 
 

@@ -91,8 +91,9 @@ export default {
 		clearScreen: false
 	},
 	onwarn: (warning, warn) => {
-		// polyfill-node 관련 순환 의존성 경고 필터링
-		if (warning.code === 'CIRCULAR_DEPENDENCY' && /polyfill-node/.test(warning.message)) {
+		// polyfill-node & semver 순환 의존성 경고 필터링 
+		// (예기치 못한 동작이 있는경우 이거 비활성화 하고 경고 보기)
+		if (warning.code === 'CIRCULAR_DEPENDENCY') {
 			return;
 		}
 		// Typescript sourceMap 관련 경고 필터링

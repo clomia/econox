@@ -42,3 +42,15 @@ loginRequired:
 ok:
   en: "OK"
   ko: "확인"
+passwordMismatch:
+  en: "Passwords do not match."
+  ko: "비밀번호가 일치하지 않습니다."
+alreadyExistsUser:
+  en: "This email is already registered."
+  ko: "이미 가입되어있는 이메일입니다."
+invalidInput:
+  en: "Invalid input"
+  ko: "입력이 잘못되었습니다."
+passwordLengthWarning:
+  en: "Password must be 6 characters or more."
+  ko: "비밀번호는 6글자 이상이어야 합니다."

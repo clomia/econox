@@ -3,26 +3,37 @@
     import type { AxiosResponse } from "axios";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
     export let text: { [key: string]: string };
+    export let formInput: { [form: string]: { [key: string]: string | boolean } };
+    export let formName: string;
+    let request: null | Promise<AxiosResponse> = null; // 요청 전
+    let message = "";
 
-    let request: string | Promise<AxiosResponse> = "before"; // 요청 전
     async function signup(event: SubmitEvent) {
         const form = event.target as HTMLFormElement;
         const email = form.email.value;
         const password = form.password.value;
         const retypePassword = form.retypePassword.value;
-        // 둘이 똑같은지 검증은 여기서 하는게 여러모로 가장 견고한 로직임
-        request = publicRequest.post("/api/auth/user", { email, password });
+        if (password !== retypePassword) {
+            message = text.passwordMismatch;
+            return;
+        } else if (password.length < 6) {
+            message = text.passwordLengthWarning;
+            return;
+        }
         try {
-            const token = (await request).data;
-            // 여기서는 성공 동작만 처리하면 됌
-            token["idToken"];
-            token["refreshToken"];
-            console.log("로그인 성공! -> 토큰 저장하고 콘솔로 보내주기!");
+            request = publicRequest.post("/user/cognito", { email, password });
+            formInput[formName]["email"] = email;
+            formInput[formName]["password"] = password;
+            formInput[formName]["complete"] = true;
+            await request;
+            console.log("회원가입 성공!");
         } catch (error) {
-            if (error.response.status === 401) {
-                request = "fail"; // 로그인 실패
+            if (error.response.status === 409) {
+                message = text.alreadyExistsUser; // 이미 가입되어있는 이메일입니다
+            } else if (error.response.status === 400) {
+                message = text.invalidInput; // 입력 내용이 Cognito로부터 거부됌
             } else {
-                request = "error"; // 에러
+                message = text.error;
             }
         }
     }
@@ -50,11 +61,7 @@
     {#await request}
         <LoadingAnimation />
     {/await}
-    {#if request == "fail"}
-        <div>{text.signupFailed}</div>
-    {:else if request == "error"}
-        <div>{text.error}</div>
-    {/if}
+    <div>{message}</div>
     {#if !(request instanceof Promise)}
         <button type="submit">{text.signup}</button>
     {/if}

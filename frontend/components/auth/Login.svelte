@@ -9,8 +9,8 @@
         const form = event.target as HTMLFormElement; //타입스크립트 적용 ㄱ
         const email = form.email.value;
         const password = form.password.value;
-        request = publicRequest.post("/api/auth/user", { email, password });
         try {
+            request = publicRequest.post("/auth/user", { email, password });
             const token = (await request).data;
             // 여기서는 성공 동작만 처리하면 됌
             console.log(token["id_token"]);

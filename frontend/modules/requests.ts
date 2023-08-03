@@ -6,7 +6,6 @@ import { loadText } from "./lang"
 import type { JwtPayload } from "jsonwebtoken";
 import type { InternalAxiosRequestConfig, AxiosError } from "axios";
 
-
 export const publicRequest = axios.create({ baseURL: window.location.origin })
 export const privateRequest = axios.create({ baseURL: window.location.origin }) // 인증 실패 시 강제 로그아웃!
 
@@ -31,7 +30,8 @@ async function forceLogout(message: string) {
     await settingObjectStore.delete("refreshToken")
     const text = await loadText();
     await Swal.fire({
-        title: message,
+        icon: 'error',
+        text: message,
         confirmButtonText: text.ok
     });
     window.location.reload()
@@ -50,7 +50,8 @@ async function tokenInsert(config: InternalAxiosRequestConfig) {
     if (idToken && refreshToken) {
         if (isJwtExpired(idToken)) {
             try { // 토큰 갱신
-                const token = await api.post("/api/auth/refresh-token", { refresh_token: refreshToken })
+                const apiRequest = axios.create({ baseURL: window.location.origin })
+                const token = await apiRequest.post("/api/auth/refresh-token", { refresh_token: refreshToken })
                 idToken = token["id_token"]
                 settingObjectStore.put("idToken", idToken)
             } catch (error) {
@@ -65,6 +66,16 @@ async function tokenInsert(config: InternalAxiosRequestConfig) {
     return config
 }
 
+/**
+ * 요청 헤더에 인증정보를 삽입합니다.
+ * 요청 URL 앞에 /api 접두사를 붙입니다.
+ */
+async function apiRequestHandler(config: InternalAxiosRequestConfig) {
+    let apiConfig = await tokenInsert(config)
+    apiConfig.url = `/api${apiConfig.url}`
+    return apiConfig
+}
+
 async function errorHandler(error: AxiosError) {
     const text = await loadText();
     if (error.response.status === 401) { // 인증 문제인 경우 강제 로그아웃 처리
@@ -73,6 +84,6 @@ async function errorHandler(error: AxiosError) {
     throw error
 }
 
-publicRequest.interceptors.request.use(tokenInsert)
-privateRequest.interceptors.request.use(tokenInsert)
+publicRequest.interceptors.request.use(apiRequestHandler)
+privateRequest.interceptors.request.use(apiRequestHandler)
 privateRequest.interceptors.response.use(undefined, errorHandler)

@@ -18,7 +18,7 @@
             {#if toggle.login}
                 <Login {text} />
             {:else}
-                <Signup />
+                <Signup {text} />
             {/if}
         </section>
     </div>

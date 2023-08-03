@@ -19,7 +19,7 @@ class UserAuth(BaseModel):
     password: str
 
 
-@router.post("/auth/user")
+@router.post("/auth/user", tags=["user"])
 async def login(item: UserAuth):
     try:
         result = cognito.initiate_auth(
@@ -35,7 +35,7 @@ async def login(item: UserAuth):
     }
 
 
-@router.post("/user")
+@router.post("/user", tags=["user"])
 async def signup(item: UserAuth):
     try:
         cognito.sign_up(
@@ -56,8 +56,8 @@ class EmailAuth(BaseModel):
     confirmation_code: str
 
 
-@router.post("/auth/email")
-async def email_verification(item: EmailAuth):
+@router.post("/auth/email", tags=["auth"])
+async def signup_email_verification(item: EmailAuth):
     try:
         cognito.confirm_sign_up(
             ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
@@ -65,8 +65,8 @@ async def email_verification(item: EmailAuth):
             ConfirmationCode=item.confirmation_code,
         )
         # 여기서 실제 앱 회원가입 로직을 돌려야 함! api 외부에 별도 함수로 만들어서 import
-    except cognito.exceptions.CodeMismatchException:  # 잘못된 인증코드
+    except cognito.exceptions.CodeMismatchException:
         raise HTTPException(status_code=409)
-    except cognito.exceptions.ExpiredCodeException:  # 만료된 인증코드
+    except cognito.exceptions.ExpiredCodeException:
         raise HTTPException(status_code=401)
     return Response(status_code=200)

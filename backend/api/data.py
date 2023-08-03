@@ -4,7 +4,7 @@ from backend.client import fmp
 from backend.api import router
 
 
-@router.get("/data/time-series/symbol/adj-close")
+@router.get("/data/time-series/symbol/adj-close", tags=["data"])
 def adj_close(element: str):
     print(f"요청 수신! {element}")
     symbol = fmp.Symbol(element)

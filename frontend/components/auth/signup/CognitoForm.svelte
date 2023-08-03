@@ -1,8 +1,8 @@
 <script lang="ts">
     import axios from "axios";
     import type { AxiosResponse } from "axios";
-    import * as lang from "../../modules/lang";
-    import LoadingAnimation from "../../assets/LoadingAnimation.svelte";
+    import * as lang from "../../../modules/lang";
+    import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
 
     const text = lang.setup();
 
@@ -12,7 +12,7 @@
         const form = event.target as HTMLFormElement;
         const email = form.email.value;
         const password = form.password.value;
-        const retypedPassword = form.retypedPassword.value;
+        const retypePassword = form.retypePassword.value;
         // 둘이 똑같은지 검증은 여기서 하는게 여러모로 가장 견고한 로직임
         request = requests.post("/api/auth/user", { email, password });
         try {
@@ -47,7 +47,7 @@
     <section>
         <label>
             <span>{$text.retypePassword}</span>
-            <input type="password" name="retypedPassword" required />
+            <input type="password" name="retypePassword" required />
         </label>
     </section>
     {#await request}

@@ -1,6 +1,6 @@
 <script lang="ts">
     import * as lang from "../modules/lang";
-    import Auth from "./auth/Main.svelte";
+    import Auth from "./auth/Index.svelte";
 
     let authToggle = false;
 

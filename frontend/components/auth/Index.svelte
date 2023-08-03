@@ -1,7 +1,7 @@
 <script>
     import LoginSignupToggle from "./LoginSignupToggle.svelte";
-    import LoginForm from "./LoginForm.svelte";
-    import SignupForm from "./SignupForm.svelte";
+    import Login from "./Login.svelte";
+    import Signup from "./signup/Index.svelte";
     $: toggle = { login: true, signup: false };
 </script>
 
@@ -15,9 +15,9 @@
         <LoginSignupToggle bind:toggle />
         <section>
             {#if toggle.login}
-                <LoginForm />
+                <Login />
             {:else}
-                <SignupForm />
+                <Signup />
             {/if}
         </section>
     </div>

@@ -39,16 +39,7 @@
         width: 34rem;
         padding: 3rem 4rem;
         border-radius: 1rem;
-        border: solid thin white;
-        background: #606c88;
-        /* fallback for old browsers */
-        background: -webkit-linear-gradient(to bottom, #5e6c8e, #51798a, #5e6c8e);
-        /* Chrome 10-25, Safari 5.1-6 */
-        background: linear-gradient(to bottom, #5e6c8e, #51798a, #5e6c8e);
-        /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
-        background: #834d9b;
-        background: -webkit-linear-gradient(to top, #d04ed6, #834d9b);
-        background: linear-gradient(to top, #d04ed6, #834d9b);
+        border: thin solid rgba(255, 255, 255, 0.2);
+        background: linear-gradient(to bottom, #2e2f32, rgb(32, 49, 55));
     }
 </style>

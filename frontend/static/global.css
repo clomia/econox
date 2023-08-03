@@ -9,13 +9,6 @@ body {
 	height: 100%;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 16px;
-	background: #606c88;
-	/* fallback for old browsers */
-	background: -webkit-linear-gradient(to bottom, #3f4c6b, #606c88);
-	/* Chrome 10-25, Safari 5.1-6 */
-	background: linear-gradient(to bottom, #3f4c6b, #606c88);
-	/* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
-	background: -webkit-linear-gradient(to bottom, #533399, #ff00f7);
-	background: linear-gradient(to bottom, #533399, #ff00f7);
+	background: -webkit-linear-gradient(to bottom, #202123, #1f3036);
+	background: linear-gradient(to bottom, #202123, #1f3036);
 }

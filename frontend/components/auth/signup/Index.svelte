@@ -8,16 +8,18 @@
 
     // DB 유저 생성시 필요한 정보들
     let inputResult = {
-        email: "",
+        email: "sample@gmail.com",
     };
 
     const componentStep = [CognitoForm, EmailAuthForm, OptionForm, BillingForm, ResultProcess];
     $: currentStep = 0;
 </script>
 
-<svelte:component
+<EmailAuthForm bind:inputResult {text} />
+
+<!-- <svelte:component
     this={componentStep[currentStep]}
     bind:inputResult
     {text}
     on:complete={() => currentStep++}
-/>
+/> -->

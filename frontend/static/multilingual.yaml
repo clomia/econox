@@ -69,3 +69,6 @@ emailVerifiCodeMismatch:
 next:
   en: "Next"
   ko: "다음"
+verifiCodeExpiration:
+  en: "Verification code has expired."
+  ko: "인증코드가 만료되었습니다."

@@ -8,6 +8,26 @@
 
     let request: null | Promise<AxiosResponse> = null; // 요청 전
     let message = text.enterEmailVerificationCode;
+    let timeLimit = "";
+
+    let intervalId: number | undefined;
+
+    function startTokenExpirCount() {
+        let totalSeconds = 180; // 3분 = 180초
+
+        if (intervalId !== undefined) {
+            clearInterval(intervalId);
+        }
+        intervalId = window.setInterval(() => {
+            timeLimit =
+                totalSeconds === 0
+                    ? text.verifiCodeExpiration
+                    : `${Math.floor(totalSeconds / 60)}:${(totalSeconds % 60).toString().padStart(2, "0")}`;
+            console.log(timeLimit);
+            totalSeconds--;
+            if (totalSeconds < 0) clearInterval(intervalId!);
+        }, 1000);
+    }
 
     const dispatch = createEventDispatcher();
 
@@ -17,6 +37,7 @@
         const verification_code = form.code.value;
         try {
             request = publicRequest.post("/auth/email", { email, verification_code });
+            startTokenExpirCount(); // todo 이건 잘 되는데 이미 사용자가 값을 입력하니까 정작 플래이스 홀더를 못본다
             message = "";
             await request;
             dispatch("complete");
@@ -37,7 +58,7 @@
     <section>
         <label>
             <span>{inputResult.email}</span>
-            <input type="text" name="code" required autocomplete="off" />
+            <input type="text" name="code" placeholder={timeLimit} required autocomplete="off" />
         </label>
     </section>
     {#await request}

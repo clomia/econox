@@ -30,13 +30,13 @@
     <section>
         <label>
             <span>{text.email}</span>
-            <input type="text" name="email" required />
+            <input type="text" name="email" required autocomplete="email" />
         </label>
     </section>
     <section>
         <label>
             <span>{text.password}</span>
-            <input type="password" name="password" required />
+            <input type="password" name="password" required autocomplete="current-password" />
         </label>
     </section>
     {#await request}

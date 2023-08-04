@@ -1,12 +1,15 @@
 <script lang="ts">
+    import { createEventDispatcher } from "svelte";
     import { publicRequest } from "../../../modules/requests";
     import type { AxiosResponse } from "axios";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
     export let text: { [key: string]: string };
-    export let formInput: { [form: string]: { [key: string]: string | boolean } };
-    export let formName: string;
+
     let request: null | Promise<AxiosResponse> = null; // 요청 전
     let message = "";
+
+    const dispatch = createEventDispatcher();
+    const result = { email: null, password: null };
 
     async function signup(event: SubmitEvent) {
         const form = event.target as HTMLFormElement;
@@ -22,11 +25,10 @@
         }
         try {
             request = publicRequest.post("/user/cognito", { email, password });
-            formInput[formName]["email"] = email;
-            formInput[formName]["password"] = password;
-            formInput[formName]["complete"] = true;
+            result["email"] = email;
+            result["password"] = password;
             await request;
-            console.log("회원가입 성공!");
+            dispatch("complete", result); // 상위 컴포넌트로 이벤트 전달!
         } catch (error) {
             if (error.response.status === 409) {
                 message = text.alreadyExistsUser; // 이미 가입되어있는 이메일입니다
@@ -43,19 +45,19 @@
     <section>
         <label>
             <span>{text.email}</span>
-            <input type="text" name="email" required />
+            <input type="text" name="email" required autocomplete="email" />
         </label>
     </section>
     <section>
         <label>
             <span>{text.password}</span>
-            <input type="password" name="password" required />
+            <input type="password" name="password" required autocomplete="off" />
         </label>
     </section>
     <section>
         <label>
             <span>{text.retypePassword}</span>
-            <input type="password" name="retypePassword" required />
+            <input type="password" name="retypePassword" required autocomplete="off" />
         </label>
     </section>
     {#await request}

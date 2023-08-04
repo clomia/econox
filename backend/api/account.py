@@ -39,7 +39,6 @@ async def login(item: UserAuth):  # todo 올싸인아웃 후 로그인해서 다
 
 @router.post("/user/cognito", tags=["user"])
 async def create_cognito_user(item: UserAuth):
-    """코그니또에만"""
     try:
         cognito.sign_up(
             ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
@@ -58,7 +57,7 @@ async def create_cognito_user(item: UserAuth):
 
 class EmailAuth(BaseModel):
     email: str
-    confirmation_code: str
+    verification_code: str
 
 
 @router.post("/auth/email", tags=["auth"])
@@ -67,9 +66,8 @@ async def signup_email_verification(item: EmailAuth):
         cognito.confirm_sign_up(
             ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
             Username=item.email,
-            ConfirmationCode=item.confirmation_code,
+            ConfirmationCode=item.verification_code,
         )
-        # 여기서 실제 앱 회원가입 로직을 돌려야 함! api 외부에 별도 함수로 만들어서 import
     except cognito.exceptions.CodeMismatchException:
         raise HTTPException(status_code=409)
     except cognito.exceptions.ExpiredCodeException:

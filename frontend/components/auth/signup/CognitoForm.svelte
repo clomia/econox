@@ -4,12 +4,12 @@
     import type { AxiosResponse } from "axios";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
     export let text: { [key: string]: string };
+    export let inputResult: { [key: string]: string };
 
     let request: null | Promise<AxiosResponse> = null; // 요청 전
     let message = "";
 
     const dispatch = createEventDispatcher();
-    const result = { email: null, password: null };
 
     async function signup(event: SubmitEvent) {
         const form = event.target as HTMLFormElement;
@@ -25,13 +25,12 @@
         }
         try {
             request = publicRequest.post("/user/cognito", { email, password });
-            result["email"] = email;
-            result["password"] = password;
             await request;
-            dispatch("complete", result); // 상위 컴포넌트로 이벤트 전달!
+            inputResult["email"] = email;
+            dispatch("complete");
         } catch (error) {
             if (error.response.status === 409) {
-                message = text.alreadyExistsUser; // 이미 가입되어있는 이메일입니다
+                message = text.alreadyExistsUser;
             } else if (error.response.status === 400) {
                 message = text.invalidInput; // 입력 내용이 Cognito로부터 거부됌
             } else {
@@ -65,7 +64,7 @@
     {/await}
     <div>{message}</div>
     {#if !(request instanceof Promise)}
-        <button type="submit">{text.signup}</button>
+        <button type="submit">{text.next}</button>
     {/if}
 </form>
 

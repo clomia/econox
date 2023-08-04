@@ -1,22 +1,23 @@
-<script lang="ts">
+<script>
     import CognitoForm from "./CognitoForm.svelte";
     import EmailAuthForm from "./EmailAuthForm.svelte";
     import OptionForm from "./OptionForm.svelte";
     import BillingForm from "./BillingForm.svelte";
-    import Result from "./ResultProcess.svelte";
-    export let text: { [key: string]: string };
+    import ResultProcess from "./ResultProcess.svelte";
+    export let text;
 
-    let result = {};
+    // DB 유저 생성시 필요한 정보들
+    let inputResult = {
+        email: "",
+    };
 
-    const componentStep = [CognitoForm, EmailAuthForm, OptionForm, BillingForm, Result];
+    const componentStep = [CognitoForm, EmailAuthForm, OptionForm, BillingForm, ResultProcess];
     $: currentStep = 0;
 </script>
 
 <svelte:component
     this={componentStep[currentStep]}
-    on:complete={(event) => {
-        result = { ...result, ...event.detail };
-        currentStep++;
-    }}
+    bind:inputResult
     {text}
+    on:complete={() => currentStep++}
 />

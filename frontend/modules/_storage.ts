@@ -1,6 +1,5 @@
 const dbName = "econox-core";
-const objectStoreNames = ["setting", "general", "data"];
-
+const objectStoreNames = ["setting", "data"];
 
 class ObjectStore {
     private name: string;
@@ -83,5 +82,4 @@ class ObjectStore {
 
 // objectStoreNames로 사전 정의된 인스턴스만 생성 가능합니다.
 export const settingObjectStore = new ObjectStore("setting");
-export const generalObjectStore = new ObjectStore("general");
 export const dataObjectStore = new ObjectStore("data");

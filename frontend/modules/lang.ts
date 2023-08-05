@@ -1,10 +1,10 @@
-import axios from "axios"; // api 객체 못씀, api객체가 여기있는걸 써야 함
+import axios from "axios";
 import ISO6391 from "iso-639-1";
 import * as yaml from "js-yaml";
 
 import { settingObjectStore } from "../modules/_storage";
 
-const settingKey = {
+export const settingKey = {
     text: "uiText",
     lang: "uiTextLang"
 }
@@ -23,10 +23,11 @@ const getUiTextObject = async () => {
 }
 
 
-const loadUiText = async () => {
-    let text: UiTextType = await settingObjectStore.get(settingKey.text);
-    let lang: string = await settingObjectStore.get(settingKey.lang);
-
+export const loadUiText = async () => {
+    let [text, lang] = await Promise.all([
+        settingObjectStore.get(settingKey.text),
+        settingObjectStore.get(settingKey.lang),
+    ])
     if (!lang) { // 언어 설정이 없으면 영어로 설정
         lang = "en"
         settingObjectStore.put(settingKey.lang, "en");
@@ -41,7 +42,7 @@ const loadUiText = async () => {
     return { lang, text }
 }
 
-const supportedLangs = async () => {
+export const supportedLangs = async () => {
     const uiTextObject = await getUiTextObject()
 
     const nameList: { [key: string]: string } = {}; // 언어코드: 언어이름
@@ -58,8 +59,10 @@ const supportedLangs = async () => {
     return nameList
 }
 
-const changeLang = async (langCode: string) => {
-    await settingObjectStore.put(settingKey.lang, langCode); // 언어 바꾸고
-    await settingObjectStore.delete(settingKey.text); // 기존 텍스트 지우고
+export const changeLang = async (langCode: string) => {
+    await Promise.all([
+        settingObjectStore.put(settingKey.lang, langCode), // 언어 바꾸고
+        settingObjectStore.delete(settingKey.text) // 기존 텍스트 지우고
+    ])
     return await loadUiText() // 바꾼 언어에 맞게 다시 로딩해서 반환
 }

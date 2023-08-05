@@ -1,9 +1,10 @@
 <script lang="ts">
-    import LoginSignupToggle from "./LoginSignupToggle.svelte";
+    import * as state from "../../modules/state";
     import Login from "./Login.svelte";
     import Signup from "./signup/Index.svelte";
-    export let text: { [key: string]: string };
-    $: toggle = { login: true, signup: false };
+    import LoginSignupToggle from "./LoginSignupToggle.svelte";
+
+    const toggleState = state.auth.toggle;
 </script>
 
 <!-- 
@@ -13,12 +14,12 @@
 -->
 <div id="fixed-ground">
     <div class="window">
-        <LoginSignupToggle bind:toggle {text} />
+        <LoginSignupToggle />
         <section>
-            {#if toggle.login}
-                <Login {text} />
+            {#if $toggleState.login}
+                <Login />
             {:else}
-                <Signup {text} />
+                <Signup />
             {/if}
         </section>
     </div>

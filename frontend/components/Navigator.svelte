@@ -1,30 +1,31 @@
 <script lang="ts">
     import Auth from "./auth/Index.svelte";
-    export let text: { [key: string]: string };
+    import * as state from "../modules/state";
 
+    let text = state.uiText.text;
     let authToggle = false;
 </script>
 
-<header class="header">
+<section>
     <button>ECONOX</button>
-    <button>{text.console}</button>
-    <button>{text.featureHub}</button>
-    <button on:click={() => (authToggle = !authToggle)}>{text.signInOut}</button>
-</header>
+    <button>{$text.console}</button>
+    <button>{$text.featureHub}</button>
+    <button on:click={() => (authToggle = !authToggle)}>{$text.signInOut}</button>
+</section>
 
 {#if authToggle}
-    <Auth {text} />
+    <Auth />
 {/if}
 
 <style>
-    .header {
+    section {
         display: flex;
         justify-content: center;
         padding: 3rem 0;
         white-space: nowrap;
     }
 
-    .header button {
+    section button {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -36,7 +37,7 @@
         border-radius: 2rem;
     }
 
-    .header button:hover {
+    section button:hover {
         background-color: rgba(255, 255, 255, 0.16);
         cursor: pointer;
     }

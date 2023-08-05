@@ -22,7 +22,9 @@ class UserAuth(BaseModel):
 
 
 @router.post("/auth/user", tags=["user"])
-async def login(item: UserAuth):  # todo 올싸인아웃 후 로그인해서 다른 세션 종료시키기
+async def login(item: UserAuth):
+    # todo 올싸인아웃 후 로그인해서 다른 세션 종료시키기
+    # todo DB에 해당 유저의 레코드가 없으면 회원가입 완료 안된거니까 401 쏴주기
     try:
         result = cognito.initiate_auth(
             ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],

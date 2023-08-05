@@ -1,11 +1,14 @@
 <script lang="ts">
-    import { publicRequest } from "../../modules/requests";
-    import type { AxiosResponse } from "axios";
     import LoadingAnimation from "../../assets/LoadingAnimation.svelte";
-    export let text: { [key: string]: string };
+    import * as state from "../../modules/state";
+    import { publicRequest } from "../../modules/api";
+
+    import type { AxiosResponse } from "axios";
+
+    const text = state.uiText.text;
 
     let request: string | Promise<AxiosResponse> = "before"; // 요청 전
-    async function login(event: SubmitEvent) {
+    const login = async (event: SubmitEvent) => {
         const form = event.target as HTMLFormElement; //타입스크립트 적용 ㄱ
         const email = form.email.value;
         const password = form.password.value;
@@ -17,25 +20,25 @@
             console.log(token["refresh_token"]);
             console.log("로그인 성공! -> 토큰 저장하고 콘솔로 보내주기!");
         } catch (error) {
-            if (error.response.status === 401) {
+            if (error.response?.status === 401) {
                 request = "fail"; // 로그인 실패
             } else {
                 request = "error"; // 에러
             }
         }
-    }
+    };
 </script>
 
 <form on:submit|preventDefault={login}>
     <section>
         <label>
-            <span>{text.email}</span>
+            <span>{$text.email}</span>
             <input type="text" name="email" required autocomplete="email" />
         </label>
     </section>
     <section>
         <label>
-            <span>{text.password}</span>
+            <span>{$text.password}</span>
             <input type="password" name="password" required autocomplete="current-password" />
         </label>
     </section>
@@ -43,12 +46,12 @@
         <LoadingAnimation />
     {/await}
     {#if request == "fail"}
-        <div>{text.loginFailed}</div>
+        <div>{$text.loginFailed}</div>
     {:else if request == "error"}
-        <div>{text.error}</div>
+        <div>{$text.error}</div>
     {/if}
     {#if !(request instanceof Promise)}
-        <button type="submit">{text.login}</button>
+        <button type="submit">{$text.login}</button>
     {/if}
 </form>
 

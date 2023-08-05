@@ -2,7 +2,7 @@ import Swal from "sweetalert2"
 
 import * as api from "./api"
 import { settingObjectStore } from "./_storage"
-import { loadUiText } from "./lang"
+import { loadUiText } from "./uiText"
 
 const logout = async () => {
     await Promise.all([

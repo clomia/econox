@@ -1,25 +1,27 @@
 <script lang="ts">
-    export let toggle: { login: boolean; signup: boolean }; // Index 컴포넌트에서 양방향 바인딩으로 할당됩니다.
-    export let text: { [key: string]: string };
+    import * as state from "../../modules/state";
+
+    const text = state.uiText.text;
+    const toggleState = state.auth.toggle;
 
     const color = {
         activate: "white",
         deactivate: "rgba(255, 255, 255, 0.3)",
     };
 
-    function select(key: string) {
-        toggle = { login: key === "login", signup: key === "signup" };
-    }
+    const select = (key: string) => {
+        toggleState.set({ login: key === "login", signup: key === "signup" });
+    };
 
     $: styles = {
-        login: `border-bottom-color: ${toggle.login ? color.activate : color.deactivate}`,
-        signup: `border-bottom-color: ${toggle.signup ? color.activate : color.deactivate}`,
+        login: `border-bottom-color: ${$toggleState.login ? color.activate : color.deactivate}`,
+        signup: `border-bottom-color: ${$toggleState.signup ? color.activate : color.deactivate}`,
     };
 </script>
 
 <div class="toggle">
-    <button on:click={() => select("login")} style={styles.login}>{text.login}</button>
-    <button on:click={() => select("signup")} style={styles.signup}>{text.signup}</button>
+    <button on:click={() => select("login")} style={styles.login}>{$text.login}</button>
+    <button on:click={() => select("signup")} style={styles.signup}>{$text.signup}</button>
 </div>
 
 <style>

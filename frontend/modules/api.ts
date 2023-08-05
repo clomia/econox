@@ -4,7 +4,7 @@ import * as jwt from "jsonwebtoken";
 import { settingObjectStore } from "./_storage";
 
 import type { JwtPayload } from "jsonwebtoken";
-import type { InternalAxiosRequestConfig, AxiosError } from "axios";
+import type { InternalAxiosRequestConfig } from "axios";
 
 export const apiHostPath = window.location.origin + "/api"
 export const publicRequest = axios.create({ baseURL: apiHostPath })

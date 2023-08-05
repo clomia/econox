@@ -1,61 +1,67 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
-    import { publicRequest } from "../../../modules/requests";
-    import type { AxiosResponse } from "axios";
+
+    import * as state from "../../../modules/state";
+    import { publicRequest } from "../../../modules/api";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
-    export let text: { [key: string]: string };
-    export let inputResult: { [key: string]: string };
+
+    import type { AxiosResponse } from "axios";
+
+    const text = state.uiText.text;
+    const inputResult = state.auth.signup.inputResult;
+
+    const dispatch = createEventDispatcher();
 
     let request: null | Promise<AxiosResponse> = null; // 요청 전
     let message = "";
 
-    const dispatch = createEventDispatcher();
-
-    async function signup(event: SubmitEvent) {
+    const signup = async (event: SubmitEvent) => {
+        message = "";
         const form = event.target as HTMLFormElement;
         const email = form.email.value;
         const password = form.password.value;
         const retypePassword = form.retypePassword.value;
         if (password !== retypePassword) {
-            message = text.passwordMismatch;
+            message = $text.passwordMismatch;
             return;
         } else if (password.length < 6) {
-            message = text.passwordLengthWarning;
+            message = $text.passwordLengthWarning;
             return;
         }
         try {
             request = publicRequest.post("/user/cognito", { email, password });
             await request;
-            inputResult["email"] = email;
+            inputResult.set({ ...$inputResult, email });
             dispatch("complete");
         } catch (error) {
-            if (error.response.status === 409) {
-                message = text.alreadyExistsUser;
-            } else if (error.response.status === 400) {
-                message = text.invalidInput; // 입력 내용이 Cognito로부터 거부됌
+            request = null;
+            if (error.response?.status === 409) {
+                message = $text.alreadyExistsUser;
+            } else if (error.response?.status === 400) {
+                message = $text.invalidInput; // 입력 내용이 Cognito로부터 거부됌
             } else {
-                message = text.error;
+                message = $text.error;
             }
         }
-    }
+    };
 </script>
 
 <form on:submit|preventDefault={signup}>
     <section>
         <label>
-            <span>{text.email}</span>
+            <span>{$text.email}</span>
             <input type="text" name="email" required autocomplete="email" />
         </label>
     </section>
     <section>
         <label>
-            <span>{text.password}</span>
+            <span>{$text.password}</span>
             <input type="password" name="password" required autocomplete="off" />
         </label>
     </section>
     <section>
         <label>
-            <span>{text.retypePassword}</span>
+            <span>{$text.retypePassword}</span>
             <input type="password" name="retypePassword" required autocomplete="off" />
         </label>
     </section>
@@ -64,7 +70,7 @@
     {/await}
     <div>{message}</div>
     {#if !(request instanceof Promise)}
-        <button type="submit">{text.next}</button>
+        <button type="submit">{$text.next}</button>
     {/if}
 </form>
 

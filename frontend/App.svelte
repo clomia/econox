@@ -1,19 +1,32 @@
 <script>
+	import { onMount } from "svelte";
 	import { Router, Route } from "svelte-routing";
-	import { loadText } from "./modules/lang";
 	import { routes } from "./pages";
-	import Header from "./components/Header.svelte";
-	import Footer from "./components/Footer.svelte";
+	import Navigator from "./components/Navigator.svelte";
+	import LangBtn from "./components/LangBtn.svelte";
+	import { loadUiText } from "./modules/uiText";
+	import * as state from "./modules/state";
+
+	onMount(async () => {
+		const { text } = await loadUiText();
+		state.uiText.text.set(text);
+	});
 </script>
 
-{#await loadText() then text}
-	<Header {text} />
+<header>
+	<Navigator />
+</header>
+
+<main>
 	<Router>
 		{#each routes as route}
 			<Route path={route.path}>
-				<svelte:component this={route.page} {text} />
+				<svelte:component this={route.page} />
 			</Route>
 		{/each}
 	</Router>
-	<Footer {text} />
-{/await}
+</main>
+
+<aside>
+	<LangBtn />
+</aside>

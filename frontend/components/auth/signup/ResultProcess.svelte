@@ -1,3 +1,1 @@
-<script>
-    export let text;
-</script>
+This is Result Process

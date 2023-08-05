@@ -2,20 +2,17 @@ import axios from "axios";
 import ISO6391 from "iso-639-1";
 import * as yaml from "js-yaml";
 
-import { settingObjectStore } from "../modules/_storage";
+import { settingObjectStore } from "./_storage";
 
 export const settingKey = {
+    lang: "uiTextLang",
     text: "uiText",
-    lang: "uiTextLang"
 }
 
 interface UiTextObjectType { // yaml 파일 데이터
     [key: string]: { [key: string]: string }
 }
 
-interface UiTextType { // yamil 파일에서 특정 언어만 추출한 데이터
-    [key: string]: string
-}
 const getUiTextObject = async () => {
     const requests = axios.create({ baseURL: window.location.origin });
     const uiTextYaml = await requests.get("/static/uiText.yaml")

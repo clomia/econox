@@ -1,64 +1,60 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
-    import { publicRequest } from "../../../modules/requests";
-    import type { AxiosResponse } from "axios";
+
+    import * as state from "../../../modules/state";
+    import { publicRequest } from "../../../modules/api";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
-    export let text: { [key: string]: string };
-    export let inputResult: { [key: string]: string };
 
-    let request: null | Promise<AxiosResponse> = null; // 요청 전
-    let message = text.enterEmailVerificationCode;
-    let timeLimit = "";
+    import type { AxiosResponse } from "axios";
 
-    let intervalId: number | undefined;
-
-    function startTokenExpirCount() {
-        let totalSeconds = 180; // 3분 = 180초
-
-        if (intervalId !== undefined) {
-            clearInterval(intervalId);
-        }
-        intervalId = window.setInterval(() => {
-            timeLimit =
-                totalSeconds === 0
-                    ? text.verifiCodeExpiration
-                    : `${Math.floor(totalSeconds / 60)}:${(totalSeconds % 60).toString().padStart(2, "0")}`;
-            console.log(timeLimit);
-            totalSeconds--;
-            if (totalSeconds < 0) clearInterval(intervalId!);
-        }, 1000);
-    }
+    const text = state.uiText.text;
+    const inputResult = state.auth.signup.inputResult;
+    const emailAuthTimeLimit = state.auth.signup.emailAuthTimeLimit;
 
     const dispatch = createEventDispatcher();
 
-    async function confirmVerificationCode(event: SubmitEvent) {
+    let request: null | Promise<AxiosResponse> = null; // 요청 전
+    let message = $text.enterEmailVerificationCode;
+
+    const countdown = async (totalSeconds: number) => {
+        while (totalSeconds >= 0) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = (totalSeconds % 60).toString().padStart(2, "0");
+            emailAuthTimeLimit.update(() => `${minutes}:${seconds}`);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            totalSeconds--;
+        }
+        emailAuthTimeLimit.update(() => $text.verifiCodeExpiration);
+    };
+    countdown(180); // Cognito 이메일 인증코드 유효기간 3분
+
+    const confirmVerificationCode = async (event: SubmitEvent) => {
+        message = "";
         const form = event.target as HTMLFormElement;
-        const email = inputResult.email;
+        const email = $inputResult.email;
         const verification_code = form.code.value;
         try {
             request = publicRequest.post("/auth/email", { email, verification_code });
-            startTokenExpirCount(); // todo 이건 잘 되는데 이미 사용자가 값을 입력하니까 정작 플래이스 홀더를 못본다
-            message = "";
             await request;
             dispatch("complete");
         } catch (error) {
             request = null;
-            if (error.response.status === 409) {
-                message = text.emailVerifiCodeMismatch; // 인증 코드가 올바르지 않음
-            } else if (error.response.status === 401) {
-                message = text.expiredEmailVerifiCode; // 인증 코드가 만료됌
+            if (error.response?.status === 409) {
+                message = $text.emailVerifiCodeMismatch; // 인증 코드가 올바르지 않음
+            } else if (error.response?.status === 401) {
+                message = $text.expiredEmailVerifiCode; // 인증 코드가 만료됌
             } else {
-                message = text.error;
+                message = $text.error;
             }
         }
-    }
+    };
 </script>
 
 <form on:submit|preventDefault={confirmVerificationCode}>
     <section>
         <label>
-            <span>{inputResult.email}</span>
-            <input type="text" name="code" placeholder={timeLimit} required autocomplete="off" />
+            <span>{$inputResult.email}</span>
+            <input type="text" name="code" placeholder={$emailAuthTimeLimit} required autocomplete="off" />
         </label>
     </section>
     {#await request}
@@ -66,7 +62,7 @@
     {/await}
     <div>{message}</div>
     {#if !(request instanceof Promise)}
-        <button type="submit">{text.next}</button>
+        <button type="submit">{$text.next}</button>
     {/if}
 </form>
 

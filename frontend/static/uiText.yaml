@@ -1,0 +1,73 @@
+# 언어별 UI 텍스트 정의 문서 (영어 텍스트는 모든 항목에 필수입니다!)
+featureHub: 
+  en: "Feature Hub"
+  ko: "피쳐 허브"
+console:
+  en: "Console"
+  ko: "콘솔"
+signInOut:
+  en: "Sign In/Out"
+  ko: "로그인/회원가입"
+login:
+  en: "Login"
+  ko: "로그인"
+signup:
+  en: "Signup"
+  ko: "회원가입"
+email:
+  en: "Email"
+  ko: "이메일"
+password:
+  en: "Password"
+  ko: "비밀번호"
+retypePassword:
+  en: "Retype password"
+  ko: "비밀번호 확인"
+loginFailed:
+  en: "Email or password is incorrect."
+  ko: "이메일 또는 비밀번호가 올바르지 않습니다."
+signupFailed:
+  en: "Email or password is incorrect."
+  ko: "이메일 또는 비밀번호가 올바르지 않습니다."
+error:
+  en: "An unexpected error has occurred"
+  ko: "예상치 못한 오류가 발생했습니다"
+sessionInvalid:
+  en: "Your session has expired, please log in again"
+  ko: "세션이 만료되었으니 다시 로그인해주세요"
+loginRequired:
+  en: "Login is required."
+  ko: "로그인이 필요합니다."
+ok:
+  en: "OK"
+  ko: "확인"
+passwordMismatch:
+  en: "Passwords do not match."
+  ko: "비밀번호가 일치하지 않습니다."
+alreadyExistsUser:
+  en: "This email is already registered."
+  ko: "이미 가입되어있는 이메일입니다."
+invalidInput:
+  en: "Invalid input"
+  ko: "입력이 잘못되었습니다."
+passwordLengthWarning:
+  en: "Password must be 6 characters or more."
+  ko: "비밀번호는 6글자 이상이어야 합니다."
+enterEmailVerificationCode:
+  en: "Please enter the code sent to your email."
+  ko: "이메일로 전송된 코드를 입력해주세요."
+verificationCode:
+  en: "Verification code"
+  ko: "인증 코드"
+expiredEmailVerifiCode:
+  en: "Authorization code has expired."
+  ko: "만료된 인증 코드입니다."
+emailVerifiCodeMismatch:
+  en: "Authorization code is incorrect."
+  ko: "인증 코드가 올바르지 않습니다."
+next:
+  en: "Next"
+  ko: "다음"
+verifiCodeExpiration:
+  en: "Verification code has expired."
+  ko: "인증코드가 만료되었습니다."

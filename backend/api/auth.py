@@ -77,3 +77,6 @@ async def token_refresh(item: RefreshToken) -> Dict[str, str]:
     except cognito.exceptions.NotAuthorizedException:
         raise HTTPException(status_code=401)
     return {"id_token": result["AuthenticationResult"]["IdToken"]}
+
+
+# todo 로그인된 유저가 요청 헤더에 담는 토큰을 보고 검사 & 누구인지 확인하는 라우터 전처리 함수(인터셉터) 만들어야 함

@@ -1,3 +1,4 @@
+""" user & auth """
 from typing import Dict
 
 import jwt
@@ -10,6 +11,8 @@ from fastapi.responses import Response
 from backend.api import router
 from backend.system import SECRETS
 
+API_PREFIX = "auth"
+
 region = "us-east-1"
 cognito = boto3.client("cognito-idp", region_name=region)
 jwks_url = f"https://cognito-idp.{region}.amazonaws.com/{SECRETS['COGNITO_USER_POOL_ID']}/.well-known/jwks.json"
@@ -21,7 +24,7 @@ class UserAuth(BaseModel):
     password: str
 
 
-@router.post("/auth/user", tags=["user"])
+@router.post("/auth/user", tags=[API_PREFIX])
 async def login(item: UserAuth):
     # todo 올싸인아웃 후 로그인해서 다른 세션 종료시키기
     # todo DB에 해당 유저의 레코드가 없으면 회원가입 완료 안된거니까 401 쏴주기
@@ -39,30 +42,12 @@ async def login(item: UserAuth):
     }
 
 
-@router.post("/user/cognito", tags=["user"])
-async def create_cognito_user(item: UserAuth):
-    try:
-        cognito.sign_up(
-            ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
-            Username=item.email,
-            Password=item.password,
-            UserAttributes=[
-                {"Name": "email", "Value": item.email},
-            ],
-        )
-    except cognito.exceptions.UsernameExistsException:
-        raise HTTPException(status_code=409)
-    except cognito.exceptions.InvalidParameterException:
-        raise HTTPException(status_code=400)
-    return Response(status_code=200)
-
-
 class EmailAuth(BaseModel):
     email: str
     verification_code: str
 
 
-@router.post("/auth/email", tags=["auth"])
+@router.post("/auth/email", tags=[API_PREFIX])
 async def signup_email_verification(item: EmailAuth):
     try:
         cognito.confirm_sign_up(
@@ -81,8 +66,8 @@ class RefreshToken(BaseModel):
     refresh_token: str
 
 
-@router.post("/auth/refresh-token", tags=["auth"])
-def token_refresh(item: RefreshToken) -> Dict[str, str]:
+@router.post("/auth/refresh-token", tags=[API_PREFIX])
+async def token_refresh(item: RefreshToken) -> Dict[str, str]:
     try:
         result = cognito.initiate_auth(
             AuthFlow="REFRESH_TOKEN_AUTH",

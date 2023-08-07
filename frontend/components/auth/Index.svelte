@@ -12,8 +12,8 @@
     단계별로 필요한 컴포넌트는 순수함수 파이프라인 아키텍쳐로 쓰게
     인자 받을 수 있는 별도의 컴포넌로 만들어서 쓰자
 -->
-<div id="fixed-ground">
-    <div class="window">
+<div class="ground">
+    <div class="ground__window">
         <LoginSignupToggle />
         <section>
             {#if $toggleState.login}
@@ -26,17 +26,17 @@
 </div>
 
 <style>
-    #fixed-ground {
+    .ground {
         display: flex;
         justify-content: center;
         align-items: start;
-        position: fixed;
+        position: absolute;
         top: 10rem;
         left: 0;
         right: 0;
         bottom: 0;
     }
-    .window {
+    .ground__window {
         width: 34rem;
         padding: 3rem 4rem;
         border-radius: 1rem;

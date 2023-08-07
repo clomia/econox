@@ -1,5 +1,4 @@
 import { writable } from "svelte/store";
-import type { Writable } from "svelte/store";
 
 const defaultObject = <T>(defaultValue: T): { [k: string]: T } => new Proxy({}, { get: () => defaultValue });
 

@@ -32,7 +32,7 @@ export const loadUiText = async () => {
     if (!text) {
         const uiTextObject = await getUiTextObject()
         text = Object.entries(uiTextObject).reduce((acc, [key, value]) => {
-            return { ...acc, [key]: value[lang] }
+            return { ...acc, [key]: value[lang] || value["en"] }
         }, {});
         settingObjectStore.put(settingKey.text, text);
     }

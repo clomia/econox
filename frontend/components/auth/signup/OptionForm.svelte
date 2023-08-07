@@ -1,33 +1,48 @@
 <script>
+    import { onMount } from "svelte";
+    import { publicRequest } from "../../../modules/api";
+
+    import * as state from "../../../modules/state";
+    const text = state.uiText.text;
+
+    let currency = "USD";
+
+    onMount(async () => {
+        const response = await publicRequest.get("/user/country");
+        currency = response.data.country === "KR" ? "KRW" : "USD";
+    });
 </script>
 
 <main>
-    <div class="title">맴버십 선택</div>
-    <div class="subtitle">
-        첫 회원가입 고객을 대상으로 선택한 맴버십이 첫 한달간 결제 없이 무료로 제공됩니다!
-    </div>
+    <div class="title">{$text.selectMembership}</div>
+    <div class="subtitle">{$text.selectMembershipSubtitle}</div>
 
-    <div class="forex-toggle">
-        <div class="forex-toggle__mover" />
-        <button>달러 요금제</button>
-        <button>원화 요금제</button>
-    </div>
+    <button class="currency" on:click={() => (currency = currency === "USD" ? "KRW" : "USD")}>
+        <div class="currency__mover" style={currency === "USD" ? "left:0" : "left:50%"} />
+        <div class="currency__text" style="{currency === 'USD' ? 'color: white' : ''};">
+            {$text.dollarPlan}
+        </div>
+        <div class="currency__text" style="{currency === 'KRW' ? 'color: white' : ''};">
+            {$text.wonPlan}
+        </div>
+    </button>
 
-    <div class="additional">달러 요금제는 한국 결제수단을 지원하지 않습니다.</div>
+    <div class="additional">{currency === "USD" ? $text.dollarPlanLimit : $text.wonPlanLimit}</div>
 
     <button class="basic">
-        <div class="basic__title">일반</div>
-        <div class="basic__price">15,000원</div>
-        <p>
-            전세계 금융시장, 국가경제, 기업 데이터를 비교해서 연관성을 발견하세요. 모든 데이터를 시계열
-            그래프로 비교해서 거시경제를 한눈에 파악하고 투자에 필요한 통찰을 얻을 수 있습니다.
-        </p>
+        <div class="basic__title">{$text.basicPlan}</div>
+        <div class="basic__price">
+            {currency === "USD" ? $text.basicPlanDollerPrice : $text.basicPlanWonPrice}
+        </div>
+        <p>{$text.basicPlanDescription}</p>
     </button>
 
     <button class="professional">
-        <div class="professional__title">전문가</div>
-        <div class="professional__price">19,000원</div>
-        <p>모든 데이터를 CSV로 무제한 다운로드할 수 있습니다!</p>
+        <div class="professional__title">{$text.professionalPlan}</div>
+        <div class="professional__price">
+            {currency === "USD" ? $text.professionalPlanDollerPrice : $text.professionalPlanWonPrice}
+        </div>
+        <p>{$text.professionalPlanDescription}</p>
     </button>
 </main>
 
@@ -48,40 +63,44 @@
         color: rgba(255, 255, 255, 0.8);
         text-align: center;
         padding: 0 1rem;
+        margin-bottom: 2rem;
     }
 
-    .forex-toggle {
+    .currency {
+        position: relative;
         display: flex;
         justify-content: space-around;
-        align-items: center;
-        height: 3rem;
+        height: 2.4rem;
         width: 100%;
-        margin-top: 2rem;
         border: thin solid white;
         border-radius: 2rem;
-        position: relative;
     }
-    .forex-toggle__mover {
+    .currency__mover {
         position: absolute;
-        left: 0;
+        top: 0rem;
         width: 50%;
-        height: inherit;
-        border: inherit;
-        border-radius: inherit;
-        border-color: aqua;
+        /* 미세한 틀어짐이 있어서 height가 currency보다 약간 작아야 한다.*/
+        height: 2.3rem;
+        border: thin solid white;
+        border-radius: 2rem;
         transition: left 200ms;
     }
-    .forex-toggle button {
-        color: white;
+    .currency__text {
+        display: flex;
+        align-items: center;
+        color: rgba(255, 255, 255, 0.4);
+        height: 100%;
+        padding: 0 1rem;
+        transition: color ease-out 100ms;
     }
-    .forex-toggle:hover .forex-toggle__mover {
-        left: 50%;
+    .currency__text:hover {
+        color: white;
     }
 
     .additional {
-        height: 1.2rem;
         margin: 1.2rem 0;
         font-size: 0.9rem;
+        text-align: center;
         color: rgba(255, 255, 255, 0.7);
     }
 
@@ -91,6 +110,7 @@
         border: thin solid white;
         border-radius: 1rem;
         padding: 1.2rem;
+        width: 100%;
     }
     .basic {
         margin-bottom: 2rem;
@@ -108,9 +128,8 @@
     p {
         color: rgba(255, 255, 255, 0.8);
     }
-
     button:hover,
-    .forex-toggle:hover {
+    .currency:hover {
         cursor: pointer;
     }
 </style>

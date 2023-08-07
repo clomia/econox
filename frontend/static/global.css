@@ -12,3 +12,7 @@ body {
 	background: -webkit-linear-gradient(to bottom, #202123, #1f3036);
 	background: linear-gradient(to bottom, #202123, #1f3036);
 }
+
+main {
+	position: relative;
+}

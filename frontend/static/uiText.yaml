@@ -71,3 +71,49 @@ next:
 verifiCodeExpiration:
   en: "Verification code has expired."
   ko: "인증코드가 만료되었습니다."
+selectMembership:
+  en: "Select Membership"
+  ko: "맴버십 선택"
+selectMembershipSubtitle:
+  en: "For customers who sign up for the first time, the selected membership is provided free of charge for the first month!"
+  ko: "첫 회원가입 고객을 대상으로 선택한 맴버십이 첫 한달간 결제 없이 무료로 제공됩니다!"
+dollarPlan:
+  en: "dollar plan"
+  ko: "달러 요금제"
+wonPlan:
+  en: "won plan"
+  ko: "원화 요금제"
+dollarPlanLimit:
+  en: "The dollar plan does not support Korean payment methods."
+  ko: "달러 요금제는 한국 결제수단을 지원하지 않습니다."
+wonPlanLimit:
+  en: "For KRW rate plans, only Korean payment methods are supported."
+  ko: "원화 요금제는 한국 결제수단만 지원됩니다."
+basicPlan:
+  en: "Basic"
+  ko: "일반"
+basicPlanDollerPrice:
+  en: "$14.9"
+basicPlanWonPrice:
+  en: "KRW 14,900"
+  ko: "14,900원/월"
+basicPlanDescription:
+  en: >
+    Compare financial markets, national economies and business data from around the world to discover connections.
+    Compare all data in a time series graph to understand macroeconomics at a glance
+    Get the insight you need to invest.
+  ko: > 
+    전세계 금융시장, 국가경제, 기업 데이터를 비교해서 연관성을 발견하세요.
+    모든 데이터를 시계열 그래프로 비교해서 거시경제를 한눈에 파악하고
+    투자에 필요한 통찰을 얻을 수 있습니다.
+professionalPlan:
+  en: "Professional"
+  ko: "전문가"
+professionalPlanDollerPrice:
+  en: "$18.9"
+professionalPlanWonPrice:
+  en: "KRW 18,900"
+  ko: "18,900원"
+professionalPlanDescription:
+  en: "Unlimited downloads of all data as CSV!"
+  ko: "모든 데이터를 CSV로 무제한 다운로드할 수 있습니다!"

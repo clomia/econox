@@ -1,11 +1,22 @@
 <script>
-    import { onMount } from "svelte";
+    import { onMount, createEventDispatcher } from "svelte";
     import { publicRequest } from "../../../modules/api";
 
     import * as state from "../../../modules/state";
+
     const text = state.uiText.text;
+    const inputResult = state.auth.signup.inputResult;
 
     let currency = "USD";
+
+    const dispatch = createEventDispatcher();
+
+    const submit = (membership) => {
+        return () => {
+            inputResult.set({ ...$inputResult, currency, membership });
+            dispatch("complete");
+        };
+    };
 
     onMount(async () => {
         const response = await publicRequest.get("/user/country");
@@ -17,19 +28,27 @@
     <div class="title">{$text.selectMembership}</div>
     <div class="subtitle">{$text.selectMembershipSubtitle}</div>
 
-    <button class="currency" on:click={() => (currency = currency === "USD" ? "KRW" : "USD")}>
+    <div class="currency">
         <div class="currency__toggle" style={currency === "USD" ? "left:0" : "left:50%"} />
-        <div class="currency__text" style="{currency === 'USD' ? 'color: white' : ''};">
+        <button
+            class="currency__text"
+            on:click={() => (currency = "USD")}
+            style="{currency === 'USD' ? 'color: white' : ''};"
+        >
             {$text.dollarPlan}
-        </div>
-        <div class="currency__text" style="{currency === 'KRW' ? 'color: white' : ''};">
+        </button>
+        <button
+            class="currency__text"
+            on:click={() => (currency = "KRW")}
+            style="{currency === 'KRW' ? 'color: white' : ''};"
+        >
             {$text.wonPlan}
-        </div>
-    </button>
+        </button>
+    </div>
 
     <div class="additional">{currency === "USD" ? $text.dollarPlanLimit : $text.wonPlanLimit}</div>
 
-    <button class="basic">
+    <button class="basic" on:click={submit("basic")}>
         <div class="basic__title">{$text.basicPlan}</div>
         <div class="basic__price">
             {currency === "USD" ? $text.basicPlanDollerPrice : $text.basicPlanWonPrice}
@@ -37,7 +56,7 @@
         <p>{$text.basicPlanDescription}</p>
     </button>
 
-    <button class="professional">
+    <button class="professional" on:click={submit("professional")}>
         <div class="professional__title">{$text.professionalPlan}</div>
         <div class="professional__price">
             {currency === "USD" ? $text.professionalPlanDollerPrice : $text.professionalPlanWonPrice}
@@ -95,6 +114,7 @@
     }
     .currency__text:hover {
         color: white;
+        cursor: pointer;
     }
     .additional {
         margin: 1.2rem 0;
@@ -109,9 +129,15 @@
         border-radius: 1rem;
         padding: 1.2rem;
         width: 100%;
+        transition: background-color 50ms ease-out;
     }
     .basic {
         margin-bottom: 2rem;
+    }
+    .basic:hover,
+    .professional:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        cursor: pointer;
     }
     .basic__title,
     .professional__title {
@@ -125,8 +151,5 @@
     }
     p {
         color: rgba(255, 255, 255, 0.8);
-    }
-    button:hover {
-        cursor: pointer;
     }
 </style>

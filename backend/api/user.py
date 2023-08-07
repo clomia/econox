@@ -46,7 +46,7 @@ async def get_user_country(request: Request):
         default = {"country": "KR", "timezone": "Asia/Seoul"}
         log.warning(
             "GET /user/country"
-            f"\nIP 정보 취득에 실패했습니다. 기본값을 응답합니다."
+            f"\n국가 정보 취득에 실패했습니다. 기본값을 응답합니다."
             f"\nIP: {request.client.host} , 응답된 기본값: {default}"
         )
         return default

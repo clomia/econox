@@ -11,6 +11,4 @@
     const currentStep = state.auth.signup.step;
 </script>
 
-<OptionForm />
-
-<!-- <svelte:component this={componentStep[$currentStep]} on:complete={() => currentStep.set($currentStep + 1)} /> -->
+<svelte:component this={componentStep[$currentStep]} on:complete={() => currentStep.set($currentStep + 1)} />

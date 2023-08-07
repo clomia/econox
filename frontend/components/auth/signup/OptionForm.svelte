@@ -18,7 +18,7 @@
     <div class="subtitle">{$text.selectMembershipSubtitle}</div>
 
     <button class="currency" on:click={() => (currency = currency === "USD" ? "KRW" : "USD")}>
-        <div class="currency__mover" style={currency === "USD" ? "left:0" : "left:50%"} />
+        <div class="currency__toggle" style={currency === "USD" ? "left:0" : "left:50%"} />
         <div class="currency__text" style="{currency === 'USD' ? 'color: white' : ''};">
             {$text.dollarPlan}
         </div>
@@ -75,7 +75,7 @@
         border: thin solid white;
         border-radius: 2rem;
     }
-    .currency__mover {
+    .currency__toggle {
         position: absolute;
         top: 0rem;
         width: 50%;
@@ -96,14 +96,12 @@
     .currency__text:hover {
         color: white;
     }
-
     .additional {
         margin: 1.2rem 0;
         font-size: 0.9rem;
         text-align: center;
         color: rgba(255, 255, 255, 0.7);
     }
-
     .basic,
     .professional {
         color: white;
@@ -128,8 +126,7 @@
     p {
         color: rgba(255, 255, 255, 0.8);
     }
-    button:hover,
-    .currency:hover {
+    button:hover {
         cursor: pointer;
     }
 </style>

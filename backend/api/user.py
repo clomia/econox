@@ -21,7 +21,7 @@ class CognitoSignup(BaseModel):
 @router.post("/user/cognito", tags=[API_PREFIX])
 async def create_cognito_user(item: CognitoSignup):
     try:
-        cognito.sign_up(
+        result = cognito.sign_up(
             ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
             Username=item.email,
             Password=item.password,
@@ -33,7 +33,7 @@ async def create_cognito_user(item: CognitoSignup):
         raise HTTPException(status_code=409)
     except cognito.exceptions.InvalidParameterException:
         raise HTTPException(status_code=400)
-    return Response(status_code=200)
+    return {"user_id": result["UserSub"]}
 
 
 @router.get("/user/country", tags=[API_PREFIX])

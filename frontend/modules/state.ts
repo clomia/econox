@@ -12,7 +12,7 @@ export const auth = {
     signup: {
         step: writable(0),
         emailAuthTimeLimit: writable(""),
-        inputResult: writable({ email: "", membership: "", currency: "" }) // DB 유저 생성시 필요한 정보들
+        inputResult: writable({ userId: "", email: "", membership: "", currency: "" }) // DB 유저 생성시 필요한 정보들
     }
 }
 

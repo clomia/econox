@@ -86,7 +86,7 @@ async def phone_confirmation(
 
 
 @router.post("/auth/email/confirm", tags=[API_PREFIX])
-async def signup_email_confirmation(
+async def cognito_email_confirmation(
     email: str = Body(...), confirmation_code: str = Body(...)
 ):
     try:

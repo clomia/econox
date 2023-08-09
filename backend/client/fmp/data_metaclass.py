@@ -18,7 +18,7 @@ from backend.client.factor import Factor
 from backend.client.translate import Multilingual
 
 HOST = "https://financialmodelingprep.com"
-XARRAY_PATH = EFS_VOLUME_PATH / "xarray"
+XARRAY_PATH = EFS_VOLUME_PATH / "xarray"  # 이거 디렉토리 없으면 만드는 로직 없는거 같음
 CLASS_PATH = ROOT_PATH / "backend/client/fmp/data_class.json"
 
 

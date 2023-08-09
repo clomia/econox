@@ -33,14 +33,10 @@ log.addHandler(log_handler)
 
 # ==================== CONSTANTS ====================
 ROOT_PATH = Path(__file__).parent.parent
-XARRAY_PATH = ROOT_PATH / "efs-volume/xarray"  # zarr array path for cache
-INFO_PATH = ROOT_PATH / "efs-volume/info"  # json path for cache
-# UI 텍스트 다국어 정의 파일
-MULTILINGUAL_YAML_PATH = ROOT_PATH / "frontend/static/multilingual.yaml"
+EFS_VOLUME_PATH = ROOT_PATH / "efs-volume"
 
 S3_BUCKET_NAME = "econox-storage"
 SECRET_MANAGER_NAME = "econox-secret"
-
 # ==================== SECRETS ====================
 # Secret manager에 정의된 보안 데이터를 딕셔너리로 정리합니다.
 secret_manager = boto3.client("secretsmanager")

@@ -53,23 +53,23 @@ invalidInput:
 passwordLengthWarning:
   en: "Password must be 6 characters or more."
   ko: "비밀번호는 6글자 이상이어야 합니다."
-enterEmailVerificationCode:
+enterEmailConfirmationCode:
   en: "Please enter the code sent to your email."
   ko: "이메일로 전송된 코드를 입력해주세요."
-verificationCode:
-  en: "Verification code"
-  ko: "인증 코드"
-expiredEmailVerifiCode:
-  en: "Authorization code has expired."
-  ko: "만료된 인증 코드입니다."
-emailVerifiCodeMismatch:
-  en: "Authorization code is incorrect."
-  ko: "인증 코드가 올바르지 않습니다."
+confirmationCode:
+  en: "confirmation code"
+  ko: "확인 코드"
+expiredEmailConfirmCode:
+  en: "Confirmation code has expired."
+  ko: "만료된 확인 코드입니다."
+emailConfirmCodeMismatch:
+  en: "Confirmation code is incorrect."
+  ko: "확인 코드가 올바르지 않습니다."
 next:
   en: "Next"
   ko: "다음"
-verifiCodeExpiration:
-  en: "Verification code has expired."
+confirmCodeExpiration:
+  en: "Confirmation code has expired."
   ko: "인증코드가 만료되었습니다."
 selectMembership:
   en: "Select Membership"

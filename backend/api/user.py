@@ -1,8 +1,6 @@
 import boto3
 import ipinfo
-from pydantic import BaseModel
-from fastapi import HTTPException, Request
-from fastapi.responses import Response
+from fastapi import HTTPException, Request, Body
 
 from backend.api import router
 from backend.system import SECRETS, log
@@ -13,20 +11,15 @@ region = "us-east-1"
 cognito = boto3.client("cognito-idp", region_name=region)
 
 
-class CognitoSignup(BaseModel):
-    email: str
-    password: str
-
-
 @router.post("/user/cognito", tags=[API_PREFIX])
-async def create_cognito_user(item: CognitoSignup):
+async def create_cognito_user(email: str = Body(...), password: str = Body(...)):
     try:
         result = cognito.sign_up(
             ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
-            Username=item.email,
-            Password=item.password,
+            Username=email,
+            Password=password,
             UserAttributes=[
-                {"Name": "email", "Value": item.email},
+                {"Name": "email", "Value": email},
             ],
         )
     except cognito.exceptions.UsernameExistsException:

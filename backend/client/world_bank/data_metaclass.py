@@ -6,9 +6,11 @@ import numpy as np
 import xarray as xr
 
 from backend.compute import parallel, standardization
-from backend.system import XARRAY_PATH
+from backend.system import EFS_VOLUME_PATH
 from backend.client.factor import Factor
 from backend.client.translate import Multilingual
+
+XARRAY_PATH = EFS_VOLUME_PATH / "xarray"
 
 
 def wbdata_safe_caller(wb_func):

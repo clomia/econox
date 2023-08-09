@@ -9,40 +9,40 @@
 
     const text = state.uiText.text;
     const inputResult = state.auth.signup.inputResult;
-    const emailAuthTimeLimit = state.auth.signup.emailAuthTimeLimit;
+    const emailConfirmTimeLimit = state.auth.signup.emailConfirmTimeLimit;
 
     const dispatch = createEventDispatcher();
 
     let request: null | Promise<AxiosResponse> = null; // 요청 전
-    let message = $text.enterEmailVerificationCode;
+    let message = $text.enterEmailConfirmationCode;
 
     const countdown = async (totalSeconds: number) => {
         while (totalSeconds >= 0) {
             const minutes = Math.floor(totalSeconds / 60);
             const seconds = (totalSeconds % 60).toString().padStart(2, "0");
-            emailAuthTimeLimit.update(() => `${minutes}:${seconds}`);
+            emailConfirmTimeLimit.update(() => `${minutes}:${seconds}`);
             await new Promise((resolve) => setTimeout(resolve, 1000));
             totalSeconds--;
         }
-        emailAuthTimeLimit.update(() => $text.verifiCodeExpiration);
+        emailConfirmTimeLimit.update(() => $text.confirmCodeExpiration);
     };
     countdown(180); // Cognito 이메일 인증코드 유효기간 3분
 
-    const confirmVerificationCode = async (event: SubmitEvent) => {
+    const codeConfirmation = async (event: SubmitEvent) => {
         message = "";
         const form = event.target as HTMLFormElement;
         const email = $inputResult.email;
-        const verification_code = form.code.value;
+        const confirmation_code = form.code.value;
         try {
-            request = publicRequest.post("/auth/email", { email, verification_code });
+            request = publicRequest.post("/auth/email/confirm", { email, confirmation_code });
             await request;
             dispatch("complete");
         } catch (error) {
             request = null;
             if (error.response?.status === 409) {
-                message = $text.emailVerifiCodeMismatch; // 인증 코드가 올바르지 않음
+                message = $text.emailConfirmCodeMismatch; // 인증 코드가 올바르지 않음
             } else if (error.response?.status === 401) {
-                message = $text.expiredEmailVerifiCode; // 인증 코드가 만료됌
+                message = $text.expiredEmailConfirmCode; // 인증 코드가 만료됌
             } else {
                 message = $text.error;
             }
@@ -50,11 +50,11 @@
     };
 </script>
 
-<form on:submit|preventDefault={confirmVerificationCode}>
+<form on:submit|preventDefault={codeConfirmation}>
     <section>
         <label>
             <span>{$inputResult.email}</span>
-            <input type="text" name="code" placeholder={$emailAuthTimeLimit} required autocomplete="off" />
+            <input type="text" name="code" placeholder={$emailConfirmTimeLimit} required autocomplete="off" />
         </label>
     </section>
     {#await request}

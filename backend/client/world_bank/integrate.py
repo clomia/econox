@@ -6,9 +6,11 @@ from functools import partial, lru_cache
 import wbdata
 
 from backend.compute import parallel
-from backend.system import INFO_PATH
+from backend.system import EFS_VOLUME_PATH
 from backend.client.translate import Multilingual, translator
 from backend.client.world_bank.data_class import *
+
+INFO_PATH = EFS_VOLUME_PATH / "info"
 
 
 def wbdata_safe_caller(wb_func):

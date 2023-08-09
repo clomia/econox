@@ -2,8 +2,6 @@
 - data_class.json으로 클라이언트 클래스를 생성하는 메타클래스 모듈 
 - FMP의 모든 시계열 데이터 API를 일관된 인터페이스로 제공한다.
 """
-
-import os
 import json
 from typing import Dict
 from pathlib import PosixPath
@@ -15,11 +13,12 @@ import numpy as np
 import xarray as xr
 
 from backend.compute import standardization
-from backend.system import SECRETS, ROOT_PATH, XARRAY_PATH
+from backend.system import SECRETS, ROOT_PATH, EFS_VOLUME_PATH
 from backend.client.factor import Factor
 from backend.client.translate import Multilingual
 
 HOST = "https://financialmodelingprep.com"
+XARRAY_PATH = EFS_VOLUME_PATH / "xarray"
 CLASS_PATH = ROOT_PATH / "backend/client/fmp/data_class.json"
 
 

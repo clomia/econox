@@ -1,7 +1,6 @@
 """ 모든 data_class를 Symbol 객체로 통합 """
 from __future__ import annotations
 
-import os
 import json
 import time
 from typing import List
@@ -10,12 +9,13 @@ from functools import lru_cache, partial
 import requests
 import pycountry
 
-from backend.system import SECRETS, INFO_PATH, log
+from backend.system import SECRETS, EFS_VOLUME_PATH, log
 from backend.compute import parallel
 from backend.client.fmp import data_metaclass
 from backend.client.translate import Multilingual, translator
 
 HOST = "https://financialmodelingprep.com"
+INFO_PATH = EFS_VOLUME_PATH / "info"
 # ========= data_class.json에 정의된대로 클래스들을 생성합니다. =========
 classes = dict(json.load(data_metaclass.CLASS_PATH.open("r")))
 

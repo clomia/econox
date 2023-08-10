@@ -15,13 +15,13 @@ signup:
   en: "Signup"
   ko: "회원가입"
 email:
-  en: "Email"
+  en: "EMAIL"
   ko: "이메일"
 password:
-  en: "Password"
+  en: "PASSWORD"
   ko: "비밀번호"
 retypePassword:
-  en: "Retype password"
+  en: "RETYPE PASSWORD" # 다 대문자로 하기로 했음, 아니다 대문자로 하면 글자 좀 이상함
   ko: "비밀번호 확인"
 loginFailed:
   en: "Email or password is incorrect."

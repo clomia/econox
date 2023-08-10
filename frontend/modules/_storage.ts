@@ -15,10 +15,8 @@ class ObjectStore {
             dbOpenRequest.onupgradeneeded = (event) => {
                 const database = (event.target as IDBOpenDBRequest).result;
                 for (let storeName of objectStoreNames) {
-                    if (!database.objectStoreNames.contains(storeName)) {
-                        // 오브젝트 스토어가 없다면 생성합니다.
-                        database.createObjectStore(storeName);
-                    }
+                    // 오브젝트 스토어가 없다면 생성합니다.
+                    if (!database.objectStoreNames.contains(storeName)) database.createObjectStore(storeName);
                 }
             };
             dbOpenRequest.onsuccess = () => resolve(dbOpenRequest.result);
@@ -27,9 +25,7 @@ class ObjectStore {
     }
 
     private async openStore(mode: IDBTransactionMode = "readwrite"): Promise<IDBObjectStore> {
-        if (!this.conn) { // 커넥션 없으면 생성
-            this.conn = this.getConnection();
-        }
+        if (!this.conn) this.conn = this.getConnection(); // 커넥션 없으면 생성
         try { // 커넥션 있으면 있는거 쓰기
             return (await this.conn).transaction(this.name, mode).objectStore(this.name);
         } catch (err) { // 있는거 안써지면 생성해서 쓰기

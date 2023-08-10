@@ -35,13 +35,11 @@
             dispatch("complete");
         } catch (error) {
             request = null;
-            if (error.response?.status === 409) {
-                message = $text.alreadyExistsUser;
-            } else if (error.response?.status === 400) {
-                message = $text.invalidInput; // 입력 내용이 Cognito로부터 거부됌
-            } else {
-                message = $text.error;
-            }
+            const statusMessages = {
+                409: $text.alreadyExistsUser,
+                400: $text.invalidInput,
+            };
+            message = statusMessages[error.response?.status] || $text.error;
         }
     };
 </script>

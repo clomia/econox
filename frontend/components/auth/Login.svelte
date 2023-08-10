@@ -20,11 +20,7 @@
             console.log(token["refresh_token"]);
             console.log("로그인 성공! -> 토큰 저장하고 콘솔로 보내주기!");
         } catch (error) {
-            if (error.response?.status === 401) {
-                request = "fail"; // 로그인 실패
-            } else {
-                request = "error"; // 에러
-            }
+            request = error.response?.status === 401 ? "fail" : "error";
         }
     };
 </script>

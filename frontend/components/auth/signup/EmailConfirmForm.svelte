@@ -39,13 +39,11 @@
             dispatch("complete");
         } catch (error) {
             request = null;
-            if (error.response?.status === 409) {
-                message = $text.emailConfirmCodeMismatch; // 인증 코드가 올바르지 않음
-            } else if (error.response?.status === 401) {
-                message = $text.expiredEmailConfirmCode; // 인증 코드가 만료됌
-            } else {
-                message = $text.error;
-            }
+            const statusMessage = {
+                409: $text.emailConfirmCodeMismatch, // 인증 코드가 올바르지 않음
+                401: $text.expiredEmailConfirmCode, // 인증 코드가 만료됌
+            };
+            message = statusMessage[error.response?.status] || $text.error;
         }
     };
 </script>

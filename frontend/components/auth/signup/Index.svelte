@@ -2,13 +2,23 @@
     import CognitoForm from "./CognitoForm.svelte";
     import EmailConfirmForm from "./EmailConfirmForm.svelte";
     import OptionForm from "./OptionForm.svelte";
+    import PhoneConfirmForm from "./PhoneConfirmForm.svelte";
     import BillingForm from "./BillingForm.svelte";
     import ResultProcess from "./ResultProcess.svelte";
 
     import * as state from "../../../modules/state";
 
-    const componentStep = [CognitoForm, EmailConfirmForm, OptionForm, BillingForm, ResultProcess];
+    const componentStep = [
+        CognitoForm,
+        EmailConfirmForm,
+        OptionForm,
+        PhoneConfirmForm,
+        BillingForm,
+        ResultProcess,
+    ];
     const currentStep = state.auth.signup.step;
 </script>
 
-<svelte:component this={componentStep[$currentStep]} on:complete={() => currentStep.set($currentStep + 1)} />
+<PhoneConfirmForm />
+
+<!-- <svelte:component this={componentStep[$currentStep]} on:complete={() => currentStep.set($currentStep + 1)} /> -->

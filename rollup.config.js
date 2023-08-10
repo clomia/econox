@@ -5,6 +5,7 @@ import terser from '@rollup/plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
 import livereload from 'rollup-plugin-livereload';
 import css from 'rollup-plugin-css-only';
+import json from '@rollup/plugin-json';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import replace from '@rollup/plugin-replace';
@@ -56,6 +57,7 @@ export default {
 		// we'll extract any component CSS out into
 		// a separate file - better for performance
 		css({ output: 'bundle.css' }),
+		json(),
 
 		typescript({
 			sourceMap: !production,

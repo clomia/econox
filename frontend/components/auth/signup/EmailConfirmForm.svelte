@@ -15,8 +15,9 @@
 
     let request: null | Promise<AxiosResponse> = null; // 요청 전
     let message = $text.enterEmailConfirmationCode;
-
+    let expired = false;
     const countdown = async (totalSeconds: number) => {
+        expired = false;
         while (totalSeconds >= 0) {
             const minutes = Math.floor(totalSeconds / 60);
             const seconds = (totalSeconds % 60).toString().padStart(2, "0");
@@ -25,16 +26,23 @@
             totalSeconds--;
         }
         emailConfirmTimeLimit.update(() => $text.confirmCodeExpiration);
+        expired = true;
+        message = "";
     };
     countdown(180); // Cognito 이메일 인증코드 유효기간 3분
 
     const codeConfirmation = async (event: SubmitEvent) => {
         message = "";
         const form = event.target as HTMLFormElement;
+        const code = form.code.value;
+        if (!code) {
+            message = $text.missingInput;
+            return;
+        }
         try {
             request = publicRequest.post("/auth/email/confirm", {
                 email: $inputResult.email,
-                confirmation_code: form.code.value,
+                confirmation_code: code,
             });
             await request;
             dispatch("complete");
@@ -43,9 +51,19 @@
             const statusMessage = {
                 409: $text.confirmCodeMismatch, // 인증 코드가 올바르지 않음
                 401: $text.expiredConfirmCode, // 인증 코드가 만료됌
+                429: $text.tooManyRequests, // 요청 너무 많이함
             };
             message = statusMessage[error.response?.status] || $text.error;
         }
+    };
+
+    const resendCode = async () => {
+        request = publicRequest.post("/auth/email", { email: $inputResult.email });
+        await request;
+        request = null;
+        message = "인증 코드가 전송되었습니다";
+        expired = false;
+        countdown(180);
     };
 </script>
 
@@ -61,7 +79,11 @@
     {/await}
     <div>{message}</div>
     {#if !(request instanceof Promise)}
-        <button type="submit">{$text.next}</button>
+        {#if !expired}
+            <button type="submit">{$text.next}</button>
+        {:else}
+            <button type="button" on:click={resendCode}>코드 재전송</button>
+        {/if}
     {/if}
 </form>
 
@@ -92,7 +114,7 @@
         border: solid thin white;
         border-radius: 0.7rem;
         color: white;
-        padding-left: 1rem;
+        padding: 0 1rem;
     }
     section:focus-within label span {
         color: rgba(255, 255, 255, 1);

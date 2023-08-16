@@ -23,6 +23,7 @@
         const retypePassword = form.retypePassword.value;
         if (!email || !password) {
             message = $text.missingInput;
+            return;
         }
         if (password !== retypePassword) {
             message = $text.passwordMismatch;
@@ -40,7 +41,7 @@
             request = null;
             const statusMessages = {
                 409: $text.alreadyExistsUser,
-                400: $text.invalidInput,
+                400: $text.invalidEmailInput,
             };
             message = statusMessages[error.response?.status] || $text.error;
         }

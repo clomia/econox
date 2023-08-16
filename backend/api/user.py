@@ -26,7 +26,10 @@ async def create_cognito_user(email: str = Body(...), password: str = Body(...))
     except cognito.exceptions.UsernameExistsException:
         # todo DB에 유저 있는 경우가 409 응답
         raise HTTPException(status_code=409)
-    except cognito.exceptions.InvalidParameterException:
+    except (
+        cognito.exceptions.InvalidParameterException,
+        cognito.exceptions.CodeDeliveryFailureException,
+    ):  # 이메일 인증을 진행할 수 없습니다!
         raise HTTPException(status_code=400)
     return {"user_id": result["UserSub"]}
 

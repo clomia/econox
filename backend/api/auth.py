@@ -88,8 +88,15 @@ async def phone_confirmation(
         raise HTTPException(status_code=409)
 
 
+@router.post("/auth/email", tags=[API_PREFIX])
+async def cognito_resend_confirmation_code(email: str = Body(..., embed=True)):
+    cognito.resend_confirmation_code(
+        ClientId=SECRETS["COGNITO_APP_CLIENT_ID"], Username=email
+    )
+
+
 @router.post("/auth/email/confirm", tags=[API_PREFIX])
-async def cognito_email_confirmation(
+async def cognito_confirm_sign_up(
     email: str = Body(...), confirmation_code: str = Body(...)
 ):
     try:
@@ -102,11 +109,15 @@ async def cognito_email_confirmation(
         raise HTTPException(status_code=409)
     except cognito.exceptions.ExpiredCodeException:
         raise HTTPException(status_code=401)
+    except cognito.exceptions.LimitExceededException:
+        raise HTTPException(status_code=429)
     return Response(status_code=200)
 
 
 @router.post("/auth/is-reregistration", tags=[API_PREFIX])
-async def is_reregistration(email: str = Body(...), phone_number: str = Body(...)):
+async def check_for_is_reregistration(
+    email: str = Body(...), phone_number: str = Body(...)
+):
     # 동일한 이메일로 회원가입 내역이 있다면 False
     # 동일한 전화번호로 회원가입 내역이 있다면 False
     # 둘다 아닌 경우 True

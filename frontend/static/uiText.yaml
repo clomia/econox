@@ -141,3 +141,6 @@ phoneNumberNotNumber:
 enterPhoneConfirmationCode:
   en: "Enter the verification code sent by text message"
   ko: "문자 메세지로 전송된 인증코드를 입력해주세요"
+missingInput:
+  en: "There are missing values."
+  ko: "누락된 값이 있습니다."

@@ -7,11 +7,16 @@
 
     const text = state.uiText.text;
 
+    let message = "";
     let request: string | Promise<AxiosResponse> = "before"; // 요청 전
     const login = async (event: SubmitEvent) => {
         const form = event.target as HTMLFormElement; //타입스크립트 적용 ㄱ
         const email = form.email.value;
         const password = form.password.value;
+        if (!email || !password) {
+            message = $text.missingInput;
+            return;
+        }
         try {
             request = publicRequest.post("/auth/user", { email, password });
             const token = (await request).data;
@@ -20,7 +25,7 @@
             console.log(token["refresh_token"]);
             console.log("로그인 성공! -> 토큰 저장하고 콘솔로 보내주기!");
         } catch (error) {
-            request = error.response?.status === 401 ? "fail" : "error";
+            message = error.response?.status === 401 ? $text.loginFailed : $text.error;
         }
     };
 </script>
@@ -29,23 +34,19 @@
     <section>
         <label>
             <span>{$text.email}</span>
-            <input type="text" name="email" required autocomplete="email" />
+            <input type="text" name="email" autocomplete="email" />
         </label>
     </section>
     <section>
         <label>
             <span>{$text.password}</span>
-            <input type="password" name="password" required autocomplete="current-password" />
+            <input type="password" name="password" autocomplete="current-password" />
         </label>
     </section>
     {#await request}
         <LoadingAnimation />
     {/await}
-    {#if request == "fail"}
-        <div>{$text.loginFailed}</div>
-    {:else if request == "error"}
-        <div>{$text.error}</div>
-    {/if}
+    <div>{message}</div>
     {#if !(request instanceof Promise)}
         <button type="submit">{$text.login}</button>
     {/if}

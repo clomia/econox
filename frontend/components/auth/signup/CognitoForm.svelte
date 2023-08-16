@@ -21,6 +21,9 @@
         const email = form.email.value;
         const password = form.password.value;
         const retypePassword = form.retypePassword.value;
+        if (!email || !password) {
+            message = $text.missingInput;
+        }
         if (password !== retypePassword) {
             message = $text.passwordMismatch;
             return;
@@ -48,19 +51,19 @@
     <section>
         <label>
             <span>{$text.email}</span>
-            <input type="text" name="email" required autocomplete="email" />
+            <input type="text" name="email" autocomplete="email" />
         </label>
     </section>
     <section>
         <label>
             <span>{$text.password}</span>
-            <input type="password" name="password" required autocomplete="off" />
+            <input type="password" name="password" autocomplete="off" />
         </label>
     </section>
     <section>
         <label>
             <span>{$text.retypePassword}</span>
-            <input type="password" name="retypePassword" required autocomplete="off" />
+            <input type="password" name="retypePassword" autocomplete="off" />
         </label>
     </section>
     {#await request}

@@ -22,7 +22,9 @@ async def create_cognito_user(email: str = Body(...), password: str = Body(...))
                 {"Name": "email", "Value": email},
             ],
         )
+    # todo Cognito에 있는데 DB에 없는 경우 지우고 다시 만들어서 정상 처리하게 해줘야 함
     except cognito.exceptions.UsernameExistsException:
+        # todo DB에 유저 있는 경우가 409 응답
         raise HTTPException(status_code=409)
     except cognito.exceptions.InvalidParameterException:
         raise HTTPException(status_code=400)

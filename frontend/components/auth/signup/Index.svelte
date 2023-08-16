@@ -1,7 +1,8 @@
-<script>
+<script lang="ts">
     import CognitoForm from "./CognitoForm.svelte";
     import EmailConfirmForm from "./EmailConfirmForm.svelte";
     import OptionForm from "./OptionForm.svelte";
+    import PhoneConfirmCreateForm from "./PhoneConfirmCreateForm.svelte";
     import PhoneConfirmForm from "./PhoneConfirmForm.svelte";
     import BillingForm from "./BillingForm.svelte";
     import ResultProcess from "./ResultProcess.svelte";
@@ -12,6 +13,7 @@
         CognitoForm,
         EmailConfirmForm,
         OptionForm,
+        PhoneConfirmCreateForm,
         PhoneConfirmForm,
         BillingForm,
         ResultProcess,
@@ -19,6 +21,4 @@
     const currentStep = state.auth.signup.step;
 </script>
 
-<PhoneConfirmForm />
-
-<!-- <svelte:component this={componentStep[$currentStep]} on:complete={() => currentStep.set($currentStep + 1)} /> -->
+<svelte:component this={componentStep[$currentStep]} on:complete={() => currentStep.set($currentStep + 1)} />

@@ -1,39 +1,74 @@
-<script>
-    import { getCodes, getName } from "country-list";
-    import { getCountryCallingCode } from "libphonenumber-js";
+<script lang="ts">
+    import { createEventDispatcher } from "svelte";
 
-    const countries = {};
-    getCodes().forEach((code) => {
-        try {
-            const name = getName(code);
-            const callingCode = getCountryCallingCode(code);
-            countries[name] = callingCode;
-        } catch (error) {
-            console.info(`No calling code for country: ${code}`);
+    import * as state from "../../../modules/state";
+    import { publicRequest } from "../../../modules/api";
+    import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
+
+    const text = state.uiText.text;
+    const inputResult = state.auth.signup.inputResult;
+    const phoneConfirmTimeLimit = state.auth.signup.phoneConfirmTimeLimit;
+    const inputPhoneNumber = state.auth.signup.inputPhoneNumber;
+
+    const dispatch = createEventDispatcher();
+
+    let request: null | Promise<any> = null; // 요청 전
+    let message = $text.enterPhoneConfirmationCode;
+
+    const countdown = async (totalSeconds: number) => {
+        while (totalSeconds >= 0) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = (totalSeconds % 60).toString().padStart(2, "0");
+            phoneConfirmTimeLimit.update(() => `${minutes}:${seconds}`);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            totalSeconds--;
         }
-    });
+        phoneConfirmTimeLimit.update(() => $text.confirmCodeExpiration);
+    };
+    countdown(180); // 인증코드 유효기간 3분
 
-    let callingCode = "";
-
-    const phoneConfirm = async (event) => {
-        return "hello";
+    const codeConfirmation = async (event: SubmitEvent) => {
+        message = "";
+        const form = event.target as HTMLFormElement;
+        try {
+            const phoneConfirm = publicRequest.post("/auth/phone/confirm", {
+                phone_number: $inputResult.phoneNumber,
+                confirmation_code: form.code.value,
+            });
+            const reregistrationConfirm = publicRequest.post("/auth/is-reregistration", {
+                email: $inputResult.email,
+                phone_number: $inputResult.phoneNumber,
+            });
+            request = Promise.all([phoneConfirm, reregistrationConfirm]);
+            const [, reregistrationConfirmResponse] = await request;
+            const reregistration: boolean = reregistrationConfirmResponse.data.result; // 재등록 여부
+            inputResult.set({ ...$inputResult, reregistration });
+            dispatch("complete");
+        } catch (error) {
+            request = null;
+            const statusMessage = {
+                409: $text.confirmCodeMismatch, // 인증 코드가 올바르지 않음
+                401: $text.expiredConfirmCode, // 인증 코드가 만료됌
+            };
+            message = statusMessage[error.response?.status] || $text.error;
+        }
     };
 </script>
 
-<form on:submit|preventDefault={phoneConfirm}>
-    <label>
-        <span>국가 선택</span>
-        <select on:change={(event) => (callingCode = event.target.value)}>
-            {#each Object.entries(countries) as [name, callingCode]}
-                <option value={callingCode}>{name}</option>
-            {/each}
-        </select>
-    </label>
-    <label>
-        <span>전화번호 입력</span>
-        <input type="text" />
-    </label>
-    <button>인증코드 발송</button>
+<form on:submit|preventDefault={codeConfirmation}>
+    <section>
+        <label>
+            <span>{$inputPhoneNumber}</span>
+            <input type="text" name="code" placeholder={$phoneConfirmTimeLimit} autocomplete="off" />
+        </label>
+    </section>
+    {#await request}
+        <LoadingAnimation />
+    {/await}
+    <div>{message}</div>
+    {#if !(request instanceof Promise)}
+        <button type="submit">{$text.next}</button>
+    {/if}
 </form>
 
 <style>
@@ -42,44 +77,45 @@
         flex-direction: column;
         align-items: center;
         width: 100%;
-        height: 21rem;
+        height: 10rem;
         margin-top: 2.5rem;
         color: white;
     }
-    label {
-        margin-bottom: 3rem;
+    section {
+        width: 24.5rem;
+        margin-bottom: 1.7rem;
     }
     label span {
         display: block;
+        color: rgba(255, 255, 255, 0.5);
+        padding-left: 0.7rem;
+        padding-bottom: 0.2rem;
+        transition: color 100ms ease-out;
+    }
+    input {
         width: 100%;
-        color: rgba(255, 255, 255, 0.7);
-        margin-bottom: 0.5rem;
-        text-align: center;
-    }
-    select {
-        width: 25rem;
-        border-radius: 1rem;
+        height: 2.5rem;
         border: solid thin white;
+        border-radius: 0.7rem;
         color: white;
-        margin: 0 0.5rem;
-        padding: 0 1rem;
-        height: 3rem;
+        padding-left: 1rem;
     }
-    select:hover {
+    section:focus-within label span {
+        color: rgba(255, 255, 255, 1);
+    }
+    button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 15rem;
+        height: 2.5rem;
+        border: solid thin white;
+        border-radius: 1rem;
+        color: white;
+        margin-top: 1.4rem;
+    }
+    button:hover {
         cursor: pointer;
-        background-color: rgba(255, 255, 255, 0.16);
-    }
-    option {
-        text-align: center;
-    }
-    label input {
-        width: 25rem;
-        border-radius: 1rem;
-        border: solid thin white;
-        color: white;
-        padding: 0 1rem;
-        height: 3rem;
-        text-align: center;
-        letter-spacing: 0.2rem;
+        background-color: rgba(255, 255, 255, 0.2);
     }
 </style>

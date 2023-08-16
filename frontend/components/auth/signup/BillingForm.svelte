@@ -1,8 +1,18 @@
 <script>
-    import { createEventDispatcher } from "svelte";
+    import { onMount, createEventDispatcher } from "svelte";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
     import * as state from "../../../modules/state";
     import { publicRequest } from "../../../modules/api";
+
+    const dispatch = createEventDispatcher();
+    const inputResult = state.auth.signup.inputResult;
+
+    onMount(async () => {
+        if (!$inputResult.reregistration) {
+            // 최초 회원가입인 경우 결제정보 입력할 필요 없음
+            dispatch("complete");
+        }
+    });
 
     let cardNumber = "";
     let expiryDate = "";
@@ -35,8 +45,6 @@
 
     let request = null;
     let message = "";
-    const inputResult = state.auth.signup.inputResult;
-    const dispatch = createEventDispatcher();
     const billing = async () => {
         message = "";
         const [expir_month, expir_year] = expiryDate.replace(/\s/g, "").split("/");

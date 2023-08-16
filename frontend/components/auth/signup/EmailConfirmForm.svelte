@@ -31,17 +31,18 @@
     const codeConfirmation = async (event: SubmitEvent) => {
         message = "";
         const form = event.target as HTMLFormElement;
-        const email = $inputResult.email;
-        const confirmation_code = form.code.value;
         try {
-            request = publicRequest.post("/auth/email/confirm", { email, confirmation_code });
+            request = publicRequest.post("/auth/email/confirm", {
+                email: $inputResult.email,
+                confirmation_code: form.code.value,
+            });
             await request;
             dispatch("complete");
         } catch (error) {
             request = null;
             const statusMessage = {
-                409: $text.emailConfirmCodeMismatch, // 인증 코드가 올바르지 않음
-                401: $text.expiredEmailConfirmCode, // 인증 코드가 만료됌
+                409: $text.confirmCodeMismatch, // 인증 코드가 올바르지 않음
+                401: $text.expiredConfirmCode, // 인증 코드가 만료됌
             };
             message = statusMessage[error.response?.status] || $text.error;
         }
@@ -52,7 +53,7 @@
     <section>
         <label>
             <span>{$inputResult.email}</span>
-            <input type="text" name="code" placeholder={$emailConfirmTimeLimit} required autocomplete="off" />
+            <input type="text" name="code" placeholder={$emailConfirmTimeLimit} autocomplete="off" />
         </label>
     </section>
     {#await request}

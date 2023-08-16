@@ -2,7 +2,6 @@
     import { onMount } from "svelte";
 
     import LanguageIcon from "../assets/LanguageIcon.svelte";
-    import * as state from "../modules/state";
     import { loadUiText, supportedLangs, changeLang } from "../modules/uiText";
 
     let lang = "";
@@ -13,9 +12,8 @@
     let toggle = false;
     const apply = async (event: Event) => {
         lang = (event.target as HTMLSelectElement).value;
-        const { text } = await changeLang(lang);
-        state.uiText.text.set(text);
-        toggle = !toggle;
+        await changeLang(lang);
+        location.reload(); // 레퍼런스 타는 변수들은 즉시 반영이 안돼서 reload하는게 가장 안전함
     };
 </script>
 

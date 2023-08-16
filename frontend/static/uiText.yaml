@@ -59,10 +59,10 @@ enterEmailConfirmationCode:
 confirmationCode:
   en: "confirmation code"
   ko: "확인 코드"
-expiredEmailConfirmCode:
+expiredConfirmCode:
   en: "Confirmation code has expired."
   ko: "만료된 확인 코드입니다."
-emailConfirmCodeMismatch:
+confirmCodeMismatch:
   en: "Confirmation code is incorrect."
   ko: "확인 코드가 올바르지 않습니다."
 next:
@@ -117,3 +117,27 @@ professionalPlanWonPrice:
 professionalPlanDescription:
   en: "Unlimited downloads of all data as CSV!"
   ko: "모든 데이터를 CSV로 무제한 다운로드할 수 있습니다!"
+phoneConfirmDescription:
+  en: "Phone number verification is required to check whether you are eligible for the initial membership benefits."
+  ko: "최초 회원가입 혜택 대상자 여부를 확인하기 위해 전화번호 인증이 필요합니다."
+inputPhoneNumber:
+  en: "Enter phone number"
+  ko: "전화번호 입력"
+sendVerificationCode:
+  en: "Send verification code"
+  ko: "인증코드 발송"
+country:
+  en: "country"
+  ko: "국가"
+phoneConfirmRequestFailed:
+  en: "Failed to send verification code. Please check that the phone number you entered is correct"
+  ko: "인증번호 전송에 실패하였습니다. 입력한 전화번호가 올바른지 확인해주세요"
+noPhoneNumber:
+  en: "Please enter your phone number."
+  ko: "전화번호를 입력해주세요."
+phoneNumberNotNumber:
+  en: "Phone numbers can only contain numbers."
+  ko: "전화번호는 숫자만 입력할 수 있습니다."
+enterPhoneConfirmationCode:
+  en: "Enter the verification code sent by text message"
+  ko: "문자 메세지로 전송된 인증코드를 입력해주세요"

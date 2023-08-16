@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { onMount, createEventDispatcher } from "svelte";
     import { publicRequest } from "../../../modules/api";
 
@@ -11,7 +11,7 @@
 
     const dispatch = createEventDispatcher();
 
-    const submit = (membership) => {
+    const submit = (membership: string) => {
         return () => {
             inputResult.set({ ...$inputResult, currency, membership });
             dispatch("complete");

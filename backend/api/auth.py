@@ -1,9 +1,12 @@
+import time
 import secrets
+import threading
+from pathlib import PosixPath
 
 import jwt
 import boto3
 import requests
-from fastapi import Body, HTTPException
+from fastapi import Body, HTTPException, Request
 from fastapi.responses import Response
 
 from backend.api import router
@@ -55,18 +58,20 @@ async def token_refresh(refresh_token: str = Body(...)):
 
 
 @router.post("/auth/phone", tags=[API_PREFIX])
-async def create_phone_confirmation(phone_number: str = Body(...)):
-    # +82하고 010 으로 시작해야 함
-    target_path = PHONE_CONFIRMATION_CACHE_PATH / phone_number
+async def create_phone_confirmation(phone_number=Body(..., embed=True)):
+    target_path: PosixPath = PHONE_CONFIRMATION_CACHE_PATH / phone_number
     issued_code = f"{secrets.randbelow(10**6):06}"
     target_path.write_text(issued_code)
-    try:
-        sns = boto3.client("sns", region_name=region)
-        message = f"ECONOX confirmation code: {issued_code}"
-        response = sns.publish(PhoneNumber=phone_number, Message=message)
-    except Exception as e:  # 에러 경우가 너무 많으므로 퉁쳐서 500으로 처리
-        target_path.unlink()
-        raise e
+    sns = boto3.client("sns", region_name=region)
+    message = f"ECONOX confirmation code: {issued_code}"
+    response = sns.publish(PhoneNumber=phone_number, Message=message)
+    assert response["ResponseMetadata"]["HTTPStatusCode"] == 200
+
+    def code_expiration():
+        time.sleep(180)  # 3분 뒤 코드 만료
+        target_path.unlink(missing_ok=True)
+
+    threading.Thread(target=code_expiration).start()
     return Response(status_code=200)
 
 
@@ -75,14 +80,12 @@ async def phone_confirmation(
     phone_number: str = Body(...), confirmation_code: str = Body(...)
 ):
     target_path = PHONE_CONFIRMATION_CACHE_PATH / phone_number
-    try:
-        issued_code = target_path.read_text()
-        if issued_code == confirmation_code:
-            return Response(status_code=200)
-        else:
-            return HTTPException(status_code=401)
-    finally:
-        target_path.unlink(missing_ok=True)
+    if not target_path.exists():  # 코드 만료
+        raise HTTPException(status_code=401)
+    elif target_path.read_text() == confirmation_code:
+        return Response(status_code=200)
+    else:
+        raise HTTPException(status_code=409)
 
 
 @router.post("/auth/email/confirm", tags=[API_PREFIX])
@@ -100,3 +103,17 @@ async def cognito_email_confirmation(
     except cognito.exceptions.ExpiredCodeException:
         raise HTTPException(status_code=401)
     return Response(status_code=200)
+
+
+@router.post("/auth/is-reregistration", tags=[API_PREFIX])
+async def is_reregistration(email: str = Body(...), phone_number: str = Body(...)):
+    # 동일한 이메일로 회원가입 내역이 있다면 False
+    # 동일한 전화번호로 회원가입 내역이 있다면 False
+    # 둘다 아닌 경우 True
+    email_exist = False
+    phone_exist = False
+    return {
+        "result": email_exist or phone_exist,
+        "email": email_exist,
+        "phone": phone_exist,
+    }

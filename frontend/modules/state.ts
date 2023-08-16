@@ -12,7 +12,17 @@ export const auth = {
     signup: {
         step: writable(0),
         emailConfirmTimeLimit: writable(""),
-        inputResult: writable({ userId: "", email: "", membership: "", currency: "", billingKey: "" }) // DB 유저 생성시 필요한 정보들
+        phoneConfirmTimeLimit: writable(""),
+        inputPhoneNumber: writable(""),
+        inputResult: writable({
+            userId: "",
+            email: "",
+            membership: "",
+            currency: "",
+            billingKey: "",
+            phoneNumber: "",
+            reregistration: false,
+        }) // DB 유저 생성시 필요한 정보들
     }
 }
 

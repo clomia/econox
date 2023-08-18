@@ -60,8 +60,8 @@ confirmationCode:
   en: "confirmation code"
   ko: "확인 코드"
 expiredConfirmCode:
-  en: "Confirmation code has expired."
-  ko: "만료된 확인 코드입니다."
+  en: "The verification code sent has already expired."
+  ko: "전송된 확인 코드는 이미 만료되었습니다."
 confirmCodeMismatch:
   en: "Confirmation code is incorrect."
   ko: "확인 코드가 올바르지 않습니다."

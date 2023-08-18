@@ -14,8 +14,9 @@
 
     let request: null | Promise<any> = null; // 요청 전
     let message = $text.enterPhoneConfirmationCode;
-
+    let expired = false;
     const countdown = async (totalSeconds: number) => {
+        expired = false;
         while (totalSeconds >= 0) {
             const minutes = Math.floor(totalSeconds / 60);
             const seconds = (totalSeconds % 60).toString().padStart(2, "0");
@@ -24,8 +25,10 @@
             totalSeconds--;
         }
         phoneConfirmTimeLimit.update(() => $text.confirmCodeExpiration);
+        expired = true;
+        message = "";
     };
-    countdown(180); // 인증코드 유효기간 3분
+    countdown(10); // 인증코드 유효기간 3분
 
     const codeConfirmation = async (event: SubmitEvent) => {
         message = "";
@@ -53,6 +56,15 @@
             message = statusMessage[error.response?.status] || $text.error;
         }
     };
+
+    const resendCode = async () => {
+        request = publicRequest.post("/auth/phone", { phone_number: $inputResult.phoneNumber });
+        await request;
+        request = null;
+        message = "인증 코드가 전송되었습니다";
+        expired = false;
+        countdown(180);
+    };
 </script>
 
 <form on:submit|preventDefault={codeConfirmation}>
@@ -67,7 +79,11 @@
     {/await}
     <div>{message}</div>
     {#if !(request instanceof Promise)}
-        <button type="submit">{$text.next}</button>
+        {#if !expired}
+            <button type="submit">{$text.next}</button>
+        {:else}
+            <button type="button" on:click={resendCode}>코드 재전송</button>
+        {/if}
     {/if}
 </form>
 

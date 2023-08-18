@@ -25,9 +25,11 @@ export const loadUiText = async () => {
         settingObjectStore.get(settingKey.text),
         settingObjectStore.get(settingKey.lang),
     ])
-    if (!lang) { // 언어 설정이 없으면 영어로 설정
-        lang = "en"
-        settingObjectStore.put(settingKey.lang, "en");
+
+    if (!lang) { // 언어 설정이 없는 경우
+        const browserLanguage = navigator.language.split("-")[0];
+        lang = browserLanguage in await supportedLangs() ? browserLanguage : "en"
+        settingObjectStore.put(settingKey.lang, lang);
     }
     if (!text) {
         const uiTextObject = await getUiTextObject()

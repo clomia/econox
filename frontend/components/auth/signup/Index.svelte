@@ -4,7 +4,7 @@
     import OptionForm from "./OptionForm.svelte";
     import PhoneConfirmCreateForm from "./PhoneConfirmCreateForm.svelte";
     import PhoneConfirmForm from "./PhoneConfirmForm.svelte";
-    import BillingForm from "./BillingForm.svelte";
+    import BillingForm from "./billingForm/index.svelte";
     import ResultProcess from "./ResultProcess.svelte";
 
     import * as state from "../../../modules/state";
@@ -21,4 +21,5 @@
     const currentStep = state.auth.signup.step;
 </script>
 
-<svelte:component this={componentStep[$currentStep]} on:complete={() => currentStep.set($currentStep + 1)} />
+<BillingForm />
+<!-- <svelte:component this={componentStep[$currentStep]} on:complete={() => currentStep.set($currentStep + 1)} /> -->

@@ -1,8 +1,8 @@
 <script>
     import { onMount, createEventDispatcher } from "svelte";
-    import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
-    import * as state from "../../../modules/state";
-    import { publicRequest } from "../../../modules/api";
+    import LoadingAnimation from "../../../../assets/LoadingAnimation.svelte";
+    import * as state from "../../../../modules/state";
+    import { publicRequest } from "../../../../modules/api";
 
     const dispatch = createEventDispatcher();
     const inputResult = state.auth.signup.inputResult;

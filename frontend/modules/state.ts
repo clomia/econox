@@ -25,4 +25,3 @@ export const auth = {
         }) // DB 유저 생성시 필요한 정보들
     }
 }
-

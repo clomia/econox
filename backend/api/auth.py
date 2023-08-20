@@ -121,7 +121,7 @@ async def check_for_is_reregistration(
     # 동일한 이메일로 회원가입 내역이 있다면 False
     # 동일한 전화번호로 회원가입 내역이 있다면 False
     # 둘다 아닌 경우 True
-    email_exist = False
+    email_exist = True
     phone_exist = False
     return {
         "result": email_exist or phone_exist,

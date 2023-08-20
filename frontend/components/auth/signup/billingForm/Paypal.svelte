@@ -35,6 +35,10 @@
                     });
                 },
                 onApprove: function (data, actions) {
+                    data.facilitatorAccessToken; // This token need for get detail information that order and subscription (그리고 구독취소, 환불 시에도 필요)
+                    data.orderID; // This is reference by sigle payments event, it will use to get sigle payments history
+                    data.subscriptionID; // 구독 상태를 확인하거나 구독을 취소하고자 할 때 필요
+                    console.log(data, actions);
                     alert(data.subscriptionID);
                 },
             })

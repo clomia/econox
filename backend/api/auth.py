@@ -29,9 +29,9 @@ async def login(email: str = Body(...), password: str = Body(...)):
     # DB에 해당 유저의 레코드가 없으면 회원가입 완료 안된거니까 401 쏴주기
     try:
         result = cognito.initiate_auth(
-            ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
             AuthFlow="USER_PASSWORD_AUTH",
             AuthParameters={"USERNAME": email, "PASSWORD": password},
+            ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
         )
     except cognito.exceptions.NotAuthorizedException:
         raise HTTPException(status_code=401)

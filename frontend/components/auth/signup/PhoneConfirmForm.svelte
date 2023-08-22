@@ -1,6 +1,6 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
-
+    import Swal from "sweetalert2";
     import * as state from "../../../modules/state";
     import { publicRequest } from "../../../modules/api";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
@@ -28,7 +28,7 @@
         expired = true;
         message = "";
     };
-    countdown(10); // 인증코드 유효기간 3분
+    countdown(180); // 인증코드 유효기간 3분
 
     const codeConfirmation = async (event: SubmitEvent) => {
         message = "";
@@ -46,6 +46,13 @@
             const [, reregistrationConfirmResponse] = await request;
             const reregistration: boolean = reregistrationConfirmResponse.data.result; // 재등록 여부
             inputResult.set({ ...$inputResult, reregistration });
+            await Swal.fire({
+                icon: "success",
+                color: "white",
+                text: reregistration ? $text.reregistrationTrue : $text.reregistrationFalse,
+                background: "#282a2a",
+                confirmButtonColor: "#3f4545",
+            });
             dispatch("complete");
         } catch (error) {
             request = null;

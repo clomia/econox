@@ -57,7 +57,7 @@
                 owner_id: ownerId,
             });
             const billingKey = (await request).data.billing_key;
-            inputResult.set({ ...$inputResult, billingKey });
+            inputResult.set({ ...$inputResult, tosspayments: { billingKey } });
             dispatch("complete");
         } catch (error) {
             request = null;

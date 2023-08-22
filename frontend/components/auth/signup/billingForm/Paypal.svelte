@@ -1,8 +1,13 @@
 <script>
-    import { onMount } from "svelte";
+    import { onMount, createEventDispatcher } from "svelte";
+    import * as state from "../../../../modules/state";
+
+    const dispatch = createEventDispatcher();
+    const inputResult = state.auth.signup.inputResult;
 
     let isSdkLoaded = false;
     const paypalClientId = "AaJ-FuCRcsENw_dBXYGEJ75w8vJI0UUmRDXUbuUCbUCCValnyQfLEB5GgCrjO2FdLJNhE9q_boMs70Fm";
+    const paypalPlanId = "P-76B92140LE320861RMTQ2A2A";
 
     onMount(() => {
         if (window.paypal) {
@@ -20,38 +25,53 @@
         document.head.appendChild(script);
     });
 
-    function initializePaypalButton() {
+    const initializePaypalButton = () => {
         window.paypal
             .Buttons({
                 style: {
-                    shape: "pill",
+                    shape: "rect",
                     color: "black",
                     layout: "vertical",
                     label: "paypal",
                 },
-                createSubscription: function (data, actions) {
+                createSubscription: (data, actions) => {
                     return actions.subscription.create({
-                        plan_id: "P-76B92140LE320861RMTQ2A2A",
+                        plan_id: paypalPlanId,
                     });
                 },
-                onApprove: function (data, actions) {
-                    data.facilitatorAccessToken; // This token need for get detail information that order and subscription (그리고 구독취소, 환불 시에도 필요)
-                    data.orderID; // This is reference by sigle payments event, it will use to get sigle payments history
-                    data.subscriptionID; // 구독 상태를 확인하거나 구독을 취소하고자 할 때 필요
-                    console.log(data, actions);
-                    alert(data.subscriptionID);
+                onApprove: (data, actions) => {
+                    inputResult.set({
+                        ...$inputResult,
+                        paypal: {
+                            subscriptionID: data.subscriptionID,
+                            facilitatorAccessToken: data.facilitatorAccessToken,
+                        },
+                    });
+                    dispatch("complete");
                 },
             })
             .render("#paypal-button");
-    }
+    };
 </script>
 
 <section>
-    <div id="paypal-button" />
+    <div class="paypal-widget">
+        <div id="paypal-button" />
+    </div>
 </section>
 
 <style>
-    #paypal-button {
-        margin-top: 10rem;
+    section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .paypal-widget {
+        width: 100%;
+        padding: 3rem;
+        margin-top: 2rem;
+        border-radius: 0.5rem;
+        border: thin solid rgba(255, 255, 255, 0.2);
+        background-color: rgba(255, 255, 255, 0.1);
     }
 </style>

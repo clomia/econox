@@ -153,5 +153,10 @@ tooManyRequests:
 codeSended:
   en: "Verification code sent"
   ko: "인증 코드가 전송되었습니다"
-
+reregistrationTrue:
+  en: "You are not eligible for first-time membership benefits."
+  ko: "최초 회원가입 혜택 대상자가 아닙니다."
+reregistrationFalse:
+  en: "You are eligible for first-time membership benefits."
+  ko: "최초 회원가입 혜택 대상자입니다."
 

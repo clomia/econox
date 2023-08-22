@@ -1,9 +1,16 @@
+from calendar import monthrange
+from datetime import datetime
+
 import boto3
+import psycopg
 import ipinfo
 from fastapi import HTTPException, Request, Body
+from fastapi.responses import Response
+from pydantic import BaseModel
 
 from backend.api import router
 from backend.system import SECRETS, log
+from backend import db
 
 API_PREFIX = "user"
 
@@ -32,6 +39,75 @@ async def create_cognito_user(email: str = Body(...), password: str = Body(...))
     ):  # 이메일 인증을 진행할 수 없습니다!
         raise HTTPException(status_code=400)
     return {"user_id": result["UserSub"]}
+
+
+class UserSignup(BaseModel):
+    cognito_id: str
+    email: str
+    phone: str
+    membership: str
+    currency: str
+    tosspayments: dict[str, str] | None = None
+    paypal: dict[str, str] | None = None
+    reregistration: bool
+
+
+@router.post("/user", tags=[API_PREFIX])
+async def signup(item: UserSignup):
+    try:
+        cognito_user = cognito.admin_get_user(
+            UserPoolId=SECRETS["COGNITO_USER_POOL_ID"], Username=item.email
+        )
+    except cognito.exceptions.UserNotFoundException:
+        raise HTTPException(status_code=404, detail="cognito user not found")
+    if cognito_user["UserStatus"] != "CONFIRMED":
+        raise HTTPException(status_code=401, detail="cognito user is not confirmed")
+
+    scan_history = f"""
+        SELECT 1 FROM signup_history 
+        WHERE email='{item.email}' or phone='{item.phone}'
+        LIMIT 1;
+    """
+    signup_history = db.execute_query(scan_history)
+    if signup_history and not (item.tosspayments or item.paypal):
+        raise HTTPException(status_code=402, detail="billing information required")
+
+    # 다음달 동일 일시를 구하되 마지막 일보다 크면 마지막 일로 대체
+    now = datetime.now()
+    year, month = (now.year + 1, 1) if now.month == 12 else (now.year, now.month + 1)
+    day = min(now.day, monthrange(year, month)[1])
+    membership_expiration = datetime(year, month, day, now.hour, now.minute, now.second)
+
+    insert_user = f"""
+    INSERT INTO users (id, email, name, phone, membership, membership_expiration, 
+        currency, tosspayments_billing_key, paypal_token, paypal_subscription_id,
+        billing_date, billing_time) 
+    VALUES (
+        '{item.cognito_id}', 
+        '{item.email}', 
+        '{item.email.split("@")[0]}', 
+        '{item.phone}', 
+        '{item.membership}', 
+        '{membership_expiration.strftime('%Y-%m-%d %H:%M:%S')}', 
+        '{item.currency}', 
+        {f"'{item.tosspayments['billingKey']}'" if item.tosspayments else "NULL"},
+        {f"'{item.paypal['facilitatorAccessToken']}'" if item.paypal else "NULL"}, 
+        {f"'{item.paypal['subscriptionId']}'" if item.paypal else "NULL"},
+        {now.day},
+        '{now.strftime('%H:%M:%S')}'
+    );
+    """
+    try:
+        db.execute_query(insert_user)
+    except psycopg.errors.UniqueViolation:  # becouse email colume is unique
+        raise HTTPException(status_code=409, detail="Email is already in used")
+
+    insert_signup_history = f"""
+    INSERT INTO signup_history (email, phone) 
+    VALUES ('{item.email}', '{item.phone}')
+    """
+    db.execute_query(insert_signup_history)
+    return Response(status_code=200)
 
 
 @router.get("/user/country", tags=[API_PREFIX])

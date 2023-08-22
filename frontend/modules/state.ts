@@ -19,7 +19,8 @@ export const auth = {
             email: "",
             membership: "",
             currency: "",
-            billingKey: "",
+            tosspayments: false, // or { billingKey }
+            paypal: false, // or { subscriptionId, facilitatorAccessToken }
             phoneNumber: "",
             reregistration: false,
         }) // DB 유저 생성시 필요한 정보들

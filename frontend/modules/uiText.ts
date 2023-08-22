@@ -4,11 +4,6 @@ import * as yaml from "js-yaml";
 
 import { settingObjectStore } from "./_storage";
 
-export const settingKey = {
-    lang: "uiTextLang",
-    text: "uiText",
-}
-
 interface UiTextObjectType { // yaml 파일 데이터
     [key: string]: { [key: string]: string }
 }
@@ -19,25 +14,22 @@ const getUiTextObject = async () => {
     return yaml.load(uiTextYaml.data) as UiTextObjectType;
 }
 
+export const currentLang = async () => {
+    return await settingObjectStore.get("lang")
+}
 
 export const loadUiText = async () => {
-    let [text, lang] = await Promise.all([
-        settingObjectStore.get(settingKey.text),
-        settingObjectStore.get(settingKey.lang),
-    ])
+    let lang = await settingObjectStore.get("lang")
 
     if (!lang) { // 언어 설정이 없는 경우
         const browserLanguage = navigator.language.split("-")[0];
         lang = browserLanguage in await supportedLangs() ? browserLanguage : "en"
-        settingObjectStore.put(settingKey.lang, lang);
+        settingObjectStore.put("lang", lang);
     }
-    if (!text) {
-        const uiTextObject = await getUiTextObject()
-        text = Object.entries(uiTextObject).reduce((acc, [key, value]) => {
-            return { ...acc, [key]: value[lang] || value["en"] }
-        }, {});
-        settingObjectStore.put(settingKey.text, text);
-    }
+    const uiTextObject = await getUiTextObject()
+    const text = Object.entries(uiTextObject).reduce((acc, [key, value]) => {
+        return { ...acc, [key]: value[lang] || value["en"] }
+    }, {});
     return { lang, text }
 }
 
@@ -58,10 +50,7 @@ export const supportedLangs = async () => {
     return nameList
 }
 
-export const changeLang = async (langCode: string) => {
-    await Promise.all([
-        settingObjectStore.put(settingKey.lang, langCode), // 언어 바꾸고
-        settingObjectStore.delete(settingKey.text) // 기존 텍스트 지우고
-    ])
+export const changeLang = async (lang: string) => {
+    await settingObjectStore.put("lang", lang) // 언어 바꾸고
     return await loadUiText() // 바꾼 언어에 맞게 다시 로딩해서 반환
 }

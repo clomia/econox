@@ -17,7 +17,7 @@ const logoutWithAlert = async (message: string) => {
     await Swal.fire({
         icon: 'error',
         text: message,
-        confirmButtonText: (await loadUiText()).text.ok,
+        // confirmButtonText: (await loadUiText()).text.ok,
     })
     await logout()
 }

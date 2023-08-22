@@ -1,20 +1,18 @@
 <script lang="ts">
     import { onMount } from "svelte";
-
     import LanguageIcon from "../assets/LanguageIcon.svelte";
-    import { loadUiText, supportedLangs, changeLang } from "../modules/uiText";
-
-    let lang = "";
-    onMount(async () => {
-        lang = (await loadUiText()).lang;
-    });
+    import { currentLang, supportedLangs, changeLang } from "../modules/uiText";
 
     let toggle = false;
     const apply = async (event: Event) => {
-        lang = (event.target as HTMLSelectElement).value;
-        await changeLang(lang);
+        await changeLang((event.target as HTMLSelectElement).value);
         location.reload(); // 레퍼런스 타는 변수들은 즉시 반영이 안돼서 reload하는게 가장 안전함
     };
+
+    let lang = "";
+    onMount(async () => {
+        lang = await currentLang();
+    });
 </script>
 
 {#await supportedLangs() then langs}

@@ -54,19 +54,19 @@
     };
 </script>
 
-<section>
-    <div class="paypal-widget">
+<main>
+    <section>
         <div id="paypal-button" />
-    </div>
-</section>
+    </section>
+</main>
 
 <style>
-    section {
+    main {
         display: flex;
         flex-direction: column;
         align-items: center;
     }
-    .paypal-widget {
+    section {
         width: 100%;
         padding: 3rem;
         margin-top: 2rem;

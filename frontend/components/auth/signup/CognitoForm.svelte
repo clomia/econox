@@ -35,7 +35,7 @@
         try {
             request = publicRequest.post("/user/cognito", { email, password });
             const userId = (await request).data.user_id;
-            inputResult.set({ ...$inputResult, userId, email });
+            inputResult.set({ ...$inputResult, userId, email, password });
             dispatch("complete");
         } catch (error) {
             request = null;

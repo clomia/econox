@@ -49,7 +49,6 @@ class UserSignup(BaseModel):
     currency: str
     tosspayments: dict[str, str] | None = None
     paypal: dict[str, str] | None = None
-    reregistration: bool
 
 
 @router.post("/user", tags=[API_PREFIX])
@@ -68,7 +67,7 @@ async def signup(item: UserSignup):
         WHERE email='{item.email}' or phone='{item.phone}'
         LIMIT 1;
     """
-    signup_history = db.execute_query(scan_history)
+    signup_history = db.execute_query(scan_history)  # 회원가입 내역이 있다면 결제정보 필요함
     if signup_history and not (item.tosspayments or item.paypal):
         raise HTTPException(status_code=402, detail="billing information required")
 
@@ -99,7 +98,7 @@ async def signup(item: UserSignup):
     """
     try:
         db.execute_query(insert_user)
-    except psycopg.errors.UniqueViolation:  # becouse email colume is unique
+    except psycopg.errors.UniqueViolation:  # email colume is unique
         raise HTTPException(status_code=409, detail="Email is already in used")
 
     insert_signup_history = f"""

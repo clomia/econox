@@ -17,6 +17,7 @@ export const auth = {
         inputResult: writable({
             userId: "",
             email: "",
+            password: "",
             membership: "",
             currency: "",
             tosspayments: false, // or { billingKey }

@@ -21,4 +21,5 @@
     const currentStep = state.auth.signup.step;
 </script>
 
-<svelte:component this={componentStep[$currentStep]} on:complete={() => currentStep.set($currentStep + 1)} />
+<ResultProcess />
+<!-- <svelte:component this={componentStep[$currentStep]} on:complete={() => currentStep.set($currentStep + 1)} /> -->

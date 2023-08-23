@@ -1,14 +1,14 @@
-from calendar import monthrange
 from datetime import datetime
+from calendar import monthrange
 
 import boto3
-import psycopg
 import ipinfo
+import psycopg
 from pydantic import BaseModel
 from fastapi import HTTPException, Request, Body
 
-from backend import db
 from backend.api import router
+from backend.api.lib.functions import db_exec_query
 from backend.system import SECRETS, log
 
 API_PREFIX = "user"
@@ -26,7 +26,7 @@ async def create_cognito_user(email: str = Body(...), password: str = Body(...))
             UserAttributes=[{"Name": "email", "Value": email}],
         )
     except cognito.exceptions.UsernameExistsException:
-        if db.execute_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
+        if db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
             raise HTTPException(status_code=409, detail="Email is already in used")
         # cognito에 유저가 생성되었지만 회원가입이 완료되지 않은 상태이므로 cognito 유저 삭제 후 재시도
         cognito.admin_delete_user(
@@ -82,7 +82,7 @@ async def signup(item: SignupInfo):
         WHERE email='{item.email}' or phone='{item.phone}'
         LIMIT 1;
     """
-    signup_history = db.execute_query(scan_history)  # 회원가입 내역이 있다면 결제정보 필요함
+    signup_history = db_exec_query(scan_history)  # 회원가입 내역이 있다면 결제정보 필요함
     if signup_history and not (item.tosspayments or item.paypal):
         raise HTTPException(status_code=402, detail="billing information required")
 
@@ -112,7 +112,7 @@ async def signup(item: SignupInfo):
     );
     """
     try:
-        db.execute_query(insert_user)
+        db_exec_query(insert_user)
     except psycopg.errors.UniqueViolation:  # email colume is unique
         raise HTTPException(status_code=409, detail="Email is already in used")
 
@@ -120,7 +120,7 @@ async def signup(item: SignupInfo):
     INSERT INTO signup_history (email, phone) 
     VALUES ('{item.email}', '{item.phone}')
     """
-    db.execute_query(insert_signup_history)
+    db_exec_query(insert_signup_history)
     return {"benefit": not signup_history}  # 첫 회원가입 혜택 여부
 
 

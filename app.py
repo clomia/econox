@@ -1,6 +1,5 @@
 """ FastAPI로 ASGI app 객체 생성 """
 from pathlib import Path
-from fastapi.openapi.utils import get_openapi
 
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse

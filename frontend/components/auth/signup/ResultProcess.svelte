@@ -1,6 +1,7 @@
 <script lang="ts">
-    import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
     import * as state from "../../../modules/state";
+    import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
+    import LoadingTextAnimation from "../../../assets/LoadingTextAnimation.svelte";
 
     const inputResult = state.auth.signup.inputResult;
     const text = state.uiText.text;
@@ -16,9 +17,28 @@
 </script>
 
 <main>
-    <LoadingAnimation />
+    <section class="loading">
+        <LoadingTextAnimation />
+        <div>
+            <LoadingAnimation scale={2} />
+        </div>
+    </section>
     <!-- <div>{$text.sucessSignup}</div> -->
 </main>
 
 <style>
+    main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 17rem;
+    }
+    .loading {
+        margin-top: 2rem;
+    }
+    .loading div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 </style>

@@ -6,7 +6,7 @@ from pathlib import PosixPath
 import jwt
 import boto3
 import requests
-from fastapi import Body, HTTPException, Request
+from fastapi import Body, HTTPException
 from fastapi.responses import Response
 
 from backend.api import router

@@ -1,4 +1,5 @@
 <script>
+    export let scale = 1;
     let bgColor = `hsl(${Math.random() * 360}, 100%, 85%)`;
     let dots = Array(8)
         .fill(0)
@@ -6,7 +7,7 @@
 </script>
 
 <section>
-    <div class="loader" style="--bg: {bgColor}">
+    <div class="loader" style="--bg: {bgColor}; --scale: {scale / 2}">
         {#each dots as dot}
             <div class="dot" style="--index: {dot}" />
         {/each}
@@ -21,7 +22,6 @@
         width: 10rem;
         height: 10rem;
         overflow-x: hidden;
-        --scale: 0.5;
         --dot-size: 5;
         --speed: 1.5;
         --radius: 10;

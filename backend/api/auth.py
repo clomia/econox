@@ -14,27 +14,24 @@ from backend.api import router
 from backend.system import SECRETS, EFS_VOLUME_PATH
 
 API_PREFIX = "auth"
-PHONE_CONFIRMATION_CACHE_PATH = EFS_VOLUME_PATH / "phone_confirmation_cache"
-PHONE_CONFIRMATION_CACHE_PATH.mkdir(parents=True, exist_ok=True)
-
-
-region = "us-east-1"
-cognito = boto3.client("cognito-idp", region_name=region)
-jwks_url = f"https://cognito-idp.{region}.amazonaws.com/{SECRETS['COGNITO_USER_POOL_ID']}/.well-known/jwks.json"
-jwks = requests.get(jwks_url).json()
+cognito = boto3.client("cognito-idp")
 
 
 @router.post("/auth/user", tags=[API_PREFIX])
 async def login(email: str = Body(...), password: str = Body(...)):
     # 올싸인아웃 후 로그인해서 다른 세션 종료시키기
-    # DB에 해당 유저의 레코드가 없으면 회원가입 완료 안된거니까 401 쏴주기
+    if not db.execute_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
+        raise HTTPException(status_code=404, detail="User does not exist")
+    cognito.admin_user_global_sign_out(  # 유저에게 발급된 refresh token 전부 무효화
+        UserPoolId=SECRETS["COGNITO_USER_POOL_ID"], Username=email
+    )  # 여러명이 한 계정을 동시에 사용하지 못하도록 한다.
     try:
         result = cognito.initiate_auth(
             AuthFlow="USER_PASSWORD_AUTH",
             AuthParameters={"USERNAME": email, "PASSWORD": password},
             ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
         )
-    except cognito.exceptions.NotAuthorizedException:
+    except cognito.exceptions.NotAuthorizedException:  # 이메일 잘못된 경우 포함
         raise HTTPException(status_code=401)
     return {
         "cognito_id_token": result["AuthenticationResult"]["IdToken"],
@@ -59,7 +56,12 @@ async def token_refresh(cognito_refresh_token: str = Body(...)):
     }
 
 
+jwks_url = f"https://cognito-idp.us-east-1.amazonaws.com/{SECRETS['COGNITO_USER_POOL_ID']}/.well-known/jwks.json"
+jwks = requests.get(jwks_url).json()
 # 로그인된 유저가 요청 헤더에 담는 토큰을 보고 검사 & 누구인지 확인하는 라우터 전처리 함수(인터셉터) 만들어야 함
+
+PHONE_CONFIRMATION_CACHE_PATH = EFS_VOLUME_PATH / "phone_confirmation_cache"
+PHONE_CONFIRMATION_CACHE_PATH.mkdir(parents=True, exist_ok=True)
 
 
 @router.post("/auth/phone", tags=[API_PREFIX])
@@ -67,7 +69,7 @@ async def create_phone_confirmation(phone_number=Body(..., embed=True)):
     target_path: PosixPath = PHONE_CONFIRMATION_CACHE_PATH / phone_number
     issued_code = f"{secrets.randbelow(10**6):06}"
     target_path.write_text(issued_code)
-    sns = boto3.client("sns", region_name=region)
+    sns = boto3.client("sns")
     message = f"ECONOX confirmation code: {issued_code}"
     print(phone_number)
     response = sns.publish(PhoneNumber=phone_number, Message=message)

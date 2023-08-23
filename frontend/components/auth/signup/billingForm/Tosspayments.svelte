@@ -43,7 +43,7 @@
         const [expir_month, expir_year] = expiryDate.replace(/\s/g, "").split("/");
         try {
             request = publicRequest.post("/billing/tosspayments", {
-                user_id: $inputResult.userId,
+                user_id: $inputResult.cognitoId,
                 card_number: cardNumber.replace(/\s/g, ""),
                 expiration_year: expir_year,
                 expiration_month: expir_month,

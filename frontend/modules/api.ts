@@ -10,11 +10,6 @@ export const apiHostPath = window.location.origin + "/api"
 export const publicRequest = axios.create({ baseURL: apiHostPath })
 export const privateRequest = axios.create({ baseURL: apiHostPath }) // 인증 실패 시 강제 로그아웃!
 
-export const settingKey = {
-    idToken: "idToken",
-    refreshToken: "refreshToken"
-}
-
 const isJwtExpired = (token: string): boolean => {
     try {
         const decoded = jwt.decode(token) as JwtPayload | null;
@@ -31,18 +26,22 @@ const isJwtExpired = (token: string): boolean => {
  * 토큰 갱신 실패시 response.status = 401 에러 발생
  */
 const tokenInsert = async (config: InternalAxiosRequestConfig) => {
-    let [idToken, refreshToken] = await Promise.all([
-        settingObjectStore.get(settingKey.idToken),
-        settingObjectStore.get(settingKey.refreshToken),
+    let [cognitoIdToken, cognitoAccessToken, cognitoRefreshToken] = await Promise.all([
+        settingObjectStore.get("cognitoIdToken"),
+        settingObjectStore.get("cognitoAccessToken"),
+        settingObjectStore.get("cognitoRefreshToken"),
     ])
 
-    if (idToken && refreshToken) {
-        if (isJwtExpired(idToken)) {
-            const token = await publicRequest.post("/auth/refresh-token", { refresh_token: refreshToken })
-            idToken = token["id_token"]
-            settingObjectStore.put(settingKey.idToken, idToken)
+    if (cognitoIdToken && cognitoAccessToken && cognitoRefreshToken) {
+        if (isJwtExpired(cognitoIdToken) || isJwtExpired(cognitoAccessToken)) {
+            const response = await publicRequest.post("/auth/cognito-refresh-token", { cognito_refresh_token: cognitoRefreshToken })
+            cognitoIdToken = response["cognito_id_token"]
+            cognitoAccessToken = response["cognito_access_token"]
+            settingObjectStore.put("cognitoIdToken", cognitoIdToken)
+            settingObjectStore.put("cognitoAccessToken", cognitoAccessToken)
         }
-        config.headers["Authorization"] = 'Bearer ' + idToken
+        config.headers["Authorization"] = 'Bearer ' + cognitoIdToken
+        config.headers["X-Cognito-Access-Token"] = cognitoAccessToken
     }
     return config
 }

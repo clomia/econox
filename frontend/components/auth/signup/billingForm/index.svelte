@@ -1,10 +1,11 @@
 <script>
-    import { onMount } from "svelte";
+    import { onMount, createEventDispatcher } from "svelte";
     import Paypal from "./Paypal.svelte";
     import Tosspayments from "./Tosspayments.svelte";
 
     import * as state from "../../../../modules/state";
 
+    const dispatch = createEventDispatcher();
     const inputResult = state.auth.signup.inputResult;
 
     onMount(() => {

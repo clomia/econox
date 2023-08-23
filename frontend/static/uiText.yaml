@@ -161,7 +161,7 @@ reregistrationFalse:
   ko: "최초 회원가입 혜택 대상자입니다."
 sucessSignup:
   en: "Sign up is complete."
-  ko: "회원가입이 완료되었습니다."
+  ko: "회원가입이 완료되었습니다!"
 benefitsResultSummry:
   en: >
     As a first-time member sign-up benefit, free membership is provided for the first month without registering a payment method!
@@ -169,3 +169,12 @@ benefitsResultSummry:
   ko: >
     최초 회원가입 혜택으로 결제수단 등록 없이 첫 달 동안 맴버십 무료 이용이 제공됩니다!
     무료 이용이 끝나면 결제수단 등록으로 안내되며 매달 맴버십 금액이 청구됩니다.
+failureSignup401:
+  en: "Email verification has not been completed"
+  ko: "이메일 인증이 완료되지 않았습니다"
+failureSignup402:
+  en: "Payment information is missing"
+  ko: "결제 정보가 누락되었습니다"
+failureSignup409:
+  en: "This is not a normal signup request"
+  ko: "정상적인 회원가입 요청이 아닙니다"

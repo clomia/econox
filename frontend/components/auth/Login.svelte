@@ -1,16 +1,13 @@
 <script lang="ts">
     import LoadingAnimation from "../../assets/LoadingAnimation.svelte";
     import * as state from "../../modules/state";
-    import { publicRequest } from "../../modules/api";
-
-    import type { AxiosResponse } from "axios";
-
+    import { login } from "../../modules/functions";
     const text = state.uiText.text;
 
     let message = "";
-    let request: string | Promise<AxiosResponse> = "before"; // 요청 전
-    const login = async (event: SubmitEvent) => {
-        const form = event.target as HTMLFormElement; //타입스크립트 적용 ㄱ
+    let request: string | Promise<void> = "before"; // 요청 전
+    const loginProcess = async (event: SubmitEvent) => {
+        const form = event.target as HTMLFormElement;
         const email = form.email.value;
         const password = form.password.value;
         if (!email || !password) {
@@ -18,19 +15,14 @@
             return;
         }
         try {
-            request = publicRequest.post("/auth/user", { email, password });
-            const token = (await request).data;
-            // 여기서는 성공 동작만 처리하면 됌
-            console.log(token["id_token"]);
-            console.log(token["refresh_token"]);
-            console.log("로그인 성공! -> 토큰 저장하고 콘솔로 보내주기!");
+            request = login(email, password);
         } catch (error) {
             message = error.response?.status === 401 ? $text.loginFailed : $text.error;
         }
     };
 </script>
 
-<form on:submit|preventDefault={login}>
+<form on:submit|preventDefault={loginProcess}>
     <section>
         <label>
             <span>{$text.email}</span>
@@ -40,7 +32,7 @@
     <section>
         <label>
             <span>{$text.password}</span>
-            <input type="password" name="password" autocomplete="current-password" />
+            <input class="password-input" type="password" name="password" autocomplete="current-password" />
         </label>
     </section>
     {#await request}
@@ -80,6 +72,9 @@
         border-radius: 0.7rem;
         color: white;
         padding-left: 1rem;
+    }
+    .password-input {
+        letter-spacing: 0.6rem;
     }
     section:focus-within label span {
         color: rgba(255, 255, 255, 1);

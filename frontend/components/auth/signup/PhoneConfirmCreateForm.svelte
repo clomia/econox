@@ -7,6 +7,8 @@
     import { publicRequest } from "../../../modules/api";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
 
+    import type { CountryCode } from "libphonenumber-js";
+
     const text = state.uiText.text;
     const inputResult = state.auth.signup.inputResult;
     const inputPhoneNumberStore = state.auth.signup.inputPhoneNumber;
@@ -15,7 +17,7 @@
     getCodes().forEach((code) => {
         try {
             const name = getName(code);
-            const callingCode = getCountryCallingCode(code);
+            const callingCode = getCountryCallingCode(code as CountryCode);
             countries[name] = callingCode;
         } catch (error) {
             console.info(`No calling code for country: ${code}`);
@@ -35,8 +37,8 @@
         message = "";
         const form = event.target as HTMLFormElement;
         const callingCode = form.callingCode.value;
-        const inputPhoneNumber = form.phoneNumber.value;
-        const phoneNumber = `+${callingCode}${inputPhoneNumber.replace(/-|\s/g, "")}`; // "-" & 공백 제거}
+        const inputPhoneNumber = form.phone.value;
+        const phone = `+${callingCode}${inputPhoneNumber.replace(/-|\s/g, "")}`; // "-" & 공백 제거}
         if (!inputPhoneNumber) {
             message = $text.noPhoneNumber;
             return;
@@ -46,9 +48,9 @@
             return;
         }
         try {
-            request = publicRequest.post("/auth/phone", { phone_number: phoneNumber });
+            request = publicRequest.post("/auth/phone", { phone_number: phone });
             await request;
-            inputResult.set({ ...$inputResult, phoneNumber });
+            inputResult.set({ ...$inputResult, phone });
             inputPhoneNumberStore.set(inputPhoneNumber);
             dispatch("complete");
         } catch (error) {
@@ -73,7 +75,7 @@
     {/await}
     <label class="phone-number">
         <span>{$text.inputPhoneNumber}</span>
-        <input name="phoneNumber" type="text" />
+        <input name="phone" type="text" />
     </label>
     <div class="message">{message}</div>
     {#if !(request instanceof Promise)}

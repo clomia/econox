@@ -35,24 +35,17 @@
         const form = event.target as HTMLFormElement;
         try {
             const phoneConfirm = publicRequest.post("/auth/phone/confirm", {
-                phone_number: $inputResult.phoneNumber,
+                phone_number: $inputResult.phone,
                 confirmation_code: form.code.value,
             });
             const reregistrationConfirm = publicRequest.post("/auth/is-reregistration", {
                 email: $inputResult.email,
-                phone_number: $inputResult.phoneNumber,
+                phone: $inputResult.phone,
             });
             request = Promise.all([phoneConfirm, reregistrationConfirm]);
             const [, reregistrationConfirmResponse] = await request;
-            const reregistration: boolean = reregistrationConfirmResponse.data.result; // 재등록 여부
+            const reregistration: boolean = reregistrationConfirmResponse.data.reregistration; // 재등록 여부
             inputResult.set({ ...$inputResult, reregistration });
-            await Swal.fire({
-                icon: "success",
-                color: "white",
-                text: reregistration ? $text.reregistrationTrue : $text.reregistrationFalse,
-                background: "#282a2a",
-                confirmButtonColor: "#3f4545",
-            });
             dispatch("complete");
         } catch (error) {
             request = null;
@@ -65,7 +58,7 @@
     };
 
     const resendCode = async () => {
-        request = publicRequest.post("/auth/phone", { phone_number: $inputResult.phoneNumber });
+        request = publicRequest.post("/auth/phone", { phone_number: $inputResult.phone });
         await request;
         request = null;
         message = "인증 코드가 전송되었습니다";

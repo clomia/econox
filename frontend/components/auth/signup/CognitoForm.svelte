@@ -34,8 +34,8 @@
         }
         try {
             request = publicRequest.post("/user/cognito", { email, password });
-            const userId = (await request).data.user_id;
-            inputResult.set({ ...$inputResult, userId, email, password });
+            const cognitoId = (await request).data.user_id;
+            inputResult.set({ ...$inputResult, cognitoId, email, password });
             dispatch("complete");
         } catch (error) {
             request = null;
@@ -58,13 +58,13 @@
     <section>
         <label>
             <span>{$text.password}</span>
-            <input type="password" name="password" autocomplete="off" />
+            <input class="password-input" type="password" name="password" autocomplete="off" />
         </label>
     </section>
     <section>
         <label>
             <span>{$text.retypePassword}</span>
-            <input type="password" name="retypePassword" autocomplete="off" />
+            <input class="password-input" type="password" name="retypePassword" autocomplete="off" />
         </label>
     </section>
     {#await request}
@@ -104,6 +104,9 @@
         border-radius: 0.7rem;
         color: white;
         padding-left: 1rem;
+    }
+    .password-input {
+        letter-spacing: 0.6rem;
     }
     section:focus-within label span {
         color: rgba(255, 255, 255, 1);

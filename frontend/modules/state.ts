@@ -15,14 +15,14 @@ export const auth = {
         phoneConfirmTimeLimit: writable(""),
         inputPhoneNumber: writable(""),
         inputResult: writable({
-            userId: "",
+            cognitoId: "",
             email: "",
             password: "",
             membership: "",
             currency: "",
-            tosspayments: false, // or { billingKey }
-            paypal: false, // or { subscriptionId, facilitatorAccessToken }
-            phoneNumber: "",
+            tosspayments: null, // or { billingKey }
+            paypal: null, // or { subscriptionId, facilitatorAccessToken }
+            phone: "",
             reregistration: false,
         }) // DB 유저 생성시 필요한 정보들
     }

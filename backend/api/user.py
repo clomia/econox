@@ -8,9 +8,9 @@ from fastapi import HTTPException, Request, Body
 from fastapi.responses import Response
 from pydantic import BaseModel
 
+from backend import db
 from backend.api import router
 from backend.system import SECRETS, log
-from backend import db
 
 API_PREFIX = "user"
 
@@ -25,14 +25,21 @@ async def create_cognito_user(email: str = Body(...), password: str = Body(...))
             ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
             Username=email,
             Password=password,
-            UserAttributes=[
-                {"Name": "email", "Value": email},
-            ],
+            UserAttributes=[{"Name": "email", "Value": email}],
         )
-    # todo Cognito에 있는데 DB에 없는 경우 지우고 다시 만들어서 정상 처리하게 해줘야 함
     except cognito.exceptions.UsernameExistsException:
-        # todo DB에 유저 있는 경우가 409 응답
-        raise HTTPException(status_code=409)
+        if db.execute_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
+            raise HTTPException(status_code=409)
+        else:
+            cognito.admin_delete_user(
+                UserPoolId=SECRETS["COGNITO_USER_POOL_ID"], Username=email
+            )
+            result = cognito.sign_up(
+                ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
+                Username=email,
+                Password=password,
+                UserAttributes=[{"Name": "email", "Value": email}],
+            )
     except (
         cognito.exceptions.InvalidParameterException,
         cognito.exceptions.CodeDeliveryFailureException,
@@ -57,10 +64,13 @@ async def signup(item: UserSignup):
         cognito_user = cognito.admin_get_user(
             UserPoolId=SECRETS["COGNITO_USER_POOL_ID"], Username=item.email
         )
+        print(cognito_user)
     except cognito.exceptions.UserNotFoundException:
-        raise HTTPException(status_code=404, detail="cognito user not found")
+        raise HTTPException(status_code=409, detail="cognito user not found")
     if cognito_user["UserStatus"] != "CONFIRMED":
         raise HTTPException(status_code=401, detail="cognito user is not confirmed")
+    if cognito_user["Username"] != item.cognito_id:
+        raise HTTPException(status_code=409, detail="invalid cognito id")
 
     scan_history = f"""
         SELECT 1 FROM signup_history 
@@ -106,7 +116,7 @@ async def signup(item: UserSignup):
     VALUES ('{item.email}', '{item.phone}')
     """
     db.execute_query(insert_signup_history)
-    return Response(status_code=200)
+    return {"benefit": not bool(signup_history)}  # 첫 회원가입 혜택 여부
 
 
 @router.get("/user/country", tags=[API_PREFIX])

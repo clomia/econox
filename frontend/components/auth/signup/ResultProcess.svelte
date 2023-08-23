@@ -1,44 +1,118 @@
-<script lang="ts">
+<script>
+    import { onMount } from "svelte";
     import * as state from "../../../modules/state";
+    import { publicRequest } from "../../../modules/api";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
-    import LoadingTextAnimation from "../../../assets/LoadingTextAnimation.svelte";
+    import { login } from "../../../modules/functions";
 
     const inputResult = state.auth.signup.inputResult;
     const text = state.uiText.text;
 
-    // 1. 일단 바로 로딩 화면부터 보여준 뒤
-    // 2. inputResult 취합해서 POST /user (회원가입) 요청
-    // 3. 성공 시:
-    //     완료 문구와 확인 버튼을 띄운다.
-    //     확인 버튼을 누르면 로그인 처리 해준다 (이메일,비번으로 /auth/user 요청을 통해 토큰 받아서 저장)
-    //   실패 시:
-    //      실패 문구와 실패 이유를 간단하게 보여주고 잠시 후 다시 시도해달라고 한다.
-    //      확인 버튼 누르면 그냥 전부 취소됌
+    let request;
+    onMount(async () => {
+        request = publicRequest.post("/user", {
+            cognito_id: $inputResult.cognitoId,
+            email: $inputResult.email,
+            phone: $inputResult.phone,
+            membership: $inputResult.membership,
+            currency: $inputResult.currency,
+            tosspayments: $inputResult.tosspayments,
+            paypal: $inputResult.paypal,
+        });
+        await request;
+    });
+
+    const sucessMessage = (response) => {
+        return response.data.benefit ? $text.benefitsResultSummry : "";
+    };
+
+    const failureMessage = (error) => {
+        const statusMessages = {
+            401: $text.failureSignup401, // 이메일 인증 안됌
+            402: $text.failureSignup402, // 결제 정보 필요한데 없음
+            409: $text.failureSignup409,
+        };
+        return statusMessages[error.response?.status] || $text.error;
+    };
+
+    const loginProcess = async () => {
+        login($inputResult.email, $inputResult.password);
+    };
+
+    const cancelProcess = async () => {
+        window.location.replace(window.location.origin);
+    };
 </script>
 
 <main>
-    <section class="loading">
-        <LoadingTextAnimation />
-        <div>
-            <LoadingAnimation scale={2} />
-        </div>
-    </section>
-    <!-- <div>{$text.sucessSignup}</div> -->
+    {#if request}
+        {#await request}
+            <section class="loading">
+                <LoadingAnimation scale={2.3} />
+            </section>
+        {:then response}
+            <section class="sucess">
+                <div class="sucess__title">{$text.sucessSignup}</div>
+                <div class="sucess__message">{sucessMessage(response)}</div>
+                <button on:click={loginProcess}>{$text.ok}</button>
+            </section>
+        {:catch error}
+            <section class="failure">
+                <div class="failure__message">{failureMessage(error)}</div>
+                <button on:click={cancelProcess}>{$text.ok}</button>
+            </section>
+        {/await}
+    {/if}
 </main>
 
 <style>
     main {
         display: flex;
+        position: relative;
         flex-direction: column;
         align-items: center;
-        height: 17rem;
+        height: 15rem;
+        color: white;
     }
     .loading {
-        margin-top: 2rem;
+        margin-top: 3.5rem;
     }
-    .loading div {
+    .failure {
         display: flex;
-        justify-content: center;
+        flex-direction: column;
         align-items: center;
+        justify-content: center;
+        height: 100%;
+        padding-bottom: 3.5rem;
+    }
+    .failure__message,
+    .sucess__title {
+        font-size: 1.3rem;
+    }
+    .sucess {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+    .sucess__message {
+        margin-top: 2.5rem;
+        margin-bottom: 1rem;
+        width: 88%;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.7);
+    }
+    button {
+        position: absolute;
+        bottom: 0;
+        padding: 0.5rem 2rem;
+        border: thin solid white;
+        border-radius: 1rem;
+        color: white;
+    }
+    button:hover {
+        cursor: pointer;
+        background-color: rgba(255, 255, 255, 0.2);
     }
 </style>

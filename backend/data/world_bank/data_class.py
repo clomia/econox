@@ -1,4 +1,4 @@
-from backend.client.world_bank.data_metaclass import ClientMeta
+from backend.data.world_bank.data_metaclass import ClientMeta
 
 
 class Trade(metaclass=ClientMeta):

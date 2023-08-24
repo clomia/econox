@@ -1,29 +1,12 @@
+import asyncio
 from typing import List
 from datetime import datetime
-from functools import partial
 
-import requests
-
-from backend.system import SECRETS
-from backend.compute import parallel
-from backend.client.translate import Multilingual
-from backend.client.fmp.integrate import Symbol
-
-HOST = "https://financialmodelingprep.com"
+from backend.http import FmpApi
+from backend.data.translate import Multilingual
+from backend.data.fmp.integrate import Symbol
 
 __all__ = ["news"]
-
-
-def request(url: str, params: dict = {}):
-    """
-    - url: HOST를 제외하고 양 끝 "/"가 없는 url
-    - params: apikey를 제외한 URL 쿼리 파라미터들
-    """
-    response = requests.get(
-        f"{HOST}/{url}", params=params | {"apikey": SECRETS["FMP_API_KEY"]}
-    )
-    response.raise_for_status()  # FMP 서버의 응답이 잘못된 경우 HTTPError
-    return response.json()
 
 
 class News:
@@ -44,7 +27,7 @@ class News:
         return f"<News: {self.symbol.code} {self.date.strftime('%Y-%m-%d %H:%M')} '{text_repr}'>"
 
 
-def news(symbol=None, limit=10) -> List[News]:
+async def news(symbol=None, limit=10) -> List[News]:
     """
     - symbol: symbol에 대한 뉴스 리스트를 반환합니다.
         - symbol이 지정되지 않은 경우 최근 주식 뉴스들을 반환합니다.
@@ -54,14 +37,14 @@ def news(symbol=None, limit=10) -> List[News]:
         - 뉴스가 없는 경우 빈 리스트
     """
     params = {"tickers": symbol, "limit": limit} if symbol else {"limit": limit}
-    res = parallel.executor(
-        stock_news_api := partial(request, "api/v3/stock_news", params=params),
-        forex_news_api := partial(request, "api/v4/forex_news", params=params),
-        crypto_news_api := partial(request, "api/v4/crypto_news", params=params),
+    stock_resp, forex_resp, crypto_resp = await asyncio.gather(
+        FmpApi(cache=False).get("api/v3/stock_news", params),
+        FmpApi(cache=False).get("api/v4/forex_news", params),
+        FmpApi(cache=False).get("api/v4/crypto_news", params),
     )
 
     stock_news = []
-    for news in res[stock_news_api]:
+    for news in stock_resp:
         if not news["symbol"]:
             continue  # symbol 매칭 가능한 뉴스만 수집할거임
 
@@ -81,7 +64,7 @@ def news(symbol=None, limit=10) -> List[News]:
     forex_news = []  # 외환 뉴스 수집
     while len(forex_news) < limit:
         params = {"symbol": symbol, "page": page}
-        for news in res[forex_news_api]:
+        for news in forex_resp:
             forex_news.append(
                 News(
                     symbol=symbol,
@@ -103,7 +86,7 @@ def news(symbol=None, limit=10) -> List[News]:
     crypto_news = []  # 암호화페 뉴스 수집
     while len(crypto_news) < limit:
         params = {"symbol": symbol, "page": page}
-        for news in res[crypto_news_api]:
+        for news in crypto_resp:
             crypto_news.append(
                 News(
                     symbol=symbol,

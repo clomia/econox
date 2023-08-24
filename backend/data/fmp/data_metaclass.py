@@ -8,14 +8,14 @@ from pathlib import PosixPath
 from functools import partial
 from datetime import date, datetime
 
-import requests
+import httpx
 import numpy as np
 import xarray as xr
 
-from backend.compute import standardization
+from backend.math import standardization
 from backend.system import SECRETS, ROOT_PATH, EFS_VOLUME_PATH
-from backend.client.factor import Factor
-from backend.client.translate import Multilingual
+from backend.data.factor import Factor
+from backend.data.translate import Multilingual
 
 HOST = "https://financialmodelingprep.com"
 XARRAY_PATH = EFS_VOLUME_PATH / "xarray"  # 이거 디렉토리 없으면 만드는 로직 없는거 같음
@@ -103,15 +103,16 @@ class ClientMeta(type):
             setattr(ins, name, factor)
         return ins
 
-    def collect(self) -> Dict[str, xr.DataArray]:
+    async def collect(self) -> Dict[str, xr.DataArray]:
         """
         - 모든 펙터에 대한 시계열 데이터를 수집한 뒤 딕셔너리로 매핑해서 반환합니다.
-        - FMP 서버 응답이 잘못된 경우 raise HTTPError
+        - FMP 서버 응답이 잘못된 경우 raise HTTPStatusError
         - 데이터가 전혀 없는 경우 raise ValueError
         - 누락된 데이터는 np.nan으로 대체됩니다.
         """
-        response = requests.get(self.api, params=self.api_params)
-        response.raise_for_status()  # FMP 서버의 응답이 잘못된 경우 HTTPError
+        async with httpx.AsyncClient() as client:
+            response = await client.get(self.api, params=self.api_params)
+            response.raise_for_status()  # FMP 서버의 응답이 잘못된 경우 HTTPStatusError
         if not (series := response.json()):  # 데이터가 없는 경우 ValueError
             raise ValueError(f"FMP에 {self.symbol} symbol에 대한 데이터가 존재하지 않습니다.")
         t = np.array([np.datetime64(day[self.t_key], "ns") for day in series])
@@ -134,7 +135,7 @@ class ClientMeta(type):
         assert factor in self.factors  # use_factors.json를 확인해주세요
         return self.path / f"{factor}.zarr"
 
-    def loading(self):
+    async def loading(self):
         """zarr 저장소에 최신 데이터가 존재하도록 합니다."""
 
         for fac in self.factors:  # 데이터 갱신 여부 확인
@@ -146,21 +147,20 @@ class ClientMeta(type):
                 if collected_date == date.today():
                     return
         try:
-            collected = self.collect()
-        except (requests.HTTPError, ValueError):
-            return
+            collected = await self.collect()
+        except (httpx.HTTPStatusError, ValueError):
+            return  # 데이터를 가져올 수 없거나 데이터가 비었으면 아무것도 안함
 
-        # 업데이트(덮어쓰기)하는 경우 디렉토리가 이미 존재함
         self.path.mkdir(parents=True, exist_ok=True)
         for factor, data_array in collected.items():
             if np.count_nonzero(~np.isnan(data_array.values)) < 2:
                 continue  # 유효한 값 갯수가 2개 미만이면 결측 factor로 취급
             standardization(data_array).to_zarr(self.zarr_path(factor), mode="w")
 
-    def get(self, factor: str, default=None) -> xr.Dataset | None:
+    async def get(self, factor: str, default=None) -> xr.Dataset | None:
         """factor Dataset을 반환합니다. 데이터가 없는 경우 default를 반환합니다."""
         assert factor in self.factors  # JSON에 정의되지 않은 Factor입니다.
-        self.loading()
+        await self.loading()
         return (
             xr.open_zarr(self.zarr_path(factor))
             if self.zarr_path(factor).exists()
@@ -171,18 +171,18 @@ class ClientMeta(type):
 class HistoricalPriceFullMeta(ClientMeta):
     """api/v3/historical-price-full API 전용 클라이언트"""
 
-    def collect(self):  # collect 메서드 재정의
+    async def collect(self):  # collect 메서드 재정의
         # FMP 서버는 안정적인 응답 시간을 위해 from 인자가 없다면 기본적으로 5년 전까지의 데이터만 수신합니다.
         # from 인자로 "1900-01-01" 를 넣어서 모든 데이터를 가져올 수 있습니다.(이렇게 하라고 FMP한테 확인받음)
-        response = requests.get(
-            self.api, params=self.api_params | {"from": "1900-01-01"}
-        )
-        response.raise_for_status()
+        async with httpx.AsyncClient(params={"from": "1900-01-01"}) as client:
+            response = await client.get(self.api, params=self.api_params)
+            response.raise_for_status()
 
-        # 재정의 부분: 값이 historical 안에 들어있으며, 값이 없으면 historical 키도 없음
+        # 값이 historical 안에 들어있으며, 값이 없으면 historical 키도 없음
         if not (series := dict(response.json()).get("historical")):
             raise ValueError(f"FMP에 {self.symbol} symbol에 대한 데이터가 존재하지 않습니다.")
 
+        # 나머지는 부모클래스 코드와 동일
         t = np.array([np.datetime64(day[self.t_key], "ns") for day in series])
         collected = {}
 

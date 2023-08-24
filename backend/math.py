@@ -1,3 +1,5 @@
+""" 고성능 수학 연산 모듈 """
+
 from typing import Callable
 
 import numpy as np

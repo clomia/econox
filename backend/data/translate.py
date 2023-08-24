@@ -2,11 +2,12 @@
 import os
 import html
 import logging
-from functools import lru_cache, partial
+from functools import partial
 
+from aiocache import cached
 from google.cloud import translate_v2
 
-from backend.system import EFS_VOLUME_PATH, SECRETS
+from backend.system import Parallel, EFS_VOLUME_PATH, SECRETS
 
 # 빠른 병렬 처리로 인해 아래와 같은 경고가 뜨므로 해당 경고 로그가 뜨지 않도록 합니다.
 # WARNING:urllib3.connectionpool:Connection pool is full, discarding connection: translation.googleapis.com. Connection pool size: 10
@@ -20,8 +21,8 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(gcp_credential_path)
 google_translator = translate_v2.Client()
 
 
-@lru_cache(maxsize=50_000)  # 최대 약 100MB (text 500글자 기준)
-def translator(text: str, to_lang: str, *, from_lang: str = None) -> str:
+@cached(ttl=12 * 360)
+async def translator(text: str, to_lang: str, *, from_lang: str = None) -> str:
     """
     - 자연어를 번역합니다.
     - text: 자연어 문자열
@@ -29,17 +30,24 @@ def translator(text: str, to_lang: str, *, from_lang: str = None) -> str:
     - from_lang[optional]: text의 언어 ISO 639-1 코드
         - 기본: None -> 언어감지
     """
-    response = google_translator.translate(
-        text,
-        source_language=from_lang,
-        target_language=to_lang,
+    resp = await Parallel(Async=True).execute(
+        partial(
+            google_translator.translate,
+            text,
+            source_language=from_lang,
+            target_language=to_lang,
+        )
     )
     # 응답 데이터가 S&P500에서 &을 &amp; 라고 표현하는 등 HTML 이스케이프 표현을 쓰기 때문에 unescape 해야 함
-    return html.unescape(response["translatedText"])
+    return html.unescape(resp["translatedText"])
 
 
 class Multilingual:
-    """문자열에 대한 다국어 객체"""
+    """
+    - 문자열에 대한 다국어 객체
+    - `hello = Multilingual("hello")`
+    - `안녕 = await hello.ko()`
+    """
 
     supported_langs = google_translator.get_languages()
 
@@ -54,14 +62,14 @@ class Multilingual:
         text_repr = self.text if len(self.text) <= 30 else self.text[:30] + "..."
         return repr(f"<Multilingual: {text_repr}>")
 
-    def trans(self, to: str):
+    async def trans(self, to: str):
         if to == "en":
             return self.text
-        return translator(self.text, from_lang="en", to_lang=to)
+        return await translator(self.text, from_lang="en", to_lang=to)
 
 
 # Multilingual 클래스에 번역 가능한 모든 iso 코드로 property를 생성합니다
 for lang in Multilingual.supported_langs:
     iso_code = lang["language"]
-    obj = property(partial(Multilingual.trans, to=iso_code), doc=lang["name"])
+    obj = partial(Multilingual.trans, to=iso_code)
     setattr(Multilingual, iso_code, obj)

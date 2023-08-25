@@ -47,9 +47,9 @@ async def news(symbol: str, limit=10) -> List[News]:
     """
     params = {"tickers": symbol, "limit": limit} if symbol else {"limit": limit}
     stock_resp, forex_resp, crypto_resp = await asyncio.gather(
-        FmpApi(cache=False).get("api/v3/stock_news", params),
-        FmpApi(cache=False).get("api/v4/forex_news", params),
-        FmpApi(cache=False).get("api/v4/crypto_news", params),
+        FmpApi(cache=False).get("api/v3/stock_news", **params),
+        FmpApi(cache=False).get("api/v4/forex_news", **params),
+        FmpApi(cache=False).get("api/v4/crypto_news", **params),
     )
 
     stock_news_loaders: List[Awaitable[News]] = []
@@ -111,10 +111,10 @@ async def news(symbol: str, limit=10) -> List[News]:
         page += 1
 
     # 뉴스와 연관된 모든 Symbol들을 동시에 load 합니다.
-    stock_news, forex_news, crypto_news = asyncio.gather(
-        asyncio.gather(stock_news_loaders),
-        asyncio.gather(forex_news_loaders),
-        asyncio.gather(crypto_news_loaders),
+    stock_news, forex_news, crypto_news = await asyncio.gather(
+        asyncio.gather(*stock_news_loaders),
+        asyncio.gather(*forex_news_loaders),
+        asyncio.gather(*crypto_news_loaders),
     )
 
     total = marge_lists(stock_news, forex_news, crypto_news, limit=limit)

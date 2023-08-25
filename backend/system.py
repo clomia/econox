@@ -69,9 +69,8 @@ async def run_async_parallel(*functions) -> Dict[Callable[[], Any], Any]:
     """
     - 여러개의 동기 함수를 병렬로 실행하는 비동기 함수입니다.
     - 비동기 함수 병렬 실행은 Parallel 말고 asyncio.gather를 사용하세요
-        - Tip: 동기 함수들을 Parallel(Async=True)로 묶으면 하나의 비동기 함수가 되므로 다른 비동기 함수와 함께 asyncio.gather에 넣을 수 있습니다.
     - I/O-bound 최적화에 유효한 병렬화만 가능합니다.
-        - 이미 gunicorn이 모든 CPU 코어에서 uvicorn 서버를 실행중이라서 CPU-bound 최적화를 위한 멀티 프로세싱은 피해야 하기 때문
+        - 서버 자체가 이미 모든 CPU 코어를 사용하기 때문에 멀티 프로세싱은 하면 안됌
     - `results = await async_parallel(func1, func2, func3, ...)`
     - `func1_returned = results[func1]`
     """

@@ -8,8 +8,7 @@ from pydantic import BaseModel
 from fastapi import HTTPException, Request, Body
 
 from backend.api import router
-from backend.api.lib.functions import db_exec_query
-from backend.system import SECRETS, log
+from backend.system import SECRETS, log, db_exec_query, run_async
 
 API_PREFIX = "user"
 
@@ -19,20 +18,24 @@ cognito = boto3.client("cognito-idp")
 @router.post("/user/cognito", tags=[API_PREFIX])
 async def create_cognito_user(email: str = Body(...), password: str = Body(...)):
     try:
-        result = cognito.sign_up(
+        result = await run_async(
+            cognito.sign_up,
             ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
             Username=email,
             Password=password,
             UserAttributes=[{"Name": "email", "Value": email}],
         )
     except cognito.exceptions.UsernameExistsException:
-        if db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
+        if await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
             raise HTTPException(status_code=409, detail="Email is already in used")
         # cognito에 유저가 생성되었지만 회원가입이 완료되지 않은 상태이므로 cognito 유저 삭제 후 재시도
-        cognito.admin_delete_user(
-            UserPoolId=SECRETS["COGNITO_USER_POOL_ID"], Username=email
+        await run_async(
+            cognito.admin_delete_user,
+            UserPoolId=SECRETS["COGNITO_USER_POOL_ID"],
+            Username=email,
         )
-        result = cognito.sign_up(
+        result = await run_async(
+            cognito.sign_up,
             ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
             Username=email,
             Password=password,
@@ -68,26 +71,27 @@ class SignupInfo(BaseModel):
 @router.post("/user", tags=[API_PREFIX])
 async def signup(item: SignupInfo):
     try:
-        cognito_user = cognito.admin_get_user(
-            UserPoolId=SECRETS["COGNITO_USER_POOL_ID"], Username=item.email
+        cognito_user = await run_async(
+            cognito.admin_get_user,
+            UserPoolId=SECRETS["COGNITO_USER_POOL_ID"],
+            Username=item.email,
         )
         cognito_user_id = cognito_user["Username"]
     except cognito.exceptions.UserNotFoundException:
-        raise HTTPException(status_code=409, detail="cognito user not found")
+        raise HTTPException(status_code=409, detail="Cognito user not found")
     if cognito_user["UserStatus"] != "CONFIRMED":
-        raise HTTPException(status_code=401, detail="cognito user is not confirmed")
+        raise HTTPException(status_code=401, detail="Cognito user is not confirmed")
 
     scan_history = f"""
         SELECT 1 FROM signup_history 
         WHERE email='{item.email}' or phone='{item.phone}'
         LIMIT 1;
-    """
-    signup_history = db_exec_query(scan_history)  # 회원가입 내역이 있다면 결제정보 필요함
+    """  # 회원가입 내역이 있다면 결제정보 필요함
+    signup_history = await db_exec_query(scan_history)
     if signup_history and not (item.tosspayments or item.paypal):
-        raise HTTPException(status_code=402, detail="billing information required")
+        raise HTTPException(status_code=402, detail="Billing information required")
 
-    # 다음달 동일 일시를 구하되 마지막 일보다 크면 마지막 일로 대체
-    now = datetime.now()
+    now = datetime.now()  # 다음달 동일 일시를 구하되 마지막 일보다 크면 마지막 일로 대체
     year, month = (now.year + 1, 1) if now.month == 12 else (now.year, now.month + 1)
     day = min(now.day, monthrange(year, month)[1])
     membership_expiration = datetime(year, month, day, now.hour, now.minute, now.second)
@@ -112,7 +116,7 @@ async def signup(item: SignupInfo):
     );
     """
     try:
-        db_exec_query(insert_user)
+        await db_exec_query(insert_user)
     except psycopg.errors.UniqueViolation:  # email colume is unique
         raise HTTPException(status_code=409, detail="Email is already in used")
 
@@ -120,8 +124,8 @@ async def signup(item: SignupInfo):
     INSERT INTO signup_history (email, phone) 
     VALUES ('{item.email}', '{item.phone}')
     """
-    db_exec_query(insert_signup_history)
-    return {"benefit": not signup_history}  # 첫 회원가입 혜택 여부
+    await db_exec_query(insert_signup_history)
+    return {"first_signup_benefit": not signup_history}  # 첫 회원가입 혜택 여부
 
 
 @router.get("/user/country", tags=[API_PREFIX])

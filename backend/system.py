@@ -7,6 +7,7 @@ import logging
 import logging.config
 from pathlib import Path
 from datetime import datetime
+from functools import partial
 from typing import Callable, Any, Dict
 from concurrent.futures import ThreadPoolExecutor
 
@@ -64,67 +65,66 @@ log.debug(
 
 
 # ==================== FUNCTIONS ====================
-class Parallel:
+async def run_async_parallel(*functions) -> Dict[Callable[[], Any], Any]:
     """
-    - 여러개의 동기 함수를 병렬로 실행합니다. 모든 함수의 완료를 대기하거나 비동기로 처리할 수 있습니다.
+    - 여러개의 동기 함수를 병렬로 실행하는 비동기 함수입니다.
     - 비동기 함수 병렬 실행은 Parallel 말고 asyncio.gather를 사용하세요
         - Tip: 동기 함수들을 Parallel(Async=True)로 묶으면 하나의 비동기 함수가 되므로 다른 비동기 함수와 함께 asyncio.gather에 넣을 수 있습니다.
     - I/O-bound 최적화에 유효한 병렬화만 가능합니다.
         - 이미 gunicorn이 모든 CPU 코어에서 uvicorn 서버를 실행중이라서 CPU-bound 최적화를 위한 멀티 프로세싱은 피해야 하기 때문
-    - `results = Parallel(Async=False).execute(func1, func2, func3, ...)`
-    - `results = await Parallel(Async=True).execute(func1, func2, func3, ...)`
+    - `results = await async_parallel(func1, func2, func3, ...)`
     - `func1_returned = results[func1]`
     """
-
-    def __init__(self, Async: bool):
-        self.execute = self._async_executor if Async else self._sync_executor
-
-    async def _async_executor(self, *functions) -> Dict[Callable[[], Any], Any]:
-        if not functions:
-            return {}
-        with ThreadPoolExecutor(max_workers=len(functions)) as executor:
-            loop = asyncio.get_running_loop()
-            futures = [loop.run_in_executor(executor, func) for func in functions]
-            results = await asyncio.gather(*futures)
-        return dict(zip(functions, results))
-
-    def _sync_executor(self, *functions) -> Dict[Callable[[], Any], Any]:
-        if not functions:
-            return {}
-        pool = ThreadPoolExecutor(max_workers=len(functions))
-        results = list(pool.map(lambda func: func(), functions))
-        return dict(zip(functions, results))
+    if not functions:
+        return {}
+    with ThreadPoolExecutor(max_workers=len(functions)) as executor:
+        loop = asyncio.get_running_loop()
+        futures = [loop.run_in_executor(executor, func) for func in functions]
+        results = await asyncio.gather(*futures)
+    return dict(zip(functions, results))
 
 
-def db_exec_query(query: str) -> list:
+async def run_async(func, *args, **kwargs):
+    """단일 동기 함수를 비동기로 실행합니다."""
+    target = partial(func, *args, **kwargs)
+    return (await run_async_parallel(target))[target]
+
+
+async def db_exec_query(query: str) -> list:
     """RDS Database에 SQL 쿼리를 실행하고 결과를 반환합니다."""
-    try:
-        conn = psycopg.connect(
-            host=SECRETS["DB_HOST"],
-            dbname=SECRETS["DB_NAME"],
-            user=SECRETS["DB_USERNAME"],
-            password=SECRETS["DB_PASSWORD"],
-        )
-        cur = conn.cursor()
-        cur.execute(query)
-        conn.commit()
-        return cur.fetchall()  # case: read success
-    except psycopg.ProgrammingError as e:
-        return []  # case: write success
-    except psycopg.OperationalError as e:  # password authentication failed
-        # Secrets Manager에서 암호 교체가 이루어졌다고 간주하고 암호 업데이트 후 재시도
-        latest_password = json.loads(
-            boto3.client("secretsmanager").get_secret_value(
-                SecretId=SECRETS["RDS_SECRET_MANAGER_ARN"]
-            )["SecretString"]
-        )["password"]
-        SECRETS["DB_PASSWORD"] = latest_password
-        log.warning(f"[{e}] DB 연결 오류가 발생하였습니다. Secrets Manager로부터 암호를 업데이트하여 재시도합니다.")
-        return db_exec_query(query)
-    except Exception as e:
-        conn.rollback()
-        log.critical(f"[{e}] DB 쿼리 실행 오류가 발생하여 롤백하였습니다.\nQuery: {query}")
-        raise e
-    finally:
-        cur.close()
-        conn.close()
+
+    def execute_query():
+        try:
+            conn = psycopg.connect(
+                host=SECRETS["DB_HOST"],
+                dbname=SECRETS["DB_NAME"],
+                user=SECRETS["DB_USERNAME"],
+                password=SECRETS["DB_PASSWORD"],
+            )
+            cur = conn.cursor()
+            cur.execute(query)
+            conn.commit()
+            return cur.fetchall()  # case: read success
+        except psycopg.ProgrammingError as e:
+            return []  # case: write success
+        except psycopg.OperationalError as e:  # password authentication failed
+            # Secrets Manager에서 암호 교체가 이루어졌다고 간주하고 암호 업데이트 후 재시도
+            latest_password = json.loads(
+                boto3.client("secretsmanager").get_secret_value(
+                    SecretId=SECRETS["RDS_SECRET_MANAGER_ARN"]
+                )["SecretString"]
+            )["password"]
+            SECRETS["DB_PASSWORD"] = latest_password
+            log.warning(
+                f"[{e}] DB 연결 오류가 발생하였습니다. Secrets Manager로부터 암호를 업데이트하여 재시도합니다."
+            )
+            return db_exec_query(query)
+        except Exception as e:
+            conn.rollback()
+            log.critical(f"[{e}] DB 쿼리 실행 오류가 발생하여 롤백하였습니다.\nQuery: {query}")
+            raise e
+        finally:
+            cur.close()
+            conn.close()
+
+    return await run_async(execute_query)

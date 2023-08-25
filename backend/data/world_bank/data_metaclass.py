@@ -4,12 +4,13 @@ from datetime import datetime, date
 
 import numpy as np
 import xarray as xr
+from aiocache import cached
 
 from backend.math import standardization
 from backend.http import WorldBankApi
 from backend.system import EFS_VOLUME_PATH
 from backend.data.factor import Factor
-from backend.data.translate import Multilingual
+from backend.data.text import Multilingual
 
 XARRAY_PATH = EFS_VOLUME_PATH / "xarray"
 
@@ -90,7 +91,7 @@ class ClientMeta(type):
         return ins
 
     async def load_factor(self):
-        async def _set(indicator, name):
+        async def set_factor(indicator, name):
             manager = DataManager(self.country, indicator)
             self.manager[name] = manager  # DataManager 접근을 위한 통로
             indicator_info = await manager.api.get_indicator(indicator)
@@ -102,7 +103,10 @@ class ClientMeta(type):
             setattr(self, name, factor)
 
         await asyncio.gather(
-            *(_set(indicator, name) for indicator, name in self.indicator_codes.items())
+            *(
+                set_factor(indicator, name)
+                for indicator, name in self.indicator_codes.items()
+            )
         )
         self.get = lambda code: getattr(self, self.indicator_codes[code]).get()
         return self

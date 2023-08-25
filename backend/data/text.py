@@ -1,4 +1,4 @@
-""" Google Translate API 를 사용하는 다국어 객체 구현"""
+""" 텍스트 데이터 처리 모듈: Google Translate API 를 사용하는 다국어 객체 구현"""
 import os
 import html
 import logging
@@ -7,7 +7,7 @@ from functools import partial
 from aiocache import cached
 from google.cloud import translate_v2
 
-from backend.system import Parallel, EFS_VOLUME_PATH, SECRETS
+from backend.system import EFS_VOLUME_PATH, SECRETS, run_async
 
 # 빠른 병렬 처리로 인해 아래와 같은 경고가 뜨므로 해당 경고 로그가 뜨지 않도록 합니다.
 # WARNING:urllib3.connectionpool:Connection pool is full, discarding connection: translation.googleapis.com. Connection pool size: 10
@@ -30,13 +30,11 @@ async def translator(text: str, to_lang: str, *, from_lang: str = None) -> str:
     - from_lang[optional]: text의 언어 ISO 639-1 코드
         - 기본: None -> 언어감지
     """
-    resp = await Parallel(Async=True).execute(
-        partial(
-            google_translator.translate,
-            text,
-            source_language=from_lang,
-            target_language=to_lang,
-        )
+    resp = await run_async(
+        google_translator.translate,
+        text,
+        source_language=from_lang,
+        target_language=to_lang,
     )
     # 응답 데이터가 S&P500에서 &을 &amp; 라고 표현하는 등 HTML 이스케이프 표현을 쓰기 때문에 unescape 해야 함
     return html.unescape(resp["translatedText"])

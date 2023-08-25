@@ -2,7 +2,7 @@ from typing import Callable
 
 import xarray as xr
 
-from backend.client.translate import Multilingual
+from backend.data.text import Multilingual
 
 
 class Factor:

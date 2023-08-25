@@ -2,11 +2,12 @@
 import json
 import asyncio
 from typing import List
-from functools import partial
+
+from aiocache import cached
 
 from backend.http import WorldBankApi
 from backend.system import EFS_VOLUME_PATH
-from backend.data.translate import Multilingual, translator
+from backend.data.text import Multilingual, translator
 from backend.data.world_bank.data_class import *
 
 INFO_PATH = EFS_VOLUME_PATH / "info"
@@ -46,6 +47,7 @@ class Country:
         )
         self.info = info
         self.is_valid = self.info["name"] and self.info["note"]
+        return self
 
     async def get_info(self):
         # ======= EFS volume 에서 가져오기 =======
@@ -99,19 +101,18 @@ class Country:
         return self.info["latitude"]
 
 
+@cached(ttl=12 * 360)
 async def search(text: str) -> List[Country]:
     """is_valid가 False인 Country는 리스트에서 제외됩니다."""
     api = WorldBankApi()
 
     en_text = await translator(text, to_lang="en")
-    resp = await asyncio.gather(  # 번역 한거, 안한거 전부 사용해서 검색
-        api.search_countries(text),
-        api.get_country(text),
-        api.search_countries(en_text),
-        api.get_country(en_text),
-    )  # 여러 방법으로 검색하므로 합치면 중복 있음, set comprehension을 통해 중복 제거
-    iso_codes = {country["id"] for countries in resp.values() for country in countries}
-    countires = await asyncio.gather(
-        *(partial(Country, code).load() for code in iso_codes)
-    )
+    *l1, l2, l3 = await asyncio.gather(  # 번역 한거, 안한거 전부 사용해서 검색
+        api.get_country(text),  # -> dict - in l1
+        api.get_country(en_text),  # -> dict - in l1
+        api.search_countries(text),  # -> List[dict] - to l2
+        api.search_countries(en_text),  # -> List[dict] - to l3
+    )  # 여러 방법으로 검색하므로 합치면 중복 있음, set을 통해 중복 제거
+    iso_codes = {country["id"] for country in list(l1) + l2 + l3 if country}
+    countires = await asyncio.gather(*(Country(code).load() for code in iso_codes))
     return [country for country in countires if country.is_valid]

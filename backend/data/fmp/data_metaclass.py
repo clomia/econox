@@ -8,18 +8,18 @@ from pathlib import PosixPath
 from functools import partial
 from datetime import date, datetime
 
-import httpx
 import numpy as np
 import xarray as xr
+from httpx import HTTPStatusError
 
+from backend.http import FmpApi
 from backend.math import standardization
-from backend.system import SECRETS, ROOT_PATH, EFS_VOLUME_PATH
 from backend.data.factor import Factor
-from backend.data.translate import Multilingual
+from backend.data.text import Multilingual
+from backend.system import ROOT_PATH, EFS_VOLUME_PATH
 
-HOST = "https://financialmodelingprep.com"
-XARRAY_PATH = EFS_VOLUME_PATH / "xarray"  # 이거 디렉토리 없으면 만드는 로직 없는거 같음
-CLASS_PATH = ROOT_PATH / "backend/client/fmp/data_class.json"
+XARRAY_PATH = EFS_VOLUME_PATH / "xarray"
+CLASS_PATH = ROOT_PATH / "backend/data/fmp/data_class.json"
 
 
 def _xr_meta(element, factor, **kwargs) -> dict:
@@ -66,8 +66,8 @@ class ClientMeta(type):
             return setting.get(key, meta.optional.get(key))
 
         cls = super().__new__(meta, name, tuple(), dict())
-        cls.api = f"{HOST}/{get_setting('api')}"
-        cls.api_params = {"apikey": SECRETS["FMP_API_KEY"]} | get_setting("params")
+        cls.api = get_setting("api")
+        cls.api_params = get_setting("params")
         cls.t_key = get_setting("t_key")
         cls.symbol_in_query = bool(get_setting("symbol_in_query"))
         cls.note = Multilingual(text=get_setting("note"))
@@ -96,9 +96,7 @@ class ClientMeta(type):
         # ========= Factor 구성 =========
         for name, ele in cls.properties.items():
             factor = Factor(
-                get=partial(ins.get, ele["factor"]),
-                name=ele["name"],
-                note=ele["note"],
+                get=partial(ins.get, ele["factor"]), name=ele["name"], note=ele["note"]
             )
             setattr(ins, name, factor)
         return ins
@@ -110,10 +108,8 @@ class ClientMeta(type):
         - 데이터가 전혀 없는 경우 raise ValueError
         - 누락된 데이터는 np.nan으로 대체됩니다.
         """
-        async with httpx.AsyncClient() as client:
-            response = await client.get(self.api, params=self.api_params)
-            response.raise_for_status()  # FMP 서버의 응답이 잘못된 경우 HTTPStatusError
-        if not (series := response.json()):  # 데이터가 없는 경우 ValueError
+        series: list = await FmpApi(cache=False).get(self.api, **self.api_params)
+        if not series:  # 데이터가 없는 경우 ValueError
             raise ValueError(f"FMP에 {self.symbol} symbol에 대한 데이터가 존재하지 않습니다.")
         t = np.array([np.datetime64(day[self.t_key], "ns") for day in series])
         collected = {}
@@ -145,10 +141,10 @@ class ClientMeta(type):
                     array.attrs["client"]["collected"], "%Y-%m-%d"
                 ).date()
                 if collected_date == date.today():
-                    return
+                    return  # 데이터 갱신 필요 없음
         try:
             collected = await self.collect()
-        except (httpx.HTTPStatusError, ValueError):
+        except (HTTPStatusError, ValueError):
             return  # 데이터를 가져올 수 없거나 데이터가 비었으면 아무것도 안함
 
         self.path.mkdir(parents=True, exist_ok=True)
@@ -174,12 +170,12 @@ class HistoricalPriceFullMeta(ClientMeta):
     async def collect(self):  # collect 메서드 재정의
         # FMP 서버는 안정적인 응답 시간을 위해 from 인자가 없다면 기본적으로 5년 전까지의 데이터만 수신합니다.
         # from 인자로 "1900-01-01" 를 넣어서 모든 데이터를 가져올 수 있습니다.(이렇게 하라고 FMP한테 확인받음)
-        async with httpx.AsyncClient(params={"from": "1900-01-01"}) as client:
-            response = await client.get(self.api, params=self.api_params)
-            response.raise_for_status()
+        data: dict = await FmpApi(cache=False).get(
+            path=self.api, **self.api_params | {"from": "1900-01-01"}
+        )
 
         # 값이 historical 안에 들어있으며, 값이 없으면 historical 키도 없음
-        if not (series := dict(response.json()).get("historical")):
+        if not (series := data.get("historical")):
             raise ValueError(f"FMP에 {self.symbol} symbol에 대한 데이터가 존재하지 않습니다.")
 
         # 나머지는 부모클래스 코드와 동일

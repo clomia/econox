@@ -69,3 +69,36 @@ def destandardize(standardized: xr.Dataset) -> xr.DataArray:
     origin_x = dataset.daily[dataset.mask]
     restored = origin_x * (origin_max - origin_min) + origin_min
     return restored
+
+
+def marge_lists(*lists, limit) -> list:
+    """
+    - 리스트들을 받아서 값이 균등하게 포함된 하나의 리스트로 합칩니다.
+    - limit[필수]: 결과 리스트 갯수를 제한합니다.
+    """
+    lengths = [len(lst) for lst in lists]
+
+    # 각 리스트에서 가져와야 할 기본 요소의 수 계산
+    base_num = limit // len(lists)
+
+    # 남은 요소들을 가져올 리스트를 결정하기 위해 리스트와 그 길이를 함께 정렬
+    sorted_lists = sorted(
+        [(lst, length) for lst, length in zip(lists, lengths)], key=lambda x: -x[1]
+    )
+
+    # 각 리스트에서 가져올 요소의 수를 저장할 변수 초기화
+    num_from_lists = [base_num for _ in lists]
+
+    # 남은 요소들을 길이가 큰 리스트부터 차례대로 할당
+    remaining = limit - sum(num_from_lists)
+    for i in range(remaining):
+        while num_from_lists[i % len(lists)] >= sorted_lists[i % len(lists)][1]:
+            i += 1
+        num_from_lists[i % len(lists)] += 1
+
+    # 결과 리스트 생성
+    result = []
+    for (lst, _), num in zip(sorted_lists, num_from_lists):
+        result.extend(lst[:num])
+
+    return result

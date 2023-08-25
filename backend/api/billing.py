@@ -37,11 +37,11 @@ async def login(item: CreditCard):
         "cardExpirationMonth": item.expiration_month,
         "customerIdentityNumber": item.owner_id,
     }
-    response = requests.post(
+    resp = requests.post(
         tosspayments_host + "/v1/billing/authorizations/card",
         headers=headers,
         json=payload,
     )
-    if response.status_code != 200:
+    if resp.status_code != 200:
         raise HTTPException(status_code=400)
-    return {"billing_key": response.json()["billingKey"]}
+    return {"billing_key": resp.json()["billingKey"]}

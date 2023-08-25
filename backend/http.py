@@ -1,6 +1,5 @@
 """ API 통신에 반복적으로 필요한 로직 모듈화 """
 import asyncio
-from functools import partial
 from typing import List
 
 import httpx
@@ -8,6 +7,16 @@ import wbdata
 from aiocache import cached
 
 from backend.system import SECRETS, log, run_async
+
+# class CognitoToken:
+#     def __init__(self):
+#         pass
+
+#     async def get_jwks(self):
+#         cognito_jwks = requests.get(
+#             "https://cognito-idp.us-east-1.amazonaws.com/"
+#             f"{SECRETS['COGNITO_USER_POOL_ID']}/.well-known/jwks.json"
+#         ).json()
 
 
 class FmpApi:
@@ -33,7 +42,7 @@ class FmpApi:
                     await asyncio.sleep(interval)  # retry 대기
                     continue
 
-    async def _request(self, path, **params):
+    async def _request(cls, path, **params):
         async with httpx.AsyncClient(
             base_url="https://financialmodelingprep.com",
             params={"apikey": SECRETS["FMP_API_KEY"]},
@@ -42,36 +51,41 @@ class FmpApi:
             resp.raise_for_status()
         return resp.json()
 
+    @classmethod
     @cached(ttl=12 * 360)
-    async def _request_use_caching(self, path, **params):
-        return await self._request(path, **params)
+    async def _request_use_caching(cls, path, **params):
+        return await cls._request(path, **params)
 
 
 class WorldBankApi:
     """World Bank Open API Request"""
 
+    @classmethod
     @cached(ttl=12 * 360)
-    async def get_data(self, indicator, country) -> List[dict]:
+    async def get_data(cls, indicator, country) -> List[dict]:
         """국가의 지표 시계열을 반환합니다."""
-        result = await run_async(self._safe_caller(wbdata.get_data), indicator, country)
+        result = await run_async(cls._safe_caller(wbdata.get_data), indicator, country)
         return result if result else []
 
+    @classmethod
     @cached(ttl=12 * 360)
-    async def get_indicator(self, indicator) -> dict:
+    async def get_indicator(cls, indicator) -> dict:
         """지표에 대한 상세 정보를 반환합니다. 정보가 없는 경우 빈 딕셔너리가 반환됩니다."""
-        result = await run_async(self._safe_caller(wbdata.get_indicator), indicator)
+        result = await run_async(cls._safe_caller(wbdata.get_indicator), indicator)
         return result[0] if result else {}
 
+    @classmethod
     @cached(ttl=12 * 360)
-    async def search_countries(self, text) -> List[dict]:
+    async def search_countries(cls, text) -> List[dict]:
         """자연어로 국가들을 검색합니다."""
-        result = await run_async(self._safe_caller(wbdata.search_countries), text)
+        result = await run_async(cls._safe_caller(wbdata.search_countries), text)
         return list(result) if result else []
 
+    @classmethod
     @cached(ttl=12 * 360)
-    async def get_country(self, code) -> dict:
+    async def get_country(cls, code) -> dict:
         """국가 코드에 해당하는 국가를 반환합니다.."""
-        result = await run_async(self._safe_caller(wbdata.get_country), code)
+        result = await run_async(cls._safe_caller(wbdata.get_country), code)
         return result[0] if result else {}
 
     @staticmethod

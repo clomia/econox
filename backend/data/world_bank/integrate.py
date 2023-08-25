@@ -101,7 +101,6 @@ class Country:
         return self.info["latitude"]
 
 
-@cached(ttl=12 * 360)
 async def search(text: str) -> List[Country]:
     """is_valid가 False인 Country는 리스트에서 제외됩니다."""
     api = WorldBankApi()

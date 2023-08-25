@@ -1,8 +1,7 @@
 import base64
-from uuid import uuid4
 
-import requests
-from fastapi import Body, HTTPException
+import httpx
+from fastapi import HTTPException
 from pydantic import BaseModel
 
 from backend.api import router
@@ -20,7 +19,7 @@ class CreditCard(BaseModel):
 
 
 @router.post("/billing/tosspayments", tags=[API_PREFIX])
-async def login(item: CreditCard):
+async def create_tosspayments_billing_key(item: CreditCard):
     tosspayments_host = "https://api.tosspayments.com"
 
     basic = SECRETS["TOSSPAYMENTS_SECRET_KEY"] + ":"
@@ -37,11 +36,13 @@ async def login(item: CreditCard):
         "cardExpirationMonth": item.expiration_month,
         "customerIdentityNumber": item.owner_id,
     }
-    resp = requests.post(
-        tosspayments_host + "/v1/billing/authorizations/card",
-        headers=headers,
-        json=payload,
-    )
-    if resp.status_code != 200:
-        raise HTTPException(status_code=400)
-    return {"billing_key": resp.json()["billingKey"]}
+    async with httpx.AsyncClient() as client:
+        resp = await client.post(
+            tosspayments_host + "/v1/billing/authorizations/card",
+            headers=headers,
+            json=payload,
+        )
+    if resp.status_code != 200:  # Tosspayments가 정의한 에러 양식을 그대로 사용합니다. 아래 URL을 참조하세요
+        # https://docs.tosspayments.com/reference/error-codes#카드-자동결제-빌링키-발급-요청
+        raise HTTPException(resp.status_code, detail=resp.json()["code"])
+    return {"tosspayments_billing_key": resp.json()["billingKey"]}

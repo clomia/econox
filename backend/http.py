@@ -8,15 +8,25 @@ from aiocache import cached
 
 from backend.system import SECRETS, log, run_async
 
-# class CognitoToken:
-#     def __init__(self):
-#         pass
 
-#     async def get_jwks(self):
-#         cognito_jwks = requests.get(
-#             "https://cognito-idp.us-east-1.amazonaws.com/"
-#             f"{SECRETS['COGNITO_USER_POOL_ID']}/.well-known/jwks.json"
-#         ).json()
+class CognitoToken:
+    def __init__(self, id_token, access_token):
+        self.id_token = id_token
+        self.access_token = access_token
+
+    # 캐싱이 아니라 키 롤오버된걸로 판단되면 다시 가져오는 로직으로 해야 함, 캐싱은 잘못된 솔루션임!!
+    async def get_jwks(cls):
+        async with httpx.AsyncClient(
+            base_url="https://cognito-idp.us-east-1.amazonaws.com/"
+        ) as client:
+            return await client.get(
+                f"{SECRETS['COGNITO_USER_POOL_ID']}/.well-known/jwks.json"
+            ).json()
+
+    # ---- 검사 개요 ---
+    # 1. JWT 헤더를 디코딩해서 키 ID를 가져온다
+    # 2. aws 에서 가져온 jwks에서 키 ID로 키를 가져온다!
+    # 3. 이제 그 키로 JWT를 디코딩하고 서명을 검증하면 된다.
 
 
 class FmpApi:

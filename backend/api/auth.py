@@ -1,4 +1,5 @@
 import time
+import asyncio
 import secrets
 import threading
 from pathlib import PosixPath
@@ -18,7 +19,9 @@ cognito = boto3.client("cognito-idp")
 @router.post("/auth/user", tags=[API_PREFIX])
 async def login(email: str = Body(...), password: str = Body(...)):
     if not await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
-        raise HTTPException(status_code=404, detail="User does not exist")
+        raise HTTPException(status_code=404, detail="user does not exist")
+
+    # ========== 이전에 발급된 모든 refresh 토큰 무효화 요청 전송 ==========
     try:
         await run_async(
             cognito.admin_user_global_sign_out,
@@ -26,20 +29,36 @@ async def login(email: str = Body(...), password: str = Body(...)):
             Username=email,
         )  # 유저에게 발급된 refresh token 전부 무효화, 한 계정이 여러곳에서 동시에 사용되는걸 막는다.
     except cognito.exceptions.UserNotFoundException:  # 정상적으로 회원가입이 되었다면 이 에러는 절대 안난다.
-        raise HTTPException(status_code=409, detail="Cognito User does not exist")
-    try:
-        result = await run_async(
-            cognito.initiate_auth,
-            AuthFlow="USER_PASSWORD_AUTH",
-            AuthParameters={"USERNAME": email, "PASSWORD": password},
-            ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
-        )
-    except cognito.exceptions.NotAuthorizedException:
-        raise HTTPException(status_code=401, detail="Invalid password")
+        raise HTTPException(status_code=409, detail="cognito User does not exist")
+
+    # ========== refresh 토큰 무효화 요청이 완료되길 기다린(polling) 다음 유일한 refresh 토큰 생성 ==========
+    while True:  # 모든 refresh 토큰이 무효화될때까지 반복됨
+        try:
+            auth = await run_async(  # 1. refresh 토큰 발급
+                cognito.initiate_auth,
+                AuthFlow="USER_PASSWORD_AUTH",
+                AuthParameters={"USERNAME": email, "PASSWORD": password},
+                ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
+            )
+        except cognito.exceptions.NotAuthorizedException:
+            raise HTTPException(status_code=401, detail="invalid password")
+        id_token = auth["AuthenticationResult"]["IdToken"]
+        access_token = auth["AuthenticationResult"]["AccessToken"]
+        refresh_token = auth["AuthenticationResult"]["RefreshToken"]
+        try:
+            await run_async(  # 2. 발급된 refresh 토큰이 유효한지 검사
+                cognito.initiate_auth,
+                AuthFlow="REFRESH_TOKEN_AUTH",
+                AuthParameters={"REFRESH_TOKEN": refresh_token},
+                ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
+            )
+        except cognito.exceptions.NotAuthorizedException:
+            continue  # 3. 유효하지 않다면 재시도 (polling...)
+        else:
+            break  # 4. 유일한 refresh 토큰 획득 성공!
     return {
-        "cognito_id_token": result["AuthenticationResult"]["IdToken"],
-        "cognito_access_token": result["AuthenticationResult"]["AccessToken"],
-        "cognito_refresh_token": result["AuthenticationResult"]["RefreshToken"],
+        "cognito_token": id_token + "|" + access_token,
+        "cognito_refresh_token": refresh_token,
     }
 
 
@@ -54,10 +73,9 @@ async def cognito_token_refresh(cognito_refresh_token: str = Body(..., embed=Tru
         )
     except cognito.exceptions.NotAuthorizedException:
         raise HTTPException(status_code=401, detail="Invalid token")
-    return {
-        "cognito_id_token": result["AuthenticationResult"]["IdToken"],
-        "cognito_access_token": result["AuthenticationResult"]["AccessToken"],
-    }
+    id_token = result["AuthenticationResult"]["IdToken"]
+    access_token = result["AuthenticationResult"]["AccessToken"]
+    return {"cognito_token": id_token + "|" + access_token}
 
 
 # ------------------ for phone authentication ------------------
@@ -98,7 +116,7 @@ async def phone_confirmation(
     elif target_path.read_text() == confirmation_code:
         return Response(status_code=200, content="confirmed")
     else:
-        raise HTTPException(status_code=409, detail="Invalid code")
+        raise HTTPException(status_code=409, detail="invalid code")
 
 
 @router.post("/auth/email", tags=[API_PREFIX])
@@ -108,7 +126,7 @@ async def cognito_resend_confirmation_code(email: str = Body(..., embed=True)):
         ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
         Username=email,
     )
-    return Response(status_code="Code transfer requested")
+    return Response(status_code="code transfer requested")
 
 
 @router.post("/auth/email/confirm", tags=[API_PREFIX])
@@ -123,18 +141,18 @@ async def cognito_confirm_sign_up(
             ConfirmationCode=confirmation_code,
         )
     except cognito.exceptions.CodeMismatchException:
-        raise HTTPException(status_code=409, detail="Invalid code")
+        raise HTTPException(status_code=409, detail="invalid code")
     except cognito.exceptions.ExpiredCodeException:
-        raise HTTPException(status_code=401, detail="Expired code")
+        raise HTTPException(status_code=401, detail="expired code")
     except cognito.exceptions.LimitExceededException:
-        raise HTTPException(status_code=429, detail="Too many requests")
+        raise HTTPException(status_code=429, detail="too many requests")
     except cognito.exceptions.NotAuthorizedException:
-        return Response(status_code=202, content="Email already confirmed")
-    return Response(status_code=200, content="Confirmed")
+        return Response(status_code=202, content="email already confirmed")
+    return Response(status_code=200, content="confirmed")
 
 
 @router.post("/auth/is-reregistration", tags=[API_PREFIX])
-async def check_for_is_reregistration(email: str = Body(...), phone: str = Body(...)):
+async def check_is_reregistration(email: str = Body(...), phone: str = Body(...)):
     scan_history = f"""
         SELECT 1 FROM signup_history 
         WHERE email='{email}' or phone='{phone}'

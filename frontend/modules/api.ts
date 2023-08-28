@@ -40,8 +40,8 @@ const tokenInsert = async (config: InternalAxiosRequestConfig) => {
             settingObjectStore.put("cognitoIdToken", cognitoIdToken)
             settingObjectStore.put("cognitoAccessToken", cognitoAccessToken)
         }
-        config.headers["Authorization"] = 'Bearer ' + cognitoIdToken
-        config.headers["X-Cognito-Access-Token"] = cognitoAccessToken
+        config.headers["Cognito-Id-Token"] = cognitoIdToken
+        config.headers["Cognito-Access-Token"] = cognitoAccessToken
     }
     return config
 }

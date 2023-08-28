@@ -2,31 +2,86 @@
 import asyncio
 from typing import List
 
+import jwt
 import httpx
 import wbdata
 from aiocache import cached
+from fastapi import HTTPException, Request
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from backend.system import SECRETS, log, run_async
 
 
 class CognitoToken:
+    """AWS Cognito token auth"""
+
+    jwks = {"keys": []}
+
     def __init__(self, id_token, access_token):
         self.id_token = id_token
         self.access_token = access_token
 
-    # 캐싱이 아니라 키 롤오버된걸로 판단되면 다시 가져오는 로직으로 해야 함, 캐싱은 잘못된 솔루션임!!
-    async def get_jwks(cls):
-        async with httpx.AsyncClient(
-            base_url="https://cognito-idp.us-east-1.amazonaws.com/"
-        ) as client:
-            return await client.get(
-                f"{SECRETS['COGNITO_USER_POOL_ID']}/.well-known/jwks.json"
-            ).json()
+    async def get_jwk(self, key_id: str):
+        matching = [item for item in self.jwks["keys"] if item["kid"] == key_id]
+        if not matching:  # Cognito에서 키 jwks가 변경(롤오버)되었다고 간주하고 업데이트 후 재시도
+            log.warning(f"매칭되는 JWK가 없습니다. Cognito로부터 jwks를 업데이트합니다.")
+            async with httpx.AsyncClient(
+                base_url="https://cognito-idp.us-east-1.amazonaws.com/"
+            ) as client:
+                self.__class__.jwks = (
+                    await client.get(
+                        f"{SECRETS['COGNITO_USER_POOL_ID']}/.well-known/jwks.json"
+                    )
+                ).json()
+            return await self.get_jwk(key_id)
+        return matching[0]
 
-    # ---- 검사 개요 ---
-    # 1. JWT 헤더를 디코딩해서 키 ID를 가져온다
-    # 2. aws 에서 가져온 jwks에서 키 ID로 키를 가져온다!
-    # 3. 이제 그 키로 JWT를 디코딩하고 서명을 검증하면 된다.
+    async def authentication(self):
+        """id token과 access token의 서명을 검증하고 디코딩해서 유저 id와 이메일을 반환합니다."""
+        id_info = jwt.decode(
+            self.id_token,
+            key=jwt.algorithms.RSAAlgorithm.from_jwk(
+                await self.get_jwk(jwt.get_unverified_header(self.id_token)["kid"])
+            ),
+            algorithms=["RS256"],
+            audience=SECRETS["COGNITO_APP_CLIENT_ID"],
+            options={"verify_signature": True, "verify_aud": True},
+        )
+        access_info = jwt.decode(
+            self.access_token,
+            key=jwt.algorithms.RSAAlgorithm.from_jwk(
+                await self.get_jwk(jwt.get_unverified_header(self.access_token)["kid"])
+            ),
+            algorithms=["RS256"],
+            options={"verify_signature": True, "verify_aud": False},
+        )
+        return {"id": access_info["username"], "email": id_info["email"]}
+
+
+class CognitoTokenBearer(HTTPBearer):
+    """
+    - 이 토큰은 Cognito idToken과 accessToken을 '|'로 이어붙인것입니다.
+    - 두 토큰을 검증한 뒤 유저정보(id, email)를 제공합니다.
+    """
+
+    async def __call__(self, request: Request) -> dict:
+        credentials: HTTPAuthorizationCredentials = await super().__call__(request)
+
+        if "|" not in credentials.credentials:
+            raise HTTPException(status_code=403, detail="invalid token format")
+        id_token, access_token = credentials.credentials.split("|")
+
+        if not id_token or not access_token:
+            raise HTTPException(status_code=403, detail="not authenticated")
+
+        token = CognitoToken(id_token, access_token)
+        try:
+            user_info = await token.authentication()
+            return user_info
+        except jwt.PyJWTError as e:
+            e_str = str(e)  # 모든 글자 소문자 규약 준수
+            error_detail = e_str[0].lower() + e_str[1:]
+            raise HTTPException(status_code=403, detail=f"authorization {error_detail}")
 
 
 class FmpApi:

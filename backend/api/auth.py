@@ -78,13 +78,13 @@ async def cognito_token_refresh(cognito_refresh_token: str = Body(..., embed=Tru
 
 
 # ------------------ for phone authentication ------------------
-PHONE_CONFIRMATION_CODE_PATH = EFS_VOLUME_PATH / "phone_confirmation_code"
-PHONE_CONFIRMATION_CODE_PATH.mkdir(parents=True, exist_ok=True)
+PHONE_CONFIRM_CODE_PATH = EFS_VOLUME_PATH / "phone_confirm_code"
+PHONE_CONFIRM_CODE_PATH.mkdir(parents=True, exist_ok=True)
 
 
 @router.public.post("/auth/phone")
 async def create_phone_confirmation(phone=Body(..., embed=True)):
-    target_path: PosixPath = PHONE_CONFIRMATION_CODE_PATH / phone
+    target_path: PosixPath = PHONE_CONFIRM_CODE_PATH / phone
     issued_code = f"{secrets.randbelow(10**6):06}"
     target_path.write_text(issued_code)
     sns = boto3.client("sns")
@@ -104,22 +104,20 @@ async def create_phone_confirmation(phone=Body(..., embed=True)):
 
 
 @router.public.post("/auth/phone/confirm")
-async def phone_confirmation(
-    phone: str = Body(...), confirmation_code: str = Body(...)
-):
-    target_path = PHONE_CONFIRMATION_CODE_PATH / phone
+async def phone_confirmation(phone: str = Body(...), confirm_code: str = Body(...)):
+    target_path = PHONE_CONFIRM_CODE_PATH / phone
     if not target_path.exists():  # 코드 만료
         raise HTTPException(
             status_code=401, detail="This confirmation has already expired."
         )
-    elif target_path.read_text() == confirmation_code:
+    elif target_path.read_text() == confirm_code:
         return Response(status_code=200, content="confirmed")
     else:
         raise HTTPException(status_code=409, detail="invalid code")
 
 
 @router.public.post("/auth/email")
-async def cognito_resend_confirmation_code(email: str = Body(..., embed=True)):
+async def cognito_resend_confirm_code(email: str = Body(..., embed=True)):
     await run_async(  # 이메일 잘못되도 에러 안나서 예외처리할게 없음..
         cognito.resend_confirmation_code,
         ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
@@ -130,14 +128,14 @@ async def cognito_resend_confirmation_code(email: str = Body(..., embed=True)):
 
 @router.public.post("/auth/email/confirm")
 async def cognito_confirm_sign_up(
-    email: str = Body(...), confirmation_code: str = Body(...)
+    email: str = Body(...), confirm_code: str = Body(...)
 ):
     try:
         await run_async(
             cognito.confirm_sign_up,
             ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
             Username=email,
-            ConfirmationCode=confirmation_code,
+            ConfirmationCode=confirm_code,
         )
     except cognito.exceptions.CodeMismatchException:
         raise HTTPException(status_code=409, detail="invalid code")

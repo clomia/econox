@@ -21,7 +21,7 @@ for router in api.routers:
 app.mount("/static", StaticFiles(directory="frontend/static"))
 
 
-@app.get("/{all:path}", tags=["Frontend Hosting"])  # SPA Svelte APP hosting
+@app.get("/{all:path}", tags=["Frontend Hosting"], description="SPA Svelte app hosting")
 def svelte_application() -> HTMLResponse:
     html = Path("frontend/static/index.html").read_text()
     return HTMLResponse(content=html)

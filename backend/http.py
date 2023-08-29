@@ -68,20 +68,20 @@ class CognitoTokenBearer(HTTPBearer):
         credentials: HTTPAuthorizationCredentials = await super().__call__(request)
 
         if "|" not in credentials.credentials:
-            raise HTTPException(status_code=403, detail="invalid token format")
+            raise HTTPException(status_code=403, detail="Invalid token format")
         id_token, access_token = credentials.credentials.split("|")
 
         if not id_token or not access_token:
-            raise HTTPException(status_code=403, detail="not authenticated")
+            raise HTTPException(status_code=403, detail="Not authenticated")
 
         token = CognitoToken(id_token, access_token)
         try:
             user_info = await token.authentication()
             return user_info
         except jwt.PyJWTError as e:
-            e_str = str(e)  # 응답 문자열은 소문자로
+            e_str = str(e)
             error_detail = e_str[0].lower() + e_str[1:]
-            raise HTTPException(status_code=403, detail=f"authorization {error_detail}")
+            raise HTTPException(status_code=403, detail=f"Authorization {error_detail}")
 
 
 class Router:

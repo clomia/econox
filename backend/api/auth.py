@@ -28,7 +28,7 @@ async def login(email: str = Body(...), password: str = Body(...)):
             Username=email,
         )  # 유저에게 발급된 refresh token 전부 무효화, 한 계정이 여러곳에서 동시에 사용되는걸 막는다.
     except cognito.exceptions.UserNotFoundException:  # 정상적으로 회원가입이 되었다면 이 에러는 절대 안난다.
-        raise HTTPException(status_code=409, detail="cognito User does not exist")
+        raise HTTPException(status_code=409, detail="Cognito user does not exist")
 
     # ========== refresh 토큰 무효화 요청이 완료되길 기다린(polling) 다음 유일한 refresh 토큰 생성 ==========
     while True:  # 모든 refresh 토큰이 무효화될때까지 반복됨
@@ -40,7 +40,7 @@ async def login(email: str = Body(...), password: str = Body(...)):
                 ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
             )
         except cognito.exceptions.NotAuthorizedException:
-            raise HTTPException(status_code=401, detail="invalid password")
+            raise HTTPException(status_code=401, detail="Invalid password")
         id_token = auth["AuthenticationResult"]["IdToken"]
         access_token = auth["AuthenticationResult"]["AccessToken"]
         refresh_token = auth["AuthenticationResult"]["RefreshToken"]
@@ -111,9 +111,9 @@ async def phone_confirmation(phone: str = Body(...), confirm_code: str = Body(..
             status_code=401, detail="This confirmation has already expired."
         )
     elif target_path.read_text() == confirm_code:
-        return Response(status_code=200, content="confirmed")
+        return Response(status_code=200, content="Confirmed")
     else:
-        raise HTTPException(status_code=409, detail="invalid code")
+        raise HTTPException(status_code=409, detail="Invalid code")
 
 
 @router.public.post("/auth/email")
@@ -123,7 +123,7 @@ async def cognito_resend_confirm_code(email: str = Body(..., embed=True)):
         ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
         Username=email,
     )
-    return Response(status_code="code transfer requested")
+    return Response(status_code="Code transfer requested")
 
 
 @router.public.post("/auth/email/confirm")
@@ -138,14 +138,14 @@ async def cognito_confirm_sign_up(
             ConfirmationCode=confirm_code,
         )
     except cognito.exceptions.CodeMismatchException:
-        raise HTTPException(status_code=409, detail="invalid code")
+        raise HTTPException(status_code=409, detail="Invalid code")
     except cognito.exceptions.ExpiredCodeException:
-        raise HTTPException(status_code=401, detail="expired code")
+        raise HTTPException(status_code=401, detail="Expired code")
     except cognito.exceptions.LimitExceededException:
-        raise HTTPException(status_code=429, detail="too many requests")
+        raise HTTPException(status_code=429, detail="Too many requests")
     except cognito.exceptions.NotAuthorizedException:
-        return Response(status_code=202, content="email already confirmed")
-    return Response(status_code=200, content="confirmed")
+        return Response(status_code=202, content="Email already confirmed")
+    return Response(status_code=200, content="Confirmed")
 
 
 @router.public.post("/auth/is-reregistration")

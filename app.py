@@ -12,7 +12,6 @@ app = FastAPI(
     description="ECONOX main server",
     docs_url="/api",
     redoc_url="/document",
-    routes=api.routers,
 )
 
 # ================= backend =================

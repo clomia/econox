@@ -2,7 +2,7 @@
     import { createEventDispatcher } from "svelte";
     import LoadingAnimation from "../../../../assets/LoadingAnimation.svelte";
     import * as state from "../../../../modules/state";
-    import { publicRequest } from "../../../../modules/api";
+    import { request } from "../../../../modules/api";
 
     const dispatch = createEventDispatcher();
     const inputResult = state.auth.signup.inputResult;
@@ -36,24 +36,24 @@
         ownerId = event.target.value.slice(0, cardType === "personal" ? 6 : 10);
     };
 
-    let request = null;
+    let response = null;
     let message = "";
     const billing = async () => {
         message = "";
         const [expir_month, expir_year] = expiryDate.replace(/\s/g, "").split("/");
         try {
-            request = publicRequest.post("/billing/tosspayments", {
+            response = request.public.post("/billing/tosspayments", {
                 user_id: $inputResult.cognitoId,
                 card_number: cardNumber.replace(/\s/g, ""),
                 expiration_year: expir_year,
                 expiration_month: expir_month,
                 owner_id: ownerId,
             });
-            const billingKey = (await request).data.billing_key;
-            inputResult.set({ ...$inputResult, tosspayments: { billingKey } });
+            const key = (await response).data.key;
+            inputResult.set({ ...$inputResult, tosspayments: { key } });
             dispatch("complete");
         } catch (error) {
-            request = null;
+            response = null;
             const statusMessages = {
                 400: "잘못된 값이 있습니다.",
                 422: "누락된 값이 있습니다.",
@@ -119,11 +119,11 @@
             />
         </label>
     </section>
-    {#await request}
+    {#await response}
         <LoadingAnimation />
     {/await}
     <div class="message">{message}</div>
-    {#if !(request instanceof Promise)}
+    {#if !(response instanceof Promise)}
         <button class="submit-button" type="submit">Next</button>
     {/if}
 </form>

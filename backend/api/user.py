@@ -50,12 +50,12 @@ async def create_cognito_user(email: str = Body(...), password: str = Body(...))
 
 
 class TosspaymentsBillingInfo(BaseModel):
-    tosspayments_billing_key: str
+    key: str  # billing key
 
 
 class PaypalBillingInfo(BaseModel):
-    paypal_token: str
-    paypal_subscription_id: str
+    token: str
+    subscription: str  # subscription id
 
 
 class SignupInfo(BaseModel):
@@ -108,9 +108,9 @@ async def signup(item: SignupInfo):
         '{item.membership}', 
         '{membership_expiration.strftime('%Y-%m-%d %H:%M:%S')}', 
         '{item.currency}', 
-        {f"'{item.tosspayments['billingKey']}'" if item.tosspayments else "NULL"},
-        {f"'{item.paypal['facilitatorAccessToken']}'" if item.paypal else "NULL"}, 
-        {f"'{item.paypal['subscriptionId']}'" if item.paypal else "NULL"},
+        {f"'{item.tosspayments.key}'" if item.tosspayments else "NULL"},
+        {f"'{item.paypal.token}'" if item.paypal else "NULL"}, 
+        {f"'{item.paypal.subscription}'" if item.paypal else "NULL"},
         {now.day},
         '{now.strftime('%H:%M:%S')}'
     );

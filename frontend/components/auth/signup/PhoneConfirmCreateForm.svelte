@@ -4,7 +4,7 @@
     import { getCountryCallingCode } from "libphonenumber-js";
 
     import * as state from "../../../modules/state";
-    import { publicRequest } from "../../../modules/api";
+    import { request } from "../../../modules/api";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
 
     import type { CountryCode } from "libphonenumber-js";
@@ -25,13 +25,13 @@
     });
 
     const getCurrentCountry = async () => {
-        const response = await publicRequest.get("/user/country");
+        const response = await request.public.get("/user/country");
         return getCountryCallingCode(response.data.country);
     };
 
     const dispatch = createEventDispatcher();
 
-    let request = null;
+    let response = null;
     let message = "";
     const phoneConfirm = async (event: SubmitEvent) => {
         message = "";
@@ -48,13 +48,13 @@
             return;
         }
         try {
-            request = publicRequest.post("/auth/phone", { phone_number: phone });
-            await request;
+            response = request.public.post("/auth/phone", { phone });
+            await response;
             inputResult.set({ ...$inputResult, phone });
             inputPhoneNumberStore.set(inputPhoneNumber);
             dispatch("complete");
         } catch (error) {
-            request = null;
+            response = null;
             message = $text.phoneConfirmRequestFailed;
         }
     };
@@ -78,10 +78,10 @@
         <input name="phone" type="text" />
     </label>
     <div class="message">{message}</div>
-    {#if !(request instanceof Promise)}
+    {#if !(response instanceof Promise)}
         <button>{$text.sendVerificationCode}</button>
     {/if}
-    {#await request}
+    {#await response}
         <LoadingAnimation />
     {/await}
 </form>

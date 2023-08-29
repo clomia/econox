@@ -43,8 +43,8 @@
                     inputResult.set({
                         ...$inputResult,
                         paypal: {
-                            subscriptionID: data.subscriptionID,
-                            facilitatorAccessToken: data.facilitatorAccessToken,
+                            token: data.facilitatorAccessToken,
+                            subscription: data.subscriptionID,
                         },
                     });
                     dispatch("complete");

@@ -5,7 +5,7 @@
     const text = state.uiText.text;
 
     let message = "";
-    let request: string | Promise<void> = "before"; // 요청 전
+    let response: string | Promise<void> = "before"; // 요청 전
     const loginProcess = async (event: SubmitEvent) => {
         const form = event.target as HTMLFormElement;
         const email = form.email.value;
@@ -15,7 +15,7 @@
             return;
         }
         try {
-            request = login(email, password);
+            response = login(email, password);
         } catch (error) {
             message = error.response?.status === 401 ? $text.loginFailed : $text.error;
         }
@@ -35,11 +35,11 @@
             <input class="password-input" type="password" name="password" autocomplete="current-password" />
         </label>
     </section>
-    {#await request}
+    {#await response}
         <LoadingAnimation />
     {/await}
     <div>{message}</div>
-    {#if !(request instanceof Promise)}
+    {#if !(response instanceof Promise)}
         <button type="submit">{$text.login}</button>
     {/if}
 </form>

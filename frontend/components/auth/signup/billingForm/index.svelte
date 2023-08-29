@@ -16,7 +16,7 @@
 </script>
 
 {#if $inputResult.currency === "KRW"}
-    <Tosspayments />
+    <Tosspayments on:complete={() => dispatch("complete")} />
 {:else if $inputResult.currency === "USD"}
-    <Paypal />
+    <Paypal on:complete={() => dispatch("complete")} />
 {/if}

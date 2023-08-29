@@ -7,8 +7,10 @@ import type { JwtPayload } from "jsonwebtoken";
 import type { InternalAxiosRequestConfig } from "axios";
 
 export const apiHostPath = window.location.origin + "/api"
-export const publicRequest = axios.create({ baseURL: apiHostPath })
-export const privateRequest = axios.create({ baseURL: apiHostPath }) // 인증 실패 시 강제 로그아웃!
+export const request = {
+    public: axios.create({ baseURL: apiHostPath }),
+    private: axios.create({ baseURL: apiHostPath }) // 인증 실패 시 강제 로그아웃!
+}
 
 const isJwtExpired = (token: string): boolean => {
     try {
@@ -22,28 +24,22 @@ const isJwtExpired = (token: string): boolean => {
     return true
 }
 
-/**
- * 토큰 갱신 실패시 response.status = 401 에러 발생
- */
 const tokenInsert = async (config: InternalAxiosRequestConfig) => {
-    let [cognitoIdToken, cognitoAccessToken, cognitoRefreshToken] = await Promise.all([
-        settingObjectStore.get("cognitoIdToken"),
-        settingObjectStore.get("cognitoAccessToken"),
+    let [cognitoToken, cognitoRefreshToken] = await Promise.all([
+        settingObjectStore.get("cognitoToken"),
         settingObjectStore.get("cognitoRefreshToken"),
     ])
 
-    if (cognitoIdToken && cognitoAccessToken && cognitoRefreshToken) {
-        if (isJwtExpired(cognitoIdToken) || isJwtExpired(cognitoAccessToken)) {
-            const response = await publicRequest.post("/auth/cognito-refresh-token", { cognito_refresh_token: cognitoRefreshToken })
-            cognitoIdToken = response["cognito_id_token"]
-            cognitoAccessToken = response["cognito_access_token"]
-            settingObjectStore.put("cognitoIdToken", cognitoIdToken)
-            settingObjectStore.put("cognitoAccessToken", cognitoAccessToken)
+    if (cognitoToken && cognitoRefreshToken) {
+        const [idToken, accessToken] = cognitoToken.split("|")
+        if (isJwtExpired(idToken) || isJwtExpired(accessToken)) {
+            const response = await request.public.post("/auth/cognito-refresh-token", { cognito_refresh_token: cognitoRefreshToken })
+            const cognitoToken = response["cognito_token"]
+            settingObjectStore.put("cognitoToken", cognitoToken)
         }
-        config.headers["Cognito-Id-Token"] = cognitoIdToken
-        config.headers["Cognito-Access-Token"] = cognitoAccessToken
+        config.headers["Authorization"] = `Bearer ${cognitoToken}`
     }
     return config
 }
 
-privateRequest.interceptors.request.use(tokenInsert)
+request.private.interceptors.request.use(tokenInsert)

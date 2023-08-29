@@ -1,8 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
-    import Swal from "sweetalert2";
     import * as state from "../../../modules/state";
-    import { publicRequest } from "../../../modules/api";
+    import { request } from "../../../modules/api";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
 
     const text = state.uiText.text;
@@ -12,7 +11,7 @@
 
     const dispatch = createEventDispatcher();
 
-    let request: null | Promise<any> = null; // 요청 전
+    let response: null | Promise<any> = null; // 요청 전
     let message = $text.enterPhoneConfirmationCode;
     let expired = false;
     const countdown = async (totalSeconds: number) => {
@@ -34,21 +33,21 @@
         message = "";
         const form = event.target as HTMLFormElement;
         try {
-            const phoneConfirm = publicRequest.post("/auth/phone/confirm", {
-                phone_number: $inputResult.phone,
-                confirmation_code: form.code.value,
+            const phoneConfirm = request.public.post("/auth/phone/confirm", {
+                phone: $inputResult.phone,
+                confirm_code: form.code.value,
             });
-            const reregistrationConfirm = publicRequest.post("/auth/is-reregistration", {
+            const reregistrationConfirm = request.public.post("/auth/is-reregistration", {
                 email: $inputResult.email,
                 phone: $inputResult.phone,
             });
-            request = Promise.all([phoneConfirm, reregistrationConfirm]);
-            const [, reregistrationConfirmResponse] = await request;
+            response = Promise.all([phoneConfirm, reregistrationConfirm]);
+            const [, reregistrationConfirmResponse] = await response;
             const reregistration: boolean = reregistrationConfirmResponse.data.reregistration; // 재등록 여부
             inputResult.set({ ...$inputResult, reregistration });
             dispatch("complete");
         } catch (error) {
-            request = null;
+            response = null;
             const statusMessage = {
                 409: $text.confirmCodeMismatch, // 인증 코드가 올바르지 않음
                 401: $text.expiredConfirmCode, // 인증 코드가 만료됌
@@ -58,9 +57,9 @@
     };
 
     const resendCode = async () => {
-        request = publicRequest.post("/auth/phone", { phone_number: $inputResult.phone });
-        await request;
-        request = null;
+        response = request.public.post("/auth/phone", { phone: $inputResult.phone });
+        await response;
+        response = null;
         message = "인증 코드가 전송되었습니다";
         expired = false;
         countdown(180);
@@ -74,11 +73,11 @@
             <input type="text" name="code" placeholder={$phoneConfirmTimeLimit} autocomplete="off" />
         </label>
     </section>
-    {#await request}
+    {#await response}
         <LoadingAnimation />
     {/await}
     <div>{message}</div>
-    {#if !(request instanceof Promise)}
+    {#if !(response instanceof Promise)}
         {#if !expired}
             <button type="submit">{$text.next}</button>
         {:else}

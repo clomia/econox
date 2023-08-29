@@ -2,7 +2,7 @@
     import { createEventDispatcher } from "svelte";
 
     import * as state from "../../../modules/state";
-    import { publicRequest } from "../../../modules/api";
+    import { request } from "../../../modules/api";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
 
     import type { AxiosResponse } from "axios";
@@ -12,7 +12,7 @@
 
     const dispatch = createEventDispatcher();
 
-    let request: null | Promise<AxiosResponse> = null; // 요청 전
+    let response: null | Promise<AxiosResponse> = null; // 요청 전
     let message = "";
 
     const signup = async (event: SubmitEvent) => {
@@ -33,12 +33,12 @@
             return;
         }
         try {
-            request = publicRequest.post("/user/cognito", { email, password });
-            const cognitoId = (await request).data.user_id;
+            response = request.public.post("/user/cognito", { email, password });
+            const cognitoId = (await response).data.cognito_id;
             inputResult.set({ ...$inputResult, cognitoId, email, password });
             dispatch("complete");
         } catch (error) {
-            request = null;
+            response = null;
             const statusMessages = {
                 409: $text.alreadyExistsUser,
                 400: $text.invalidEmailInput,
@@ -67,11 +67,11 @@
             <input class="password-input" type="password" name="retypePassword" autocomplete="off" />
         </label>
     </section>
-    {#await request}
+    {#await response}
         <LoadingAnimation />
     {/await}
     <div>{message}</div>
-    {#if !(request instanceof Promise)}
+    {#if !(response instanceof Promise)}
         <button type="submit">{$text.next}</button>
     {/if}
 </form>

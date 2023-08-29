@@ -2,7 +2,7 @@
     import { createEventDispatcher } from "svelte";
 
     import * as state from "../../../modules/state";
-    import { publicRequest } from "../../../modules/api";
+    import { request } from "../../../modules/api";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
 
     import type { AxiosResponse } from "axios";
@@ -13,7 +13,7 @@
 
     const dispatch = createEventDispatcher();
 
-    let request: null | Promise<AxiosResponse> = null; // 요청 전
+    let response: null | Promise<AxiosResponse> = null; // 요청 전
     let message = $text.enterEmailConfirmationCode;
     let expired = false;
     const countdown = async (totalSeconds: number) => {
@@ -40,14 +40,14 @@
             return;
         }
         try {
-            request = publicRequest.post("/auth/email/confirm", {
+            response = request.public.post("/auth/email/confirm", {
                 email: $inputResult.email,
-                confirmation_code: code,
+                confirm_code: code,
             });
-            await request;
+            await response;
             dispatch("complete");
         } catch (error) {
-            request = null;
+            response = null;
             const statusMessage = {
                 409: $text.confirmCodeMismatch, // 인증 코드가 올바르지 않음
                 401: $text.expiredConfirmCode, // 인증 코드가 만료됌
@@ -58,9 +58,9 @@
     };
 
     const resendCode = async () => {
-        request = publicRequest.post("/auth/email", { email: $inputResult.email });
-        await request;
-        request = null;
+        response = request.public.post("/auth/email", { email: $inputResult.email });
+        await response;
+        response = null;
         message = "인증 코드가 전송되었습니다";
         expired = false;
         countdown(180);
@@ -74,11 +74,11 @@
             <input type="text" name="code" placeholder={$emailConfirmTimeLimit} autocomplete="off" />
         </label>
     </section>
-    {#await request}
+    {#await response}
         <LoadingAnimation />
     {/await}
     <div>{message}</div>
-    {#if !(request instanceof Promise)}
+    {#if !(response instanceof Promise)}
         {#if !expired}
             <button type="submit">{$text.next}</button>
         {:else}

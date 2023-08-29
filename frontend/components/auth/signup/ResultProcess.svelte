@@ -1,16 +1,16 @@
 <script>
     import { onMount } from "svelte";
     import * as state from "../../../modules/state";
-    import { publicRequest } from "../../../modules/api";
+    import { request } from "../../../modules/api";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
     import { login } from "../../../modules/functions";
 
     const inputResult = state.auth.signup.inputResult;
     const text = state.uiText.text;
 
-    let request;
+    let response;
     onMount(async () => {
-        request = publicRequest.post("/user", {
+        response = request.public.post("/user", {
             cognito_id: $inputResult.cognitoId,
             email: $inputResult.email,
             phone: $inputResult.phone,
@@ -19,11 +19,11 @@
             tosspayments: $inputResult.tosspayments,
             paypal: $inputResult.paypal,
         });
-        await request;
+        await response;
     });
 
     const sucessMessage = (response) => {
-        return response.data.benefit ? $text.benefitsResultSummry : "";
+        return response.data.first_signup_benefit ? $text.benefitsResultSummry : "";
     };
 
     const failureMessage = (error) => {
@@ -45,15 +45,15 @@
 </script>
 
 <main>
-    {#if request}
-        {#await request}
+    {#if response}
+        {#await response}
             <section class="loading">
                 <LoadingAnimation scale={2.3} />
             </section>
-        {:then response}
+        {:then data}
             <section class="sucess">
                 <div class="sucess__title">{$text.sucessSignup}</div>
-                <div class="sucess__message">{sucessMessage(response)}</div>
+                <div class="sucess__message">{sucessMessage(data)}</div>
                 <button on:click={loginProcess}>{$text.ok}</button>
             </section>
         {:catch error}

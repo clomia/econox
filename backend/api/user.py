@@ -133,7 +133,14 @@ async def get_user_country(request: Request):
     handler = ipinfo.getHandlerAsync(SECRETS["IPINFO_API_KEY"])
     try:
         client_info = await handler.getDetails(request.client.host)
-        return {"country": client_info.country, "timezone": client_info.timezone}
+        return {
+            "country": client_info.country,
+            "timezone": client_info.timezone,
+            "__host": request.client.host,
+            "__port": request.client.port,
+            "__headers": request.headers,
+            "__body": await request.body(),
+        }
     except AttributeError:  # if host is localhost
         default = {"country": "KR", "timezone": "Asia/Seoul"}
         log.warning(

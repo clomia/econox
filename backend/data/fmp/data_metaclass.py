@@ -12,7 +12,7 @@ import numpy as np
 import xarray as xr
 from httpx import HTTPStatusError
 
-from backend.http import FmpApi
+from backend.http import FmpAPI
 from backend.math import standardization
 from backend.data.factor import Factor
 from backend.data.text import Multilingual
@@ -108,7 +108,7 @@ class ClientMeta(type):
         - 데이터가 전혀 없는 경우 raise ValueError
         - 누락된 데이터는 np.nan으로 대체됩니다.
         """
-        series: list = await FmpApi(cache=False).get(self.api, **self.api_params)
+        series: list = await FmpAPI(cache=False).get(self.api, **self.api_params)
         if not series:  # 데이터가 없는 경우 ValueError
             raise ValueError(f"FMP에 {self.symbol} symbol에 대한 데이터가 존재하지 않습니다.")
         t = np.array([np.datetime64(day[self.t_key], "ns") for day in series])
@@ -170,7 +170,7 @@ class HistoricalPriceFullMeta(ClientMeta):
     async def collect(self):  # collect 메서드 재정의
         # FMP 서버는 안정적인 응답 시간을 위해 from 인자가 없다면 기본적으로 5년 전까지의 데이터만 수신합니다.
         # from 인자로 "1900-01-01" 를 넣어서 모든 데이터를 가져올 수 있습니다.(이렇게 하라고 FMP한테 확인받음)
-        data: dict = await FmpApi(cache=False).get(
+        data: dict = await FmpAPI(cache=False).get(
             path=self.api, **self.api_params | {"from": "1900-01-01"}
         )
 

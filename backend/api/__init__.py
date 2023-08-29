@@ -1,12 +1,12 @@
 from pathlib import Path
 from importlib import import_module
 
-from fastapi import APIRouter
+from backend.api import *
 
-router = APIRouter(prefix="/api")
-
-# 모든 api 함수들을 router에 붙입니다.
+routers = []  # 사용되는 모든 API 라우터들.
 for p in Path(__file__).parent.glob("*.py"):
     if p.name == "__init__.py":
         continue
-    import_module(f"backend.api.{p.stem}")
+    module = import_module(f"backend.api.{p.stem}")
+    routers.append(module.router.public)
+    routers.append(module.router.private)

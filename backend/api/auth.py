@@ -1,5 +1,4 @@
 import time
-import asyncio
 import secrets
 import threading
 from pathlib import PosixPath
@@ -8,15 +7,15 @@ import boto3
 from fastapi import Body, HTTPException
 from fastapi.responses import Response
 
-from backend.api import router
+from backend.http import Router
 from backend.system import db_exec_query, run_async
 from backend.system import SECRETS, EFS_VOLUME_PATH
 
-API_PREFIX = "auth"
+router = Router("auth")
 cognito = boto3.client("cognito-idp")
 
 
-@router.post("/auth/user", tags=[API_PREFIX])
+@router.public.post("/auth/user")
 async def login(email: str = Body(...), password: str = Body(...)):
     if not await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
         raise HTTPException(status_code=404, detail="user does not exist")
@@ -62,7 +61,7 @@ async def login(email: str = Body(...), password: str = Body(...)):
     }
 
 
-@router.post("/auth/cognito-refresh-token", tags=[API_PREFIX])
+@router.public.post("/auth/cognito-refresh-token")
 async def cognito_token_refresh(cognito_refresh_token: str = Body(..., embed=True)):
     try:
         result = await run_async(
@@ -83,7 +82,7 @@ PHONE_CONFIRMATION_CODE_PATH = EFS_VOLUME_PATH / "phone_confirmation_code"
 PHONE_CONFIRMATION_CODE_PATH.mkdir(parents=True, exist_ok=True)
 
 
-@router.post("/auth/phone", tags=[API_PREFIX])
+@router.public.post("/auth/phone")
 async def create_phone_confirmation(phone=Body(..., embed=True)):
     target_path: PosixPath = PHONE_CONFIRMATION_CODE_PATH / phone
     issued_code = f"{secrets.randbelow(10**6):06}"
@@ -104,7 +103,7 @@ async def create_phone_confirmation(phone=Body(..., embed=True)):
     return Response(status_code=200, content="Code transfer request successful")
 
 
-@router.post("/auth/phone/confirm", tags=[API_PREFIX])
+@router.public.post("/auth/phone/confirm")
 async def phone_confirmation(
     phone: str = Body(...), confirmation_code: str = Body(...)
 ):
@@ -119,7 +118,7 @@ async def phone_confirmation(
         raise HTTPException(status_code=409, detail="invalid code")
 
 
-@router.post("/auth/email", tags=[API_PREFIX])
+@router.public.post("/auth/email")
 async def cognito_resend_confirmation_code(email: str = Body(..., embed=True)):
     await run_async(  # 이메일 잘못되도 에러 안나서 예외처리할게 없음..
         cognito.resend_confirmation_code,
@@ -129,7 +128,7 @@ async def cognito_resend_confirmation_code(email: str = Body(..., embed=True)):
     return Response(status_code="code transfer requested")
 
 
-@router.post("/auth/email/confirm", tags=[API_PREFIX])
+@router.public.post("/auth/email/confirm")
 async def cognito_confirm_sign_up(
     email: str = Body(...), confirmation_code: str = Body(...)
 ):
@@ -151,7 +150,7 @@ async def cognito_confirm_sign_up(
     return Response(status_code=200, content="confirmed")
 
 
-@router.post("/auth/is-reregistration", tags=[API_PREFIX])
+@router.public.post("/auth/is-reregistration")
 async def check_is_reregistration(email: str = Body(...), phone: str = Body(...)):
     scan_history = f"""
         SELECT 1 FROM signup_history 

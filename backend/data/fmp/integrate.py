@@ -7,7 +7,7 @@ from typing import List
 
 import pycountry
 
-from backend.http import FmpApi
+from backend.http import FmpAPI
 from backend.system import EFS_VOLUME_PATH
 from backend.data.fmp import data_metaclass
 from backend.data.text import Multilingual, translator
@@ -123,8 +123,8 @@ class Symbol:
 
         # ======= API 사용해서 데이터 수집 =======
         profile_resp, search_api_resp = await asyncio.gather(
-            FmpApi(cache=False).get(f"api/v3/profile/{self.code}"),
-            FmpApi(cache=False).get("api/v3/search", query=self.code),
+            FmpAPI(cache=False).get(f"api/v3/profile/{self.code}"),
+            FmpAPI(cache=False).get("api/v3/search", query=self.code),
         )
 
         name = exchange = currency = description = None
@@ -174,7 +174,7 @@ class Symbol:
         - api/v4/stock_peers
         - 자신과 관련된 Symbol 리스트
         """
-        resp = await FmpApi(cache=True).get("api/v4/stock_peers", symbol=self.code)
+        resp = await FmpAPI(cache=True).get("api/v4/stock_peers", symbol=self.code)
         return self._from_list(resp[0]["peersList"]) if resp else []
 
     @property
@@ -183,7 +183,7 @@ class Symbol:
         - api/v3/quote
         - 현재가격
         """
-        resp = await FmpApi(cache=False).get(f"api/v3/quote-short/{self.code}")
+        resp = await FmpAPI(cache=False).get(f"api/v3/quote-short/{self.code}")
         return float(resp[0]["price"]) if resp else None
 
     @property
@@ -192,7 +192,7 @@ class Symbol:
         - api/v3/quote
         - 현재 가격 변화율 (%)
         """
-        resp = await FmpApi(cache=False).get(f"api/v3/quote/{self.code}")
+        resp = await FmpAPI(cache=False).get(f"api/v3/quote/{self.code}")
         return float(resp[0]["changesPercentage"]) if resp else None
 
 
@@ -206,8 +206,8 @@ async def search(text: str, limit: int = 15) -> List[Symbol]:
     """
     en_text = await translator(text, to_lang="en")
     resp_en, resp_origin = await asyncio.gather(
-        FmpApi(cache=True).get("api/v3/search", limit=limit, query=en_text),
-        FmpApi(cache=True).get("api/v3/search", limit=limit, query=text),
+        FmpAPI(cache=True).get("api/v3/search", limit=limit, query=en_text),
+        FmpAPI(cache=True).get("api/v3/search", limit=limit, query=text),
     )
     resp_set = {ele["symbol"] for ele in resp_en + resp_origin}  # 중복 제거
     codes = (  # limit으로 짜르되, 심볼 코드로 검색한 경우라면 해당 심볼은 살리기
@@ -270,7 +270,7 @@ async def cond_search(
         ("exchange", exchange),
         ("limit", limit),
     )
-    resp = await FmpApi(cache=True).get("api/v3/stock-screener", **params)
+    resp = await FmpAPI(cache=True).get("api/v3/stock-screener", **params)
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
@@ -312,7 +312,7 @@ async def list_gainers() -> List[Symbol]:
     - api/v3/stock_market/gainers
     - 급상승 종목들
     """
-    resp = await FmpApi(cache=False).get("api/v3/stock_market/gainers")
+    resp = await FmpAPI(cache=False).get("api/v3/stock_market/gainers")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
@@ -321,7 +321,7 @@ async def list_losers() -> List[Symbol]:
     - api/v3/stock_market/losers
     - 급하락 종목들
     """
-    resp = await FmpApi(cache=False).get("api/v3/stock_market/losers")
+    resp = await FmpAPI(cache=False).get("api/v3/stock_market/losers")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
@@ -330,7 +330,7 @@ async def list_actives() -> List[Symbol]:
     - api/v3/stock_market/actives
     - 현재 거래량이 가장 많은 종목들
     """
-    resp = await FmpApi(cache=False).get("api/v3/stock_market/actives")
+    resp = await FmpAPI(cache=False).get("api/v3/stock_market/actives")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
@@ -341,13 +341,13 @@ async def list_all() -> List[Symbol]:
     - 주의: 4분 이상 소요됨.
     - 리스트 길이: 약 7만개
     """
-    resp = await FmpApi(cache=True).get("api/v3/stock/list")
+    resp = await FmpAPI(cache=True).get("api/v3/stock/list")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_cot() -> List[Symbol]:
     """api/v4/commitment_of_traders_report/list"""
-    resp = await FmpApi(cache=True).get("api/v4/commitment_of_traders_report/list")
+    resp = await FmpAPI(cache=True).get("api/v4/commitment_of_traders_report/list")
     return await asyncio.gather(*(Symbol(ele["trading_symbol"]).load() for ele in resp))
 
 
@@ -357,65 +357,65 @@ async def list_tradable() -> List[Symbol]:
     - 주의: 2분 이상 소요됨.
     - 리스트 길이: 약 5만 3천개
     """
-    resp = await FmpApi(cache=True).get("api/v3/available-traded/list")
+    resp = await FmpAPI(cache=True).get("api/v3/available-traded/list")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_etf() -> List[Symbol]:
     """api/v3/etf/list"""
-    resp = await FmpApi(cache=True).get("api/v3/etf/list")
+    resp = await FmpAPI(cache=True).get("api/v3/etf/list")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_sp500() -> List[Symbol]:
     """api/v3/sp500_constituent"""
-    resp = await FmpApi(cache=True).get("api/v3/sp500_constituent")
+    resp = await FmpAPI(cache=True).get("api/v3/sp500_constituent")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_nasdaq() -> List[Symbol]:
     """api/v3/nasdaq_constituent"""
-    resp = await FmpApi(cache=True).get("api/v3/nasdaq_constituent")
+    resp = await FmpAPI(cache=True).get("api/v3/nasdaq_constituent")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_dowjones() -> List[Symbol]:
     """api/v3/dowjones_constituent"""
-    resp = await FmpApi(cache=True).get("api/v3/dowjones_constituent")
+    resp = await FmpAPI(cache=True).get("api/v3/dowjones_constituent")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_index() -> List[Symbol]:
     """api/v3/symbol/available-indexes"""
-    resp = await FmpApi(cache=True).get("api/v3/symbol/available-indexes")
+    resp = await FmpAPI(cache=True).get("api/v3/symbol/available-indexes")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_euronext() -> List[Symbol]:
     """api/v3/symbol/available-euronext"""
-    resp = await FmpApi(cache=True).get("api/v3/symbol/available-euronext")
+    resp = await FmpAPI(cache=True).get("api/v3/symbol/available-euronext")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_tsx() -> List[Symbol]:
     """api/v3/symbol/available-tsx"""
-    resp = await FmpApi(cache=True).get("api/v3/symbol/available-tsx")
+    resp = await FmpAPI(cache=True).get("api/v3/symbol/available-tsx")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_crypto() -> List[Symbol]:
     """api/v3/symbol/available-cryptocurrencies"""
-    resp = await FmpApi(cache=True).get("api/v3/symbol/available-cryptocurrencies")
+    resp = await FmpAPI(cache=True).get("api/v3/symbol/available-cryptocurrencies")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_forex() -> List[Symbol]:
     """api/v3/symbol/available-forex-currency-pairs"""
-    resp = await FmpApi(cache=True).get("api/v3/symbol/available-forex-currency-pairs")
+    resp = await FmpAPI(cache=True).get("api/v3/symbol/available-forex-currency-pairs")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_commodity() -> List[Symbol]:
     """api/v3/symbol/available-commodities"""
-    resp = await FmpApi(cache=True).get("api/v3/symbol/available-commodities")
+    resp = await FmpAPI(cache=True).get("api/v3/symbol/available-commodities")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))

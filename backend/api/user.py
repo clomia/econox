@@ -7,15 +7,15 @@ import psycopg
 from pydantic import BaseModel
 from fastapi import HTTPException, Request, Body
 
-from backend.api import router
+from backend.http import Router
 from backend.system import SECRETS, log, db_exec_query, run_async
 
-API_PREFIX = "user"
 
+router = Router("user")
 cognito = boto3.client("cognito-idp")
 
 
-@router.post("/user/cognito", tags=[API_PREFIX])
+@router.public.post("/user/cognito")
 async def create_cognito_user(email: str = Body(...), password: str = Body(...)):
     try:
         result = await run_async(
@@ -68,7 +68,7 @@ class SignupInfo(BaseModel):
     paypal: PaypalBillingInfo | None = None
 
 
-@router.post("/user", tags=[API_PREFIX])
+@router.public.post("/user")
 async def signup(item: SignupInfo):
     try:
         cognito_user = await run_async(
@@ -128,7 +128,7 @@ async def signup(item: SignupInfo):
     return {"first_signup_benefit": not signup_history}  # 첫 회원가입 혜택 여부
 
 
-@router.get("/user/country", tags=[API_PREFIX])
+@router.public.get("/user/country")
 async def get_user_country(request: Request):
     handler = ipinfo.getHandlerAsync(SECRETS["IPINFO_API_KEY"])
     try:

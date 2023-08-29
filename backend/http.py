@@ -6,7 +6,7 @@ import jwt
 import httpx
 import wbdata
 from aiocache import cached
-from fastapi import HTTPException, Request
+from fastapi import HTTPException, Request, APIRouter, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from backend.system import SECRETS, log, run_async
@@ -79,12 +79,23 @@ class CognitoTokenBearer(HTTPBearer):
             user_info = await token.authentication()
             return user_info
         except jwt.PyJWTError as e:
-            e_str = str(e)  # 모든 글자 소문자 규약 준수
+            e_str = str(e)  # 응답 문자열은 소문자로
             error_detail = e_str[0].lower() + e_str[1:]
             raise HTTPException(status_code=403, detail=f"authorization {error_detail}")
 
 
-class FmpApi:
+class Router:
+    auth = CognitoTokenBearer()
+
+    def __init__(self, tag: str):
+        self.public = APIRouter(prefix="/api", tags=[tag])
+        self.private = APIRouter(
+            prefix="/api", tags=[tag], dependencies=[Depends(self.auth)]
+        )
+        self.private.user = Depends(self.auth)
+
+
+class FmpAPI:
     """financialmodelingprep API GET Request"""
 
     def __init__(self, cache: bool):
@@ -122,7 +133,7 @@ class FmpApi:
         return await cls._request(path, **params)
 
 
-class WorldBankApi:
+class WorldBankAPI:
     """World Bank Open API Request"""
 
     @classmethod

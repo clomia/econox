@@ -4,10 +4,10 @@ import httpx
 from fastapi import HTTPException
 from pydantic import BaseModel
 
-from backend.api import router
+from backend.http import Router
 from backend.system import SECRETS
 
-API_PREFIX = "billing"
+router = Router("billing")
 
 
 class CreditCard(BaseModel):
@@ -18,7 +18,7 @@ class CreditCard(BaseModel):
     owner_id: str
 
 
-@router.post("/billing/tosspayments", tags=[API_PREFIX])
+@router.public.post("/billing/tosspayments")
 async def create_tosspayments_billing_key(item: CreditCard):
     tosspayments_host = "https://api.tosspayments.com"
 

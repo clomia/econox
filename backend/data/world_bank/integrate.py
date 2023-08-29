@@ -3,9 +3,7 @@ import json
 import asyncio
 from typing import List
 
-from aiocache import cached
-
-from backend.http import WorldBankApi
+from backend.http import WorldBankAPI
 from backend.system import EFS_VOLUME_PATH
 from backend.data.text import Multilingual, translator
 from backend.data.world_bank.data_class import *
@@ -21,7 +19,7 @@ class Country:
             - `usa = await Country("USA").load()`
         - 경고! load 안하면 데이터 조회 못함
         """
-        self.api = WorldBankApi()
+        self.api = WorldBankAPI()
         self.code = code
         self.info_path = INFO_PATH / f"country/{code}.json"
         self.info = {"name": None, "note": None}
@@ -103,7 +101,7 @@ class Country:
 
 async def search(text: str) -> List[Country]:
     """is_valid가 False인 Country는 리스트에서 제외됩니다."""
-    api = WorldBankApi()
+    api = WorldBankAPI()
 
     en_text = await translator(text, to_lang="en")
     *l1, l2, l3 = await asyncio.gather(  # 번역 한거, 안한거 전부 사용해서 검색

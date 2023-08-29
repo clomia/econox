@@ -7,11 +7,17 @@ from fastapi.staticfiles import StaticFiles
 
 from backend import api
 
-app = FastAPI(title="ECONOX API")
+app = FastAPI(
+    title="ECONOX API",
+    description="ECONOX main server",
+    docs_url="/api",
+    redoc_url="/document",
+    routes=api.routers,
+)
 
 # ================= backend =================
-app.include_router(api.router)
-
+for router in api.routers:
+    app.include_router(router)
 # ================= frontend =================
 app.mount("/static", StaticFiles(directory="frontend/static"))
 

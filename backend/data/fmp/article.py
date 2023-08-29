@@ -2,7 +2,7 @@ import asyncio
 from typing import List, Awaitable
 from datetime import datetime
 
-from backend.http import FmpApi
+from backend.http import FmpAPI
 from backend.math import marge_lists
 from backend.data.text import Multilingual
 from backend.data.fmp.integrate import Symbol
@@ -47,9 +47,9 @@ async def news(symbol: str, limit=10) -> List[News]:
     """
     params = {"tickers": symbol, "limit": limit} if symbol else {"limit": limit}
     stock_resp, forex_resp, crypto_resp = await asyncio.gather(
-        FmpApi(cache=False).get("api/v3/stock_news", **params),
-        FmpApi(cache=False).get("api/v4/forex_news", **params),
-        FmpApi(cache=False).get("api/v4/crypto_news", **params),
+        FmpAPI(cache=False).get("api/v3/stock_news", **params),
+        FmpAPI(cache=False).get("api/v4/forex_news", **params),
+        FmpAPI(cache=False).get("api/v4/crypto_news", **params),
     )
 
     stock_news_loaders: List[Awaitable[News]] = []

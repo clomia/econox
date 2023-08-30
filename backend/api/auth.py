@@ -19,8 +19,7 @@ cognito = boto3.client("cognito-idp")
 async def login(email: str = Body(...), password: str = Body(...)):
     if not await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
         raise HTTPException(status_code=404, detail="user does not exist")
-
-    # ========== 이전에 발급된 모든 refresh 토큰 무효화 요청 전송 ==========
+    # ========== 이전에 발급된 모든 refresh 토큰 무효화 요청 ==========
     try:
         await run_async(
             cognito.admin_user_global_sign_out,
@@ -29,7 +28,6 @@ async def login(email: str = Body(...), password: str = Body(...)):
         )  # 유저에게 발급된 refresh token 전부 무효화, 한 계정이 여러곳에서 동시에 사용되는걸 막는다.
     except cognito.exceptions.UserNotFoundException:  # 정상적으로 회원가입이 되었다면 이 에러는 절대 안난다.
         raise HTTPException(status_code=409, detail="Cognito user does not exist")
-
     # ========== refresh 토큰 무효화 요청이 완료되길 기다린(polling) 다음 유일한 refresh 토큰 생성 ==========
     while True:  # 모든 refresh 토큰이 무효화될때까지 반복됨
         try:
@@ -100,7 +98,7 @@ async def create_phone_confirmation(phone=Body(..., embed=True)):
         target_path.unlink(missing_ok=True)
 
     threading.Thread(target=code_expiration).start()
-    return Response(status_code=200, content="Code transfer request successful")
+    return {"message": "Code transfer request successful"}
 
 
 @router.public.post("/auth/phone/confirm")
@@ -111,19 +109,23 @@ async def phone_confirmation(phone: str = Body(...), confirm_code: str = Body(..
             status_code=401, detail="This confirmation has already expired."
         )
     elif target_path.read_text() == confirm_code:
-        return Response(status_code=200, content="Confirmed")
+        return {"message": "Confirmed"}
     else:
         raise HTTPException(status_code=409, detail="Invalid code")
 
 
 @router.public.post("/auth/email")
 async def cognito_resend_confirm_code(email: str = Body(..., embed=True)):
-    await run_async(  # 이메일 잘못되도 에러 안나서 예외처리할게 없음..
-        cognito.resend_confirmation_code,
-        ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
-        Username=email,
-    )
-    return Response(status_code="Code transfer requested")
+    try:
+        await run_async(
+            cognito.resend_confirmation_code,
+            ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
+            Username=email,
+        )
+    except cognito.exceptions.ClientError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    else:
+        return {"message": "Code transfer requested"}
 
 
 @router.public.post("/auth/email/confirm")
@@ -144,8 +146,40 @@ async def cognito_confirm_sign_up(
     except cognito.exceptions.LimitExceededException:
         raise HTTPException(status_code=429, detail="Too many requests")
     except cognito.exceptions.NotAuthorizedException:
-        return Response(status_code=202, content="Email already confirmed")
-    return Response(status_code=200, content="Confirmed")
+        return {"message": "Email already confirmed"}
+    return {"message": "Confirmed"}
+
+
+@router.public.post("/auth/reset-password")
+async def send_password_reset_code(email: str = Body(..., embed=True)):
+    try:
+        await run_async(
+            cognito.forgot_password,
+            ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
+            Username=email,
+        )
+    except cognito.exceptions.ClientError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    else:
+        return {"message": "Code transfer requested"}
+
+
+@router.public.post("/auth/reset-password/confirm")
+async def password_reset(
+    email: str = Body(...), new_password: str = Body(...), confirm_code: str = Body(...)
+):
+    try:
+        await run_async(
+            cognito.confirm_forgot_password,
+            ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
+            Username=email,
+            ConfirmationCode=confirm_code,
+            Password=new_password,
+        )
+    except cognito.exceptions.ClientError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    else:
+        return {"message": "Password reset successful"}
 
 
 @router.public.post("/auth/is-reregistration")

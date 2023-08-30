@@ -1,3 +1,4 @@
+from typing import Literal
 from datetime import datetime
 from calendar import monthrange
 
@@ -49,6 +50,30 @@ async def create_cognito_user(email: str = Body(...), password: str = Body(...))
     return {"cognito_id": result["UserSub"]}
 
 
+@router.public.get("/user/country")
+async def get_user_country(request: Request):
+    header = {k.casefold(): v for k, v in request.headers.items()}
+    # AWS ELB는 헤더의 x-forwarded-for에 원본 ip를 넣어준다.
+    ip = header.get("x-forwarded-for", request.client.host)
+    try:
+        handler = ipinfo.getHandlerAsync(SECRETS["IPINFO_API_KEY"])
+        client_info = await handler.getDetails(ip)
+        return {
+            "country": client_info.country,
+            "timezone": client_info.timezone,
+        }
+    except AttributeError:  # if host is localhost
+        default = {"country": "KR", "timezone": "Asia/Seoul"}
+        log.warning(
+            "GET /user/country"
+            f"\n국가 정보 취득에 실패했습니다. 기본값을 응답합니다."
+            f"\nIP: {request.client.host} , 응답된 기본값: {default}"
+        )
+        return default
+    finally:
+        await handler.deinit()
+
+
 class TosspaymentsBillingInfo(BaseModel):
     key: str  # billing key
 
@@ -61,9 +86,9 @@ class PaypalBillingInfo(BaseModel):
 class SignupInfo(BaseModel):
     email: str
     phone: str
-    membership: str
-    currency: str
-    # 첫 회원가입이 아닌 경우 둘 중 하나 있어야 함
+    membership: Literal["basic", "professional"]
+    currency: Literal["KRW", "USD"]
+    # 첫 회원가입이 아닌 경우 둘 중 하나는 있어야 함
     tosspayments: TosspaymentsBillingInfo | None = None
     paypal: PaypalBillingInfo | None = None
 
@@ -128,25 +153,9 @@ async def signup(item: SignupInfo):
     return {"first_signup_benefit": not signup_history}  # 첫 회원가입 혜택 여부
 
 
-@router.public.get("/user/country")
-async def get_user_country(request: Request):
-    header = {k.casefold(): v for k, v in request.headers.items()}
-    # AWS ELB는 헤더의 x-forwarded-for에 원본 ip를 넣어준다.
-    ip = header.get("x-forwarded-for", request.client.host)
-    try:
-        handler = ipinfo.getHandlerAsync(SECRETS["IPINFO_API_KEY"])
-        client_info = await handler.getDetails(ip)
-        return {
-            "country": client_info.country,
-            "timezone": client_info.timezone,
-        }
-    except AttributeError:  # if host is localhost
-        default = {"country": "KR", "timezone": "Asia/Seoul"}
-        log.warning(
-            "GET /user/country"
-            f"\n국가 정보 취득에 실패했습니다. 기본값을 응답합니다."
-            f"\nIP: {request.client.host} , 응답된 기본값: {default}"
-        )
-        return default
-    finally:
-        await handler.deinit()
+@router.private.patch("/user/name")
+async def change_user_name(
+    new_name: str = Body(..., embed=True), user=router.private.user
+):
+    await db_exec_query(f"UPDATE users SET name='{new_name}' WHERE id='{user['id']}'")
+    return {"message": "Changed successfully"}

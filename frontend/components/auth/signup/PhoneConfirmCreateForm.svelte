@@ -39,11 +39,13 @@
         const callingCode = form.callingCode.value;
         const inputPhoneNumber = form.phone.value;
         const phone = `+${callingCode}${inputPhoneNumber.replace(/-|\s/g, "")}`; // "-" & 공백 제거}
-        if (!inputPhoneNumber) {
+        console.log(phone);
+        if (!phone) {
             message = $text.noPhoneNumber;
             return;
         }
-        if (/\D/.test(inputPhoneNumber)) {
+        // 앞에 + 빼고 숫자만 있는지 검사
+        if (/\D/.test(phone.slice(1))) {
             message = $text.phoneNumberNotNumber;
             return;
         }
@@ -136,7 +138,7 @@
         padding: 0 1rem;
         height: 3rem;
         text-align: center;
-        letter-spacing: 0.2rem;
+        letter-spacing: 0.24rem;
     }
     .phone-number {
         margin-bottom: 0;

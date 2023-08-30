@@ -115,6 +115,8 @@
         border-radius: 0.7rem;
         color: white;
         padding: 0 1rem;
+        text-align: center;
+        letter-spacing: 0.3rem;
     }
     section:focus-within label span {
         color: rgba(255, 255, 255, 1);

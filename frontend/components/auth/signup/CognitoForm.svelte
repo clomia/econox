@@ -103,7 +103,8 @@
         border: solid thin white;
         border-radius: 0.7rem;
         color: white;
-        padding-left: 1rem;
+        text-align: center;
+        letter-spacing: 0.14rem;
     }
     .password-input {
         letter-spacing: 0.6rem;

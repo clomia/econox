@@ -28,26 +28,6 @@
     <div class="title">{$text.selectMembership}</div>
     <div class="subtitle">{$text.selectMembershipSubtitle}</div>
 
-    <div class="currency">
-        <div class="currency__toggle" style={currency === "USD" ? "left:0" : "left:50%"} />
-        <button
-            class="currency__text"
-            on:click={() => (currency = "USD")}
-            style="{currency === 'USD' ? 'color: white' : ''};"
-        >
-            {$text.dollarPlan}
-        </button>
-        <button
-            class="currency__text"
-            on:click={() => (currency = "KRW")}
-            style="{currency === 'KRW' ? 'color: white' : ''};"
-        >
-            {$text.wonPlan}
-        </button>
-    </div>
-
-    <div class="additional">{currency === "USD" ? $text.dollarPlanLimit : $text.wonPlanLimit}</div>
-
     <button class="basic" on:click={submit("basic")}>
         <div class="basic__title">{$text.basicPlan}</div>
         <div class="basic__price">
@@ -83,44 +63,6 @@
         text-align: center;
         padding: 0 1rem;
         margin-bottom: 2rem;
-    }
-
-    .currency {
-        position: relative;
-        display: flex;
-        justify-content: space-around;
-        height: 2.4rem;
-        width: 100%;
-        border: thin solid white;
-        border-radius: 2rem;
-    }
-    .currency__toggle {
-        position: absolute;
-        top: 0rem;
-        width: 50%;
-        /* 미세한 틀어짐이 있어서 height가 currency보다 약간 작아야 한다.*/
-        height: 2.3rem;
-        border: thin solid white;
-        border-radius: 2rem;
-        transition: left 200ms;
-    }
-    .currency__text {
-        display: flex;
-        align-items: center;
-        color: rgba(255, 255, 255, 0.4);
-        height: 100%;
-        padding: 0 1rem;
-        transition: color ease-out 100ms;
-    }
-    .currency__text:hover {
-        color: white;
-        cursor: pointer;
-    }
-    .additional {
-        margin: 1.2rem 0;
-        font-size: 0.9rem;
-        text-align: center;
-        color: rgba(255, 255, 255, 0.7);
     }
     .basic,
     .professional {

@@ -5,7 +5,6 @@ from pathlib import PosixPath
 
 import boto3
 from fastapi import Body, HTTPException
-from fastapi.responses import Response
 
 from backend.http import Router
 from backend.system import db_exec_query, run_async
@@ -102,7 +101,9 @@ async def create_phone_confirmation(phone=Body(..., embed=True)):
 
 
 @router.public.post("/auth/phone/confirm")
-async def phone_confirmation(phone: str = Body(...), confirm_code: str = Body(...)):
+async def phone_confirmation(
+    phone: str = Body(..., min_length=1), confirm_code: str = Body(...)
+):
     target_path = PHONE_CONFIRM_CODE_PATH / phone
     if not target_path.exists():  # 코드 만료
         raise HTTPException(

@@ -130,16 +130,15 @@ async def signup(item: SignupInfo):
 
 @router.public.get("/user/country")
 async def get_user_country(request: Request):
-    handler = ipinfo.getHandlerAsync(SECRETS["IPINFO_API_KEY"])
+    header = {k.casefold(): v for k, v in request.headers.items()}
+    # AWS ELB는 헤더의 x-forwarded-for에 원본 ip를 넣어준다.
+    ip = header.get("x-forwarded-for", request.client.host)
     try:
-        client_info = await handler.getDetails(request.client.host)
+        handler = ipinfo.getHandlerAsync(SECRETS["IPINFO_API_KEY"])
+        client_info = await handler.getDetails(ip)
         return {
             "country": client_info.country,
             "timezone": client_info.timezone,
-            "__host": request.client.host,
-            "__port": request.client.port,
-            "__headers": request.headers,
-            "__body": await request.body(),
         }
     except AttributeError:  # if host is localhost
         default = {"country": "KR", "timezone": "Asia/Seoul"}

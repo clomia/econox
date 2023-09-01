@@ -153,6 +153,8 @@ async def cognito_confirm_sign_up(
 
 @router.public.post("/auth/reset-password")
 async def send_password_reset_code(email: str = Body(..., embed=True)):
+    if not await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
+        raise HTTPException(status_code=404, detail="user does not exist")
     try:
         await run_async(
             cognito.forgot_password,
@@ -169,6 +171,8 @@ async def send_password_reset_code(email: str = Body(..., embed=True)):
 async def password_reset(
     email: str = Body(...), new_password: str = Body(...), confirm_code: str = Body(...)
 ):
+    if not await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
+        raise HTTPException(status_code=404, detail="user does not exist")
     try:
         await run_async(
             cognito.confirm_forgot_password,

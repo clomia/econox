@@ -5,7 +5,7 @@ from calendar import monthrange
 import boto3
 import ipinfo
 import psycopg
-from pydantic import BaseModel
+from pydantic import BaseModel, constr
 from fastapi import HTTPException, Request, Body
 
 from backend.http import Router
@@ -17,7 +17,12 @@ cognito = boto3.client("cognito-idp")
 
 
 @router.public.post("/user/cognito")
-async def create_cognito_user(email: str = Body(...), password: str = Body(...)):
+async def create_cognito_user(
+    email: str = Body(..., min_length=1),
+    password: str = Body(..., min_length=1),
+):
+    if await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
+        raise HTTPException(status_code=409, detail="Email is already in used")
     try:
         result = await run_async(
             cognito.sign_up,
@@ -27,8 +32,6 @@ async def create_cognito_user(email: str = Body(...), password: str = Body(...))
             UserAttributes=[{"Name": "email", "Value": email}],
         )
     except cognito.exceptions.UsernameExistsException:
-        if await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
-            raise HTTPException(status_code=409, detail="Email is already in used")
         # cognito에 유저가 생성되었지만 회원가입이 완료되지 않은 상태이므로 cognito 유저 삭제 후 재시도
         await run_async(
             cognito.admin_delete_user,
@@ -75,17 +78,17 @@ async def get_user_country(request: Request):
 
 
 class TosspaymentsBillingInfo(BaseModel):
-    key: str  # billing key
+    key: constr(min_length=1)  # billing key
 
 
 class PaypalBillingInfo(BaseModel):
-    token: str
-    subscription: str  # subscription id
+    token: constr(min_length=1)
+    subscription: constr(min_length=1)  # subscription id
 
 
 class SignupInfo(BaseModel):
-    email: str
-    phone: str
+    email: constr(min_length=1)
+    phone: constr(min_length=1)
     membership: Literal["basic", "professional"]
     currency: Literal["KRW", "USD"]
     # 첫 회원가입이 아닌 경우 둘 중 하나는 있어야 함
@@ -155,7 +158,8 @@ async def signup(item: SignupInfo):
 
 @router.private.patch("/user/name")
 async def change_user_name(
-    new_name: str = Body(..., embed=True), user=router.private.user
+    new_name: str = Body(..., min_length=1, embed=True),
+    user=router.private.auth,
 ):
     await db_exec_query(f"UPDATE users SET name='{new_name}' WHERE id='{user['id']}'")
     return {"message": "Changed successfully"}

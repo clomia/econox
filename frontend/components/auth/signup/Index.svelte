@@ -21,5 +21,5 @@
     const currentStep = state.auth.signup.step;
 </script>
 
-<PhoneConfirmForm />
+<EmailConfirmForm />
 <!-- <svelte:component this={componentStep[$currentStep]} on:complete={() => currentStep.set($currentStep + 1)} /> -->

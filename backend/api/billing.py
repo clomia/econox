@@ -2,7 +2,7 @@ import base64
 
 import httpx
 from fastapi import HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, constr
 
 from backend.http import Router
 from backend.system import SECRETS
@@ -11,11 +11,11 @@ router = Router("billing")
 
 
 class CreditCard(BaseModel):
-    user_id: str
-    card_number: str
-    expiration_year: str
-    expiration_month: str
-    owner_id: str
+    user_id: constr(min_length=1)
+    card_number: constr(min_length=1)
+    expiration_year: constr(min_length=1)
+    expiration_month: constr(min_length=1)
+    owner_id: constr(min_length=1)
 
 
 @router.public.post("/billing/tosspayments")

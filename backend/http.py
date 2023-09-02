@@ -92,7 +92,7 @@ class Router:
         self.private = APIRouter(
             prefix="/api", tags=[tag], dependencies=[Depends(self.auth)]
         )
-        self.private.user = Depends(self.auth)
+        self.private.auth = Depends(self.auth)
 
 
 class FmpAPI:

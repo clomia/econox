@@ -18,18 +18,26 @@
     const signup = async (event: SubmitEvent) => {
         message = "";
         const form = event.target as HTMLFormElement;
-        const email = form.email.value;
-        const password = form.password.value;
-        const retypePassword = form.retypePassword.value;
+        const email = form.email.value as string;
+        const password = form.password.value as string;
+        const retypePassword = form.retypePassword.value as string;
         if (!email || !password) {
             message = $text.missingInput;
             return;
         }
+
         if (password !== retypePassword) {
             message = $text.passwordMismatch;
             return;
-        } else if (password.length < 6) {
+        }
+
+        if (password.length < 6) {
             message = $text.passwordLengthWarning;
+            return;
+        }
+
+        if (!email.includes("@") || !email.includes(".")) {
+            message = $text.emailFormatError;
             return;
         }
         try {
@@ -82,9 +90,10 @@
         flex-direction: column;
         align-items: center;
         width: 100%;
-        height: 21rem;
+        height: 23rem;
         margin-top: 2.5rem;
         color: white;
+        text-align: center;
     }
     section {
         width: 24.5rem;

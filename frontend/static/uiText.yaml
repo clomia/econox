@@ -178,3 +178,6 @@ failureSignup402:
 failureSignup409:
   en: "This is not a normal signup request"
   ko: "정상적인 회원가입 요청이 아닙니다"
+emailFormatError:
+  en: "The email format is incorrect."
+  ko: "이메일 형식이 올바르지 않습니다."

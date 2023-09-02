@@ -15,9 +15,12 @@ cognito = boto3.client("cognito-idp")
 
 
 @router.public.post("/auth/user")
-async def login(email: str = Body(...), password: str = Body(...)):
+async def login(
+    email: str = Body(..., min_length=1),
+    password: str = Body(..., min_length=1),
+):
     if not await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
-        raise HTTPException(status_code=404, detail="user does not exist")
+        raise HTTPException(status_code=404, detail="User does not exist")
     # ========== 이전에 발급된 모든 refresh 토큰 무효화 요청 ==========
     try:
         await run_async(
@@ -59,7 +62,9 @@ async def login(email: str = Body(...), password: str = Body(...)):
 
 
 @router.public.post("/auth/cognito-refresh-token")
-async def cognito_token_refresh(cognito_refresh_token: str = Body(..., embed=True)):
+async def cognito_token_refresh(
+    cognito_refresh_token: str = Body(..., min_length=1, embed=True)
+):
     try:
         result = await run_async(
             cognito.initiate_auth,
@@ -80,7 +85,7 @@ PHONE_CONFIRM_CODE_PATH.mkdir(parents=True, exist_ok=True)
 
 
 @router.public.post("/auth/phone")
-async def create_phone_confirmation(phone=Body(..., embed=True)):
+async def create_phone_confirmation(phone: str = Body(..., min_length=1, embed=True)):
     target_path: PosixPath = PHONE_CONFIRM_CODE_PATH / phone
     issued_code = f"{secrets.randbelow(10**6):06}"
     target_path.write_text(issued_code)
@@ -102,7 +107,8 @@ async def create_phone_confirmation(phone=Body(..., embed=True)):
 
 @router.public.post("/auth/phone/confirm")
 async def phone_confirmation(
-    phone: str = Body(..., min_length=1), confirm_code: str = Body(...)
+    phone: str = Body(..., min_length=1),
+    confirm_code: str = Body(..., min_length=1),
 ):
     target_path = PHONE_CONFIRM_CODE_PATH / phone
     if not target_path.exists():  # 코드 만료
@@ -116,7 +122,7 @@ async def phone_confirmation(
 
 
 @router.public.post("/auth/email")
-async def cognito_resend_confirm_code(email: str = Body(..., embed=True)):
+async def cognito_resend_confirm_code(email: str = Body(..., min_length=1, embed=True)):
     try:
         await run_async(
             cognito.resend_confirmation_code,
@@ -131,7 +137,8 @@ async def cognito_resend_confirm_code(email: str = Body(..., embed=True)):
 
 @router.public.post("/auth/email/confirm")
 async def cognito_confirm_sign_up(
-    email: str = Body(...), confirm_code: str = Body(...)
+    email: str = Body(..., min_length=1),
+    confirm_code: str = Body(..., min_length=1),
 ):
     try:
         await run_async(
@@ -152,7 +159,7 @@ async def cognito_confirm_sign_up(
 
 
 @router.public.post("/auth/reset-password")
-async def send_password_reset_code(email: str = Body(..., embed=True)):
+async def send_password_reset_code(email: str = Body(..., min_length=1, embed=True)):
     if not await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
         raise HTTPException(status_code=404, detail="user does not exist")
     try:
@@ -169,7 +176,9 @@ async def send_password_reset_code(email: str = Body(..., embed=True)):
 
 @router.public.post("/auth/reset-password/confirm")
 async def password_reset(
-    email: str = Body(...), new_password: str = Body(...), confirm_code: str = Body(...)
+    email: str = Body(..., min_length=1),
+    new_password: str = Body(..., min_length=1),
+    confirm_code: str = Body(..., min_length=1),
 ):
     if not await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
         raise HTTPException(status_code=404, detail="user does not exist")
@@ -188,7 +197,10 @@ async def password_reset(
 
 
 @router.public.post("/auth/is-reregistration")
-async def check_is_reregistration(email: str = Body(...), phone: str = Body(...)):
+async def check_is_reregistration(
+    email: str = Body(..., min_length=1),
+    phone: str = Body(..., min_length=1),
+):
     scan_history = f"""
         SELECT 1 FROM signup_history 
         WHERE email='{email}' or phone='{phone}'

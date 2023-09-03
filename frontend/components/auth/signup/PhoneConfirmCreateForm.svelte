@@ -39,8 +39,7 @@
         const callingCode = form.callingCode.value;
         const inputPhoneNumber = form.phone.value;
         const phone = `+${callingCode}${inputPhoneNumber.replace(/-|\s/g, "")}`; // "-" & 공백 제거}
-        console.log(phone);
-        if (!phone) {
+        if (!inputPhoneNumber) {
             message = $text.noPhoneNumber;
             return;
         }
@@ -52,8 +51,8 @@
         try {
             response = request.public.post("/auth/phone", { phone });
             await response;
-            inputResult.set({ ...$inputResult, phone });
-            inputPhoneNumberStore.set(inputPhoneNumber);
+            $inputResult = { ...$inputResult, phone };
+            $inputPhoneNumberStore = inputPhoneNumber;
             dispatch("complete");
         } catch (error) {
             response = null;

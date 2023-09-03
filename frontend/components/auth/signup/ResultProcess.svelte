@@ -2,7 +2,8 @@
     import { onMount } from "svelte";
     import * as state from "../../../modules/state";
     import { request } from "../../../modules/api";
-    import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
+    import LoadingTextAnimation from "../../../assets/LoadingTextAnimation.svelte";
+    import WellcomeAnimation from "../../../assets/WellcomeAnimation.svelte";
     import { login } from "../../../modules/functions";
 
     const inputResult = state.auth.signup.inputResult;
@@ -48,10 +49,11 @@
     {#if response}
         {#await response}
             <section class="loading">
-                <LoadingAnimation scale={2.3} />
+                <LoadingTextAnimation />
             </section>
         {:then data}
             <section class="sucess">
+                <div class="sucess__wellcome"><WellcomeAnimation /></div>
                 <div class="sucess__title">{$text.sucessSignup}</div>
                 <div class="sucess__message">{sucessMessage(data)}</div>
                 <button on:click={loginProcess}>{$text.ok}</button>
@@ -68,22 +70,23 @@
 <style>
     main {
         display: flex;
-        position: relative;
         flex-direction: column;
         align-items: center;
-        height: 15rem;
         color: white;
     }
     .loading {
         margin-top: 3.5rem;
+        height: 15rem;
     }
     .failure {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        height: 100%;
-        padding-bottom: 3.5rem;
+        justify-content: space-between;
+        height: 15rem;
+    }
+    .failure__message {
+        margin-top: 5rem;
     }
     .failure__message,
     .sucess__title {
@@ -93,19 +96,42 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        height: 100%;
+        width: 100%;
     }
+    .sucess__wellcome {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 25rem;
+        width: 100%;
+    }
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+    .sucess__title,
     .sucess__message {
-        margin-top: 2.5rem;
-        margin-bottom: 1rem;
         width: 88%;
         text-align: center;
         color: rgba(255, 255, 255, 0.7);
+        opacity: 0;
+        animation: fadeIn ease-in 1;
+        animation-fill-mode: forwards;
+        animation-duration: 1s;
+        animation-delay: 5.7s; /* 애니메이션 시작을 6초 뒤로 미룸 */
+    }
+    .sucess__title {
+        padding-bottom: 1rem;
+    }
+    .sucess__message {
+        padding-bottom: 2rem;
     }
     button {
-        position: absolute;
-        bottom: 0;
         padding: 0.5rem 2rem;
         border: thin solid white;
         border-radius: 1rem;

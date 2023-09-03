@@ -129,8 +129,8 @@ async def cognito_resend_confirm_code(email: str = Body(..., min_length=1, embed
             ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
             Username=email,
         )
-    except cognito.exceptions.ClientError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except cognito.exceptions.LimitExceededException:
+        raise HTTPException(status_code=429, detail="Too many requests")
     else:
         return {"message": "Code transfer requested"}
 
@@ -168,8 +168,9 @@ async def send_password_reset_code(email: str = Body(..., min_length=1, embed=Tr
             ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
             Username=email,
         )
-    except cognito.exceptions.ClientError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise e
+        # raise HTTPException(status_code=429, detail="Too many requests")
     else:
         return {"message": "Code transfer requested"}
 
@@ -190,8 +191,8 @@ async def password_reset(
             ConfirmationCode=confirm_code,
             Password=new_password,
         )
-    except cognito.exceptions.ClientError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    except cognito.exceptions.LimitExceedException:
+        raise HTTPException(status_code=429, detail="Too many requests")
     else:
         return {"message": "Password reset successful"}
 

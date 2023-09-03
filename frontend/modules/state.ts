@@ -11,8 +11,8 @@ export const auth = {
     toggle: writable({ login: true, signup: false }),
     signup: {
         step: writable(0),
-        emailConfirmTimeLimit: writable(""),
-        phoneConfirmTimeLimit: writable(""),
+        emailConfirmTimeLimit: writable(-1),
+        phoneConfirmTimeLimit: writable(-1),
         inputPhoneNumber: writable(""),
         inputResult: writable({
             cognitoId: "",

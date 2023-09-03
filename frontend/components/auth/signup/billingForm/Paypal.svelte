@@ -1,6 +1,7 @@
 <script>
     import { onMount, createEventDispatcher } from "svelte";
     import * as state from "../../../../modules/state";
+    import LoadingAnimation from "../../../../assets/LoadingAnimation.svelte";
 
     const dispatch = createEventDispatcher();
     const inputResult = state.auth.signup.inputResult;
@@ -56,7 +57,8 @@
 
 <main>
     <section>
-        <div id="paypal-button" />
+        {#if !isSdkLoaded} <LoadingAnimation /> {/if}
+        <div id="paypal-button" style={!isSdkLoaded ? "display: none;" : ""} />
     </section>
 </main>
 
@@ -68,10 +70,16 @@
     }
     section {
         width: 100%;
-        padding: 3rem;
-        margin-top: 2rem;
+        height: 10rem;
         border-radius: 0.5rem;
         border: thin solid rgba(255, 255, 255, 0.2);
         background-color: rgba(255, 255, 255, 0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    #paypal-button {
+        margin-top: 1.5rem;
     }
 </style>

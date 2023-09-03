@@ -7,11 +7,6 @@
     const toggleState = state.auth.toggle;
 </script>
 
-<!-- 
-    로그인/회원가입 둘 중 뭘 하는지 여부를 나타내는 컴포넌트는 여기에 쓰고 
-    단계별로 필요한 컴포넌트는 순수함수 파이프라인 아키텍쳐로 쓰게
-    인자 받을 수 있는 별도의 컴포넌로 만들어서 쓰자
--->
 <div class="ground">
     <div class="ground__window">
         <LoginSignupToggle />

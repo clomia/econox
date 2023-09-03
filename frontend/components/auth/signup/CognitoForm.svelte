@@ -43,7 +43,7 @@
         try {
             response = request.public.post("/user/cognito", { email, password });
             const cognitoId = (await response).data.cognito_id;
-            inputResult.set({ ...$inputResult, cognitoId, email, password });
+            $inputResult = { ...$inputResult, cognitoId, email, password };
             dispatch("complete");
         } catch (error) {
             response = null;
@@ -93,7 +93,6 @@
         height: 23rem;
         margin-top: 2.5rem;
         color: white;
-        text-align: center;
     }
     section {
         width: 24.5rem;

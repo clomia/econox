@@ -143,13 +143,13 @@ enterPhoneConfirmationCode:
   ko: "문자 메세지로 전송된 인증코드를 입력해주세요"
 missingInput:
   en: "There are missing values."
-  ko: "값이 누락되었습니다. 모든 값을 입력해주세요."
+  ko: "누락된 값이 있습니다."
 invalidEmailInput:
   en: "Email verification cannot proceed. Please make sure this is the correct email"
   ko: "이메일 인증을 진행할 수 없습니다. 올바른 이메일을 입력해주세요"
 tooManyRequests:
-  en: "Too many requests. Please try again in a moment."
-  ko: "요청이 너무 많습니다. 잠시 후에 다시 시도해주세요."
+  en: "Too many requests detected. Please try again later."
+  ko: "너무 많은 요청이 감지되었습니다. 나중에 다시 시도하세요."
 codeSended:
   en: "Verification code sent"
   ko: "인증 코드가 전송되었습니다"
@@ -160,8 +160,8 @@ reregistrationFalse:
   en: "You are eligible for first-time membership benefits."
   ko: "최초 회원가입 혜택 대상자입니다."
 sucessSignup:
-  en: "Sign up is complete."
-  ko: "회원가입이 완료되었습니다!"
+  en: "Sign up is complete"
+  ko: "회원가입이 완료되었습니다"
 benefitsResultSummry:
   en: >
     As a first-time member sign-up benefit, free membership is provided for the first month without registering a payment method!
@@ -181,3 +181,6 @@ failureSignup409:
 emailFormatError:
   en: "The email format is incorrect."
   ko: "이메일 형식이 올바르지 않습니다."
+resendCode:
+  en: "Resend code"
+  ko: "코드 재전송"

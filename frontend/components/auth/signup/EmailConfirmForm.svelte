@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { createEventDispatcher } from "svelte";
-
+    import { createEventDispatcher, onMount } from "svelte";
     import * as state from "../../../modules/state";
     import { request } from "../../../modules/api";
+    import { timeToString } from "../../../modules/functions";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
 
     import type { AxiosResponse } from "axios";
@@ -15,21 +15,15 @@
 
     let response: null | Promise<AxiosResponse> = null; // 요청 전
     let message = $text.enterEmailConfirmationCode;
-    let expired = false;
-    const countdown = async (totalSeconds: number) => {
-        expired = false;
-        while (totalSeconds >= 0) {
-            const minutes = Math.floor(totalSeconds / 60);
-            const seconds = (totalSeconds % 60).toString().padStart(2, "0");
-            emailConfirmTimeLimit.update(() => `${minutes}:${seconds}`);
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            totalSeconds--;
-        }
-        emailConfirmTimeLimit.update(() => $text.confirmCodeExpiration);
-        expired = true;
-        message = "";
-    };
-    countdown(180); // Cognito 이메일 인증코드 유효기간 3분
+
+    if ($emailConfirmTimeLimit === -1) {
+        $emailConfirmTimeLimit = 180;
+    }
+
+    onMount(() => setInterval(() => $emailConfirmTimeLimit > 0 && $emailConfirmTimeLimit--, 1000));
+
+    $: placeHolder =
+        $emailConfirmTimeLimit > 0 ? timeToString($emailConfirmTimeLimit) : $text.confirmCodeExpiration;
 
     const codeConfirmation = async (event: SubmitEvent) => {
         message = "";
@@ -49,21 +43,24 @@
         } catch (error) {
             response = null;
             const statusMessage = {
-                409: $text.confirmCodeMismatch, // 인증 코드가 올바르지 않음
-                401: $text.expiredConfirmCode, // 인증 코드가 만료됌
-                429: $text.tooManyRequests, // 요청 너무 많이함
+                409: $text.confirmCodeMismatch,
+                401: $text.expiredConfirmCode,
+                429: $text.tooManyRequests,
             };
             message = statusMessage[error.response?.status] || $text.error;
         }
     };
 
     const resendCode = async () => {
-        response = request.public.post("/auth/email", { email: $inputResult.email });
-        await response;
+        try {
+            response = request.public.post("/auth/email", { email: $inputResult.email });
+            await response;
+            message = $text.codeSended;
+            $emailConfirmTimeLimit = 180;
+        } catch (error) {
+            message = error.response?.status === 429 ? $text.tooManyRequests : $text.error;
+        }
         response = null;
-        message = "인증 코드가 전송되었습니다";
-        expired = false;
-        countdown(180);
     };
 </script>
 
@@ -71,19 +68,18 @@
     <section>
         <label>
             <span>{$inputResult.email}</span>
-            <input type="text" name="code" placeholder={$emailConfirmTimeLimit} autocomplete="off" />
+            <input type="text" name="code" placeholder={placeHolder} autocomplete="off" />
         </label>
     </section>
     {#await response}
         <LoadingAnimation />
     {/await}
-    <div>{message}</div>
     {#if !(response instanceof Promise)}
-        {#if !expired}
+        <div>{message}</div>
+        <div class="buttons">
+            <button type="button" on:click={resendCode}>{$text.resendCode}</button>
             <button type="submit">{$text.next}</button>
-        {:else}
-            <button type="button" on:click={resendCode}>코드 재전송</button>
-        {/if}
+        </div>
     {/if}
 </form>
 
@@ -121,16 +117,22 @@
     section:focus-within label span {
         color: rgba(255, 255, 255, 1);
     }
+    .buttons {
+        width: 100%;
+        padding: 0 1rem;
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+    }
     button {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 15rem;
+        width: 10rem;
         height: 2.5rem;
         border: solid thin white;
-        border-radius: 1rem;
+        border-radius: 0.7rem;
         color: white;
-        margin-top: 1.4rem;
     }
     button:hover {
         cursor: pointer;

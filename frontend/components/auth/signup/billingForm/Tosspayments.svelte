@@ -33,7 +33,7 @@
     };
 
     const ownerIdHandler = (event) => {
-        ownerId = event.target.value.slice(0, cardType === "personal" ? 6 : 10);
+        ownerId = event.target.value.replace(/\D/g, "").slice(0, cardType === "personal" ? 6 : 10);
     };
 
     let response = null;
@@ -122,8 +122,8 @@
     {#await response}
         <LoadingAnimation />
     {/await}
-    <div class="message">{message}</div>
     {#if !(response instanceof Promise)}
+        <div class="message">{message}</div>
         <button class="submit-button" type="submit">Next</button>
     {/if}
 </form>
@@ -135,7 +135,6 @@
         align-items: center;
         width: 100%;
         height: 23rem;
-        margin-top: 2.5rem;
         color: white;
     }
     span {

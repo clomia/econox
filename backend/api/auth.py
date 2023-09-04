@@ -168,9 +168,8 @@ async def send_password_reset_code(email: str = Body(..., min_length=1, embed=Tr
             ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
             Username=email,
         )
-    except Exception as e:
-        raise e
-        # raise HTTPException(status_code=429, detail="Too many requests")
+    except cognito.exceptions.LimitExceededException:
+        raise HTTPException(status_code=429, detail="Too many requests")
     else:
         return {"message": "Code transfer requested"}
 

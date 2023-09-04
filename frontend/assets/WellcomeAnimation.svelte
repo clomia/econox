@@ -553,9 +553,7 @@
         background: #212022;
         z-index: 3;
     }
-    /*============
-dotted circle
-============*/
+    /*============ dotted circle ============*/
     .dotted02 {
         top: 0;
         animation-delay: 4.2s;
@@ -637,7 +635,7 @@ dotted circle
     /*============ white circle ============*/
     .white02 {
         top: -100%;
-        animation-delay: 4.7s;
+        animation-delay: 4s;
     }
     .white01 {
         width: 14.5rem;
@@ -654,7 +652,7 @@ dotted circle
         width: 14.5rem;
         height: 14.5rem;
         transform-origin: left 7.25rem;
-        animation: rotate-circle-right 0.3s linear 4.7s forwards;
+        animation: rotate-circle-right 0s linear 4s forwards;
     }
     .white01::after {
         top: 0;
@@ -662,21 +660,9 @@ dotted circle
         width: 14.5rem;
         height: 14.5rem;
         transform-origin: right 7.25rem;
-        animation: rotate-circle-left 0.3s linear 4.7s forwards;
+        animation: rotate-circle-left 0s linear 4s forwards;
     }
     @keyframes rotate-circle-left {
-        0% {
-            transform: rotate(0deg);
-            background: #212022;
-        }
-        50% {
-            transform: rotate(-180deg);
-            background: #212022;
-        }
-        50.01% {
-            transform: rotate(-360deg);
-            background: #fff;
-        }
         100% {
             transform: rotate(-360deg);
             background: #fff;
@@ -685,7 +671,7 @@ dotted circle
     /*============ gray circle ============*/
     .gray02 {
         top: -200%;
-        animation-delay: 4.8s;
+        animation-delay: 4s;
     }
     .gray01 {
         width: 4rem;
@@ -703,7 +689,7 @@ dotted circle
         height: 4rem;
         background: #fff;
         transform-origin: left 2rem;
-        animation: rotate-circle-right 0.5s linear 4.8s forwards;
+        animation: rotate-circle-right 0s linear 4s forwards;
     }
     .gray01::after {
         top: 0;
@@ -712,21 +698,9 @@ dotted circle
         height: 4rem;
         background: #fff;
         transform-origin: right 2rem;
-        animation: rotate-circle-left03 0.5s linear 4.8s forwards;
+        animation: rotate-circle-left03 0s linear 4s forwards;
     }
     @keyframes rotate-circle-left03 {
-        0% {
-            transform: rotate(0deg);
-            background: #fff;
-        }
-        50% {
-            transform: rotate(-180deg);
-            background: #fff;
-        }
-        50.01% {
-            transform: rotate(-360deg);
-            background: #808184;
-        }
         100% {
             transform: rotate(-360deg);
             background: #808184;
@@ -735,7 +709,7 @@ dotted circle
     /*============ orange circle ============*/
     .orange02 {
         top: -300%;
-        animation-delay: 5.3s;
+        animation-delay: 4s;
     }
     .orange01 {
         width: 13.5rem;
@@ -753,7 +727,7 @@ dotted circle
         height: 13.5rem;
         background: #fff;
         transform-origin: left 6.75rem;
-        animation: rotate-circle-right 0.5s linear 5.3s forwards;
+        animation: rotate-circle-right 0s linear 4s forwards;
     }
     .orange01::after {
         top: 0;
@@ -762,21 +736,9 @@ dotted circle
         height: 13.5rem;
         background: #fff;
         transform-origin: right 6.75rem;
-        animation: rotate-circle-left02 0.5s linear 5.3s forwards;
+        animation: rotate-circle-left02 0s linear 4s forwards;
     }
     @keyframes rotate-circle-left02 {
-        0% {
-            transform: rotate(0deg);
-            background: #fff;
-        }
-        50% {
-            transform: rotate(-180deg);
-            background: #fff;
-        }
-        50.01% {
-            transform: rotate(-360deg);
-            background: #1f3036;
-        }
         100% {
             transform: rotate(-360deg);
             background: #1f3036;
@@ -792,12 +754,6 @@ dotted circle
         }
     }
     @keyframes rotate-circle-right {
-        0% {
-            transform: rotate(0deg);
-        }
-        50% {
-            transform: rotate(0deg);
-        }
         100% {
             transform: rotate(-180deg);
         }
@@ -810,7 +766,7 @@ dotted circle
         transform: translate(-50%, -50%);
         width: 15rem;
         height: 15rem;
-        animation: name 1s cubic-bezier(0.165, 0.84, 0.44, 1) 5.9s forwards;
+        animation: name 1s cubic-bezier(0.165, 0.84, 0.44, 1) 4s forwards;
         opacity: 0;
     }
     .name p {

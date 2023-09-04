@@ -46,7 +46,13 @@
 </script>
 
 <main>
-    {#if response}
+    <section class="sucess">
+        <div class="sucess__wellcome"><WellcomeAnimation /></div>
+        <div class="sucess__title">{$text.sucessSignup}</div>
+        <div class="sucess__message" />
+        <button on:click={loginProcess}>{$text.ok}</button>
+    </section>
+    <!-- {#if response}
         {#await response}
             <section class="loading">
                 <LoadingTextAnimation />
@@ -64,7 +70,7 @@
                 <button on:click={cancelProcess}>{$text.ok}</button>
             </section>
         {/await}
-    {/if}
+    {/if} -->
 </main>
 
 <style>
@@ -118,12 +124,12 @@
     .sucess__message {
         width: 88%;
         text-align: center;
-        color: rgba(255, 255, 255, 0.7);
+        color: rgba(255, 255, 255, 0.9);
         opacity: 0;
         animation: fadeIn ease-in 1;
         animation-fill-mode: forwards;
         animation-duration: 1s;
-        animation-delay: 5.7s; /* 애니메이션 시작을 6초 뒤로 미룸 */
+        animation-delay: 4s;
     }
     .sucess__title {
         padding-bottom: 1rem;

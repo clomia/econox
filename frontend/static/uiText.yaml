@@ -184,3 +184,6 @@ emailFormatError:
 resendCode:
   en: "Resend code"
   ko: "코드 재전송"
+loginTimer:
+  en: "Automatic login countdown:"
+  ko: "자동 로그인까지 남은 시간:"

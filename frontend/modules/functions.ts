@@ -11,13 +11,13 @@ export const logout = async () => {
     window.location.reload()
 }
 
-export const login = async (email: string, password: string) => {
+export const login = async (email: string, password: string, redirect = true) => {
     const response = await request.public.post("/auth/user", { email, password });
     await Promise.all([
         settingObjectStore.put("cognitoToken", response.data["cognito_token"]),
         settingObjectStore.put("cognitoRefreshToken", response.data["cognito_refresh_token"])
     ])
-    window.location.replace(window.location.origin + "/console");
+    if (redirect) { window.location.replace(window.location.origin + "/console") }
 }
 
 const logoutWithAlert = async (message: string) => {

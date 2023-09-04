@@ -120,7 +120,7 @@ async def db_exec_query(query: str) -> list:
             return db_exec_query(query)
         except Exception as e:
             conn.rollback()
-            log.critical(f"[{e}] DB 쿼리 실행 오류가 발생하여 롤백하였습니다.\nQuery: {query}")
+            log.critical(f"\n{e}\nDB 쿼리 실행 오류가 발생하여 롤백하였습니다.\nQuery: {query}")
             raise e
         finally:
             cur.close()

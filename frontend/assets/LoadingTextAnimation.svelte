@@ -40,37 +40,37 @@
 
     .let1 {
         animation: drop 1.2s ease-in-out infinite;
-        animation-delay: 1.2s;
+        animation-delay: 0.2s;
     }
 
     .let2 {
         animation: drop 1.2s ease-in-out infinite;
-        animation-delay: 1.3s;
+        animation-delay: 0.3s;
     }
 
     .let3 {
         animation: drop 1.2s ease-in-out infinite;
-        animation-delay: 1.4s;
+        animation-delay: 0.4s;
     }
 
     .let4 {
         animation: drop 1.2s ease-in-out infinite;
-        animation-delay: 1.5s;
+        animation-delay: 0.5s;
     }
 
     .let5 {
         animation: drop 1.2s ease-in-out infinite;
-        animation-delay: 1.6s;
+        animation-delay: 0.6s;
     }
 
     .let6 {
         animation: drop 1.2s ease-in-out infinite;
-        animation-delay: 1.7s;
+        animation-delay: 0.7s;
     }
 
     .let7 {
         animation: drop 1.2s ease-in-out infinite;
-        animation-delay: 1.8s;
+        animation-delay: 0.8s;
     }
 
     @keyframes drop {

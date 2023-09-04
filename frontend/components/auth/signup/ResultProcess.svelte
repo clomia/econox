@@ -10,6 +10,10 @@
     const text = state.uiText.text;
 
     let response;
+    let loginPromise;
+    let timeout = 30;
+
+    const sucessRedirect = () => window.location.replace(window.location.origin + "/console");
     onMount(async () => {
         response = request.public.post("/user", {
             cognito_id: $inputResult.cognitoId,
@@ -21,6 +25,13 @@
             paypal: $inputResult.paypal,
         });
         await response;
+        loginPromise = login($inputResult.email, $inputResult.password, false);
+        setInterval(() => {
+            timeout -= 1;
+            if (timeout <= 0) {
+                sucessRedirect();
+            }
+        }, 1000);
     });
 
     const sucessMessage = (response) => {
@@ -36,23 +47,13 @@
         return statusMessages[error.response?.status] || $text.error;
     };
 
-    const loginProcess = async () => {
-        login($inputResult.email, $inputResult.password);
-    };
-
     const cancelProcess = async () => {
         window.location.replace(window.location.origin);
     };
 </script>
 
 <main>
-    <section class="sucess">
-        <div class="sucess__wellcome"><WellcomeAnimation /></div>
-        <div class="sucess__title">{$text.sucessSignup}</div>
-        <div class="sucess__message" />
-        <button on:click={loginProcess}>{$text.ok}</button>
-    </section>
-    <!-- {#if response}
+    {#if response}
         {#await response}
             <section class="loading">
                 <LoadingTextAnimation />
@@ -62,7 +63,10 @@
                 <div class="sucess__wellcome"><WellcomeAnimation /></div>
                 <div class="sucess__title">{$text.sucessSignup}</div>
                 <div class="sucess__message">{sucessMessage(data)}</div>
-                <button on:click={loginProcess}>{$text.ok}</button>
+                <div class="sucess_login-timer">{$text.loginTimer} {timeout}</div>
+                {#await loginPromise then}
+                    <button on:click={sucessRedirect}>{$text.login}</button>
+                {/await}
             </section>
         {:catch error}
             <section class="failure">
@@ -70,7 +74,7 @@
                 <button on:click={cancelProcess}>{$text.ok}</button>
             </section>
         {/await}
-    {/if} -->
+    {/if}
 </main>
 
 <style>
@@ -109,7 +113,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 25rem;
+        height: 22rem;
         width: 100%;
     }
     @keyframes fadeIn {
@@ -135,7 +139,16 @@
         padding-bottom: 1rem;
     }
     .sucess__message {
+        padding-bottom: 1rem;
+    }
+    .sucess_login-timer {
         padding-bottom: 2rem;
+        color: rgba(255, 255, 255, 0.7);
+        opacity: 0;
+        animation: fadeIn ease-in 1;
+        animation-fill-mode: forwards;
+        animation-duration: 1s;
+        animation-delay: 4.1s;
     }
     button {
         padding: 0.5rem 2rem;

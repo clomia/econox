@@ -21,4 +21,26 @@
     const currentStep = state.auth.signup.step;
 </script>
 
-<svelte:component this={componentStep[$currentStep]} on:complete={() => currentStep.set($currentStep + 1)} />
+<div class="index">
+    <svelte:component
+        this={componentStep[$currentStep]}
+        on:complete={() => currentStep.set($currentStep + 1)}
+    />
+</div>
+<div class="membrane" />
+
+<style>
+    .index {
+        position: relative;
+        z-index: 2;
+    }
+    .membrane {
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        opacity: 0;
+    }
+</style>

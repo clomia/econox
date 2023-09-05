@@ -4,7 +4,7 @@
     import { request } from "../../../modules/api";
     import LoadingTextAnimation from "../../../assets/LoadingTextAnimation.svelte";
     import WellcomeAnimation from "../../../assets/WellcomeAnimation.svelte";
-    import { login } from "../../../modules/functions";
+    import { login, format } from "../../../modules/functions";
 
     const inputResult = state.auth.signup.inputResult;
     const text = state.uiText.text;
@@ -63,7 +63,7 @@
                 <div class="sucess__wellcome"><WellcomeAnimation /></div>
                 <div class="sucess__title">{$text.sucessSignup}</div>
                 <div class="sucess__message">{sucessMessage(data)}</div>
-                <div class="sucess_login-timer">{$text.loginTimer} {timeout}</div>
+                <div class="sucess_login-timer">{format($text.loginTimer, { time: timeout })}</div>
                 {#await loginPromise then}
                     <button on:click={sucessRedirect}>{$text.login}</button>
                 {/await}
@@ -100,7 +100,7 @@
     }
     .failure__message,
     .sucess__title {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
     }
     .sucess {
         display: flex;

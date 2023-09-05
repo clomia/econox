@@ -202,9 +202,9 @@ async def check_is_reregistration(
     phone: str = Body(..., min_length=1),
 ):
     scan_history = f"""
-        SELECT 1 FROM signup_history 
+        SELECT 1 FROM signup_histories 
         WHERE email='{email}' or phone='{phone}'
         LIMIT 1;
     """
-    signup_history = await db_exec_query(scan_history)
-    return {"reregistration": bool(signup_history)}
+    signup_histories = await db_exec_query(scan_history)
+    return {"reregistration": bool(signup_histories)}

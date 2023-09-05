@@ -13,22 +13,6 @@
     const inputResult = state.auth.signup.inputResult;
     const inputPhoneNumberStore = state.auth.signup.inputPhoneNumber;
 
-    const countries = {};
-    getCodes().forEach((code) => {
-        try {
-            const name = getName(code);
-            const callingCode = getCountryCallingCode(code as CountryCode);
-            countries[name] = callingCode;
-        } catch (error) {
-            console.info(`No calling code for country: ${code}`);
-        }
-    });
-
-    const getCurrentCountry = async () => {
-        const response = await request.public.get("/user/country");
-        return getCountryCallingCode(response.data.country);
-    };
-
     const dispatch = createEventDispatcher();
 
     let response = null;
@@ -36,7 +20,7 @@
     const phoneConfirm = async (event: SubmitEvent) => {
         message = "";
         const form = event.target as HTMLFormElement;
-        const callingCode = form.callingCode.value;
+        const callingCode = getCountryCallingCode(form.countryCode.value as CountryCode);
         const inputPhoneNumber = form.phone.value;
         const phone = `+${callingCode}${inputPhoneNumber.replace(/-|\s/g, "")}`; // "-" & 공백 제거}
         if (!inputPhoneNumber) {
@@ -64,12 +48,12 @@
 <div class="description">{$text.phoneConfirmDescription}</div>
 
 <form on:submit|preventDefault={phoneConfirm}>
-    {#await getCurrentCountry() then callingCode}
+    {#await request.public.get("/user/country") then response}
         <label>
             <span>{$text.country}</span>
-            <select name="callingCode" value={callingCode}>
-                {#each Object.entries(countries) as [name, callingCode]}
-                    <option value={callingCode}>{name}</option>
+            <select name="countryCode" value={response.data.country}>
+                {#each getCodes() as country}
+                    <option value={country}>{getName(country)}</option>
                 {/each}
             </select>
         </label>

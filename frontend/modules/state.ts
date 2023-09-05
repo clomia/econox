@@ -21,9 +21,10 @@ export const auth = {
             membership: "",
             currency: "",
             tosspayments: null, // or { billingKey }
-            paypal: null, // or { subscriptionId, facilitatorAccessToken }
+            paypal: null, // or { orderID, facilitatorAccessToken, subscriptionId }
             phone: "",
             reregistration: false,
         }) // DB 유저 생성시 필요한 정보들
     }
 }
+

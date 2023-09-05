@@ -1,3 +1,4 @@
+from uuid import uuid4
 from typing import Literal
 from datetime import datetime
 from calendar import monthrange
@@ -8,8 +9,8 @@ import psycopg
 from pydantic import BaseModel, constr
 from fastapi import HTTPException, Request, Body
 
-from backend.http import Router
-from backend.system import SECRETS, log, db_exec_query, run_async
+from backend.http import Router, TosspaymentsAPI
+from backend.system import SECRETS, db_exec_query, run_async, log, membership
 
 
 router = Router("user")
@@ -67,6 +68,7 @@ async def get_user_country(request: Request):
         }
     except AttributeError:  # if host is localhost
         default = {"country": "KR", "timezone": "Asia/Seoul"}
+        default = {"country": "US", "timezone": "America/Chicago"}
         log.warning(
             "GET /user/country"
             f"\n국가 정보 취득에 실패했습니다. 기본값을 응답합니다."
@@ -82,6 +84,7 @@ class TosspaymentsBillingInfo(BaseModel):
 
 
 class PaypalBillingInfo(BaseModel):
+    order: constr(min_length=1)  # order id
     token: constr(min_length=1)
     subscription: constr(min_length=1)  # subscription id
 
@@ -98,6 +101,7 @@ class SignupInfo(BaseModel):
 
 @router.public.post("/user")
 async def signup(item: SignupInfo):
+    insert_queries = []
     try:
         cognito_user = await run_async(
             cognito.admin_get_user,
@@ -110,21 +114,13 @@ async def signup(item: SignupInfo):
     if cognito_user["UserStatus"] != "CONFIRMED":
         raise HTTPException(status_code=401, detail="Cognito user is not confirmed")
 
-    scan_history = f"""
-        SELECT 1 FROM signup_history 
-        WHERE email='{item.email}' or phone='{item.phone}'
-        LIMIT 1;
-    """  # 회원가입 내역이 있다면 결제정보 필요함
-    signup_history = await db_exec_query(scan_history)
-    if signup_history and not (item.tosspayments or item.paypal):
-        raise HTTPException(status_code=402, detail="Billing information required")
-
     now = datetime.now()  # 다음달 동일 일시를 구하되 마지막 일보다 크면 마지막 일로 대체
     year, month = (now.year + 1, 1) if now.month == 12 else (now.year, now.month + 1)
     day = min(now.day, monthrange(year, month)[1])
     membership_expiration = datetime(year, month, day, now.hour, now.minute, now.second)
 
-    insert_user = f"""
+    insert_queries.append(
+        f"""
     INSERT INTO users (id, email, name, phone, membership, membership_expiration, 
         currency, tosspayments_billing_key, paypal_token, paypal_subscription_id,
         billing_date, billing_time) 
@@ -143,17 +139,98 @@ async def signup(item: SignupInfo):
         '{now.strftime('%H:%M:%S')}'
     );
     """
+    )
+    insert_queries.append(
+        f"""
+    INSERT INTO signup_histories (email, phone) 
+    VALUES ('{item.email}', '{item.phone}');
+    """
+    )
+
+    scan_history = f"""
+        SELECT 1 FROM signup_histories 
+        WHERE email='{item.email}' or phone='{item.phone}'
+        LIMIT 1;
+    """  # 회원가입 내역이 있다면 결제정보 필요함
+    signup_histories = await db_exec_query(scan_history)
+    if signup_histories:  # 대금 결제 수행
+        if item.currency == "KRW" and item.tosspayments:
+            resp = await TosspaymentsAPI(f"/v1/billing/{item.tosspayments.key}").post(
+                {
+                    "customerKey": cognito_user_id,
+                    "orderId": str(uuid4()),
+                    "orderName": f"ECONOX {item.membership.capitalize()} Membership",
+                    "amount": membership[item.membership][item.currency],
+                    "customerEmail": item.email,
+                }
+            )
+            insert_queries.append(
+                f"""
+            INSERT INTO tosspayments_billings (user_id, order_id, payment_key, 
+                order_name, total_amount, supply_price, vat, card_issuer, 
+                card_acquirer, card_number_masked, card_approve_number, card_type, 
+                card_owner_type, receipt_url) 
+            VALUES (
+                '{cognito_user_id}', 
+                '{resp["orderId"]}', 
+                '{resp["paymentKey"]}', 
+                '{resp["orderName"]}', 
+                '{resp["totalAmount"]}', 
+                '{resp["suppliedAmount"]}', 
+                '{resp["vat"]}', 
+                '{resp["card"]["issuerCode"]}',
+                '{resp["card"]["acquirerCode"]}',
+                '{resp["card"]["number"]}',
+                '{resp["card"]["approveNo"]}',
+                '{resp["card"]["cardType"]}',
+                '{resp["card"]["ownerType"]}',
+                '{resp["receipt"]["url"]}'
+            );
+            """
+            )
+        elif item.currency == "USD" and item.paypal:
+            import base64
+            import requests
+
+            client_id = SECRETS["PAYPAL_CLIENT_ID"]
+            client_secret = SECRETS["PAYPAL_SECRET_KEY"]
+            auth = base64.b64encode(
+                f"{client_id}:{client_secret}".encode("utf-8")
+            ).decode("utf-8")
+            headers = {
+                "Authorization": f"Basic {auth}",
+                "Content-Type": "application/x-www-form-urlencoded",
+            }
+            response = requests.post(
+                "https://api.sandbox.paypal.com/v1/oauth2/token",
+                data={"grant_type": "client_credentials"},
+                headers=headers,
+            )
+            access_token = response.json()["access_token"]
+
+            # Fetch order details
+            headers = {
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json",
+            }
+            response = requests.get(
+                f"https://api.sandbox.paypal.com/v2/checkout/orders/{item.paypal.order}",
+                headers=headers,
+            )
+
+            print(response.json())
+
+        else:
+            raise HTTPException(
+                status_code=402,
+                detail="Correct billing information is required.",
+            )
+
     try:
-        await db_exec_query(insert_user)
+        await db_exec_query(*insert_queries)
     except psycopg.errors.UniqueViolation:  # email colume is unique
         raise HTTPException(status_code=409, detail="Email is already in used")
-
-    insert_signup_history = f"""
-    INSERT INTO signup_history (email, phone) 
-    VALUES ('{item.email}', '{item.phone}')
-    """
-    await db_exec_query(insert_signup_history)
-    return {"first_signup_benefit": not signup_history}  # 첫 회원가입 혜택 여부
+    return {"first_signup_benefit": not signup_histories}  # 첫 회원가입 혜택 여부
 
 
 @router.private.patch("/user/name")

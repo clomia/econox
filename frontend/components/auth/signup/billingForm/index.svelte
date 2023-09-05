@@ -13,7 +13,6 @@
             dispatch("complete"); // 최초 회원가입인 경우 결제정보 입력할 필요 없음
         }
     });
-    $inputResult.currency = "KRW";
 </script>
 
 <div>첫 회원가입 혜택 대상자가 아닙니다 결제 정보를 입력해주세요</div>
@@ -29,7 +28,7 @@
         width: 100%;
         display: flex;
         justify-content: center;
-        color: white;
+        color: rgba(255, 255, 255, 0.7);
         padding: 2rem 0;
         text-align: center;
     }

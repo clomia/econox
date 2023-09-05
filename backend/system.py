@@ -44,6 +44,12 @@ EFS_VOLUME_PATH = ROOT_PATH / "efs-volume"
 
 S3_BUCKET_NAME = "econox-storage"
 SECRET_MANAGER_NAME = "econox-secret"
+
+# ==================== SETTINGS ====================
+membership = {
+    "basic": {"KRW": 11900, "USD": 9.9},
+    "professional": {"KRW": 15900, "USD": 12.9},
+}
 # ==================== SECRETS ====================
 # Secret manager에 정의된 보안 데이터를 딕셔너리로 정리합니다.
 secret_manager = boto3.client("secretsmanager")
@@ -89,8 +95,11 @@ async def run_async(func, *args, **kwargs):
     return (await run_async_parallel(target))[target]
 
 
-async def db_exec_query(query: str) -> list:
-    """RDS Database에 SQL 쿼리를 실행하고 결과를 반환합니다."""
+async def db_exec_query(*query: str) -> list:
+    """
+    - RDS Database에 SQL 쿼리를 실행하고 결과를 반환합니다.
+    - 여러개의 쿼리를 넣는 경우 반드시 새미콜론으로 구분해주어야 합니다.
+    """
 
     def execute_query():
         try:
@@ -101,7 +110,7 @@ async def db_exec_query(query: str) -> list:
                 password=SECRETS["DB_PASSWORD"],
             )
             cur = conn.cursor()
-            cur.execute(query)
+            cur.execute(" \n".join(query))
             conn.commit()
             return cur.fetchall()  # case: read success
         except psycopg.ProgrammingError as e:
@@ -115,7 +124,7 @@ async def db_exec_query(query: str) -> list:
             )["password"]
             SECRETS["DB_PASSWORD"] = latest_password
             log.warning(
-                f"[{e}] DB 연결 오류가 발생하였습니다. Secrets Manager로부터 암호를 업데이트하여 재시도합니다."
+                f"\n{e}\n DB 연결 오류가 발생하였습니다. Secrets Manager로부터 암호를 업데이트하여 재시도합니다."
             )
             return db_exec_query(query)
         except Exception as e:

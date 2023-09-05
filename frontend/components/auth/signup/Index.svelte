@@ -21,18 +21,20 @@
     const currentStep = state.auth.signup.step;
 </script>
 
-<div class="index">
+<div class="component">
     <svelte:component
         this={componentStep[$currentStep]}
         on:complete={() => currentStep.set($currentStep + 1)}
     />
 </div>
+
+<!-- ResultProcess 상태일때 다른 컴포넌트가 클릭되지 않도록 바로 밑에 얆은 막 깔기 -->
 {#if $currentStep === 6}
     <div class="membrane" />
 {/if}
 
 <style>
-    .index {
+    .component {
         position: relative;
         z-index: 2;
     }

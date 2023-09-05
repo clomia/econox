@@ -41,9 +41,11 @@
                     });
                 },
                 onApprove: (data, actions) => {
+                    console.log(data);
                     inputResult.set({
                         ...$inputResult,
                         paypal: {
+                            order: data.orderID,
                             token: data.facilitatorAccessToken,
                             subscription: data.subscriptionID,
                         },

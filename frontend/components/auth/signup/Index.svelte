@@ -27,7 +27,9 @@
         on:complete={() => currentStep.set($currentStep + 1)}
     />
 </div>
-<div class="membrane" />
+{#if $currentStep === 6}
+    <div class="membrane" />
+{/if}
 
 <style>
     .index {

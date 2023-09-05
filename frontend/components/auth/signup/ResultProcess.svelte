@@ -1,5 +1,6 @@
 <script>
     import { onMount } from "svelte";
+    import { fade } from "svelte/transition";
     import * as state from "../../../modules/state";
     import { request } from "../../../modules/api";
     import LoadingTextAnimation from "../../../assets/LoadingTextAnimation.svelte";
@@ -12,6 +13,7 @@
     let response;
     let loginPromise;
     let timeout = 30;
+    let animationEnd = false;
 
     const sucessRedirect = () => window.location.replace(window.location.origin + "/console");
     onMount(async () => {
@@ -25,6 +27,7 @@
             paypal: $inputResult.paypal,
         });
         await response;
+        setTimeout(() => (animationEnd = true), 4300);
         loginPromise = login($inputResult.email, $inputResult.password, false);
         setInterval(() => {
             timeout -= 1;
@@ -65,7 +68,9 @@
                 <div class="sucess__message">{sucessMessage(data)}</div>
                 <div class="sucess_login-timer">{format($text.loginTimer, { time: timeout })}</div>
                 {#await loginPromise then}
-                    <button on:click={sucessRedirect}>{$text.login}</button>
+                    {#if animationEnd}
+                        <button on:click={sucessRedirect}>{$text.login}</button>
+                    {/if}
                 {/await}
             </section>
         {:catch error}
@@ -148,7 +153,14 @@
         animation: fadeIn ease-in 1;
         animation-fill-mode: forwards;
         animation-duration: 1s;
-        animation-delay: 4.1s;
+        animation-delay: 4.15s;
+    }
+    .sucess button {
+        opacity: 0;
+        animation: fadeIn ease-in 1;
+        animation-fill-mode: forwards;
+        animation-duration: 1s;
+        animation-delay: 0;
     }
     button {
         padding: 0.5rem 2rem;

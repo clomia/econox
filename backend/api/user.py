@@ -1,3 +1,4 @@
+import asyncio
 from uuid import uuid4
 from typing import Literal
 from datetime import datetime
@@ -9,7 +10,7 @@ import psycopg
 from pydantic import BaseModel, constr
 from fastapi import HTTPException, Request, Body
 
-from backend.http import Router, TosspaymentsAPI
+from backend.http import Router, TosspaymentsAPI, PayPalAPI
 from backend.system import SECRETS, db_exec_query, run_async, log, membership
 
 
@@ -153,8 +154,8 @@ async def signup(item: SignupInfo):
         LIMIT 1;
     """  # 회원가입 내역이 있다면 결제정보 필요함
     signup_histories = await db_exec_query(scan_history)
-    if signup_histories:  # 대금 결제 수행
-        if item.currency == "KRW" and item.tosspayments:
+    if signup_histories:
+        if item.currency == "KRW" and item.tosspayments:  # 대금 결제 수행
             resp = await TosspaymentsAPI(f"/v1/billing/{item.tosspayments.key}").post(
                 {
                     "customerKey": cognito_user_id,
@@ -189,37 +190,14 @@ async def signup(item: SignupInfo):
             """
             )
         elif item.currency == "USD" and item.paypal:
-            import base64
-            import requests
-
-            client_id = SECRETS["PAYPAL_CLIENT_ID"]
-            client_secret = SECRETS["PAYPAL_SECRET_KEY"]
-            auth = base64.b64encode(
-                f"{client_id}:{client_secret}".encode("utf-8")
-            ).decode("utf-8")
-            headers = {
-                "Authorization": f"Basic {auth}",
-                "Content-Type": "application/x-www-form-urlencoded",
-            }
-            response = requests.post(
-                "https://api.sandbox.paypal.com/v1/oauth2/token",
-                data={"grant_type": "client_credentials"},
-                headers=headers,
+            order, subscription = asyncio.gather(
+                PayPalAPI(f"/v2/checkout/orders/{item.paypal.order}").get(),
+                PayPalAPI(
+                    f"/v1/billing/subscriptions/{item.paypal.subscription}"
+                ).get(),
             )
-            access_token = response.json()["access_token"]
-
-            # Fetch order details
-            headers = {
-                "Authorization": f"Bearer {access_token}",
-                "Content-Type": "application/json",
-            }
-            response = requests.get(
-                f"https://api.sandbox.paypal.com/v2/checkout/orders/{item.paypal.order}",
-                headers=headers,
-            )
-
-            print(response.json())
-
+            assert order["status"] == "APPROVED"
+            assert subscription["status"] == "ACTIVE"
         else:
             raise HTTPException(
                 status_code=402,

@@ -185,10 +185,7 @@ class WorldBankAPI:
 
 
 class TosspaymentsAPI:
-    """
-    - tosspayments에 HTTP 요청을 보냅니다.
-    - path: API 경로 (예시: "/v1/billing/authorizations/card")
-    """
+    """tosspayments에 HTTP 요청을 보냅니다."""
 
     host = "https://api.tosspayments.com"
     token = base64.b64encode(
@@ -196,9 +193,10 @@ class TosspaymentsAPI:
     ).decode("utf-8")
 
     def __init__(self, path):
+        """path: API 경로 (예시: "/v1/billing/authorizations/card")"""
         self.path = path
 
-    async def post(self, payload: dict):
+    async def post(self, payload: dict) -> dict | list:
         async with httpx.AsyncClient() as client:
             resp = await client.post(
                 self.host + self.path,
@@ -215,6 +213,8 @@ class TosspaymentsAPI:
 
 
 class PayPalAPI:
+    """PayPal에 HTTP 요청을 보냅니다."""
+
     host = "https://api.sandbox.paypal.com"
     token = base64.b64encode(
         f"{SECRETS['PAYPAL_CLIENT_ID']}:{SECRETS['PAYPAL_SECRET_KEY']}".encode("utf-8")
@@ -222,25 +222,26 @@ class PayPalAPI:
     access_token = ""  # 첫 요청 시 받아옴
 
     def __init__(self, path) -> None:
+        """path: API 경로 (예시: "/v2/customer/partner-referrals")"""
         self.path = path
 
     @classmethod
-    def _refresh_access_token(cls):
-        """정상 응답이 아닐 경우 HTTPError"""
-        resp = requests.post(
-            f"{cls.host}/v1/oauth2/token",
-            headers={
-                "Authorization": f"basic {cls.token}",
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            data={"grant_type": "client_credentials"},
-        )
+    async def _refresh_access_token(cls):
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(
+                f"{cls.host}/v1/oauth2/token",
+                headers={
+                    "Authorization": f"basic {cls.token}",
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                data={"grant_type": "client_credentials"},
+            )
         if resp.status_code != 200:
             log.error(f"PayPal Access Token 발급에 실패했습니다.\n응답:{resp.json()}")
-            resp.raise_for_status()
+        resp.raise_for_status()
         cls.access_token = resp.json()["access_token"]
 
-    async def post(self, payload: dict):
+    async def post(self, payload: dict) -> dict | list:
         async with httpx.AsyncClient() as client:
             resp = await client.post(
                 self.host + self.path,
@@ -251,13 +252,16 @@ class PayPalAPI:
                 json=payload,
             )
         if resp.status_code == 401:  # 토큰 갱신 후 재시도
-            log.warning(f"\n{resp.json()}\nPayPal 토큰 인증에 실패하였습니다. 토큰 갱신 후 재시도합니다.")
-            self._refresh_access_token()
+            log.warning(
+                f"\nPOST {self.path} -> [{resp.status_code}] {resp.json()}"
+                "\nPayPal 토큰 인증에 실패하였습니다. 토큰 갱신 후 재시도합니다."
+            )
+            await self._refresh_access_token()
             self.post(payload)
         resp.raise_for_status()
         return resp.json()
 
-    async def get(self):
+    async def get(self) -> dict | list:
         async with httpx.AsyncClient() as client:
             resp = await client.get(
                 self.host + self.path,
@@ -267,8 +271,11 @@ class PayPalAPI:
                 },
             )
         if resp.status_code == 401:  # 토큰 갱신 후 재시도
-            log.warning(f"\n{resp.json()}\nPayPal 토큰 인증에 실패하였습니다. 토큰 갱신 후 재시도합니다.")
-            self._refresh_access_token()
+            log.warning(
+                f"\nGET {self.path} -> [{resp.status_code}] {resp.json()}"
+                "\nPayPal 토큰 인증에 실패하였습니다. 토큰 갱신 후 재시도합니다."
+            )
+            await self._refresh_access_token()
             self.get()
         resp.raise_for_status()
         return resp.json()

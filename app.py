@@ -9,7 +9,7 @@ from backend import api
 
 app = FastAPI(
     title="ECONOX API",
-    description="ECONOX main server",
+    description="ECONOX Application server",
     docs_url="/api",
     redoc_url="/document",
 )

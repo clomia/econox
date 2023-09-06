@@ -134,7 +134,7 @@ async def signup(item: SignupInfo):
             """
             )
         elif item.currency == "USD" and item.paypal:
-            order, subscription = asyncio.gather(
+            order, subscription = await asyncio.gather(
                 PayPalAPI(f"/v2/checkout/orders/{item.paypal.order}").get(),
                 PayPalAPI(
                     f"/v1/billing/subscriptions/{item.paypal.subscription}"

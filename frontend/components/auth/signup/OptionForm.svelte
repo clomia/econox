@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount, createEventDispatcher } from "svelte";
-    import { request } from "../../../modules/api";
+    import { api } from "../../../modules/request";
 
     import * as state from "../../../modules/state";
 
@@ -19,7 +19,7 @@
     };
 
     onMount(async () => {
-        const response = await request.public.get("/user/country");
+        const response = await api.public.get("/user/country");
         currency = response.data.country === "KR" ? "KRW" : "USD";
     });
 </script>

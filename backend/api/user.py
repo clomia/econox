@@ -1,3 +1,5 @@
+""" /api/user """
+
 import asyncio
 from uuid import uuid4
 from typing import Literal
@@ -10,74 +12,12 @@ import psycopg
 from pydantic import BaseModel, constr
 from fastapi import HTTPException, Request, Body
 
-from backend.http import Router, TosspaymentsAPI, PayPalAPI
+from backend.http import APIRouter, TosspaymentsAPI, PayPalAPI
 from backend.system import SECRETS, db_exec_query, run_async, log, membership
 
 
-router = Router("user")
+router = APIRouter("user")
 cognito = boto3.client("cognito-idp")
-
-
-@router.public.post("/user/cognito")
-async def create_cognito_user(
-    email: str = Body(..., min_length=1),
-    password: str = Body(..., min_length=1),
-):
-    if await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
-        raise HTTPException(status_code=409, detail="Email is already in used")
-    try:
-        result = await run_async(
-            cognito.sign_up,
-            ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
-            Username=email,
-            Password=password,
-            UserAttributes=[{"Name": "email", "Value": email}],
-        )
-    except cognito.exceptions.UsernameExistsException:
-        # cognito에 유저가 생성되었지만 회원가입이 완료되지 않은 상태이므로 cognito 유저 삭제 후 재시도
-        await run_async(
-            cognito.admin_delete_user,
-            UserPoolId=SECRETS["COGNITO_USER_POOL_ID"],
-            Username=email,
-        )
-        result = await run_async(
-            cognito.sign_up,
-            ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
-            Username=email,
-            Password=password,
-            UserAttributes=[{"Name": "email", "Value": email}],
-        )
-    except (
-        cognito.exceptions.InvalidParameterException,
-        cognito.exceptions.CodeDeliveryFailureException,
-    ):
-        raise HTTPException(status_code=400, detail="Email is not valid")
-    return {"cognito_id": result["UserSub"]}
-
-
-@router.public.get("/user/country")
-async def get_user_country(request: Request):
-    header = {k.casefold(): v for k, v in request.headers.items()}
-    # AWS ELB는 헤더의 x-forwarded-for에 원본 ip를 넣어준다.
-    ip = header.get("x-forwarded-for", request.client.host)
-    try:
-        handler = ipinfo.getHandlerAsync(SECRETS["IPINFO_API_KEY"])
-        client_info = await handler.getDetails(ip)
-        return {
-            "country": client_info.country,
-            "timezone": client_info.timezone,
-        }
-    except AttributeError:  # if host is localhost
-        default = {"country": "KR", "timezone": "Asia/Seoul"}
-        default = {"country": "US", "timezone": "America/Chicago"}
-        log.warning(
-            "GET /user/country"
-            f"\n국가 정보 취득에 실패했습니다. 기본값을 응답합니다."
-            f"\nIP: {request.client.host} , 응답된 기본값: {default}"
-        )
-        return default
-    finally:
-        await handler.deinit()
 
 
 class TosspaymentsBillingInfo(BaseModel):
@@ -100,8 +40,12 @@ class SignupInfo(BaseModel):
     paypal: PaypalBillingInfo | None = None
 
 
-@router.public.post("/user")
+@router.public.post()
 async def signup(item: SignupInfo):
+    """
+    - 유저 생성 (회원가입)
+    - Response: 첫 회원가입 혜택 여부
+    """
     insert_queries = []
     try:
         cognito_user = await run_async(
@@ -211,10 +155,84 @@ async def signup(item: SignupInfo):
     return {"first_signup_benefit": not signup_histories}  # 첫 회원가입 혜택 여부
 
 
-@router.private.patch("/user/name")
+@router.public.post("/cognito")
+async def create_cognito_user(
+    email: str = Body(..., min_length=1),
+    password: str = Body(..., min_length=1),
+):
+    """
+    - AWS Cognito에 유저 생성 & 이메일로 인증코드 전송
+    - /api/auth/email/confirm 엔드포인트로 해당 인증코드를 인증해야 함
+    - Response: Cognito에서 생성된 유저 ID
+    """
+    if await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
+        raise HTTPException(status_code=409, detail="Email is already in used")
+    try:
+        result = await run_async(
+            cognito.sign_up,
+            ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
+            Username=email,
+            Password=password,
+            UserAttributes=[{"Name": "email", "Value": email}],
+        )
+    except cognito.exceptions.UsernameExistsException:
+        # cognito에 유저가 생성되었지만 회원가입이 완료되지 않은 상태이므로 cognito 유저 삭제 후 재시도
+        await run_async(
+            cognito.admin_delete_user,
+            UserPoolId=SECRETS["COGNITO_USER_POOL_ID"],
+            Username=email,
+        )
+        result = await run_async(
+            cognito.sign_up,
+            ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
+            Username=email,
+            Password=password,
+            UserAttributes=[{"Name": "email", "Value": email}],
+        )
+    except (
+        cognito.exceptions.InvalidParameterException,
+        cognito.exceptions.CodeDeliveryFailureException,
+    ):
+        raise HTTPException(status_code=400, detail="Email is not valid")
+    return {"cognito_id": result["UserSub"]}
+
+
+@router.public.get("/country")
+async def get_user_country(request: Request):
+    """
+    - HTTP 요청이 이루어진 국가를 응답합니다.
+    - Response: 국가와 타임존 정보
+    """
+    header = {k.casefold(): v for k, v in request.headers.items()}
+    # AWS ELB는 헤더의 x-forwarded-for에 원본 ip를 넣어준다.
+    ip = header.get("x-forwarded-for", request.client.host)
+    try:
+        handler = ipinfo.getHandlerAsync(SECRETS["IPINFO_API_KEY"])
+        client_info = await handler.getDetails(ip)
+        return {
+            "country": client_info.country,
+            "timezone": client_info.timezone,
+        }
+    except AttributeError:  # if host is localhost
+        default = {"country": "KR", "timezone": "Asia/Seoul"}
+        default = {"country": "US", "timezone": "America/Chicago"}
+        log.warning(
+            "GET /user/country"
+            f"\n국가 정보 취득에 실패했습니다. 기본값을 응답합니다."
+            f"\nIP: {request.client.host} , 응답된 기본값: {default}"
+        )
+        return default
+    finally:
+        await handler.deinit()
+
+
+@router.private.patch("/name")
 async def change_user_name(
     new_name: str = Body(..., min_length=1, embed=True),
     user=router.private.auth,
 ):
+    """
+    - 유저 이름 변경
+    """
     await db_exec_query(f"UPDATE users SET name='{new_name}' WHERE id='{user['id']}'")
     return {"message": "Changed successfully"}

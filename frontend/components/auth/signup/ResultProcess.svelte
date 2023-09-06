@@ -1,8 +1,7 @@
 <script>
     import { onMount } from "svelte";
-    import { fade } from "svelte/transition";
     import * as state from "../../../modules/state";
-    import { request } from "../../../modules/api";
+    import { api } from "../../../modules/request";
     import LoadingTextAnimation from "../../../assets/LoadingTextAnimation.svelte";
     import WellcomeAnimation from "../../../assets/WellcomeAnimation.svelte";
     import { login, format } from "../../../modules/functions";
@@ -17,7 +16,7 @@
 
     const sucessRedirect = () => window.location.replace(window.location.origin + "/console");
     onMount(async () => {
-        response = request.public.post("/user", {
+        response = api.public.post("/user", {
             cognito_id: $inputResult.cognitoId,
             email: $inputResult.email,
             phone: $inputResult.phone,

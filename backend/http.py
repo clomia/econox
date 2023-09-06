@@ -6,9 +6,8 @@ from typing import List
 import jwt
 import httpx
 import wbdata
-import requests
 from aiocache import cached
-from fastapi import HTTPException, Request, APIRouter, Depends
+from fastapi import routing, HTTPException, Request, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from backend.system import SECRETS, log, run_async
@@ -86,15 +85,32 @@ class CognitoTokenBearer(HTTPBearer):
             raise HTTPException(status_code=403, detail=f"Authorization {error_detail}")
 
 
-class Router:
+class APIRouter:
     auth = CognitoTokenBearer()
 
-    def __init__(self, tag: str):
-        self.public = APIRouter(prefix="/api", tags=[tag])
-        self.private = APIRouter(
-            prefix="/api", tags=[tag], dependencies=[Depends(self.auth)]
+    def __init__(self, prefix: str):
+        self.path = f"/api/{prefix}"
+        self.public = routing.APIRouter(prefix=self.path, tags=[prefix])
+        self.private = routing.APIRouter(
+            prefix=self.path, tags=[prefix], dependencies=[Depends(self.auth)]
         )
         self.private.auth = Depends(self.auth)
+
+        # fastapi.APIRouter의 메서드가 path 인자를 입력받지 않은 경우 기본값 "" 를 사용하도록 변경
+        methods = ["get", "post", "put", "patch", "delete", "options", "head", "trace"]
+        for method in methods:
+            target = getattr(self.public, method)
+            setattr(self.public, method, self.method_wrapping(target))
+
+            target = getattr(self.private, method)
+            setattr(self.private, method, self.method_wrapping(target))
+
+    @staticmethod
+    def method_wrapping(func):
+        def wrapper(path="", *args, **kwargs):
+            return func(path, *args, **kwargs)
+
+        return wrapper
 
 
 class FmpAPI:

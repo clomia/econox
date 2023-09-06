@@ -5,20 +5,25 @@ from pathlib import PosixPath
 
 import boto3
 from fastapi import Body, HTTPException
+from pydantic import BaseModel, constr
 
-from backend.http import Router
+from backend.http import APIRouter, TosspaymentsAPI
 from backend.system import db_exec_query, run_async
 from backend.system import SECRETS, EFS_VOLUME_PATH
 
-router = Router("auth")
+router = APIRouter("auth")
 cognito = boto3.client("cognito-idp")
 
 
-@router.public.post("/auth/user")
+@router.public.post("/user")
 async def login(
     email: str = Body(..., min_length=1),
     password: str = Body(..., min_length=1),
 ):
+    """
+    - 로그인 정보로 유저 인증
+    - Response: 인증 토큰 & 갱신용 토큰
+    """
     if not await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
         raise HTTPException(status_code=404, detail="User does not exist")
     # ========== 이전에 발급된 모든 refresh 토큰 무효화 요청 ==========
@@ -61,22 +66,31 @@ async def login(
     }
 
 
-@router.public.post("/auth/cognito-refresh-token")
-async def cognito_token_refresh(
-    cognito_refresh_token: str = Body(..., min_length=1, embed=True)
-):
-    try:
-        result = await run_async(
-            cognito.initiate_auth,
-            AuthFlow="REFRESH_TOKEN_AUTH",
-            AuthParameters={"REFRESH_TOKEN": cognito_refresh_token},
-            ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
-        )
-    except cognito.exceptions.NotAuthorizedException:
-        raise HTTPException(status_code=401, detail="Invalid token")
-    id_token = result["AuthenticationResult"]["IdToken"]
-    access_token = result["AuthenticationResult"]["AccessToken"]
-    return {"cognito_token": id_token + "|" + access_token}
+class CreditCard(BaseModel):
+    user_id: constr(min_length=1)
+    card_number: constr(min_length=1)
+    expiration_year: constr(min_length=1)
+    expiration_month: constr(min_length=1)
+    owner_id: constr(min_length=1)
+
+
+@router.public.post("/card")
+async def create_tosspayments_billing_key(item: CreditCard):
+    """
+    - 카드 정보 인증 (Tosspayments)
+    - 한국 결제수단만 사용 가능
+    - Response: BillingKey
+    """
+    resp = await TosspaymentsAPI("/v1/billing/authorizations/card").post(
+        {
+            "customerKey": item.user_id,
+            "cardNumber": item.card_number,
+            "cardExpirationYear": item.expiration_year,
+            "cardExpirationMonth": item.expiration_month,
+            "customerIdentityNumber": item.owner_id,
+        }
+    )
+    return {"key": resp["billingKey"]}
 
 
 # ------------------ for phone authentication ------------------
@@ -84,8 +98,13 @@ PHONE_CONFIRM_CODE_PATH = EFS_VOLUME_PATH / "phone_confirm_code"
 PHONE_CONFIRM_CODE_PATH.mkdir(parents=True, exist_ok=True)
 
 
-@router.public.post("/auth/phone")
+@router.public.post("/phone")
 async def create_phone_confirmation(phone: str = Body(..., min_length=1, embed=True)):
+    """
+    - 전화번호로 인증코드 전송
+    - 3분 뒤 인증코드 만료
+    - /api/auth/phone/confirm 엔드포인트로 해당 인증코드를 인증해야 함
+    """
     target_path: PosixPath = PHONE_CONFIRM_CODE_PATH / phone
     issued_code = f"{secrets.randbelow(10**6):06}"
     target_path.write_text(issued_code)
@@ -105,11 +124,15 @@ async def create_phone_confirmation(phone: str = Body(..., min_length=1, embed=T
     return {"message": "Code transfer request successful"}
 
 
-@router.public.post("/auth/phone/confirm")
+@router.public.post("/phone/confirm")
 async def phone_confirmation(
     phone: str = Body(..., min_length=1),
     confirm_code: str = Body(..., min_length=1),
 ):
+    """
+    - 전송된 인증코드로 전화번호 인증
+    - /api/auth/phone 엔드포인트로 인증코드를 전송할 수 있음
+    """
     target_path = PHONE_CONFIRM_CODE_PATH / phone
     if not target_path.exists():  # 코드 만료
         raise HTTPException(
@@ -121,8 +144,14 @@ async def phone_confirmation(
         raise HTTPException(status_code=409, detail="Invalid code")
 
 
-@router.public.post("/auth/email")
+@router.public.post("/email")
 async def cognito_resend_confirm_code(email: str = Body(..., min_length=1, embed=True)):
+    """
+    - 이메일로 인증코드 전송
+    - AWS Cognito user pool에 존재하는 이메일이어야 함
+        - Cognito 유저가 없는 경우 /api/user/cognito 엔드포인트를 사용해야 함
+    - /api/auth/email/confirm 엔드포인트로 해당 인증코드를 인증해야 함
+    """
     try:
         await run_async(
             cognito.resend_confirmation_code,
@@ -135,11 +164,15 @@ async def cognito_resend_confirm_code(email: str = Body(..., min_length=1, embed
         return {"message": "Code transfer requested"}
 
 
-@router.public.post("/auth/email/confirm")
+@router.public.post("/email/confirm")
 async def cognito_confirm_sign_up(
     email: str = Body(..., min_length=1),
     confirm_code: str = Body(..., min_length=1),
 ):
+    """
+    - 전송된 인증코드로 이메일 인증
+    - /api/user/cognito 혹은 /api/auth/email 엔드포인트로 인증코드를 전송할 수 있음
+    """
     try:
         await run_async(
             cognito.confirm_sign_up,
@@ -158,8 +191,12 @@ async def cognito_confirm_sign_up(
     return {"message": "Confirmed"}
 
 
-@router.public.post("/auth/reset-password")
+@router.public.post("/reset-password")
 async def send_password_reset_code(email: str = Body(..., min_length=1, embed=True)):
+    """
+    - 비밀번호 재설정 위해 이메일로 인증코드를 전송
+    - 이후 /api/auth/reset-password/confirm 엔드포인트로 비밀번호를 재설정 할 수 있음
+    """
     if not await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
         raise HTTPException(status_code=404, detail="user does not exist")
     try:
@@ -174,12 +211,16 @@ async def send_password_reset_code(email: str = Body(..., min_length=1, embed=Tr
         return {"message": "Code transfer requested"}
 
 
-@router.public.post("/auth/reset-password/confirm")
+@router.public.post("/reset-password/confirm")
 async def password_reset(
     email: str = Body(..., min_length=1),
     new_password: str = Body(..., min_length=1),
     confirm_code: str = Body(..., min_length=1),
 ):
+    """
+    - 전송된 인증코드로 계정을 인증하고 비밀번호를 재설정
+    - /api/auth/reset-password 엔드포인트로 인증코드를 전송할 수 있음
+    """
     if not await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
         raise HTTPException(status_code=404, detail="user does not exist")
     try:
@@ -196,11 +237,38 @@ async def password_reset(
         return {"message": "Password reset successful"}
 
 
-@router.public.post("/auth/is-reregistration")
+@router.public.post("/cognito-refresh-token")
+async def cognito_token_refresh(
+    cognito_refresh_token: str = Body(..., min_length=1, embed=True)
+):
+    """
+    - 갱신 토큰으로 새로운 인증 토큰을 발급
+    - 갱신 토큰은 /api/auth/user 엔드포인트로 발급받을 수 있음
+    - Response: 인증 토큰
+    """
+    try:
+        result = await run_async(
+            cognito.initiate_auth,
+            AuthFlow="REFRESH_TOKEN_AUTH",
+            AuthParameters={"REFRESH_TOKEN": cognito_refresh_token},
+            ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
+        )
+    except cognito.exceptions.NotAuthorizedException:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    id_token = result["AuthenticationResult"]["IdToken"]
+    access_token = result["AuthenticationResult"]["AccessToken"]
+    return {"cognito_token": id_token + "|" + access_token}
+
+
+@router.public.post("/is-reregistration")
 async def check_is_reregistration(
     email: str = Body(..., min_length=1),
     phone: str = Body(..., min_length=1),
 ):
+    """
+    - 이메일과 전화번호를 통해 회원가입 내역이 있는지 확인
+    - Response: 중복 회원가입 여부
+    """
     scan_history = f"""
         SELECT 1 FROM signup_histories 
         WHERE email='{email}' or phone='{phone}'

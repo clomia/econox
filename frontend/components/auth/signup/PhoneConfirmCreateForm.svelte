@@ -4,7 +4,7 @@
     import { getCountryCallingCode } from "libphonenumber-js";
 
     import * as state from "../../../modules/state";
-    import { request } from "../../../modules/api";
+    import { api } from "../../../modules/request";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
 
     import type { CountryCode } from "libphonenumber-js";
@@ -33,7 +33,7 @@
             return;
         }
         try {
-            response = request.public.post("/auth/phone", { phone });
+            response = api.public.post("/auth/phone", { phone });
             await response;
             $inputResult = { ...$inputResult, phone };
             $inputPhoneNumberStore = inputPhoneNumber;
@@ -48,7 +48,7 @@
 <div class="description">{$text.phoneConfirmDescription}</div>
 
 <form on:submit|preventDefault={phoneConfirm}>
-    {#await request.public.get("/user/country") then response}
+    {#await api.public.get("/user/country") then response}
         <label>
             <span>{$text.country}</span>
             <select name="countryCode" value={response.data.country}>

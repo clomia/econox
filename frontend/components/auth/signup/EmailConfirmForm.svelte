@@ -1,7 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher, onMount } from "svelte";
     import * as state from "../../../modules/state";
-    import { request } from "../../../modules/api";
+    import { api } from "../../../modules/request";
     import { timeToString } from "../../../modules/functions";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
 
@@ -34,7 +34,7 @@
             return;
         }
         try {
-            response = request.public.post("/auth/email/confirm", {
+            response = api.public.post("/auth/email/confirm", {
                 email: $inputResult.email,
                 confirm_code: code,
             });
@@ -53,7 +53,7 @@
 
     const resendCode = async () => {
         try {
-            response = request.public.post("/auth/email", { email: $inputResult.email });
+            response = api.public.post("/auth/email", { email: $inputResult.email });
             await response;
             message = $text.codeSended;
             $emailConfirmTimeLimit = 180;

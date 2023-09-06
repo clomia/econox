@@ -1,7 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher, onMount } from "svelte";
     import * as state from "../../../modules/state";
-    import { request } from "../../../modules/api";
+    import { api } from "../../../modules/request";
     import { timeToString } from "../../../modules/functions";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
 
@@ -27,11 +27,11 @@
         message = "";
         const form = event.target as HTMLFormElement;
         try {
-            const phoneConfirm = request.public.post("/auth/phone/confirm", {
+            const phoneConfirm = api.public.post("/auth/phone/confirm", {
                 phone: $inputResult.phone,
                 confirm_code: form.code.value,
             });
-            const reregistrationConfirm = request.public.post("/auth/is-reregistration", {
+            const reregistrationConfirm = api.public.post("/auth/is-reregistration", {
                 email: $inputResult.email,
                 phone: $inputResult.phone,
             });
@@ -52,7 +52,7 @@
 
     const resendCode = async () => {
         try {
-            response = request.public.post("/auth/phone", { phone: $inputResult.phone });
+            response = api.public.post("/auth/phone", { phone: $inputResult.phone });
             await response;
             message = $text.codeSended;
             $phoneConfirmTimeLimit = 180;

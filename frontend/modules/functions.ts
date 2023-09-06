@@ -1,6 +1,6 @@
 import Swal from "sweetalert2"
 
-import { request } from "./api"
+import { api } from "./request"
 import { settingObjectStore } from "./_storage"
 
 export const logout = async () => {
@@ -12,7 +12,7 @@ export const logout = async () => {
 }
 
 export const login = async (email: string, password: string, redirect = true) => {
-    const response = await request.public.post("/auth/user", { email, password });
+    const response = await api.public.post("/auth/user", { email, password });
     await Promise.all([
         settingObjectStore.put("cognitoToken", response.data["cognito_token"]),
         settingObjectStore.put("cognitoRefreshToken", response.data["cognito_refresh_token"])

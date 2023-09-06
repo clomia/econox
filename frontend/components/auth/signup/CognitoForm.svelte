@@ -2,7 +2,7 @@
     import { createEventDispatcher } from "svelte";
 
     import * as state from "../../../modules/state";
-    import { request } from "../../../modules/api";
+    import { api } from "../../../modules/request";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
 
     import type { AxiosResponse } from "axios";
@@ -41,7 +41,7 @@
             return;
         }
         try {
-            response = request.public.post("/user/cognito", { email, password });
+            response = api.public.post("/user/cognito", { email, password });
             const cognitoId = (await response).data.cognito_id;
             $inputResult = { ...$inputResult, cognitoId, email, password };
             dispatch("complete");

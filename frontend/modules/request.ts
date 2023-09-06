@@ -7,7 +7,7 @@ import type { JwtPayload } from "jsonwebtoken";
 import type { InternalAxiosRequestConfig } from "axios";
 
 export const apiHostPath = window.location.origin + "/api"
-export const request = {
+export const api = {
     public: axios.create({ baseURL: apiHostPath }),
     private: axios.create({ baseURL: apiHostPath }) // 인증 실패 시 강제 로그아웃!
 }
@@ -33,7 +33,7 @@ const tokenInsert = async (config: InternalAxiosRequestConfig) => {
     if (cognitoToken && cognitoRefreshToken) {
         const [idToken, accessToken] = cognitoToken.split("|")
         if (isJwtExpired(idToken) || isJwtExpired(accessToken)) {
-            const response = await request.public.post("/auth/cognito-refresh-token", { cognito_refresh_token: cognitoRefreshToken })
+            const response = await api.public.post("/auth/cognito-refresh-token", { cognito_refresh_token: cognitoRefreshToken })
             const cognitoToken = response["cognito_token"]
             settingObjectStore.put("cognitoToken", cognitoToken)
         }
@@ -42,4 +42,4 @@ const tokenInsert = async (config: InternalAxiosRequestConfig) => {
     return config
 }
 
-request.private.interceptors.request.use(tokenInsert)
+api.private.interceptors.request.use(tokenInsert)

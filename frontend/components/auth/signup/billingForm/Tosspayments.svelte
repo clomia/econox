@@ -2,7 +2,7 @@
     import { createEventDispatcher } from "svelte";
     import LoadingAnimation from "../../../../assets/LoadingAnimation.svelte";
     import * as state from "../../../../modules/state";
-    import { request } from "../../../../modules/api";
+    import { api } from "../../../../modules/request";
 
     const dispatch = createEventDispatcher();
     const inputResult = state.auth.signup.inputResult;
@@ -42,7 +42,7 @@
         message = "";
         const [expir_month, expir_year] = expiryDate.replace(/\s/g, "").split("/");
         try {
-            response = request.public.post("/billing/tosspayments", {
+            response = api.public.post("/auth/card", {
                 user_id: $inputResult.cognitoId,
                 card_number: cardNumber.replace(/\s/g, ""),
                 expiration_year: expir_year,

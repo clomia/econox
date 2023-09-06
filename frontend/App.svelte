@@ -10,6 +10,15 @@
     onMount(async () => {
         const { text } = await loadUiText();
         state.uiText.text.set(text);
+
+        const currentUrl = new URL(window.location.href);
+        const { hostname } = currentUrl;
+        const localHosts = ["localhost", "127.0.0.1"];
+
+        if (!hostname.startsWith("www.") && !localHosts.includes(hostname)) {
+            currentUrl.hostname = "www." + hostname;
+            window.location.href = currentUrl.toString();
+        }
     });
 </script>
 

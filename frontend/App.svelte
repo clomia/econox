@@ -10,6 +10,10 @@
 	onMount(async () => {
 		const { text } = await loadUiText();
 		state.uiText.text.set(text);
+		if (window.location.hostname === "econox.io") {
+			window.location.href =
+				"https://www.econox.io" + window.location.pathname + window.location.search;
+		}
 	});
 </script>
 

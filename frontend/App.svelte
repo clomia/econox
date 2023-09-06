@@ -10,10 +10,6 @@
     onMount(async () => {
         const { text } = await loadUiText();
         state.uiText.text.set(text);
-        if (window.location.hostname === "econox.io") {
-            window.location.href = // 서브도메인(www.)이 없으면 붙여줍니다.
-                "https://www.econox.io" + window.location.pathname + window.location.search;
-        }
     });
 </script>
 

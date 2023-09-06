@@ -2,7 +2,6 @@
     import { createEventDispatcher } from "svelte";
     import LoadingAnimation from "../../../../assets/LoadingAnimation.svelte";
     import * as state from "../../../../modules/state";
-    import { api } from "../../../../modules/request";
 
     const dispatch = createEventDispatcher();
     const inputResult = state.auth.signup.inputResult;
@@ -37,29 +36,19 @@
     };
 
     let response = null;
-    let message = "";
     const billing = async () => {
-        message = "";
         const [expir_month, expir_year] = expiryDate.replace(/\s/g, "").split("/");
-        try {
-            response = api.public.post("/auth/card", {
+        inputResult.set({
+            ...$inputResult,
+            tosspayments: {
                 user_id: $inputResult.cognitoId,
                 card_number: cardNumber.replace(/\s/g, ""),
                 expiration_year: expir_year,
                 expiration_month: expir_month,
                 owner_id: ownerId,
-            });
-            const key = (await response).data.key;
-            inputResult.set({ ...$inputResult, tosspayments: { key } });
-            dispatch("complete");
-        } catch (error) {
-            response = null;
-            const statusMessages = {
-                400: "잘못된 값이 있습니다.",
-                422: "누락된 값이 있습니다.",
-            };
-            message = statusMessages[error.response?.status] || "에러!";
-        }
+            },
+        });
+        dispatch("complete");
     };
 </script>
 
@@ -123,7 +112,6 @@
         <LoadingAnimation />
     {/await}
     {#if !(response instanceof Promise)}
-        <div class="message">{message}</div>
         <button class="submit-button" type="submit">Next</button>
     {/if}
 </form>
@@ -136,6 +124,7 @@
         width: 100%;
         height: 23rem;
         color: white;
+        position: relative;
     }
     span {
         transition: opacity 50ms ease-out;
@@ -254,19 +243,14 @@
     .owner-id:focus-within span {
         opacity: 1;
     }
-    .message {
-        display: flex;
-        align-items: center;
-        margin: 1.25rem 0;
-        height: 2rem;
-        color: rgba(255, 255, 255, 0.8);
-    }
     .submit-button {
         color: rgba(255, 255, 255, 0.8);
         width: 10rem;
         height: 2.5rem;
         border: thin solid white;
         border-radius: 1rem;
+        position: absolute;
+        bottom: 0;
     }
     .submit-button:hover {
         background-color: rgba(255, 255, 255, 0.3);

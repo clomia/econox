@@ -1,6 +1,7 @@
 """ 고성능 수학 연산 모듈 """
-
 from typing import Callable
+from datetime import datetime
+from calendar import monthrange
 
 import numpy as np
 import xarray as xr
@@ -95,3 +96,16 @@ def marge_lists(*lists, limit) -> list:
         result.extend(lst[:num])
 
     return result
+
+
+def calculate_membership_expiry(start: datetime) -> datetime:
+    """
+    - start: 맴버십 시작일
+    - 맴버십 만료일을 계산합니다
+    - 다음달 동일 일시를 구하되 마지막 일보다 크면 마지막 일로 대체
+    """
+    year, month = (
+        (start.year + 1, 1) if start.month == 12 else (start.year, start.month + 1)
+    )
+    day = min(start.day, monthrange(year, month)[1])
+    return datetime(year, month, day, start.hour, start.minute, start.second)

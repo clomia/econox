@@ -20,7 +20,7 @@ export const auth = {
             password: "",
             membership: "",
             currency: "",
-            tosspayments: null, // or { billingKey }
+            tosspayments: null, // or { card_number, expiration_year, expiration_month, owner_id }
             paypal: null, // or { orderID, facilitatorAccessToken, subscriptionId }
             phone: "",
             reregistration: false,

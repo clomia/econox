@@ -1,7 +1,8 @@
 """ API 통신에 반복적으로 필요한 로직 모듈화 """
 import base64
 import asyncio
-from typing import List, Awaitable, Callable
+from uuid import uuid4
+from typing import List, Awaitable
 from functools import partial
 
 import jwt
@@ -223,10 +224,67 @@ class TosspaymentsAPI:
                 },
                 json=payload,
             )
-        if resp.status_code != 200:  # Tosspayments가 정의한 에러 양식을 그대로 사용합니다. 아래 URL을 참조하세요
-            # https://docs.tosspayments.com/reference/error-codes
-            raise HTTPException(resp.status_code, detail=resp.json()["code"])
+        resp.raise_for_status()
         return resp.json()
+
+    @classmethod
+    async def create_billing(
+        cls,
+        cognito_user_id: str,
+        card_number: str,
+        expiration_year: str,
+        expiration_month: str,
+        owner_id: str,
+        email: str,
+        order_name: str,
+        amount: int,
+    ) -> dict:
+        """
+        - 빌링키를 발급받고 카드 정보로 대금을 결제합니다
+        - return: 빌링키와 결제정보
+            - 빌링키 이미 있으면 billing 메서드를 통해 빌링키로 결제하세요
+        """
+        # -- 빌링 키 발급 --
+        try:
+            billing_info = await cls("/v1/billing/authorizations/card").post(
+                {
+                    "customerKey": cognito_user_id,
+                    "cardNumber": card_number,
+                    "cardExpirationYear": expiration_year,
+                    "cardExpirationMonth": expiration_month,
+                    "customerIdentityNumber": owner_id,
+                }
+            )
+            # -- 첫달 구독료 결제 --
+            billing_key = billing_info["billingKey"]
+            payment_info = await cls.billing(
+                billing_key, cognito_user_id, order_name, amount, email
+            )
+        except httpx.HTTPStatusError as e:
+            raise HTTPException(
+                status_code=402,
+                detail=f"[{e}] The Tosspayments information provided is incorrect",
+            )
+        return {"key": billing_key, "payment": payment_info}
+
+    @classmethod
+    async def billing(
+        cls, key: str, cognito_user_id: str, order_name: str, amount: int, email: str
+    ):
+        """
+        - 빌링 키로 대금을 결제합니다
+        - key: tosspayments billingKey
+        - return: POST /v1/billing/{billingKey} 요청에 대한 응답
+        """
+        return await cls(f"/v1/billing/{key}").post(
+            {
+                "customerKey": cognito_user_id,
+                "orderId": str(uuid4()),
+                "orderName": order_name,
+                "amount": amount,
+                "customerEmail": email,
+            }
+        )
 
 
 class PayPalAPI:

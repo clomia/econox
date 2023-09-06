@@ -8,8 +8,8 @@ from fastapi.staticfiles import StaticFiles
 from backend import api
 
 app = FastAPI(
-    title="ECONOX API",
-    description="ECONOX Application server",
+    title="Econox API",
+    description="Econox Application server",
     docs_url="/api",
     redoc_url="/document",
 )

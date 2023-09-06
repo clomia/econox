@@ -7,7 +7,7 @@
 </script>
 
 <section>
-    <button>ECONOX</button>
+    <button>Econox</button>
     <button>{$text.console}</button>
     <button>{$text.featureHub}</button>
     <button on:click={() => (authToggle = !authToggle)}>{$text.signInOut}</button>

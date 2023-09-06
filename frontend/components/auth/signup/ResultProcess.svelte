@@ -41,6 +41,10 @@
     };
 
     const failureMessage = (error) => {
+        if (error.response?.status === 402) {
+            // 여기에 결제 실패시 currentStep 롤백
+            // 그리고 그냥 실패했을때도 어떻게 처리할지 다시 고민해야 함
+        }
         const statusMessages = {
             401: $text.failureSignup401, // 이메일 인증 안됌
             402: $text.failureSignup402, // 결제 정보 필요한데 없음

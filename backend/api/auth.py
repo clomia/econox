@@ -66,33 +66,6 @@ async def login(
     }
 
 
-class CreditCard(BaseModel):
-    user_id: constr(min_length=1)
-    card_number: constr(min_length=1)
-    expiration_year: constr(min_length=1)
-    expiration_month: constr(min_length=1)
-    owner_id: constr(min_length=1)
-
-
-@router.public.post("/card")
-async def create_tosspayments_billing_key(item: CreditCard):
-    """
-    - 카드 정보 인증 (Tosspayments)
-    - 한국 결제수단만 사용 가능
-    - Response: BillingKey
-    """
-    resp = await TosspaymentsAPI("/v1/billing/authorizations/card").post(
-        {
-            "customerKey": item.user_id,
-            "cardNumber": item.card_number,
-            "cardExpirationYear": item.expiration_year,
-            "cardExpirationMonth": item.expiration_month,
-            "customerIdentityNumber": item.owner_id,
-        }
-    )
-    return {"key": resp["billingKey"]}
-
-
 # ------------------ for phone authentication ------------------
 PHONE_CONFIRM_CODE_PATH = EFS_VOLUME_PATH / "phone_confirm_code"
 PHONE_CONFIRM_CODE_PATH.mkdir(parents=True, exist_ok=True)
@@ -112,7 +85,7 @@ async def create_phone_confirmation(phone: str = Body(..., min_length=1, embed=T
     resp = await run_async(
         sns.publish,
         PhoneNumber=phone,
-        Message=f"ECONOX confirmation code: {issued_code}",
+        Message=f"Econox confirmation code: {issued_code}",
     )
     assert resp["ResponseMetadata"]["HTTPStatusCode"] == 200
 

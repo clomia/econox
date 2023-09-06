@@ -1,7 +1,8 @@
 """ API 통신에 반복적으로 필요한 로직 모듈화 """
 import base64
 import asyncio
-from typing import List
+from typing import List, Awaitable, Callable
+from functools import partial
 
 import jwt
 import httpx
@@ -257,9 +258,22 @@ class PayPalAPI:
         resp.raise_for_status()
         cls.access_token = resp.json()["access_token"]
 
+    async def _execute_request(self, request: Awaitable, retry: Awaitable[dict | list]):
+        """API 요청을 실행하고 토큰을 갱신하는 부분을 캡슐화"""
+        try:
+            resp = await request
+        except httpx.LocalProtocolError as e:
+            log.warning(  # resp는 undifined임, 토큰 없으면 요청 자체가 실행되지 않음
+                f"POST {self.path} -> {e}\nPayPal 토큰 인증에 실패하였습니다. 토큰 갱신 후 재시도합니다."
+            )
+            await self._refresh_access_token()
+            return await retry()
+        resp.raise_for_status()
+        return resp.json()
+
     async def post(self, payload: dict) -> dict | list:
         async with httpx.AsyncClient() as client:
-            resp = await client.post(
+            request = client.post(
                 self.host + self.path,
                 headers={
                     "Authorization": f"Bearer {self.access_token}",
@@ -267,31 +281,17 @@ class PayPalAPI:
                 },
                 json=payload,
             )
-        if resp.status_code == 401:  # 토큰 갱신 후 재시도
-            log.warning(
-                f"\nPOST {self.path} -> [{resp.status_code}] {resp.json()}"
-                "\nPayPal 토큰 인증에 실패하였습니다. 토큰 갱신 후 재시도합니다."
+            return await self._execute_request(
+                request, retry=partial(self.post, payload)
             )
-            await self._refresh_access_token()
-            self.post(payload)
-        resp.raise_for_status()
-        return resp.json()
 
     async def get(self) -> dict | list:
         async with httpx.AsyncClient() as client:
-            resp = await client.get(
+            request = client.get(
                 self.host + self.path,
                 headers={
                     "Authorization": f"Bearer {self.access_token}",
                     "Content-Type": "application/json",
                 },
             )
-        if resp.status_code == 401:  # 토큰 갱신 후 재시도
-            log.warning(
-                f"\nGET {self.path} -> [{resp.status_code}] {resp.json()}"
-                "\nPayPal 토큰 인증에 실패하였습니다. 토큰 갱신 후 재시도합니다."
-            )
-            await self._refresh_access_token()
-            self.get()
-        resp.raise_for_status()
-        return resp.json()
+            return await self._execute_request(request, retry=self.get)

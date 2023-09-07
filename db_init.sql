@@ -1,4 +1,4 @@
---- Last commit: 2023-09-05 14:39:52 ---
+--- Last commit: 2023-09-07 22:06:34 ---
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ------------------------------------------------
@@ -18,8 +18,7 @@ CREATE TABLE users (
     "tosspayments_billing_key" VARCHAR(255), 
     "paypal_token" VARCHAR(255), -- facilitatorAccessToken
     "paypal_subscription_id" VARCHAR(255), 
-    "billing_date" INT NOT NULL, -- 일  (맴버십 시작일 기록)
-    "billing_time" TIME NOT NULL, -- 시:분:초  (맴버십 시작시간 기록)
+    "billing_date" TIMESTAMP NOT NULL, 
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 ); 
 -- (email -> user) 검색 최적화 관련: email 필드에 UNIQUE속성 있어서 자동으로 인덱스 생성되므로 별도의 인덱스 생성 불필요

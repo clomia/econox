@@ -146,8 +146,7 @@ async def signup(item: SignupInfo):
             else None,
             paypal_token=item.paypal.token if item.paypal else None,
             paypal_subscription_id=item.paypal.subscription if item.paypal else None,
-            billing_date=now.day,
-            billing_time=now.time(),
+            billing_date=now,
         )
     )
     signup_transaction.append_template(

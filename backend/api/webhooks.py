@@ -6,7 +6,7 @@ from backend.system import SECRETS
 router = APIRouter("webhooks")
 
 
-@router.public.post("/paypal", dependencies=[Depends({PayPalAPI.verify_webhook})])
+@router.public.post("/paypal", dependencies=[Depends(PayPalAPI.verify_webhook)])
 async def paypal_webhook(request: Request):
     """
     - 으앙

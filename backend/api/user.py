@@ -1,8 +1,8 @@
 """ /api/user """
-
 import asyncio
 from typing import Literal
 from datetime import datetime
+from functools import partial
 
 import httpx
 import boto3
@@ -12,7 +12,7 @@ from pydantic import BaseModel, constr
 from fastapi import HTTPException, Request, Body
 
 from backend.math import calculate_membership_expiry
-from backend.http import APIRouter, TosspaymentsAPI, PayPalAPI
+from backend.http import APIRouter, TosspaymentsAPI, PayPalAPI, idempotent_retries
 from backend.system import SECRETS, db_exec_query, run_async, log, membership
 
 
@@ -110,22 +110,27 @@ async def signup(item: SignupInfo):
             )
         elif item.currency == "USD" and item.paypal:  # 페이팔 빌링
             # -- 빌링 정보 검사 --
+            order_detail_api = f"/v2/checkout/orders/{item.paypal.order}"
+            subscription_detail_api = (
+                f"/v1/billing/subscriptions/{item.paypal.subscription}"
+            )
             try:
-                order, subscription = await asyncio.gather(
-                    PayPalAPI(f"/v2/checkout/orders/{item.paypal.order}").get(),
-                    PayPalAPI(
-                        f"/v1/billing/subscriptions/{item.paypal.subscription}"
-                    ).get(),
-                )
-            except httpx.HTTPStatusError as e:
+                await idempotent_retries(
+                    target=partial(
+                        asyncio.gather,  # 주문과 구독 정보를 가져옵니다.
+                        PayPalAPI(order_detail_api).get(),
+                        PayPalAPI(subscription_detail_api).get(),
+                    ),
+                    inspecter=(  # 주문 정보와 구독 정보가 완료상태인지 확인합니다.
+                        lambda results: results[0]["status"] != "APPROVED"
+                        or results[1]["status"] == "ACTIVE"
+                    ),
+                    timeout=30,  # 조건이 만족될때까지 최대 30초 재시도합니다.
+                )  # timeout이 초과되어도 조건이 만족되지 않으면 AssertionError
+            except (httpx.HTTPStatusError, AssertionError) as e:
                 raise HTTPException(
                     status_code=402,
-                    detail=f"[{e}] PayPal does not have subscription and order information",
-                )
-            if order["status"] != "APPROVED" or subscription["status"] == "ACTIVE":
-                raise HTTPException(
-                    status_code=402,
-                    detail="The PayPal information provided is incorrect",
+                    detail=f"PayPal does not have subscription and order information\nResponse detail: {e}",
                 )
         else:
             raise HTTPException(
@@ -180,28 +185,24 @@ async def create_cognito_user(
     """
     if await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
         raise HTTPException(status_code=409, detail="Email is already in used")
-    try:
-        result = await run_async(
-            cognito.sign_up,
-            ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
-            Username=email,
-            Password=password,
-            UserAttributes=[{"Name": "email", "Value": email}],
-        )
-    except cognito.exceptions.UsernameExistsException:
-        # cognito에 유저가 생성되었지만 회원가입이 완료되지 않은 상태이므로 cognito 유저 삭제 후 재시도
-        await run_async(
-            cognito.admin_delete_user,
-            UserPoolId=SECRETS["COGNITO_USER_POOL_ID"],
-            Username=email,
-        )
-        result = await run_async(
-            cognito.sign_up,
-            ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
-            Username=email,
-            Password=password,
-            UserAttributes=[{"Name": "email", "Value": email}],
-        )
+    create_cognito_user_func = partial(
+        run_async,
+        cognito.sign_up,
+        ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
+        Username=email,
+        Password=password,
+        UserAttributes=[{"Name": "email", "Value": email}],
+    )
+    try:  # cognito 유저 생성 실패에 대한 에러 응답 반환
+        try:  # cognito 유저 생성, 만약 이미 있다면 삭제 후 재시도
+            result = await create_cognito_user_func()
+        except cognito.exceptions.UsernameExistsException:
+            await run_async(
+                cognito.admin_delete_user,
+                UserPoolId=SECRETS["COGNITO_USER_POOL_ID"],
+                Username=email,
+            )
+            result = await create_cognito_user_func()
     except (
         cognito.exceptions.InvalidParameterException,
         cognito.exceptions.CodeDeliveryFailureException,
@@ -228,7 +229,7 @@ async def get_user_country(request: Request):
         }
     except AttributeError:  # if host is localhost
         default = {"country": "KR", "timezone": "Asia/Seoul"}
-        # default = {"country": "US", "timezone": "America/Chicago"}
+        default = {"country": "US", "timezone": "America/Chicago"}
         log.warning(
             "GET /user/country"
             f"\n국가 정보 취득에 실패했습니다. 기본값을 응답합니다."

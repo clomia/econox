@@ -1,3 +1,4 @@
+""" /api/auth """
 import time
 import secrets
 import threading
@@ -5,9 +6,8 @@ from pathlib import PosixPath
 
 import boto3
 from fastapi import Body, HTTPException
-from pydantic import BaseModel, constr
 
-from backend.http import APIRouter, TosspaymentsAPI
+from backend.http import APIRouter
 from backend.system import db_exec_query, run_async
 from backend.system import SECRETS, EFS_VOLUME_PATH
 

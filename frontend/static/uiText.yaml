@@ -187,3 +187,9 @@ resendCode:
 loginTimer:
   en: "Logging in automatically in {time} seconds"
   ko: "{time}초 후 자동으로 로그인됩니다"
+noFirstPleasePayment:
+  en: "You are not eligible for the first-time membership benefit. Please enter your payment information."
+  ko: "첫 회원가입 혜택 대상자가 아닙니다 결제 정보를 입력해주세요"
+paymentError:
+  en: "Your payment information is incorrect. Please enter it again."
+  ko: "결제 정보가 올바르지 않습니다 다시 입력해주세요"

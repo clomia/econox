@@ -7,6 +7,8 @@
 
     const dispatch = createEventDispatcher();
     const inputResult = state.auth.signup.inputResult;
+    const paymentError = state.auth.signup.paymentError;
+    const text = state.uiText.text;
 
     onMount(() => {
         if (!$inputResult.reregistration) {
@@ -15,7 +17,7 @@
     });
 </script>
 
-<div>첫 회원가입 혜택 대상자가 아닙니다 결제 정보를 입력해주세요</div>
+<div>{$paymentError ? $text.paymentError : $text.noFirstPleasePayment}</div>
 
 {#if $inputResult.currency === "KRW"}
     <Tosspayments on:complete={() => dispatch("complete")} />

@@ -1,8 +1,9 @@
 """ API 통신에 반복적으로 필요한 로직 모듈화 """
+import time
 import base64
 import asyncio
 from uuid import uuid4
-from typing import List, Awaitable
+from typing import List, Awaitable, Callable, TypeVar
 from functools import partial
 
 import jwt
@@ -13,6 +14,8 @@ from fastapi import routing, HTTPException, Request, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from backend.system import SECRETS, log, run_async
+
+T = TypeVar("T")
 
 
 class CognitoToken:
@@ -263,7 +266,7 @@ class TosspaymentsAPI:
         except httpx.HTTPStatusError as e:
             raise HTTPException(
                 status_code=402,
-                detail=f"[{e}] The Tosspayments information provided is incorrect",
+                detail=f"The Tosspayments information provided is incorrect\nResponse detail: {e}",
             )
         return {"key": billing_key, "payment": payment_info}
 
@@ -353,3 +356,21 @@ class PayPalAPI:
                 },
             )
             return await self._execute_request(request, retry=self.get)
+
+
+async def idempotent_retries(
+    target: Awaitable[T], inspecter: Callable[[T], bool], timeout: int = 15
+):
+    """
+    - 조건을 만족하는 반환값이 나올때까지 함수를 재실행합니다.
+    - target: 무결성이 보장되어야 하는 대상 함수 (Async I/O Bound Function)
+    - inspecter: target함수의 반환값을 검사하는 함수 - bool을 반환해야 함
+    - timeout: 재시도 시간제한(초)
+        - timeout 초과시 AssertionError가 발생합니다.
+    """
+    start = time.time()
+    while time.time() < start + timeout:
+        if inspecter(result := await target()):
+            return result
+    assert inspecter(result := await target())
+    return result

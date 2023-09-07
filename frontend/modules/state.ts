@@ -14,6 +14,7 @@ export const auth = {
         emailConfirmTimeLimit: writable(-1),
         phoneConfirmTimeLimit: writable(-1),
         inputPhoneNumber: writable(""),
+        paymentError: writable(false),
         inputResult: writable({
             cognitoId: "",
             email: "",

@@ -7,6 +7,8 @@
     import { login, format } from "../../../modules/functions";
 
     const inputResult = state.auth.signup.inputResult;
+    const currentStep = state.auth.signup.step;
+    const paymentError = state.auth.signup.paymentError;
     const text = state.uiText.text;
 
     let response;
@@ -42,12 +44,14 @@
 
     const failureMessage = (error) => {
         if (error.response?.status === 402) {
-            // 여기에 결제 실패시 currentStep 롤백
-            // 그리고 그냥 실패했을때도 어떻게 처리할지 다시 고민해야 함
+            // 결제 실패시 결제정보 입력 단계로 롤백
+            $paymentError = true;
+            $inputResult.tosspayments = null;
+            $inputResult.paypal = null;
+            $currentStep = 5;
         }
         const statusMessages = {
             401: $text.failureSignup401, // 이메일 인증 안됌
-            402: $text.failureSignup402, // 결제 정보 필요한데 없음
             409: $text.failureSignup409,
         };
         return statusMessages[error.response?.status] || $text.error;

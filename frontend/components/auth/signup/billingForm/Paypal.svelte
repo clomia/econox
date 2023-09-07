@@ -41,7 +41,6 @@
                     });
                 },
                 onApprove: (data, actions) => {
-                    console.log(data);
                     inputResult.set({
                         ...$inputResult,
                         paypal: {

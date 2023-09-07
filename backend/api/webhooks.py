@@ -1,6 +1,7 @@
 from fastapi import Request
 
-from backend.http import APIRouter
+from backend.http import APIRouter, PayPalAPI
+from backend.system import SECRETS
 
 router = APIRouter("webhooks")
 
@@ -15,5 +16,15 @@ async def paypal_webhook(request: Request):
     print(request)
     print(request.headers)
     print(payload)
-    payload["event_type"]
+    await PayPalAPI("/v1/notifications/verify-webhook-signature").post(
+        {
+            "auth_algo": request.headers["paypal-auth-algo"],
+            "cert_url": request.headers["paypal-cert-url"],
+            "transmission_id": request.headers["paypal-transmission-id"],
+            "transmission_sig": request.headers["paypal-transmission-sig"],
+            "transmission_time": request.headers["paypal-transmission-time"],
+            "webhook_id": SECRETS["PAYPAL_WEBHOOK_ID"],
+            "webhook_event": payload,
+        }
+    )
     return {}

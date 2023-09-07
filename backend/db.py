@@ -1,5 +1,6 @@
 import re
 import json
+from typing import Tuple
 
 import boto3
 import psycopg
@@ -70,7 +71,7 @@ async def exec(*queries: str, **params) -> list:
 # ======== 쿼리 생성 함수 =========
 
 
-def insert_query_template(table, **params):
+def insert_query_template(table, **params) -> Tuple[str, tuple]:
     """exec 함수에 바로 넣을 수 있는 형태로 만들어 반환합니다."""
     columns = ", ".join(params.keys())
     values = ", ".join([f"{{{column}}}" for column in params.keys()])

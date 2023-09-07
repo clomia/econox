@@ -23,7 +23,7 @@ class CognitoToken:
 
     jwks = {"keys": []}
 
-    def __init__(self, id_token, access_token):
+    def __init__(self, id_token: str, access_token: str):
         self.id_token = id_token
         self.access_token = access_token
 
@@ -299,7 +299,7 @@ class PayPalAPI:
     ).decode("utf-8")
     access_token = ""  # 첫 요청 시 받아옴
 
-    def __init__(self, path) -> None:
+    def __init__(self, path: str) -> None:
         """path: API 경로 (예시: "/v2/customer/partner-referrals")"""
         self.path = path
 

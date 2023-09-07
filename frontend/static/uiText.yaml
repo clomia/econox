@@ -193,3 +193,24 @@ noFirstPleasePayment:
 paymentError:
   en: "Your payment information is incorrect. Please enter it again."
   ko: "결제 정보가 올바르지 않습니다 다시 입력해주세요"
+creditCardNumber:
+  en: "Credit card number"
+  ko: "결제 카드 번호"
+expiryDate:
+  en: "Expiry date"
+  ko: "유효기간"
+cardType:
+  en: "Card type"
+  ko: "카드 종류"
+personalCard:
+  en: "Personal"
+  ko: "개인"
+businessCard:
+  en: "Business"
+  ko: "사업자"
+birthDate:
+  en: "Birth date"
+  ko: "생년월일"
+businessNumber:
+  en: "Business Number"
+  ko: "사업자등록번호"

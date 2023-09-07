@@ -1,18 +1,19 @@
-<script>
+<script lang="ts">
     import { createEventDispatcher } from "svelte";
     import LoadingAnimation from "../../../../assets/LoadingAnimation.svelte";
     import * as state from "../../../../modules/state";
 
     const dispatch = createEventDispatcher();
     const inputResult = state.auth.signup.inputResult;
+    const text = state.uiText.text;
 
     let cardNumber = "";
     let expiryDate = "";
     let cardType = "personal";
     let ownerId = "";
 
-    const cardNumberHandler = (event) => {
-        let value = event.target.value.replace(/\D/g, "");
+    const cardNumberHandler = (event: Event) => {
+        let value = (event.target as HTMLInputElement).value.replace(/\D/g, "");
         if (value.length > 16) {
             value = value.slice(0, 16); // 첫 16자리만 가져옵니다.
         }
@@ -20,8 +21,8 @@
         cardNumber = value.trim();
     };
 
-    const expiryDateHandler = (event) => {
-        let value = event.target.value.replace(/\D/g, "");
+    const expiryDateHandler = (event: Event) => {
+        let value = (event.target as HTMLInputElement).value.replace(/\D/g, "");
         if (value.length > 4) {
             value = value.slice(0, 4); // 첫 4자리만 가져옵니다.
         }
@@ -31,8 +32,10 @@
         expiryDate = value;
     };
 
-    const ownerIdHandler = (event) => {
-        ownerId = event.target.value.replace(/\D/g, "").slice(0, cardType === "personal" ? 6 : 10);
+    const ownerIdHandler = (event: Event) => {
+        ownerId = (event.target as HTMLInputElement).value
+            .replace(/\D/g, "")
+            .slice(0, cardType === "personal" ? 6 : 10);
     };
 
     let response = null;
@@ -55,23 +58,22 @@
 <form on:submit|preventDefault={billing}>
     <section class="card-number">
         <label>
-            <span>Credit card number</span>
+            <span>{$text.creditCardNumber}</span>
             <input
                 type="text"
                 placeholder="••••  ••••  ••••  ••••"
                 bind:value={cardNumber}
                 on:input={cardNumberHandler}
-                x-autocompletetype="cc-number"
             />
         </label>
     </section>
     <section class="card-detail">
         <label class="card-detail__expiry">
-            <span>Expiry date</span>
+            <span>{$text.expiryDate}</span>
             <input type="text" bind:value={expiryDate} on:input={expiryDateHandler} placeholder="MM / YY" />
         </label>
         <label class="card-detail__type">
-            <span>Card type</span>
+            <span>{$text.cardType}</span>
             <div>
                 <div
                     class="card-detail__type__toggle"
@@ -83,7 +85,7 @@
                     on:click={() => (cardType = "personal")}
                     style="{cardType === 'personal' ? 'color: white' : ''};"
                 >
-                    Personal
+                    {$text.personalCard}
                 </button>
                 <button
                     type="button"
@@ -91,14 +93,14 @@
                     on:click={() => (cardType = "business")}
                     style="{cardType === 'business' ? 'color: white' : ''};"
                 >
-                    Business
+                    {$text.businessCard}
                 </button>
             </div>
         </label>
     </section>
     <section class="owner-id">
         <label>
-            <span>{cardType === "personal" ? "Birth date" : "Business Number"}</span>
+            <span>{cardType === "personal" ? $text.birthDate : $text.businessNumber}</span>
             <input
                 type="text"
                 bind:value={ownerId}
@@ -112,7 +114,7 @@
         <LoadingAnimation />
     {/await}
     {#if !(response instanceof Promise)}
-        <button class="submit-button" type="submit">Next</button>
+        <button class="submit-button" type="submit">{$text.next}</button>
     {/if}
 </form>
 

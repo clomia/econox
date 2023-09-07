@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
     import * as state from "../../../modules/state";
     import { api } from "../../../modules/request";
@@ -6,13 +6,15 @@
     import WellcomeAnimation from "../../../assets/WellcomeAnimation.svelte";
     import { login, format } from "../../../modules/functions";
 
+    import type { AxiosResponse, AxiosError } from "axios";
+
     const inputResult = state.auth.signup.inputResult;
     const currentStep = state.auth.signup.step;
     const paymentError = state.auth.signup.paymentError;
     const text = state.uiText.text;
 
-    let response;
-    let loginPromise;
+    let response: null | Promise<any> = null;
+    let loginPromise: null | Promise<void> = null;
     let timeout = 30;
     let animationEnd = false;
 
@@ -38,13 +40,13 @@
         }, 1000);
     });
 
-    const sucessMessage = (response) => {
+    const sucessMessage = (response: AxiosResponse<any>) => {
         return response.data.first_signup_benefit ? $text.benefitsResultSummry : "";
     };
 
-    const failureMessage = (error) => {
+    const failureMessage = (error: AxiosError): string => {
         if (error.response?.status === 402) {
-            // 결제 실패시 결제정보 입력 단계로 롤백
+            // 결제 실패인 경우 결제정보 입력 단계로 롤백
             $paymentError = true;
             $inputResult.tosspayments = null;
             $inputResult.paypal = null;

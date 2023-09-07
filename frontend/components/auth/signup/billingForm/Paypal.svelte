@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { onMount, createEventDispatcher } from "svelte";
     import * as state from "../../../../modules/state";
     import LoadingAnimation from "../../../../assets/LoadingAnimation.svelte";
@@ -11,7 +11,7 @@
     const paypalPlanId = "P-76B92140LE320861RMTQ2A2A";
 
     onMount(() => {
-        if (window.paypal) {
+        if ((window as any).paypal) {
             isSdkLoaded = true;
             initializePaypalButton();
             return;
@@ -27,7 +27,7 @@
     });
 
     const initializePaypalButton = () => {
-        window.paypal
+        (window as any).paypal
             .Buttons({
                 style: {
                     shape: "rect",
@@ -35,18 +35,18 @@
                     layout: "vertical",
                     label: "paypal",
                 },
-                createSubscription: (data, actions) => {
+                createSubscription: (data: any, actions: any) => {
                     return actions.subscription.create({
                         plan_id: paypalPlanId,
                     });
                 },
-                onApprove: (data, actions) => {
+                onApprove: (data: any, actions: any) => {
                     inputResult.set({
                         ...$inputResult,
                         paypal: {
-                            order: data.orderID,
-                            token: data.facilitatorAccessToken,
-                            subscription: data.subscriptionID,
+                            order: data.orderID as string,
+                            token: data.facilitatorAccessToken as string,
+                            subscription: data.subscriptionID as string,
                         },
                     });
                     dispatch("complete");

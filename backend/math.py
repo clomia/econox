@@ -72,7 +72,7 @@ def destandardize(standardized: xr.Dataset) -> xr.DataArray:
     return restored
 
 
-def marge_lists(*lists, limit) -> list:
+def marge_lists(*lists: list, limit: int) -> list:
     """
     - 리스트들을 받아서 값이 균등하게 포함된 하나의 리스트로 합칩니다.
     - limit[필수]: 결과 리스트 갯수를 제한합니다.

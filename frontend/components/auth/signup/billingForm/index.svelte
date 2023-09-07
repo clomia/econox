@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { onMount, createEventDispatcher } from "svelte";
     import Paypal from "./Paypal.svelte";
     import Tosspayments from "./Tosspayments.svelte";

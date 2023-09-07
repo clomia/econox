@@ -12,7 +12,6 @@ from typing import Callable, Any, Dict
 from concurrent.futures import ThreadPoolExecutor
 
 import boto3
-import psycopg
 
 
 # ==================== logger object ====================
@@ -93,46 +92,3 @@ async def run_async(func, *args, **kwargs):
     """단일 동기 함수를 비동기로 실행합니다."""
     target = partial(func, *args, **kwargs)
     return (await run_async_parallel(target))[target]
-
-
-async def db_exec_query(*query: str) -> list:
-    """
-    - RDS Database에 SQL 쿼리를 실행하고 결과를 반환합니다.
-    - 여러개의 쿼리를 넣는 경우 반드시 새미콜론으로 구분해주어야 합니다.
-    """
-
-    def execute_query():
-        try:
-            conn = psycopg.connect(
-                host=SECRETS["DB_HOST"],
-                dbname=SECRETS["DB_NAME"],
-                user=SECRETS["DB_USERNAME"],
-                password=SECRETS["DB_PASSWORD"],
-            )
-            cur = conn.cursor()
-            cur.execute(" \n".join(query))
-            conn.commit()
-            return cur.fetchall()  # case: read success
-        except psycopg.ProgrammingError as e:
-            return []  # case: write success
-        except psycopg.OperationalError as e:  # password authentication failed
-            # Secrets Manager에서 암호 교체가 이루어졌다고 간주하고 암호 업데이트 후 재시도
-            latest_password = json.loads(
-                boto3.client("secretsmanager").get_secret_value(
-                    SecretId=SECRETS["RDS_SECRET_MANAGER_ARN"]
-                )["SecretString"]
-            )["password"]
-            SECRETS["DB_PASSWORD"] = latest_password
-            log.warning(
-                f"\n{e}\n DB 연결 오류가 발생하였습니다. Secrets Manager로부터 암호를 업데이트하여 재시도합니다."
-            )
-            return db_exec_query(query)
-        except Exception as e:
-            conn.rollback()
-            log.critical(f"\n{e}\nDB 쿼리 실행 오류가 발생하여 롤백하였습니다.\nQuery: {query}")
-            raise e
-        finally:
-            cur.close()
-            conn.close()
-
-    return await run_async(execute_query)

@@ -7,8 +7,9 @@ from pathlib import PosixPath
 import boto3
 from fastapi import Body, HTTPException
 
+from backend import db
 from backend.http import APIRouter
-from backend.system import db_exec_query, run_async
+from backend.system import run_async
 from backend.system import SECRETS, EFS_VOLUME_PATH
 
 router = APIRouter("auth")
@@ -24,7 +25,8 @@ async def login(
     - 로그인 정보로 유저 인증
     - Response: 인증 토큰 & 갱신용 토큰
     """
-    if not await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
+
+    if not await db.user_exists(email):
         raise HTTPException(status_code=404, detail="User does not exist")
     # ========== 이전에 발급된 모든 refresh 토큰 무효화 요청 ==========
     try:
@@ -82,12 +84,15 @@ async def create_phone_confirmation(phone: str = Body(..., min_length=1, embed=T
     issued_code = f"{secrets.randbelow(10**6):06}"
     target_path.write_text(issued_code)
     sns = boto3.client("sns")
-    resp = await run_async(
-        sns.publish,
-        PhoneNumber=phone,
-        Message=f"Econox confirmation code: {issued_code}",
-    )
-    assert resp["ResponseMetadata"]["HTTPStatusCode"] == 200
+    try:
+        resp = await run_async(
+            sns.publish,
+            PhoneNumber=phone,
+            Message=f"Econox confirmation code: {issued_code}",
+        )
+        assert resp["ResponseMetadata"]["HTTPStatusCode"] == 200
+    except sns.exceptions.InvalidParameterException:
+        raise HTTPException(status_code=409, detail="Phone number is not valid")
 
     def code_expiration():
         time.sleep(180)  # 3분 뒤 코드 만료
@@ -170,7 +175,7 @@ async def send_password_reset_code(email: str = Body(..., min_length=1, embed=Tr
     - 비밀번호 재설정 위해 이메일로 인증코드를 전송
     - 이후 /api/auth/reset-password/confirm 엔드포인트로 비밀번호를 재설정 할 수 있음
     """
-    if not await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
+    if not await db.user_exists(email):
         raise HTTPException(status_code=404, detail="user does not exist")
     try:
         await run_async(
@@ -194,7 +199,7 @@ async def password_reset(
     - 전송된 인증코드로 계정을 인증하고 비밀번호를 재설정
     - /api/auth/reset-password 엔드포인트로 인증코드를 전송할 수 있음
     """
-    if not await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
+    if not await db.user_exists(email):
         raise HTTPException(status_code=404, detail="user does not exist")
     try:
         await run_async(
@@ -242,10 +247,4 @@ async def check_is_reregistration(
     - 이메일과 전화번호를 통해 회원가입 내역이 있는지 확인
     - Response: 중복 회원가입 여부
     """
-    scan_history = f"""
-        SELECT 1 FROM signup_histories 
-        WHERE email='{email}' or phone='{phone}'
-        LIMIT 1;
-    """
-    signup_histories = await db_exec_query(scan_history)
-    return {"reregistration": bool(signup_histories)}
+    return {"reregistration": await db.signup_history_exists(email, phone)}

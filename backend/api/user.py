@@ -11,9 +11,10 @@ import psycopg
 from pydantic import BaseModel, constr
 from fastapi import HTTPException, Request, Body
 
+from backend import db
 from backend.math import calculate_membership_expiry
 from backend.http import APIRouter, TosspaymentsAPI, PayPalAPI, idempotent_retries
-from backend.system import SECRETS, db_exec_query, run_async, log, membership
+from backend.system import SECRETS, run_async, log, membership
 
 
 router = APIRouter("user")
@@ -57,21 +58,17 @@ async def signup(item: SignupInfo):
             UserPoolId=SECRETS["COGNITO_USER_POOL_ID"],
             Username=item.email,
         )
-        cognito_user_id = cognito_user["Username"]
+        cognito_user_id: str = cognito_user["Username"]
     except cognito.exceptions.UserNotFoundException:
         raise HTTPException(status_code=409, detail="Cognito user not found")
     if cognito_user["UserStatus"] != "CONFIRMED":
         raise HTTPException(status_code=401, detail="Cognito user is not confirmed")
 
-    insert_queries = []  # DB 쿼리 실행 리스트
+    signup_transaction = db.Transaction()
 
-    scan_history = f"""
-        SELECT 1 FROM signup_histories 
-        WHERE email='{item.email}' or phone='{item.phone}'
-        LIMIT 1;
-    """  # 회원가입 내역이 있다면 결제정보 필요함
-    signup_histories = await db_exec_query(scan_history)
-    if signup_histories:
+    signup_history = await db.signup_history_exists(email=item.email, phone=item.phone)
+    if signup_history:
+        # 회원가입 내역이 있다면 결제정보 필요함
         if item.currency == "KRW" and item.tosspayments:  # 토스페이먼츠 빌링
             tosspayments_billing: dict = await TosspaymentsAPI.create_billing(
                 cognito_user_id,
@@ -84,29 +81,24 @@ async def signup(item: SignupInfo):
                 amount=membership[item.membership][item.currency],
             )
             payment = tosspayments_billing["payment"]
-            insert_queries.append(
-                f"""
-            INSERT INTO tosspayments_billings (user_id, order_id, payment_key, 
-                order_name, total_amount, supply_price, vat, card_issuer, 
-                card_acquirer, card_number_masked, card_approve_number, card_type, 
-                card_owner_type, receipt_url) 
-            VALUES (
-                '{cognito_user_id}', 
-                '{payment["orderId"]}', 
-                '{payment["paymentKey"]}', 
-                '{payment["orderName"]}', 
-                '{payment["totalAmount"]}', 
-                '{payment["suppliedAmount"]}', 
-                '{payment["vat"]}', 
-                '{payment["card"]["issuerCode"]}',
-                '{payment["card"]["acquirerCode"]}',
-                '{payment["card"]["number"]}',
-                '{payment["card"]["approveNo"]}',
-                '{payment["card"]["cardType"]}',
-                '{payment["card"]["ownerType"]}',
-                '{payment["receipt"]["url"]}'
-            );
-            """
+            signup_transaction.append_template(
+                db.insert_query_template(
+                    "tosspayments_billings",
+                    user_id=cognito_user_id,
+                    order_id=payment["orderId"],
+                    payment_key=payment["paymentKey"],
+                    order_name=payment["orderName"],
+                    total_amount=payment["totalAmount"],
+                    supply_price=payment["suppliedAmount"],
+                    vat=payment["vat"],
+                    card_issuer=payment["card"]["issuerCode"],
+                    card_acquirer=payment["card"]["acquirerCode"],
+                    card_number_masked=payment["card"]["number"],
+                    card_approve_number=payment["card"]["approveNo"],
+                    card_type=payment["card"]["cardType"],
+                    card_owner_type=payment["card"]["ownerType"],
+                    receipt_url=payment["receipt"]["url"],
+                )
             )
         elif item.currency == "USD" and item.paypal:  # 페이팔 빌링
             # -- 빌링 정보 검사 --
@@ -139,38 +131,33 @@ async def signup(item: SignupInfo):
             )
 
     now = datetime.now()
-    membership_expiration = calculate_membership_expiry(start=now)
-    create_user = f"""
-    INSERT INTO users (id, email, name, phone, membership, membership_expiration, 
-        currency, tosspayments_billing_key, paypal_token, paypal_subscription_id,
-        billing_date, billing_time) 
-    VALUES (
-        '{cognito_user_id}', 
-        '{item.email}', 
-        '{item.email.split("@")[0]}', 
-        '{item.phone}', 
-        '{item.membership}', 
-        '{membership_expiration.strftime('%Y-%m-%d %H:%M:%S')}', 
-        '{item.currency}', 
-        {f"'{tosspayments_billing['key']}'" if item.tosspayments else "NULL"},
-        {f"'{item.paypal.token}'" if item.paypal else "NULL"}, 
-        {f"'{item.paypal.subscription}'" if item.paypal else "NULL"},
-        {now.day},
-        '{now.strftime('%H:%M:%S')}'
-    );
-    """  # 유저 생성 쿼리가 가장 먼저 실행되어야 함
-    insert_queries.insert(0, create_user)
-    insert_queries.append(
-        f"""
-    INSERT INTO signup_histories (email, phone) 
-    VALUES ('{item.email}', '{item.phone}');
-    """
+    signup_transaction.prepend_template(  # 유저 생성 쿼리가 가장 먼저 실행되어야 함
+        db.insert_query_template(
+            "users",
+            id=cognito_user_id,
+            email=item.email,
+            name=item.email.split("@")[0],
+            phone=item.phone,
+            membership=item.membership,
+            membership_expiration=calculate_membership_expiry(start=now),
+            currency=item.currency,
+            tosspayments_billing_key=tosspayments_billing["key"]
+            if item.tosspayments
+            else None,
+            paypal_token=item.paypal.token if item.paypal else None,
+            paypal_subscription_id=item.paypal.subscription if item.paypal else None,
+            billing_date=now.day,
+            billing_time=now.time(),
+        )
+    )
+    signup_transaction.append_template(
+        db.insert_query_template("signup_histories", email=item.email, phone=item.phone)
     )
     try:
-        await db_exec_query(*insert_queries)
+        await signup_transaction.exec()
     except psycopg.errors.UniqueViolation:  # email colume is unique
         raise HTTPException(status_code=409, detail="Email is already in used")
-    return {"first_signup_benefit": not signup_histories}  # 첫 회원가입 혜택 여부
+    return {"first_signup_benefit": not signup_history}  # 첫 회원가입 혜택 여부
 
 
 @router.public.post("/cognito")
@@ -183,7 +170,7 @@ async def create_cognito_user(
     - /api/auth/email/confirm 엔드포인트로 해당 인증코드를 인증해야 함
     - Response: Cognito에서 생성된 유저 ID
     """
-    if await db_exec_query(f"SELECT 1 FROM users WHERE email='{email}' LIMIT 1;"):
+    if await db.user_exists(email):
         raise HTTPException(status_code=409, detail="Email is already in used")
     create_cognito_user_func = partial(
         run_async,
@@ -229,7 +216,7 @@ async def get_user_country(request: Request):
         }
     except AttributeError:  # if host is localhost
         default = {"country": "KR", "timezone": "Asia/Seoul"}
-        default = {"country": "US", "timezone": "America/Chicago"}
+        # default = {"country": "US", "timezone": "America/Chicago"}
         log.warning(
             "GET /user/country"
             f"\n국가 정보 취득에 실패했습니다. 기본값을 응답합니다."
@@ -248,5 +235,9 @@ async def change_user_name(
     """
     - 유저 이름 변경
     """
-    await db_exec_query(f"UPDATE users SET name='{new_name}' WHERE id='{user['id']}'")
+    await db.exec(
+        "UPDATE users SET name={user_name} WHERE id={user_id}",
+        user_name=new_name,
+        user_id=user["id"],
+    )
     return {"message": "Changed successfully"}

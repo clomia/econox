@@ -46,8 +46,8 @@ SECRET_MANAGER_NAME = "econox-secret"
 
 # ==================== SETTINGS ====================
 membership = {
-    "basic": {"KRW": 11900, "USD": 9.9},
-    "professional": {"KRW": 15900, "USD": 12.9},
+    "basic": {"KRW": 11900, "USD": 9.99},
+    "professional": {"KRW": 15900, "USD": 12.99},
 }
 # ==================== SECRETS ====================
 # Secret manager에 정의된 보안 데이터를 딕셔너리로 정리합니다.

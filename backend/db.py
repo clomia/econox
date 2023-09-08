@@ -17,7 +17,7 @@ async def exec(*queries: str, **params) -> list:
     - params: 템플릿 문자열에 할당해야 하는 매개변수
         - Python 객체를 받습니다. PostgreSQL 객체를 문자열로 표현하지 마세요
     - 사용 예
-        - `DB.exec("INSERT INTO {table} {name}", table="user", name="John")`
+        - `db.exec("INSERT INTO {table} {name}", table="user", name="John")`
         - 여러개의 쿼리 문자열도 허용됩니다. (너무 길어서 예시코드 안만듬)
     """
 
@@ -56,7 +56,7 @@ async def exec(*queries: str, **params) -> list:
             log.warning(
                 f"\n{e}\n DB 연결 오류가 발생하였습니다. Secrets Manager로부터 암호를 업데이트하여 재시도합니다."
             )
-            return exec(query)
+            return sync_exec()
         except Exception as e:
             conn.rollback()
             log.critical(f"\n{e}\nDB 쿼리 실행 오류가 발생하여 롤백하였습니다.\nQuery: {query}")

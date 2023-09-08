@@ -68,67 +68,32 @@
         },
     ],
 }
-
 import requests
+import base64
 
-headers = {
-    "Content-Type": "application/json",
-    "Authorization": "Bearer ECvJ_yBNz_UfMmCvWEbT_2ZWXdzbFFQZ-1Y5K2NGgeHn",
-}
+from backend.system import SECRETS
 
-data = {
-    "transmission_id": "69cd13f0-d67a-11e5-baa3-778b53f4ae55",
-    "transmission_time": "2016-02-18T20:01:35Z",
-    "cert_url": "cert_url",
-    "auth_algo": "SHA256withRSA",
-    "transmission_sig": "lmI95Jx3Y9nhR5SJWlHVIWpg4AgFk7n9bCHSRxbrd8A9zrhdu2rMyFrmz Zjh3s3boXB07VXCXUZy/UFzUlnGJn0wDugt7FlSvdKeIJenLRemUxYCPVoEZzg9VFNqOa48gMkvF XTpxBeUx/kWy6B5cp7GkT2 pOowfRK7OaynuxUoKW3JcMWw272VKjLTtTAShncla7tGF 55rxyt2KNZIIqxNMJ48RDZheGU5w1npu9dZHnPgTXB9iomeVRoD8O/jhRpnKsGrDschyNdkeh81BJJMH4Ctc6lnCCquoP/GzCzz33MMsNdid7vL/NIWaCsekQpW26FpWPi/tfj8nLA': '=",
-    "webhook_id": "1JE4291016473214C",
-    "webhook_event": {
-        "id": "8PT597110X687430LKGECATA",
-        "create_time": "2013-06-25T21:41:28Z",
-        "resource_type": "authorization",
-        "event_type": "PAYMENT.AUTHORIZATION.CREATED",
-        "summary": "A payment authorization was created",
-        "resource": {
-            "id": "2DC87612EK520411B",
-            "create_time": "2013-06-25T21:39:15Z",
-            "update_time": "2013-06-25T21:39:17Z",
-            "state": "authorized",
-            "amount": {
-                "total": "7.47",
-                "currency": "USD",
-                "details": {"subtotal": "7.47"},
-            },
-            "parent_payment": "PAY-36246664YD343335CKHFA4AY",
-            "valid_until": "2013-07-24T21:39:15Z",
-            "links": [
-                {
-                    "href": "https://api-m.paypal.com/v1/payments/authorization/2DC87612EK520411B",
-                    "rel": "self",
-                    "method": "GET",
-                },
-                {
-                    "href": "https://api-m.paypal.com/v1/payments/authorization/2DC87612EK520411B/capture",
-                    "rel": "capture",
-                    "method": "POST",
-                },
-                {
-                    "href": "https://api-m.paypal.com/v1/payments/authorization/2DC87612EK520411B/void",
-                    "rel": "void",
-                    "method": "POST",
-                },
-                {
-                    "href": "https://api-m.paypal.com/v1/payments/payment/PAY-36246664YD343335CKHFA4AY",
-                    "rel": "parent_payment",
-                    "method": "GET",
-                },
-            ],
-        },
-    },
-}
-
+# 1. OAuth2 토큰 가져오기
+token = base64.b64encode(
+    f"{SECRETS['PAYPAL_CLIENT_ID']}:{SECRETS['PAYPAL_SECRET_KEY']}".encode("utf-8")
+).decode("utf-8")
 response = requests.post(
-    "https://api-m.sandbox.paypal.com/v1/notifications/verify-webhook-signature",
-    headers=headers,
-    json=data,
+    "https://api.sandbox.paypal.com/v1/oauth2/token",
+    headers={
+        "Authorization": f"basic {token}",
+        "Content-Type": "application/x-www-form-urlencoded",
+    },
+    data={"grant_type": "client_credentials"},
 )
+token_info = response.json()
+access_token = token_info["access_token"]
+
+# 3. 결제 상세 정보 조회
+url = f"https://api.sandbox.paypal.com/v1/payments/billing-agreements/I-9W96GNVTB5GV"
+headers = {
+    "Authorization": f"Bearer {access_token}",
+    "Content-Type": "application/json",
+}
+sale_info = requests.get(url, headers=headers).json()
+print(sale_info)
+# 결제와 관련된 상세 정보 처리...

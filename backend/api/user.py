@@ -131,7 +131,7 @@ async def signup(item: SignupInfo):
             )
 
     now = datetime.now()
-    signup_transaction.prepend_template(  # 유저 생성 쿼리가 가장 먼저 실행되어야 함
+    signup_transaction.prepend_template(  # 외래키 제약조건으로 인해 가장 먼저 실행되어야 함
         db.insert_query_template(
             "users",
             id=cognito_user_id,

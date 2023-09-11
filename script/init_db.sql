@@ -1,4 +1,4 @@
---- Last commit: 2023-09-08 12:54:45 ---
+--- Last commit: 2023-09-11 14:23:41 ---
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ------------------------------------------------
@@ -16,7 +16,6 @@ CREATE TABLE users (
     "membership_expiration" TIMESTAMP NOT NULL, -- 다음 결제 일시
     "currency" currency NOT NULL, 
     "tosspayments_billing_key" VARCHAR(255), 
-    "paypal_token" VARCHAR(255), -- facilitatorAccessToken
     "paypal_subscription_id" VARCHAR(255), 
     "billing_date" TIMESTAMP NOT NULL, 
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
@@ -35,28 +34,6 @@ CREATE TABLE signup_histories (
 
 ------------------------------------------------
 -- Tosspayments 청구 내역
-------------------------------------------------
-CREATE TABLE tosspayments_billings (
-    "id" SERIAL NOT NULL PRIMARY KEY,
-    "user_id" UUID REFERENCES users(id) ON DELETE CASCADE,
-    "order_id" UUID NOT NULL, -- 우리가 발급
-    "payment_key" VARCHAR(255) NOT NULL, -- Toss가 발급
-    "order_name" VARCHAR(255) NOT NULL, -- 상품명
-    "total_amount" INT NOT NULL, -- 고객이 결제한 금액
-    "supply_price" INT NOT NULL,  -- 공급가액
-    "vat" INT NOT NULL, -- 부가세
-    "card_issuer" VARCHAR(50) NOT NULL, -- 카드 발급사
-    "card_acquirer" VARCHAR(50) NOT NULL, -- 카드 매입사
-    "card_number_masked" VARCHAR(50) NOT NULL, -- 가려진 카드번호
-    "card_approve_number" VARCHAR(50) NOT NULL, -- 카드사 승인 번호
-    "card_type" VARCHAR(50) NOT NULL, -- 신용/체크 타입
-    "card_owner_type" VARCHAR(50) NOT NULL, -- 개인/법인 타입
-    "receipt_url" TEXT NOT NULL, -- 영수증 URL
-    "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
-)
-
-------------------------------------------------
--- Paypal 청구 내역
 ------------------------------------------------
 CREATE TABLE tosspayments_billings (
     "id" SERIAL NOT NULL PRIMARY KEY,

@@ -4,7 +4,7 @@ from datetime import datetime
 
 import psycopg
 
-sql_path = Path(input("SQL 파일 경로: "))
+sql_path = Path("script/init_db.sql")
 host = input("host: ")
 password = input("password: ")
 

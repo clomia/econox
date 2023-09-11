@@ -30,7 +30,6 @@ class TosspaymentsBillingInfo(BaseModel):
 
 class PaypalBillingInfo(BaseModel):
     order: constr(min_length=1)  # order id
-    token: constr(min_length=1)
     subscription: constr(min_length=1)  # subscription id
 
 
@@ -107,7 +106,7 @@ async def signup(item: SignupInfo):
                 f"/v1/billing/subscriptions/{item.paypal.subscription}"
             )
             try:
-                await idempotent_retries(
+                order_detail, subscription_detail = await idempotent_retries(
                     target=partial(
                         asyncio.gather,  # 주문과 구독 정보를 가져옵니다.
                         PayPalAPI(order_detail_api).get(),
@@ -119,6 +118,13 @@ async def signup(item: SignupInfo):
                     ),
                     timeout=30,  # 조건이 만족될때까지 최대 30초 재시도합니다.
                 )  # timeout이 초과되어도 조건이 만족되지 않으면 AssertionError
+                print(order_detail)
+                print(subscription_detail)
+                print(
+                    "next billing:",
+                    subscription_detail["billing_info"]["next_billing_time"],
+                )
+                #! 페이팔로부터 받은 다음 결제일을 membership_expiration로 해야 함
             except (httpx.HTTPStatusError, AssertionError) as e:
                 raise HTTPException(
                     status_code=402,
@@ -144,7 +150,6 @@ async def signup(item: SignupInfo):
             tosspayments_billing_key=tosspayments_billing["key"]
             if item.tosspayments
             else None,
-            paypal_token=item.paypal.token if item.paypal else None,
             paypal_subscription_id=item.paypal.subscription if item.paypal else None,
             billing_date=now,
         )
@@ -215,7 +220,7 @@ async def get_user_country(request: Request):
         }
     except AttributeError:  # if host is localhost
         default = {"country": "KR", "timezone": "Asia/Seoul"}
-        # default = {"country": "US", "timezone": "America/Chicago"}
+        default = {"country": "US", "timezone": "America/Chicago"}
         log.warning(
             "GET /user/country"
             f"\n국가 정보 취득에 실패했습니다. 기본값을 응답합니다."

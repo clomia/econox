@@ -8,7 +8,7 @@
 
     let isSdkLoaded = false;
     const paypalClientId = "AaJ-FuCRcsENw_dBXYGEJ75w8vJI0UUmRDXUbuUCbUCCValnyQfLEB5GgCrjO2FdLJNhE9q_boMs70Fm";
-    const paypalPlanId = "P-76B92140LE320861RMTQ2A2A";
+    const paypalPlanId = "P-80D54238UH805384CMT7LGBY";
 
     onMount(() => {
         if ((window as any).paypal) {
@@ -45,7 +45,6 @@
                         ...$inputResult,
                         paypal: {
                             order: data.orderID as string,
-                            token: data.facilitatorAccessToken as string,
                             subscription: data.subscriptionID as string,
                         },
                     });

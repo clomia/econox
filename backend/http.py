@@ -357,27 +357,6 @@ class PayPalAPI:
             )
             return await self._execute_request(request, retry=self.get)
 
-    @classmethod
-    async def verify_webhook(cls, request: Request) -> dict:
-        body = await request.json()
-        result = await cls("/v1/notifications/verify-webhook-signature").post(
-            {
-                "auth_algo": request.headers["paypal-auth-algo"],
-                "cert_url": request.headers["paypal-cert-url"],
-                "transmission_id": request.headers["paypal-transmission-id"],
-                "transmission_sig": request.headers["paypal-transmission-sig"],
-                "transmission_time": request.headers["paypal-transmission-time"],
-                "webhook_id": SECRETS["PAYPAL_WEBHOOK_ID"],
-                "webhook_event": body,
-            }
-        )
-        if result != {"verification_status": "SUCCESS"}:
-            log.warning(
-                "PayPal 웹훅 앤드포인트가 검증되지 않은 요청을 거부하였습니다."
-                f"\nEvent header {request.headers}\nEvent body: {body}"
-            )
-            raise HTTPException(status_code=400, detail="Event verification failed")
-
 
 async def idempotent_retries(
     target: Awaitable[T], inspecter: Callable[[T], bool], timeout: int = 15

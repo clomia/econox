@@ -26,7 +26,6 @@ headers = {
 
 subscription_id = "I-96V62M5HRD3U"
 
-
 response = requests.post(
     f"https://api.sandbox.paypal.com/v1/billing/subscriptions/{subscription_id}/revise",
     headers=headers,

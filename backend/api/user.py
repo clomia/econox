@@ -63,6 +63,7 @@ async def signup(item: SignupInfo):
     if cognito_user["UserStatus"] != "CONFIRMED":
         raise HTTPException(status_code=401, detail="Cognito user is not confirmed")
 
+    now = datetime.now()
     membership_expiry = calculate_membership_expiry(start=now, current=now)
 
     signup_transaction = db.Transaction()
@@ -133,7 +134,6 @@ async def signup(item: SignupInfo):
                 detail="Correct billing information is required",
             )
 
-    now = datetime.now()
     signup_transaction.prepend_template(  # 외래키 제약조건으로 인해 가장 먼저 실행되어야 함
         db.insert_query_template(
             "users",

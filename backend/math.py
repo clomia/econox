@@ -1,7 +1,7 @@
 """ 고성능 수학 연산 모듈 """
 from typing import Callable
-from datetime import datetime
 from calendar import monthrange
+from datetime import datetime, timezone, timedelta
 
 import numpy as np
 import xarray as xr
@@ -109,3 +109,46 @@ def calculate_membership_expiry(start: datetime) -> datetime:
     )
     day = min(start.day, monthrange(year, month)[1])
     return datetime(year, month, day, start.hour, start.minute, start.second)
+
+
+def calculate_membership_expiry(start: datetime, current: datetime):
+    """
+    - start: 맴버십 시작일
+    - current: 최근 청구 날짜
+    - 맴버십 만료일을 계산합니다
+    - 다음달 동일 일시를 구하되 마지막 일보다 크면 마지막 일로 대체
+    - PayPal에서 사용하는 알고리즘과 동일합니다.
+    """
+    year, month, day = current.year, current.month, start.day
+
+    def is_leap_year(year):  # 윤년인지 아닌지 판별하는 함수
+        return (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0)
+
+    next_month = month + 1 if month != 12 else 1
+    year += 1 if month == 12 else 0
+
+    # 모든 달의 일수가 같지 않고 윤년과 평년이 있다는 점을 고려하여 계산
+    if day == 31:
+        if next_month in [4, 6, 9, 11]:
+            day = 30
+        elif next_month == 2:
+            if is_leap_year(year):
+                day = 29
+            else:
+                day = 28
+    elif day == 30 and next_month == 2:
+        if is_leap_year(year):
+            day = 29
+        else:
+            day = 28
+    elif day == 29 and next_month == 2 and not is_leap_year(year):
+        day = 28
+
+    return datetime(year, next_month, day)
+
+
+def paypaltime2datetime(timestring: str):
+    """PayPal에서 사용하는 시간 문자열을 한국 시간대로 변환한 datetime 객체로 만들어 반환합니다."""
+    return datetime.fromisoformat(timestring.replace("Z", "+00:00")).astimezone(
+        timezone(timedelta(hours=9))
+    )

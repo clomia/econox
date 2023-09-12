@@ -12,7 +12,7 @@ from pydantic import BaseModel, constr
 from fastapi import HTTPException, Request, Body
 
 from backend import db
-from backend.math import calculate_membership_expiry
+from backend.math import calculate_membership_expiry, paypaltime2datetime
 from backend.http import APIRouter, TosspaymentsAPI, PayPalAPI, idempotent_retries
 from backend.system import SECRETS, run_async, log, membership
 
@@ -63,8 +63,9 @@ async def signup(item: SignupInfo):
     if cognito_user["UserStatus"] != "CONFIRMED":
         raise HTTPException(status_code=401, detail="Cognito user is not confirmed")
 
-    signup_transaction = db.Transaction()
+    membership_expiry = calculate_membership_expiry(start=now, current=now)
 
+    signup_transaction = db.Transaction()
     signup_history = await db.signup_history_exists(email=item.email, phone=item.phone)
     if signup_history:
         # 회원가입 내역이 있다면 결제정보 필요함
@@ -106,7 +107,7 @@ async def signup(item: SignupInfo):
                 f"/v1/billing/subscriptions/{item.paypal.subscription}"
             )
             try:
-                order_detail, subscription_detail = await idempotent_retries(
+                order, subscription = await idempotent_retries(
                     target=partial(
                         asyncio.gather,  # 주문과 구독 정보를 가져옵니다.
                         PayPalAPI(order_detail_api).get(),
@@ -118,13 +119,9 @@ async def signup(item: SignupInfo):
                     ),
                     timeout=30,  # 조건이 만족될때까지 최대 30초 재시도합니다.
                 )  # timeout이 초과되어도 조건이 만족되지 않으면 AssertionError
-                print(order_detail)
-                print(subscription_detail)
-                print(
-                    "next billing:",
-                    subscription_detail["billing_info"]["next_billing_time"],
+                membership_expiry = paypaltime2datetime(
+                    subscription["billing_info"]["next_billing_time"]
                 )
-                #! 페이팔로부터 받은 다음 결제일을 membership_expiration로 해야 함
             except (httpx.HTTPStatusError, AssertionError) as e:
                 raise HTTPException(
                     status_code=402,
@@ -145,7 +142,7 @@ async def signup(item: SignupInfo):
             name=item.email.split("@")[0],
             phone=item.phone,
             membership=item.membership,
-            membership_expiration=calculate_membership_expiry(start=now),
+            membership_expiration=membership_expiry,
             currency=item.currency,
             tosspayments_billing_key=tosspayments_billing["key"]
             if item.tosspayments

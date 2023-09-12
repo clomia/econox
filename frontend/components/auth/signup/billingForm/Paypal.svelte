@@ -47,25 +47,8 @@
             initializePaypalButton(planId);
             return;
         }
-
-        const enableFunding = ["card"];
-        const disableFunding = [
-            "credit",
-            "paylater",
-            "bancontact",
-            "blik",
-            "eps",
-            "giropay",
-            "ideal",
-            "mercadopago",
-            "mybank",
-            "p24",
-            "sepa",
-            "sofort",
-            "venmo",
-        ];
         const script = document.createElement("script");
-        script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&vault=true&intent=subscription&enable-funding=${enableFunding.join()}&disable-funding=${disableFunding.join()}`;
+        script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&vault=true&intent=subscription`;
         script.onload = () => {
             isSdkLoaded = true;
             initializePaypalButton(planId);

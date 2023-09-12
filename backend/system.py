@@ -43,11 +43,18 @@ EFS_VOLUME_PATH = ROOT_PATH / "efs-volume"
 
 S3_BUCKET_NAME = "econox-storage"
 SECRET_MANAGER_NAME = "econox-secret"
-
 # ==================== SETTINGS ====================
 membership = {
-    "basic": {"KRW": 11900, "USD": 9.99},
-    "professional": {"KRW": 15900, "USD": 12.99},
+    "basic": {
+        "KRW": 11900,
+        "USD": 9.99,
+        "paypal_plan": "P-32P35738U4826650TMT72TNA",
+    },
+    "professional": {
+        "KRW": 15900,
+        "USD": 12.99,
+        "paypal_plan": "P-8U118819R1222424SMT72UDI",
+    },
 }
 # ==================== SECRETS ====================
 # Secret manager에 정의된 보안 데이터를 딕셔너리로 정리합니다.

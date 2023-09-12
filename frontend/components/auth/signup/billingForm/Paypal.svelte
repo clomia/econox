@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount, createEventDispatcher } from "svelte";
+    import { api } from "../../../../modules/request";
     import * as state from "../../../../modules/state";
     import LoadingAnimation from "../../../../assets/LoadingAnimation.svelte";
 
@@ -7,26 +8,8 @@
     const inputResult = state.auth.signup.inputResult;
 
     let isSdkLoaded = false;
-    const paypalClientId = "AaJ-FuCRcsENw_dBXYGEJ75w8vJI0UUmRDXUbuUCbUCCValnyQfLEB5GgCrjO2FdLJNhE9q_boMs70Fm";
-    const paypalPlanId = "P-80D54238UH805384CMT7LGBY";
 
-    onMount(() => {
-        if ((window as any).paypal) {
-            isSdkLoaded = true;
-            initializePaypalButton();
-            return;
-        }
-
-        const script = document.createElement("script");
-        script.src = `https://www.paypal.com/sdk/js?client-id=${paypalClientId}&vault=true&intent=subscription`;
-        script.onload = () => {
-            isSdkLoaded = true;
-            initializePaypalButton();
-        };
-        document.head.appendChild(script);
-    });
-
-    const initializePaypalButton = () => {
+    const initializePaypalButton = (planId: string) => {
         (window as any).paypal
             .Buttons({
                 style: {
@@ -37,7 +20,7 @@
                 },
                 createSubscription: (data: any, actions: any) => {
                     return actions.subscription.create({
-                        plan_id: paypalPlanId,
+                        plan_id: planId,
                     });
                 },
                 onApprove: (data: any, actions: any) => {
@@ -53,6 +36,42 @@
             })
             .render("#paypal-button");
     };
+
+    onMount(async () => {
+        const paypalInfo = await api.public.get("/const/paypal");
+        const planId = paypalInfo.data["plan_id"][$inputResult.membership];
+        const clientId = paypalInfo.data["client_id"];
+
+        if ((window as any).paypal) {
+            isSdkLoaded = true;
+            initializePaypalButton(planId);
+            return;
+        }
+
+        const enableFunding = ["card"];
+        const disableFunding = [
+            "credit",
+            "paylater",
+            "bancontact",
+            "blik",
+            "eps",
+            "giropay",
+            "ideal",
+            "mercadopago",
+            "mybank",
+            "p24",
+            "sepa",
+            "sofort",
+            "venmo",
+        ];
+        const script = document.createElement("script");
+        script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&vault=true&intent=subscription&enable-funding=${enableFunding.join()}&disable-funding=${disableFunding.join()}`;
+        script.onload = () => {
+            isSdkLoaded = true;
+            initializePaypalButton(planId);
+        };
+        document.head.appendChild(script);
+    });
 </script>
 
 <main>

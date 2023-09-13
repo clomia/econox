@@ -1,4 +1,4 @@
---- Last commit: 2023-09-11 14:23:41 ---
+--- Last commit: 2023-09-13 13:32:39 ---
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ------------------------------------------------
@@ -27,8 +27,10 @@ CREATE TABLE users (
 ------------------------------------------------
 CREATE TABLE signup_histories (
     "id" SERIAL NOT NULL PRIMARY KEY,
-    "email" VARCHAR(255) NOT NULL,
-    "phone" VARCHAR(255) NOT NULL,
+    "user_id" UUID NOT NULL,
+    "user_delete_at" TIMESTAMP DEFAULT NULL,
+    "email" TEXT NOT NULL,
+    "phone" TEXT NOT NULL,
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 );
 
@@ -37,7 +39,7 @@ CREATE TABLE signup_histories (
 ------------------------------------------------
 CREATE TABLE tosspayments_billings (
     "id" SERIAL NOT NULL PRIMARY KEY,
-    "user_id" UUID REFERENCES users(id) ON DELETE CASCADE,
+    "user_id" UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     "order_id" UUID NOT NULL, -- 우리가 발급
     "payment_key" VARCHAR(255) NOT NULL, -- Toss가 발급
     "order_name" VARCHAR(255) NOT NULL, -- 상품명

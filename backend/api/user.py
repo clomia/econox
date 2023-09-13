@@ -153,7 +153,12 @@ async def signup(item: SignupInfo):
         )
     )
     signup_transaction.append_template(
-        db.insert_query_template("signup_histories", email=item.email, phone=item.phone)
+        db.insert_query_template(
+            "signup_histories",
+            user_id=cognito_user_id,
+            email=item.email,
+            phone=item.phone,
+        )
     )
     try:
         await signup_transaction.exec()
@@ -167,7 +172,11 @@ async def delete_user(user=router.private.auth):
     """
     - DB와 Cognito에서 유저 삭제 (회원탈퇴)
     """
-    await db.exec("DELETE FROM users WHERE id={user_id}", user_id=user["id"])
+    await db.exec(
+        "DELETE FROM users WHERE id={user_id};",
+        "UPDATE signup_histories SET user_delete_at = CURRENT_TIMESTAMP;",
+        user_id=user["id"],
+    )
     await run_async(
         cognito.delete_user,
         AccessToken=user["cognito_access_token"],
@@ -231,7 +240,7 @@ async def get_user_country(request: Request):
         }
     except AttributeError:  # if host is localhost
         default = {"country": "KR", "timezone": "Asia/Seoul"}
-        default = {"country": "US", "timezone": "America/Chicago"}
+        # default = {"country": "US", "timezone": "America/Chicago"}
         log.warning(
             "GET /user/country"
             f"\n국가 정보 취득에 실패했습니다. 기본값을 응답합니다."

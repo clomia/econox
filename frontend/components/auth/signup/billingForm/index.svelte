@@ -19,9 +19,9 @@
 
 <div>{$paymentError ? $text.paymentError : $text.noFirstPleasePayment}</div>
 
-{#if $inputResult.currency === "KRW"}
+{#if $inputResult.reregistration && $inputResult.currency === "KRW"}
     <Tosspayments on:complete={() => dispatch("complete")} />
-{:else if $inputResult.currency === "USD"}
+{:else if $inputResult.reregistration && $inputResult.currency === "USD"}
     <Paypal on:complete={() => dispatch("complete")} />
 {/if}
 

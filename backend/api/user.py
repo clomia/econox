@@ -48,7 +48,7 @@ async def signup(item: SignupInfo):
     """
     - 유저 생성 (회원가입)
     - 결제 정보가 누락되거나 잘못된 경우 402 응답
-    - /api/user/cognito를 통해 이메일에 대한 Cognito 유저가 생성되어있어야 함
+    - POST /api/user/cognito를 통해 이메일에 대한 Cognito 유저가 생성되어있어야 함
     - Response: 첫 회원가입 혜택 여부
     """
 
@@ -165,7 +165,7 @@ async def signup(item: SignupInfo):
 @router.private.delete()
 async def delete_user(user=router.private.auth):
     """
-    - DB와 Cognito에서 유저 삭제 (회원탈퇴 기능)
+    - DB와 Cognito에서 유저 삭제 (회원탈퇴)
     """
     await db.exec("DELETE FROM users WHERE id={user_id}", user_id=user["id"])
     await run_async(
@@ -182,7 +182,7 @@ async def create_cognito_user(
 ):
     """
     - AWS Cognito에 유저 생성 & 이메일로 인증코드 전송
-    - /api/auth/email/confirm 엔드포인트로 해당 인증코드를 인증해야 함
+    - POST /api/auth/email/confirm 엔드포인트로 해당 인증코드를 인증해야 함
     - Response: Cognito에서 생성된 유저 ID
     """
     if await db.user_exists(email):
@@ -256,3 +256,50 @@ async def change_user_name(
         user_id=user["id"],
     )
     return {"message": "Changed successfully"}
+
+
+@router.private.post("/password/reset")
+async def password_reset_and_send_confirmation_code(user=router.private.auth):
+    """
+    - 비밀번호를 리셋하고 비밀번호 재설정을 위해 이메일로 인증코드를 전송합니다.
+    - PATCH /api/user/password 엔드포인트에 인증코드를 사용하여 비밀번호를 재설정해야 합니다.
+    """
+    if not await db.user_exists(user["email"]):
+        raise HTTPException(status_code=404, detail="user does not exist")
+    try:
+        await run_async(
+            cognito.forgot_password,
+            ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
+            Username=user["email"],
+        )
+    except cognito.exceptions.LimitExceededException:
+        raise HTTPException(status_code=429, detail="Too many requests")
+    else:
+        return {"message": "Code transfer requested"}
+
+
+@router.private.patch("/password")
+async def password_reset(
+    new_password: str = Body(..., min_length=1),
+    confirm_code: str = Body(..., min_length=1),
+    user=router.private.auth,
+):
+    """
+    - 비밀번호를 변경합니다.
+    - new_password: 변경 후 비밀번호
+    - confirm_code: POST /api/user/password/reset 엔드포인트를 통해 유저에게 발송된 인증코드
+    """
+    if not await db.user_exists(user["email"]):
+        raise HTTPException(status_code=404, detail="user does not exist")
+    try:
+        await run_async(
+            cognito.confirm_forgot_password,
+            ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
+            Username=user["email"],
+            ConfirmationCode=confirm_code,
+            Password=new_password,
+        )
+    except cognito.exceptions.LimitExceedException:
+        raise HTTPException(status_code=429, detail="Too many requests")
+    else:
+        return {"message": "Password reset successful"}

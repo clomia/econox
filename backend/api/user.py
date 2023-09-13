@@ -48,6 +48,7 @@ async def signup(item: SignupInfo):
     """
     - 유저 생성 (회원가입)
     - 결제 정보가 누락되거나 잘못된 경우 402 응답
+    - /api/user/cognito를 통해 이메일에 대한 Cognito 유저가 생성되어있어야 함
     - Response: 첫 회원가입 혜택 여부
     """
 
@@ -159,6 +160,19 @@ async def signup(item: SignupInfo):
     except psycopg.errors.UniqueViolation:  # email colume is unique
         raise HTTPException(status_code=409, detail="Email is already in used")
     return {"first_signup_benefit": not signup_history}  # 첫 회원가입 혜택 여부
+
+
+@router.private.delete()
+async def delete_user(user=router.private.auth):
+    """
+    - DB와 Cognito에서 유저 삭제 (회원탈퇴 기능)
+    """
+    await db.exec("DELETE FROM users WHERE id={user_id}", user_id=user["id"])
+    await run_async(
+        cognito.delete_user,
+        AccessToken=user["cognito_access_token"],
+    )
+    return {"message": "Delete successfully"}
 
 
 @router.public.post("/cognito")

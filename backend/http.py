@@ -61,7 +61,12 @@ class CognitoToken:
             algorithms=["RS256"],
             options={"verify_signature": True, "verify_aud": False},
         )
-        return {"id": access_info["username"], "email": id_info["email"]}
+        return {
+            "id": access_info["username"],
+            "email": id_info["email"],
+            "cognito_id_token": self.id_token,
+            "cognito_access_token": self.access_token,
+        }
 
 
 class CognitoTokenBearer(HTTPBearer):

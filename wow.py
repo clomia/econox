@@ -18,20 +18,24 @@ response = requests.post(
 token_info = response.json()
 access_token = token_info["access_token"]
 
-headers = {
-    "Authorization": f"Bearer {access_token}",
-    "Content-Type": "application/json",
-}
-
-
+access_token = ...
 subscription_id = "I-96V62M5HRD3U"
+plan_id = {
+    "basic": "P-32P35738U4826650TMT72TNA",
+    "professional": "P-8U118819R1222424SMT72UDI",
+}
 
 response = requests.post(
     f"https://api.sandbox.paypal.com/v1/billing/subscriptions/{subscription_id}/revise",
-    headers=headers,
+    headers={
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+    },
     json={
-        "plan_id": membership["professional"]["paypal_plan"],
+        "plan_id": plan_id["basic"],
     },
 )
 
-print(response.json())
+# Extract approval link from response
+url = next(ele["href"] for ele in response.json()["links"] if ele["rel"] == "approve")
+print(f"Approve link: {url}")

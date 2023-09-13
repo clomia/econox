@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import Swal from "sweetalert2";
     import * as state from "../../../modules/state";
     import { api } from "../../../modules/request";
     import LoadingTextAnimation from "../../../assets/LoadingTextAnimation.svelte";
@@ -62,6 +63,17 @@
     const cancelProcess = async () => {
         window.location.replace(window.location.origin);
     };
+
+    const focusOnExitBtn = async () => {
+        Swal.fire({
+            title: $text.signupBtnAlert,
+            toast: true,
+            position: "top",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        });
+    };
 </script>
 
 <main>
@@ -90,6 +102,8 @@
         {/await}
     {/if}
 </main>
+
+<svelte:body on:click={focusOnExitBtn} />
 
 <style>
     main {

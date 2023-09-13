@@ -78,7 +78,7 @@ async def create_phone_confirmation(phone: str = Body(..., min_length=1, embed=T
     """
     - 전화번호로 인증코드 전송
     - 3분 뒤 인증코드 만료
-    - POST /api/auth/phone/confirm 엔드포인트로 해당 인증코드를 인증해야 함
+    - POST /api/auth/phone/confirm API로 해당 인증코드를 인증해야 함
     """
     target_path: PosixPath = PHONE_CONFIRM_CODE_PATH / phone
     issued_code = f"{secrets.randbelow(10**6):06}"
@@ -109,7 +109,7 @@ async def phone_confirmation(
 ):
     """
     - 전송된 인증코드로 전화번호 인증
-    - POST /api/auth/phone 엔드포인트로 인증코드를 전송할 수 있음
+    - POST /api/auth/phone API로 인증코드를 전송할 수 있음
     """
     target_path = PHONE_CONFIRM_CODE_PATH / phone
     if not target_path.exists():  # 코드 만료
@@ -127,8 +127,8 @@ async def cognito_resend_confirm_code(email: str = Body(..., min_length=1, embed
     """
     - 이메일로 인증코드 전송
     - AWS Cognito user pool에 존재하는 이메일이어야 함
-        - Cognito 유저가 없는 경우 /api/user/cognito 엔드포인트를 사용해야 함
-    - POST /api/auth/email/confirm 엔드포인트로 해당 인증코드를 인증해야 함
+        - Cognito 유저가 없는 경우 /api/user/cognito API를 사용해야 함
+    - POST /api/auth/email/confirm API로 해당 인증코드를 인증해야 함
     """
     try:
         await run_async(
@@ -149,7 +149,7 @@ async def cognito_confirm_sign_up(
 ):
     """
     - 전송된 인증코드로 이메일 인증
-    - POST /api/user/cognito 혹은 POST /api/auth/email 엔드포인트로 인증코드를 전송할 수 있음
+    - POST /api/user/cognito 혹은 POST /api/auth/email API로 인증코드를 전송할 수 있음
     """
     try:
         await run_async(
@@ -175,7 +175,7 @@ async def cognito_token_refresh(
 ):
     """
     - 갱신 토큰으로 새로운 인증 토큰을 발급
-    - 갱신 토큰은 POST /api/auth/user 엔드포인트로 발급받을 수 있음
+    - 갱신 토큰은 POST /api/auth/user API로 발급받을 수 있음
     - Response: 인증 토큰
     """
     try:

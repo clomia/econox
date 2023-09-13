@@ -191,7 +191,7 @@ async def create_cognito_user(
 ):
     """
     - AWS Cognito에 유저 생성 & 이메일로 인증코드 전송
-    - POST /api/auth/email/confirm 엔드포인트로 해당 인증코드를 인증해야 함
+    - POST /api/auth/email/confirm API로 해당 인증코드를 인증해야 함
     - Response: Cognito에서 생성된 유저 ID
     """
     if await db.user_exists(email):
@@ -271,7 +271,7 @@ async def change_user_name(
 async def password_reset_and_send_confirmation_code(user=router.private.auth):
     """
     - 비밀번호를 리셋하고 비밀번호 재설정을 위해 이메일로 인증코드를 전송합니다.
-    - PATCH /api/user/password 엔드포인트에 인증코드를 사용하여 비밀번호를 재설정해야 합니다.
+    - PATCH /api/user/password API에 인증코드를 사용하여 비밀번호를 재설정해야 합니다.
     """
     if not await db.user_exists(user["email"]):
         raise HTTPException(status_code=404, detail="user does not exist")
@@ -288,18 +288,19 @@ async def password_reset_and_send_confirmation_code(user=router.private.auth):
 
 
 @router.private.patch("/password")
-async def password_reset(
+async def change_password(
     new_password: str = Body(..., min_length=1),
     confirm_code: str = Body(..., min_length=1),
     user=router.private.auth,
 ):
     """
     - 비밀번호를 변경합니다.
-    - new_password: 변경 후 비밀번호
-    - confirm_code: POST /api/user/password/reset 엔드포인트를 통해 유저에게 발송된 인증코드
+    - POST /api/user/password/reset API로 비밀번호를 리셋 한 뒤에 호출해야 합니다.
+    - password: 변경 후 비밀번호
+    - confirm_code: POST /api/user/password/reset API를 통해 유저에게 발송된 인증코드
     """
     if not await db.user_exists(user["email"]):
-        raise HTTPException(status_code=404, detail="user does not exist")
+        raise HTTPException(status_code=404, detail="User does not exist")
     try:
         await run_async(
             cognito.confirm_forgot_password,
@@ -311,4 +312,50 @@ async def password_reset(
     except cognito.exceptions.LimitExceedException:
         raise HTTPException(status_code=429, detail="Too many requests")
     else:
-        return {"message": "Password reset successful"}
+        return {"message": "Password change successful"}
+
+
+@router.private.patch("/membership")
+async def change_membership(
+    new_membership: str = Body(..., min_length=1, embed=True),
+    user=router.private.auth,
+):
+    """
+    - 맴버십을 변경합니다.
+    - membership: 변경 후 맴버십
+    """
+    user_info = await db.exec(
+        """
+        SELECT membership, currency, tosspayments_billing_key, 
+            paypal_subscription_id, billing_date 
+        FROM users WHERE id={user_id} LIMIT 1;""",
+        user_id=user["id"],
+    )[0]
+    (
+        current_membership,
+        currency,
+        tosspayments_billing_key,
+        paypal_subscription_id,
+        billing_date,
+    ) = user_info
+
+    if current_membership == membership or new_membership not in membership:
+        raise HTTPException(
+            status_code=409,
+            detail="The new_membership is either identical to the already set value or invalid",
+        )
+    if tosspayments_billing_key is None and paypal_subscription_id is None:
+        # 결제가 필요 없는 계정이므로 맴버십만 바꾸면 됌
+        await db.exec(
+            "UPDATE users SET membership={new} WHERE id={user_id}",
+            new=new_membership,
+            user_id=user["id"],
+        )
+        return {"message": "Membership change successful"}
+
+    # tosspayments() if currency == "KRW" else paypal()
+    # paypal -> revise API 호출 -> approve 링크 있으면 거기로 리다이렉트
+    #   - 추가결제 있으면
+    # tosspayments -> 그냥 DB 값만 바꾸면 됌
+    #   - 추가결제 있으면 하면 됌
+    #

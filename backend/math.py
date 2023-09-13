@@ -98,17 +98,11 @@ def marge_lists(*lists: list, limit: int) -> list:
     return result
 
 
-def calculate_membership_expiry(start: datetime) -> datetime:
-    """
-    - start: 맴버십 시작일
-    - 맴버십 만료일을 계산합니다
-    - 다음달 동일 일시를 구하되 마지막 일보다 크면 마지막 일로 대체
-    """
-    year, month = (
-        (start.year + 1, 1) if start.month == 12 else (start.year, start.month + 1)
+def paypaltime2datetime(timestring: str):
+    """PayPal에서 사용하는 시간 문자열을 한국 시간대로 변환한 datetime 객체로 만들어 반환합니다."""
+    return datetime.fromisoformat(timestring.replace("Z", "+00:00")).astimezone(
+        timezone(timedelta(hours=9))
     )
-    day = min(start.day, monthrange(year, month)[1])
-    return datetime(year, month, day, start.hour, start.minute, start.second)
 
 
 def calculate_membership_expiry(start: datetime, current: datetime):
@@ -145,10 +139,3 @@ def calculate_membership_expiry(start: datetime, current: datetime):
         day = 28
 
     return datetime(year, next_month, day)
-
-
-def paypaltime2datetime(timestring: str):
-    """PayPal에서 사용하는 시간 문자열을 한국 시간대로 변환한 datetime 객체로 만들어 반환합니다."""
-    return datetime.fromisoformat(timestring.replace("Z", "+00:00")).astimezone(
-        timezone(timedelta(hours=9))
-    )

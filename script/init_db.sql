@@ -1,4 +1,4 @@
---- Last commit: 2023-09-13 13:32:39 ---
+--- Last commit: 2023-09-14 14:37:02 ---
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ------------------------------------------------
@@ -13,11 +13,12 @@ CREATE TABLE users (
     "name" VARCHAR(255) NOT NULL, -- 회원가입시 자동생성, 이후 수정
     "phone" VARCHAR(255) NOT NULL, -- AWS SNS 전송에 사용 가능한 문자열
     "membership" membership NOT NULL, 
-    "membership_expiration" TIMESTAMP NOT NULL, -- 다음 결제 일시
     "currency" currency NOT NULL, 
+    "base_billing_date" TIMESTAMP, -- 기준 청구 날짜 (첫 결제일 혹은 맴버십 변경에 의한 조정값)
+    "current_billing_date" TIMESTAMP,  -- 최근 청구 날짜 
+    "next_billing_date" TIMESTAMP NOT NULL, -- 다음 청구 날짜
     "tosspayments_billing_key" VARCHAR(255), 
     "paypal_subscription_id" VARCHAR(255), 
-    "billing_date" TIMESTAMP NOT NULL, 
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 ); 
 -- (email -> user) 검색 최적화 관련: email 필드에 UNIQUE속성 있어서 자동으로 인덱스 생성되므로 별도의 인덱스 생성 불필요

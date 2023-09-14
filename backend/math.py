@@ -1,11 +1,13 @@
 """ 고성능 수학 연산 모듈 """
+import math
 from typing import Callable
-from calendar import monthrange
 from datetime import datetime, timezone, timedelta
 
 import numpy as np
 import xarray as xr
 from scipy.interpolate import PchipInterpolator
+
+from backend.system import membership
 
 
 def standardization(
@@ -98,22 +100,22 @@ def marge_lists(*lists: list, limit: int) -> list:
     return result
 
 
-def paypaltime2datetime(timestring: str):
+def paypaltime2datetime(timestring: str) -> datetime:
     """PayPal에서 사용하는 시간 문자열을 한국 시간대로 변환한 datetime 객체로 만들어 반환합니다."""
     return datetime.fromisoformat(timestring.replace("Z", "+00:00")).astimezone(
         timezone(timedelta(hours=9))
     )
 
 
-def calculate_membership_expiry(start: datetime, current: datetime):
+def next_billing_date(base: datetime, current: datetime) -> datetime:
     """
-    - start: 맴버십 시작일
-    - current: 최근 청구 날짜
-    - 맴버십 만료일을 계산합니다
-    - 다음달 동일 일시를 구하되 마지막 일보다 크면 마지막 일로 대체
+    - 다음 청구 날짜 계산
     - PayPal에서 사용하는 알고리즘과 동일합니다.
+    - base: 기준 청구일시
+    - current: 최근 청구 날짜
+    - return: 다음 청구 날짜
     """
-    year, month, day = current.year, current.month, start.day
+    year, month, day = current.year, current.month, base.day
 
     def is_leap_year(year):  # 윤년인지 아닌지 판별하는 함수
         return (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0)
@@ -138,4 +140,35 @@ def calculate_membership_expiry(start: datetime, current: datetime):
     elif day == 29 and next_month == 2 and not is_leap_year(year):
         day = 28
 
-    return datetime(year, next_month, day)
+    return datetime(year, next_month, day, base.hour, base.minute, base.second)
+
+
+def next_billing_date_adjust_membership_change(
+    base_billing: datetime,
+    current_billing: datetime,
+    current_membership: str,
+    new_membership: str,
+    change_day: datetime,
+    currency: str,
+) -> datetime:
+    """
+    - 맴버십 변경에 따른 차액이 적용된 다음 결제일을 계산합니다.
+    - base_billing: 기준 청구일
+    - current_billing: 현재 맴버십 청구 날짜
+    - current_membership: 현재 맴버십
+    - new_membership: 변경할 맴버십
+    - change_day: 맴버십 변경 날짜
+    - return: 다음 청구 날짜
+    """
+
+    default_next_billing = next_billing_date(base_billing, current_billing)
+
+    membership_days = (default_next_billing - current_billing).days
+    current_daily_amount = membership[current_membership][currency] / membership_days
+    new_daily_amount = membership[new_membership][currency] / membership_days
+
+    remaining_days = (default_next_billing - change_day).days
+    remaining_amount = remaining_days * current_daily_amount
+
+    new_remaining_days = math.floor(remaining_amount / new_daily_amount)
+    return change_day + timedelta(days=new_remaining_days)

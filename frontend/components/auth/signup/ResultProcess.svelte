@@ -65,14 +65,16 @@
     };
 
     const focusOnExitBtn = async () => {
-        Swal.fire({
-            title: $text.signupBtnAlert,
-            toast: true,
-            position: "top",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-        });
+        if (animationEnd) {
+            Swal.fire({
+                title: $text.signupBtnAlert,
+                toast: true,
+                position: "top",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+        }
     };
 </script>
 

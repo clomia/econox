@@ -10,11 +10,16 @@ import ipinfo
 import psycopg
 from pydantic import BaseModel, constr
 from fastapi import HTTPException, Request, Body
+from fastapi.responses import RedirectResponse
 
 from backend import db
-from backend.math import calculate_membership_expiry, paypaltime2datetime
 from backend.http import APIRouter, TosspaymentsAPI, PayPalAPI, idempotent_retries
 from backend.system import SECRETS, run_async, log, membership
+from backend.math import (
+    paypaltime2datetime,
+    next_billing_date,
+    next_billing_date_adjust_membership_change,
+)
 
 
 router = APIRouter("user")
@@ -65,7 +70,7 @@ async def signup(item: SignupInfo):
         raise HTTPException(status_code=401, detail="Cognito user is not confirmed")
 
     now = datetime.now()
-    membership_expiry = calculate_membership_expiry(start=now, current=now)
+    next_billing: datetime = next_billing_date(base=now, current=now)
 
     signup_transaction = db.Transaction()
     signup_history = await db.signup_history_exists(email=item.email, phone=item.phone)
@@ -121,7 +126,7 @@ async def signup(item: SignupInfo):
                     ),
                     timeout=30,  # 조건이 만족될때까지 최대 30초 재시도합니다.
                 )  # timeout이 초과되어도 조건이 만족되지 않으면 AssertionError
-                membership_expiry = paypaltime2datetime(
+                next_billing = paypaltime2datetime(
                     subscription["billing_info"]["next_billing_time"]
                 )
             except (httpx.HTTPStatusError, AssertionError) as e:
@@ -143,13 +148,14 @@ async def signup(item: SignupInfo):
             name=item.email.split("@")[0],
             phone=item.phone,
             membership=item.membership,
-            membership_expiration=membership_expiry,
             currency=item.currency,
+            base_billing_date=now if signup_history else None,
+            current_billing_date=now if signup_history else None,
+            next_billing_date=next_billing,
             tosspayments_billing_key=tosspayments_billing["key"]
             if item.tosspayments
             else None,
             paypal_subscription_id=item.paypal.subscription if item.paypal else None,
-            billing_date=now,
         )
     )
     signup_transaction.append_template(
@@ -240,7 +246,7 @@ async def get_user_country(request: Request):
         }
     except AttributeError:  # if host is localhost
         default = {"country": "KR", "timezone": "Asia/Seoul"}
-        # default = {"country": "US", "timezone": "America/Chicago"}
+        default = {"country": "US", "timezone": "America/Chicago"}
         log.warning(
             "GET /user/country"
             f"\n국가 정보 취득에 실패했습니다. 기본값을 응답합니다."
@@ -322,40 +328,71 @@ async def change_membership(
 ):
     """
     - 맴버십을 변경합니다.
-    - membership: 변경 후 맴버십
+    - new_membership: 변경 후 맴버십
     """
     user_info = await db.exec(
         """
-        SELECT membership, currency, tosspayments_billing_key, 
-            paypal_subscription_id, billing_date 
+        SELECT membership, currency, base_billing_date, 
+                current_billing_date, paypal_subscription_id
         FROM users WHERE id={user_id} LIMIT 1;""",
         user_id=user["id"],
-    )[0]
+        embed=True,
+    )
     (
         current_membership,
         currency,
-        tosspayments_billing_key,
+        base_billing_date,
+        current_billing_date,
         paypal_subscription_id,
-        billing_date,
     ) = user_info
 
-    if current_membership == membership or new_membership not in membership:
+    if current_membership == new_membership or new_membership not in membership:
         raise HTTPException(
             status_code=409,
-            detail="The new_membership is either identical to the already set value or invalid",
+            detail=f"The {new_membership} is either identical to the already set value or invalid",
         )
-    if tosspayments_billing_key is None and paypal_subscription_id is None:
-        # 결제가 필요 없는 계정이므로 맴버십만 바꾸면 됌
+    if current_billing_date is None:  # 결제가 필요 없는 계정이므로 맴버십만 바꾸면 됌
         await db.exec(
-            "UPDATE users SET membership={new} WHERE id={user_id}",
-            new=new_membership,
+            "UPDATE users SET membership={new_membership}, WHERE id={user_id};",
+            new_membership=new_membership,
             user_id=user["id"],
         )
         return {"message": "Membership change successful"}
 
-    # tosspayments() if currency == "KRW" else paypal()
-    # paypal -> revise API 호출 -> approve 링크 있으면 거기로 리다이렉트
-    #   - 추가결제 있으면
-    # tosspayments -> 그냥 DB 값만 바꾸면 됌
-    #   - 추가결제 있으면 하면 됌
-    #
+    adjusted_next_billing: datetime = next_billing_date_adjust_membership_change(
+        base_billing=base_billing_date,
+        current_billing=current_billing_date,
+        current_membership=current_membership,
+        new_membership=new_membership,
+        change_day=datetime.now(),
+        currency=currency,
+    )
+
+    db_update_func = partial(
+        db.exec,
+        """
+            UPDATE users SET membership={new_membership}, 
+                base_billing_date={next_billing},
+                next_billing_date={next_billing}
+            WHERE id={user_id};""",
+        new_membership=new_membership,
+        next_billing=adjusted_next_billing,
+        user_id=user["id"],
+    )
+
+    if currency == "KRW":  # Tosspayments
+        await db_update_func()
+    else:  # PayPal
+        resp = await PayPalAPI(
+            f"/v1/billing/subscriptions/{paypal_subscription_id}/revise"
+        ).post({"plan_id": membership[new_membership]["paypal_plan"]})
+        approve_url = [ele["href"] for ele in resp["links"] if ele["rel"] == "approve"]
+        if approve_url:
+            return RedirectResponse(approve_url[0])
+        await db_update_func()
+    return {"message": "Membership change successful"}
+
+
+@router.private.post("/membership-change-confirm")
+def func():  # URL 아직 못정함, paypal에서 approve를 필요로 할 경우 approve완료 후 svelte에서 여기로 쏴주게 만들거임
+    pass

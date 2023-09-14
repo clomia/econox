@@ -78,17 +78,6 @@ def adjust_billing_date_for_membership_change(
     remaining_amount = remaining_days * current_daily_amount
 
     new_remaining_days = math.floor(remaining_amount / new_daily_amount)
-
-    print(
-        f"""
-membership_days: {membership_days}
-current_daily_amount: {current_daily_amount}
-new_daily_amount: {new_daily_amount}
-remaining_days: {remaining_days}
-remaining_amount: {remaining_amount}
-new_remaining_days: {new_remaining_days}
-    """
-    )
     return change_day + timedelta(days=new_remaining_days)
 
 
@@ -103,10 +92,10 @@ test_cases = [
     },
     {
         "start_billing": datetime(2023, 4, 13),
-        "current_billing": datetime(2023, 4, 13),
+        "current_billing": datetime(2023, 8, 13),
         "current_membership": "professional",
         "new_membership": "basic",
-        "change_day": datetime(2023, 5, 12),
+        "change_day": datetime(2023, 8, 24),
         "currency": "USD",
     },
     {
@@ -120,15 +109,17 @@ test_cases = [
     {
         "start_billing": datetime(2023, 4, 13),
         "current_billing": datetime(2023, 4, 13),
-        "current_membership": "professional",
-        "new_membership": "basic",
+        "current_membership": "basic",
+        "new_membership": "professional",
         "change_day": datetime(2023, 4, 20),
         "currency": "USD",
     },
 ]
 
 results = []
-for test in test_cases[:1]:
+for test in test_cases:
+    print(f"change day: {test['change_day']}")
+    print(f"start_billing: {test['start_billing']}")
     result = adjust_billing_date_for_membership_change(
         test["start_billing"],
         test["current_billing"],
@@ -137,9 +128,8 @@ for test in test_cases[:1]:
         test["change_day"],
         test["currency"],
     )
+    print(str(result) + "\n\n\n")
     results.append(result)
-
-print(results)
 
 
 def adjust_billing_date_for_membership_change_v2(  # from gpt

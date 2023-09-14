@@ -10,12 +10,13 @@ from backend.system import SECRETS, run_async, log
 # ======== 쿼리 실행 함수 =========
 
 
-async def exec(*queries: str, **params) -> list:
+async def exec(*queries: str, embed=False, **params) -> list | tuple:
     """
     - DB에 SQL 쿼리를 실행하고 결과를 반환합니다.
     - queries: 쿼리 템플릿 문자열
     - params: 템플릿 문자열에 할당해야 하는 매개변수
         - Python 객체를 받습니다. PostgreSQL 객체를 문자열로 표현하지 마세요
+    - embed: 결과중 첫번째 튜플을 반환합니다. 단일 행을 읽을때 True로 설정하세요
     - 사용 예
         - `db.exec("INSERT INTO {table} {name}", table="user", name="John")`
         - 여러개의 쿼리 문자열도 허용됩니다. (너무 길어서 예시코드 안만듬)
@@ -65,7 +66,8 @@ async def exec(*queries: str, **params) -> list:
             cur.close()
             conn.close()
 
-    return await run_async(sync_exec)
+    result = await run_async(sync_exec)
+    return result if not embed else result[0]
 
 
 # ======== 쿼리 생성 함수 =========

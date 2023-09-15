@@ -7,7 +7,7 @@ import numpy as np
 import xarray as xr
 from scipy.interpolate import PchipInterpolator
 
-from backend.system import membership
+from backend.system import MEMBERSHIP
 
 
 def standardization(
@@ -164,8 +164,8 @@ def next_billing_date_adjust_membership_change(
     default_next_billing = next_billing_date(base_billing, current_billing)
 
     membership_days = (default_next_billing - current_billing).days
-    current_daily_amount = membership[current_membership][currency] / membership_days
-    new_daily_amount = membership[new_membership][currency] / membership_days
+    current_daily_amount = MEMBERSHIP[current_membership][currency] / membership_days
+    new_daily_amount = MEMBERSHIP[new_membership][currency] / membership_days
 
     remaining_days = (default_next_billing - change_day).days
     remaining_amount = remaining_days * current_daily_amount

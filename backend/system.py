@@ -44,7 +44,7 @@ EFS_VOLUME_PATH = ROOT_PATH / "efs-volume"
 S3_BUCKET_NAME = "econox-storage"
 SECRET_MANAGER_NAME = "econox-secret"
 # ==================== SETTINGS ====================
-membership = {
+MEMBERSHIP = {
     "basic": {
         "KRW": 11900,
         "USD": 9.99,

@@ -14,7 +14,7 @@ from fastapi.responses import RedirectResponse
 
 from backend import db
 from backend.http import APIRouter, TosspaymentsAPI, PayPalAPI, idempotent_retries
-from backend.system import SECRETS, run_async, log, membership
+from backend.system import SECRETS, run_async, log, MEMBERSHIP
 from backend.math import (
     paypaltime2datetime,
     next_billing_date,
@@ -85,7 +85,7 @@ async def signup(item: SignupInfo):
                 item.tosspayments.owner_id,
                 item.email,
                 order_name=f"Econox {item.membership.capitalize()} Membership",
-                amount=membership[item.membership][item.currency],
+                amount=MEMBERSHIP[item.membership][item.currency],
             )
             payment = tosspayments_billing["payment"]
             signup_transaction.append_template(
@@ -346,7 +346,7 @@ async def change_membership(
         paypal_subscription_id,
     ) = user_info
 
-    if current_membership == new_membership or new_membership not in membership:
+    if current_membership == new_membership or new_membership not in MEMBERSHIP:
         raise HTTPException(
             status_code=409,
             detail=f"The {new_membership} is either identical to the already set value or invalid",
@@ -385,7 +385,7 @@ async def change_membership(
     else:  # PayPal
         resp = await PayPalAPI(
             f"/v1/billing/subscriptions/{paypal_subscription_id}/revise"
-        ).post({"plan_id": membership[new_membership]["paypal_plan"]})
+        ).post({"plan_id": MEMBERSHIP[new_membership]["paypal_plan"]})
         approve_url = [ele["href"] for ele in resp["links"] if ele["rel"] == "approve"]
         if approve_url:
             return RedirectResponse(approve_url[0])

@@ -1,5 +1,5 @@
 from backend.http import APIRouter
-from backend.system import SECRETS, membership
+from backend.system import SECRETS, MEMBERSHIP
 
 router = APIRouter("const")
 
@@ -9,7 +9,7 @@ async def paypal_info():
     return {
         "client_id": SECRETS["PAYPAL_CLIENT_ID"],
         "plan_id": {
-            "basic": membership["basic"]["paypal_plan"],
-            "professional": membership["professional"]["paypal_plan"],
+            "basic": MEMBERSHIP["basic"]["paypal_plan"],
+            "professional": MEMBERSHIP["professional"]["paypal_plan"],
         },
     }

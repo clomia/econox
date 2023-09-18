@@ -17,13 +17,15 @@
 
     let response = null;
     let message = "";
+    let phoneNumber = "";
+    $: phoneNumber = phoneNumber.replace(/\D/g, "");
+
     const phoneConfirm = async (event: SubmitEvent) => {
         message = "";
         const form = event.target as HTMLFormElement;
         const callingCode = getCountryCallingCode(form.countryCode.value as CountryCode);
-        const inputPhoneNumber = form.phone.value;
-        const phone = `+${callingCode}${inputPhoneNumber.replace(/-|\s/g, "")}`; // "-" & 공백 제거}
-        if (!inputPhoneNumber) {
+        const phone = `+${callingCode}${phoneNumber}`; // "-" & 공백 제거}
+        if (!phoneNumber) {
             message = $text.noPhoneNumber;
             return;
         }
@@ -36,7 +38,7 @@
             response = api.public.post("/auth/phone", { phone });
             await response;
             $inputResult = { ...$inputResult, phone };
-            $inputPhoneNumberStore = inputPhoneNumber;
+            $inputPhoneNumberStore = phoneNumber;
             dispatch("complete");
         } catch (error) {
             response = null;
@@ -60,7 +62,7 @@
     {/await}
     <label class="phone-number">
         <span>{$text.inputPhoneNumber}</span>
-        <input name="phone" type="text" />
+        <input bind:value={phoneNumber} name="phone" type="text" />
     </label>
     <div class="message">{message}</div>
     {#if !(response instanceof Promise)}

@@ -1,4 +1,5 @@
 """ API 통신에 반복적으로 필요한 로직 모듈화 """
+import json
 import time
 import base64
 import asyncio
@@ -332,8 +333,15 @@ class PayPalAPI:
         cls.access_token = resp.json()["access_token"]
 
     @classmethod
-    async def webhook_verifier(cls, event: Request):
+    async def webhook_verifier(cls, event_type: str, event: Request = None):
+        """
+        - 웹훅 이벤트 타입 문자열을 받아서 해당 이벤트를 검증하는 의존성 함수를 반환합니다.
+        - secrets_manager에 PAYPAL_WEBHOOK_ID 키로 JSON 형식의 웹훅 ID 정의가 있어야 합니다.
+        """
+        if not event:  # FastAPI 의존성 주입 함수를 반환합니다.
+            return partial(cls.webhook_verifier(event_type=event_type))
         body = await event.json()
+        webhook_id = json.loads(SECRETS["PAYPAL_WEBHOOK_ID"])
         try:
             result = await cls("/v1/notifications/verify-webhook-signature").post(
                 {
@@ -342,7 +350,7 @@ class PayPalAPI:
                     "transmission_id": event.headers["paypal-transmission-id"],
                     "transmission_sig": event.headers["paypal-transmission-sig"],
                     "transmission_time": event.headers["paypal-transmission-time"],
-                    "webhook_id": SECRETS["PAYPAL_WEBHOOK_ID"],
+                    "webhook_id": webhook_id[event_type],
                     "webhook_event": body,
                 }
             )

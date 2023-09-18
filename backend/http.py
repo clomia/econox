@@ -407,7 +407,7 @@ class PayPalAPI:
 async def idempotent_retries(
     target: Awaitable[T],
     inspecter: Callable[[T], bool] = lambda _: True,
-    exceptions: tuple = tuple(),
+    exceptions: tuple | Exception = tuple(),
     timeout: int = 15,
 ):
     """

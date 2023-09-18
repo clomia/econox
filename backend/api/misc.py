@@ -79,7 +79,7 @@ async def paypal_payment_webhook(event: dict = Body(...)):
             fee_amount=amount_info["fee_amount"]["value"],
             net_amount=amount_info["net_amount"]["value"],
         )
-        idempotent_retries(  # 회원가입 결제시 유저 생성 완료까지 풀링해야 될 수 있음
+        await idempotent_retries(  # 회원가입 결제시 유저 생성 완료까지 풀링해야 될 수 있음
             insert_func, exceptions=psycopg.errors.NotNullViolation, timeout=60
         )
     except psycopg.errors.NotNullViolation:

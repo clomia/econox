@@ -32,9 +32,9 @@
         <div class="basic__title">{$text.basicPlan}</div>
         <div class="basic__price">
             {#if currency === "KRW"}
-                $text.basicPlanWonPrice
+                {$text.basicPlanWonPrice}
             {:else}
-                $text.basicPlanDollerPrice
+                {$text.basicPlanDollerPrice}
             {/if}
         </div>
         <p>{$text.basicPlanDescription}</p>
@@ -44,9 +44,9 @@
         <div class="professional__title">{$text.professionalPlan}</div>
         <div class="professional__price">
             {#if currency === "KRW"}
-                $text.professionalPlanWonPrice
+                {$text.professionalPlanWonPrice}
             {:else}
-                $text.professionalPlanDollerPrice
+                {$text.professionalPlanDollerPrice}
             {/if}
         </div>
         <p>{$text.professionalPlanDescription}</p>

@@ -31,7 +31,11 @@
     <button class="basic" on:click={submit("basic")}>
         <div class="basic__title">{$text.basicPlan}</div>
         <div class="basic__price">
-            {currency === "USD" ? $text.basicPlanDollerPrice : $text.basicPlanWonPrice}
+            {#if currency === "KRW"}
+                $text.basicPlanWonPrice
+            {:else}
+                $text.basicPlanDollerPrice
+            {/if}
         </div>
         <p>{$text.basicPlanDescription}</p>
     </button>
@@ -39,7 +43,11 @@
     <button class="professional" on:click={submit("professional")}>
         <div class="professional__title">{$text.professionalPlan}</div>
         <div class="professional__price">
-            {currency === "USD" ? $text.professionalPlanDollerPrice : $text.professionalPlanWonPrice}
+            {#if currency === "KRW"}
+                $text.professionalPlanWonPrice
+            {:else}
+                $text.professionalPlanDollerPrice
+            {/if}
         </div>
         <p>{$text.professionalPlanDescription}</p>
     </button>

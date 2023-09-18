@@ -40,9 +40,9 @@ async def paypal_payment_webhook(event: dict = Body(...)):
     subscription_id = event["resource"]["billing_agreement_id"]
 
     now = datetime.now(KST)
-    start = (now - timedelta(days=300)).isoformat()
+    start = (now - timedelta(days=2)).isoformat()
     end = now.isoformat()
-    resp = await PayPalAPI(
+    resp = await PayPalAPI(  # 구독에 대한 이틀치 트렌젝션 리스트를 가져온다
         f"/v1/billing/subscriptions/{subscription_id}/transactions"
     ).get(params={"start_time": start, "end_time": end})
 
@@ -84,5 +84,11 @@ async def paypal_payment_webhook(event: dict = Body(...)):
             f"\nSummary: {event['summary']}, 구독 ID:{subscription_id}"
         )
         raise e
+    except psycopg.errors.UniqueViolation as e:
+        log.warning(  # transaction_id 필드의 UNIQUE 제약에 걸린 경우임
+            "[paypal webhook: PAYMENT.SALE.COMPLETED]"
+            "멱등 처리: 중복된 트렌젝션을 수신하였기 때문에 무시합니다."
+            f"\nSummary: {event['summary']}, 구독 ID:{subscription_id}"
+        )
 
     return {"message": "Apply success"}

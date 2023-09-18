@@ -405,18 +405,25 @@ class PayPalAPI:
 
 
 async def idempotent_retries(
-    target: Awaitable[T], inspecter: Callable[[T], bool], timeout: int = 15
+    target: Awaitable[T],
+    inspecter: Callable[[T], bool] = lambda _: True,
+    exceptions: tuple = tuple(),
+    timeout: int = 15,
 ):
     """
     - 조건을 만족하는 반환값이 나올때까지 함수를 재실행합니다.
     - target: 무결성이 보장되어야 하는 대상 함수 (Async I/O Bound Function)
     - inspecter: target함수의 반환값을 검사하는 함수 - bool을 반환해야 함
+    - exceptions: target 함수에서 발생될 예외중 무시할 예외들
     - timeout: 재시도 시간제한(초)
         - timeout 초과시 AssertionError가 발생합니다.
     """
     start = time.time()
     while time.time() < start + timeout:
-        if inspecter(result := await target()):
-            return result
+        try:
+            if inspecter(result := await target()):
+                return result
+        except exceptions:
+            continue
     assert inspecter(result := await target())
     return result

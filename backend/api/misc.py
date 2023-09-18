@@ -1,4 +1,5 @@
 """ 모듈로 분류하기 어려운 앤드포인트들 """
+from functools import partial
 from datetime import datetime, timezone, timedelta
 
 import psycopg
@@ -6,7 +7,7 @@ from fastapi import Body, Depends, HTTPException
 
 from backend import db
 from backend.math import paypaltime2datetime
-from backend.http import APIRouter, PayPalAPI
+from backend.http import APIRouter, PayPalAPI, idempotent_retries
 from backend.system import SECRETS, MEMBERSHIP, log
 
 router = [
@@ -61,7 +62,8 @@ async def paypal_payment_webhook(event: dict = Body(...)):
 
     amount_info = last_transaction["amount_with_breakdown"]
     try:
-        await db.exec(
+        insert_func = partial(
+            db.exec,
             """
             INSERT INTO paypal_billings (user_id, transaction_id, transaction_time, 
                 total_amount, fee_amount, net_amount)
@@ -77,14 +79,16 @@ async def paypal_payment_webhook(event: dict = Body(...)):
             fee_amount=amount_info["fee_amount"]["value"],
             net_amount=amount_info["net_amount"]["value"],
         )
-    except psycopg.errors.NotNullViolation as e:
-        log.warning(  # todo 회원가입 결제시 유저 생성보다 먼저 실행될 수 있으니까 idempotent_retries로 풀링처리 해야함
+        idempotent_retries(  # 회원가입 결제시 유저 생성 완료까지 풀링해야 될 수 있음
+            insert_func, exceptions=psycopg.errors.NotNullViolation, timeout=60
+        )
+    except psycopg.errors.NotNullViolation:
+        log.warning(
             "[paypal webhook: PAYMENT.SALE.COMPLETED]"
             "구독에 해당하는 유저가 존재하지 않습니다."
             f"\nSummary: {event['summary']}, 구독 ID:{subscription_id}"
         )
-        raise e
-    except psycopg.errors.UniqueViolation as e:
+    except psycopg.errors.UniqueViolation:
         log.warning(  # transaction_id 필드의 UNIQUE 제약에 걸린 경우임
             "[paypal webhook: PAYMENT.SALE.COMPLETED]"
             "멱등 처리: 중복된 트렌젝션을 수신하였기 때문에 무시합니다."

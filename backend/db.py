@@ -1,3 +1,11 @@
+"""
+- exec 함수로 자유롭게 쿼리를 실행하세요
+- 복잡한 쿼리는 Template 클래스를 통해 간결하게 생성하세요
+- Transaction 클래스를 사용하면 단일 트렌젝션으로 여러개의 쿼리를 원하는 순서로 실행할 수 있습니다.
+    - 여러 쿼리 실행은 exec 함수로도 가능하나, Template을 쓰는 경우 Transaction 클래스를 사용해야 합니다.
+- 자주 사용되는 쿼리 로직은 간단한 함수로 만들어 사용하세요 (예시: user_exists, signup_history_exists)
+"""
+
 import re
 import json
 from typing import Tuple
@@ -10,18 +18,24 @@ from backend.system import SECRETS, run_async, log
 # ======== 쿼리 실행 함수 =========
 
 
-async def exec(*queries: str, embed=False, **params) -> list | tuple:
+async def exec(
+    *queries: str, template: Tuple[str, dict] = None, embed=False, **params
+) -> list | tuple:
     """
     - DB에 SQL 쿼리를 실행하고 결과를 반환합니다.
     - queries: 쿼리 템플릿 문자열
     - params: 템플릿 문자열에 할당해야 하는 매개변수
         - Python 객체를 받습니다. PostgreSQL 객체를 문자열로 표현하지 마세요
+    - template: 쿼리 문자열과 파라미터 딕셔너리로 이루어진 튜플입니다.
+        - queries, params 매개변수를 직접 넣지 않고 Template 클래스를 통해 쿼리를 생성하는 경우 사용합니다.
+        - template 여러개를 단일 트렌젝션으로 실행하려면 Transaction 클래스를 사용하세요
     - embed: 결과중 첫번째 튜플을 반환합니다. 단일 행을 읽을때 True로 설정하세요
     - 사용 예
-        - `db.exec("INSERT INTO {table} {name}", table="user", name="John")`
+        - `db.exec("SELECT name={name} FROM {table};", table="user", name="John")`
         - 여러개의 쿼리 문자열도 허용됩니다. (너무 길어서 예시코드 안만듬)
     """
-
+    if template:
+        *queries, params = template
     query = " \n".join(queries)
 
     safe_queries, safe_params = [], []
@@ -43,9 +57,11 @@ async def exec(*queries: str, embed=False, **params) -> list | tuple:
             for query, params in zip(safe_queries, safe_params):
                 cur.execute(query, params)
             conn.commit()
-            return cur.fetchall()  # case: read success
+            return cur.fetchall()
         except psycopg.ProgrammingError as e:
-            return []  # case: write success
+            # write 쿼리이기 때문에 읽을 결과가 없는 경우는 제외
+            if str(e) != "the last operation didn't produce a result":
+                raise e
         except psycopg.OperationalError as e:  # password authentication failed
             # Secrets Manager에서 암호 교체가 이루어졌다고 간주하고 암호 업데이트 후 재시도
             latest_password = json.loads(
@@ -67,17 +83,38 @@ async def exec(*queries: str, embed=False, **params) -> list | tuple:
             conn.close()
 
     result = await run_async(sync_exec)
-    return result if not embed else result[0]
+    return result if not embed else (result[0] if result else tuple())
 
 
 # ======== 쿼리 생성 함수 =========
 
 
-def insert_query_template(table, **params) -> Tuple[str, tuple]:
-    """exec 함수에 바로 넣을 수 있는 형태로 만들어 반환합니다."""
-    columns = ", ".join(params.keys())
-    values = ", ".join([f"{{{column}}}" for column in params.keys()])
-    return f"INSERT INTO {table} ({columns}) VALUES ({values});", params
+class Template:
+    """
+    - 템플릿은 쿼리 문자열과 파라미터 딕셔너리로 이루어진 튜플입니다.
+    - exec등의 메서드에서 query, params 매개변수 대신 template 매개변수를 통해 실행하면 됩니다.
+    """
+
+    def __init__(self, table: str):
+        self.table = table
+
+    def insert_query(self, **params) -> Tuple[str, dict]:
+        columns = ", ".join(params.keys())
+        values = ", ".join([f"{{{column}}}" for column in params.keys()])
+        return f"INSERT INTO {self.table} ({columns}) VALUES ({values});", params
+
+    def select_query(
+        self, *columns: str, where: dict, limit: int | None = None
+    ) -> Tuple[str, dict]:
+        """
+        - columns: 선택할 열 이름들
+        - where: 조건을 구성할 딕셔너리
+        - limit: LIMIT 인자
+        """
+        select = ", ".join(columns)
+        cond = " AND ".join(f"{key}='{value}'" for key, value in where.items())
+        end = f"LIMIT {limit};" if limit else ";"
+        return f"SELECT {select} FROM {self.table} WHERE {cond} {end}", {}
 
 
 # ======== 쿼리 실행 추상화 함수 =========
@@ -94,21 +131,17 @@ class Transaction:
         self.query_list = []
         self.param_dict = {}
 
-    def prepend(self, query, **params):
+    def prepend(self, query="", template=None, **params):
+        if template:
+            query, params = template
         self.query_list.insert(0, query)
         self.param_dict = params | self.param_dict
 
-    def append(self, query, **params):
+    def append(self, query="", template=None, **params):
+        if template:
+            query, params = template
         self.query_list.append(query)
         self.param_dict |= params
-
-    def prepend_template(self, template):
-        query, params = template
-        self.prepend(query, **params)
-
-    def append_template(self, template):
-        query, params = template
-        self.append(query, **params)
 
     async def exec(self):
         return await exec(*self.query_list, **self.param_dict)

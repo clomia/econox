@@ -21,6 +21,7 @@ T = TypeVar("T")
 class CognitoToken:
     """AWS Cognito token auth"""
 
+    timeout = 15
     jwks = {"keys": []}
 
     def __init__(self, id_token: str, access_token: str):
@@ -32,7 +33,8 @@ class CognitoToken:
         if not matching:  # Cognito에서 키 jwks가 변경(롤오버)되었다고 간주하고 업데이트 후 재시도
             log.warning(f"매칭되는 JWK가 없습니다. Cognito로부터 jwks를 업데이트합니다.")
             async with httpx.AsyncClient(
-                base_url="https://cognito-idp.us-east-1.amazonaws.com/"
+                base_url="https://cognito-idp.us-east-1.amazonaws.com/",
+                timeout=self.timeout,
             ) as client:
                 self.__class__.jwks = (
                     await client.get(
@@ -126,6 +128,8 @@ class APIRouter:
 class FmpAPI:
     """financialmodelingprep API GET Request"""
 
+    timeout = 600
+
     def __init__(self, cache: bool):
         self.cache = cache
 
@@ -150,6 +154,7 @@ class FmpAPI:
         async with httpx.AsyncClient(
             base_url="https://financialmodelingprep.com",
             params={"apikey": SECRETS["FMP_API_KEY"]},
+            timeout=cls.timeout,
         ) as fmp_client:
             resp = await fmp_client.get(path, params=params)
             resp.raise_for_status()
@@ -213,6 +218,7 @@ class WorldBankAPI:
 class TosspaymentsAPI:
     """tosspayments에 HTTP 요청을 보냅니다."""
 
+    timeout = 30
     host = "https://api.tosspayments.com"
     token = base64.b64encode(
         (SECRETS["TOSSPAYMENTS_SECRET_KEY"] + ":").encode("utf-8")
@@ -223,7 +229,7 @@ class TosspaymentsAPI:
         self.path = path
 
     async def post(self, payload: dict) -> dict | list:
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=self.timeout) as client:
             resp = await client.post(
                 self.host + self.path,
                 headers={
@@ -298,6 +304,7 @@ class TosspaymentsAPI:
 class PayPalAPI:
     """PayPal에 HTTP 요청을 보냅니다."""
 
+    timeout = 30
     host = "https://api.sandbox.paypal.com"
     token = base64.b64encode(
         f"{SECRETS['PAYPAL_CLIENT_ID']}:{SECRETS['PAYPAL_SECRET_KEY']}".encode("utf-8")
@@ -310,7 +317,7 @@ class PayPalAPI:
 
     @classmethod
     async def _refresh_access_token(cls):
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=cls.timeout) as client:
             resp = await client.post(
                 f"{cls.host}/v1/oauth2/token",
                 headers={
@@ -323,6 +330,29 @@ class PayPalAPI:
             log.error(f"PayPal Access Token 발급에 실패했습니다.\n응답:{resp.json()}")
         resp.raise_for_status()
         cls.access_token = resp.json()["access_token"]
+
+    @classmethod
+    async def webhook_verifier(cls, event: Request):
+        body = await event.json()
+        try:
+            result = await cls("/v1/notifications/verify-webhook-signature").post(
+                {
+                    "auth_algo": event.headers["paypal-auth-algo"],
+                    "cert_url": event.headers["paypal-cert-url"],
+                    "transmission_id": event.headers["paypal-transmission-id"],
+                    "transmission_sig": event.headers["paypal-transmission-sig"],
+                    "transmission_time": event.headers["paypal-transmission-time"],
+                    "webhook_id": SECRETS["PAYPAL_WEBHOOK_ID"],
+                    "webhook_event": body,
+                }
+            )
+            assert result["verification_status"] == "SUCCESS"
+        except (httpx.HTTPStatusError, AssertionError, KeyError) as e:
+            log.warning(
+                f"PayPal 웹훅 페이로드 인증 실패, 요청을 무시합니다."
+                f"\n[Header]:{dict(event.headers)}\n[Body]: {body}\n[Error] {type(e).__name__}: {e}"
+            )
+            raise HTTPException(status_code=401, detail="Event verification failed")
 
     async def _execute_request(self, request: Awaitable, retry: Awaitable[dict | list]):
         """API 요청을 실행하고 토큰을 갱신하는 부분을 캡슐화"""
@@ -337,8 +367,8 @@ class PayPalAPI:
         resp.raise_for_status()
         return resp.json()
 
-    async def post(self, payload: dict) -> dict | list:
-        async with httpx.AsyncClient() as client:
+    async def post(self, payload: dict = {}) -> dict | list:
+        async with httpx.AsyncClient(timeout=self.timeout) as client:
             request = client.post(
                 self.host + self.path,
                 headers={
@@ -351,16 +381,17 @@ class PayPalAPI:
                 request, retry=partial(self.post, payload)
             )
 
-    async def get(self) -> dict | list:
-        async with httpx.AsyncClient() as client:
+    async def get(self, params: dict = {}) -> dict | list:
+        async with httpx.AsyncClient(timeout=self.timeout) as client:
             request = client.get(
                 self.host + self.path,
                 headers={
                     "Authorization": f"Bearer {self.access_token}",
                     "Content-Type": "application/json",
                 },
+                params=params,
             )
-            return await self._execute_request(request, retry=self.get)
+            return await self._execute_request(request, retry=partial(self.get, params))
 
 
 async def idempotent_retries(

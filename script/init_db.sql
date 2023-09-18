@@ -1,4 +1,4 @@
---- Last commit: 2023-09-14 14:37:02 ---
+--- Last commit: 2023-09-18 14:47:45 ---
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ------------------------------------------------
@@ -42,11 +42,12 @@ CREATE TABLE tosspayments_billings (
     "id" SERIAL NOT NULL PRIMARY KEY,
     "user_id" UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     "order_id" UUID NOT NULL, -- 우리가 발급
+    "transaction_time" TIMESTAMP NOT NULL, 
     "payment_key" VARCHAR(255) NOT NULL, -- Toss가 발급
     "order_name" VARCHAR(255) NOT NULL, -- 상품명
-    "total_amount" INT NOT NULL, -- 고객이 결제한 금액
-    "supply_price" INT NOT NULL,  -- 공급가액
-    "vat" INT NOT NULL, -- 부가세
+    "total_amount" FLOAT NOT NULL, -- 고객이 결제한 금액
+    "supply_price" FLOAT NOT NULL,  -- 공급가액
+    "vat" FLOAT NOT NULL, -- 부가세
     "card_issuer" VARCHAR(50) NOT NULL, -- 카드 발급사
     "card_acquirer" VARCHAR(50) NOT NULL, -- 카드 매입사
     "card_number_masked" VARCHAR(50) NOT NULL, -- 가려진 카드번호
@@ -55,4 +56,18 @@ CREATE TABLE tosspayments_billings (
     "card_owner_type" VARCHAR(50) NOT NULL, -- 개인/법인 타입
     "receipt_url" TEXT NOT NULL, -- 영수증 URL
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
-)
+);
+
+------------------------------------------------
+-- PayPal 청구 내역
+------------------------------------------------
+CREATE TABLE paypal_billings (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "user_id" UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    "transaction_id" VARCHAR(60) UNIQUE NOT NULL, -- 멱등키로 사용
+    "transaction_time" TIMESTAMP NOT NULL,
+    "total_amount" FLOAT NOT NULL, -- 고객이 결제한 금액
+    "fee_amount" FLOAT NOT NULL, -- PayPal 수수료
+    "net_amount" FLOAT NOT NULL, -- 순수익
+    "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
+);

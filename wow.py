@@ -1,6 +1,8 @@
 import requests
 import base64
 
+from datetime import datetime, timezone, timedelta
+
 from backend.system import SECRETS
 
 # 1. OAuth2 토큰 가져오기
@@ -24,19 +26,24 @@ plan_id = {
     "basic": "P-32P35738U4826650TMT72TNA",
     "professional": "P-8U118819R1222424SMT72UDI",
 }
-response = requests.post(
-    f"https://api.sandbox.paypal.com/v1/billing/subscriptions/{subscription_id}/revise",
+
+KST = timezone(timedelta(hours=9))  # 타임존이 포함된 isoformat 문자열 생성에 필요
+now = datetime.now(KST)
+
+params = {
+    "start_time": (now - timedelta(days=365)).isoformat(),
+    "end_time": now.isoformat(),
+}
+print(params)
+response = requests.get(
+    f"https://api.sandbox.paypal.com/v1/billing/subscriptions/{subscription_id}/transactions",
     headers={
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json",
     },
-    json={
-        "plan_id": plan_id["basic"],
-        "plan": {
-            "payment_preferences": {"setup_fee": {"currency_code": "USD", "value": 1.3}}
-        },
-    },
+    params=params,
 )
+
 
 # Extract approval link from response
 print(response.json())
@@ -75,3 +82,16 @@ print(response.json())
 # result = response.json()
 
 # print(result)
+
+{
+    "status": "COMPLETED",
+    "id": "80T226218J797090S",
+    "amount_with_breakdown": {
+        "gross_amount": {"currency_code": "USD", "value": "12.99"},
+        "fee_amount": {"currency_code": "USD", "value": "0.81"},
+        "net_amount": {"currency_code": "USD", "value": "12.18"},
+    },
+    "payer_name": {"given_name": "John", "surname": "Doe"},
+    "payer_email": "sb-sfvgh27139304@personal.example.com",
+    "time": "2023-09-14T07:02:18.000Z",
+}

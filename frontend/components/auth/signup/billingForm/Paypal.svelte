@@ -38,9 +38,9 @@
     };
 
     onMount(async () => {
-        const paypalInfo = await api.public.get("/const/paypal");
-        const planId = paypalInfo.data["plan_id"][$inputResult.membership];
-        const clientId = paypalInfo.data["client_id"];
+        const paypalPlans = await api.public.get("/setting/paypal-plans");
+        const planId = paypalPlans.data["plan_id"][$inputResult.membership];
+        const clientId = paypalPlans.data["client_id"];
 
         if ((window as any).paypal) {
             isSdkLoaded = true;

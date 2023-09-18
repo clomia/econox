@@ -88,11 +88,11 @@ async def signup(item: SignupInfo):
                 amount=MEMBERSHIP[item.membership][item.currency],
             )
             payment = tosspayments_billing["payment"]
-            signup_transaction.append_template(
-                db.insert_query_template(
-                    "tosspayments_billings",
+            signup_transaction.append(
+                template=db.Template(table="tosspayments_billings").insert_query(
                     user_id=cognito_user_id,
                     order_id=payment["orderId"],
+                    transaction_time=datetime.fromisoformat(payment["approvedAt"]),
                     payment_key=payment["paymentKey"],
                     order_name=payment["orderName"],
                     total_amount=payment["totalAmount"],
@@ -108,7 +108,8 @@ async def signup(item: SignupInfo):
                 )
             )
         elif item.currency == "USD" and item.paypal:  # 페이팔 빌링
-            # -- 빌링 정보 검사 --
+            # -- 빌링 성공여부 확인 --
+            # DB 데이터 입력은 웹훅 API가 수행합니다.(POST /api/webhook/paypal/payment-sale-complete)
             order_detail_api = f"/v2/checkout/orders/{item.paypal.order}"
             subscription_detail_api = (
                 f"/v1/billing/subscriptions/{item.paypal.subscription}"
@@ -140,9 +141,8 @@ async def signup(item: SignupInfo):
                 detail="Correct billing information is required",
             )
 
-    signup_transaction.prepend_template(  # 외래키 제약조건으로 인해 가장 먼저 실행되어야 함
-        db.insert_query_template(
-            "users",
+    signup_transaction.prepend(  # 외래키 제약조건으로 인해 가장 먼저 실행되어야 함
+        template=db.Template(table="users").insert_query(
             id=cognito_user_id,
             email=item.email,
             name=item.email.split("@")[0],
@@ -158,9 +158,8 @@ async def signup(item: SignupInfo):
             paypal_subscription_id=item.paypal.subscription if item.paypal else None,
         )
     )
-    signup_transaction.append_template(
-        db.insert_query_template(
-            "signup_histories",
+    signup_transaction.append(
+        template=db.Template(table="signup_histories").insert_query(
             user_id=cognito_user_id,
             email=item.email,
             phone=item.phone,
@@ -330,21 +329,25 @@ async def change_membership(
     - 맴버십을 변경합니다.
     - new_membership: 변경 후 맴버십
     """
-    user_info = await db.exec(
-        """
-        SELECT membership, currency, base_billing_date, 
-                current_billing_date, paypal_subscription_id
-        FROM users WHERE id={user_id} LIMIT 1;""",
-        user_id=user["id"],
-        embed=True,
-    )
+
     (
         current_membership,
         currency,
         base_billing_date,
         current_billing_date,
         paypal_subscription_id,
-    ) = user_info
+    ) = await db.exec(
+        template=db.Template(table="users").select_query(
+            "membership",
+            "currency",
+            "base_billing_date",
+            "current_billing_date",
+            "paypal_subscription_id",
+            where={"user_id": user["id"]},
+            limit=1,
+        ),
+        embed=True,
+    )
 
     if current_membership == new_membership or new_membership not in MEMBERSHIP:
         raise HTTPException(

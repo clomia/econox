@@ -56,8 +56,8 @@ async def paypal_payment_webhook(event: dict = Body(...)):
             "[paypal webhook: PAYMENT.SALE.COMPLETED]"
             "PayPal에서 구독에 대한 트렌젝션 데이터를 찾지 못했습니다."
             f"\nSummary: {event['summary']}, 구독 ID:{subscription_id}"
-        )
-        return {"message": "No data to apply"}
+        )  # 4xx 응답 시 paypal이 좀 이따가 웹훅을 재호출해줌, 좀 있으면 데이터 있을 수 있으므로 이렇게 예외 처리
+        raise HTTPException(status_code=404, detail="No data to apply")
 
     amount_info = last_transaction["amount_with_breakdown"]
     try:
@@ -78,7 +78,7 @@ async def paypal_payment_webhook(event: dict = Body(...)):
             net_amount=amount_info["net_amount"]["value"],
         )
     except psycopg.errors.NotNullViolation as e:
-        log.warning(
+        log.warning(  # todo 회원가입 결제시 유저 생성보다 먼저 실행될 수 있으니까 idempotent_retries로 풀링처리 해야함
             "[paypal webhook: PAYMENT.SALE.COMPLETED]"
             "구독에 해당하는 유저가 존재하지 않습니다."
             f"\nSummary: {event['summary']}, 구독 ID:{subscription_id}"

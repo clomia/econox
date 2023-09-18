@@ -5,6 +5,7 @@ import psycopg
 from fastapi import Body, Depends, HTTPException
 
 from backend import db
+from backend.math import paypaltime2datetime
 from backend.http import APIRouter, PayPalAPI
 from backend.system import SECRETS, MEMBERSHIP, log
 
@@ -53,7 +54,7 @@ async def paypal_payment_webhook(event: dict = Body(...)):
     else:
         log.warning(
             "[paypal webhook: PAYMENT.SALE.COMPLETED]"
-            "구독에 대한 트렌젝션 데이터를 찾지 못했습니다."
+            "PayPal에서 구독에 대한 트렌젝션 데이터를 찾지 못했습니다."
             f"\nSummary: {event['summary']}, 구독 ID:{subscription_id}"
         )
         return {"message": "No data to apply"}
@@ -71,16 +72,17 @@ async def paypal_payment_webhook(event: dict = Body(...)):
             """,
             subscription_id=subscription_id,
             transaction_id=last_transaction["id"],
-            transaction_time=last_transaction["time"],
+            transaction_time=paypaltime2datetime(last_transaction["time"]),
             total_amount=amount_info["gross_amount"]["value"],
             fee_amount=amount_info["fee_amount"]["value"],
             net_amount=amount_info["net_amount"]["value"],
         )
-    except psycopg.errors.NotNullViolation:
+    except psycopg.errors.NotNullViolation as e:
         log.warning(
             "[paypal webhook: PAYMENT.SALE.COMPLETED]"
             "구독에 해당하는 유저가 존재하지 않습니다."
             f"\nSummary: {event['summary']}, 구독 ID:{subscription_id}"
         )
+        raise e
 
     return {"message": "Apply success"}

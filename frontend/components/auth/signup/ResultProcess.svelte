@@ -18,6 +18,7 @@
     let loginPromise: null | Promise<void> = null;
     let timeout = 30;
     let animationEnd = false;
+    let sucessBtn: HTMLButtonElement;
 
     const sucessRedirect = () => window.location.replace(window.location.origin + "/console");
     onMount(async () => {
@@ -64,8 +65,8 @@
         window.location.replace(window.location.origin);
     };
 
-    const focusOnExitBtn = async () => {
-        if (animationEnd) {
+    const focusOnExitBtnAlert = async (event: Event) => {
+        if (animationEnd && event.target !== sucessBtn) {
             Swal.fire({
                 title: $text.signupBtnAlert,
                 toast: true,
@@ -92,7 +93,7 @@
                 <div class="sucess_login-timer">{format($text.loginTimer, { time: timeout })}</div>
                 {#await loginPromise then}
                     {#if animationEnd}
-                        <button on:click={sucessRedirect}>{$text.login}</button>
+                        <button bind:this={sucessBtn} on:click={sucessRedirect}>{$text.login}</button>
                     {/if}
                 {/await}
             </section>
@@ -105,7 +106,7 @@
     {/if}
 </main>
 
-<svelte:body on:click={focusOnExitBtn} />
+<svelte:body on:click={focusOnExitBtnAlert} />
 
 <style>
     main {

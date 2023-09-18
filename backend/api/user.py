@@ -13,7 +13,7 @@ from fastapi import HTTPException, Request, Body
 from fastapi.responses import RedirectResponse
 
 from backend import db
-from backend.http import APIRouter, TosspaymentsAPI, PayPalAPI, idempotent_retries
+from backend.http import APIRouter, TosspaymentsAPI, PayPalAPI, pooling
 from backend.system import SECRETS, run_async, log, MEMBERSHIP
 from backend.math import (
     paypaltime2datetime,
@@ -115,7 +115,7 @@ async def signup(item: SignupInfo):
                 f"/v1/billing/subscriptions/{item.paypal.subscription}"
             )
             try:
-                order, subscription = await idempotent_retries(
+                order, subscription = await pooling(
                     target=partial(
                         asyncio.gather,  # 주문과 구독 정보를 가져옵니다.
                         PayPalAPI(order_detail_api).get(),

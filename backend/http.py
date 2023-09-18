@@ -404,7 +404,7 @@ class PayPalAPI:
             return await self._execute_request(request, retry=partial(self.get, params))
 
 
-async def idempotent_retries(
+async def pooling(
     target: Awaitable[T],
     inspecter: Callable[[T], bool] = lambda _: True,
     exceptions: tuple | Exception = tuple(),
@@ -417,6 +417,7 @@ async def idempotent_retries(
     - exceptions: target 함수에서 발생될 예외중 무시할 예외들
     - timeout: 재시도 시간제한(초)
         - timeout 초과시 AssertionError가 발생합니다.
+    - 비동기 함수를 대상으로 하는 비동기 함수이므로 await 빼먹지 않도록 주의
     """
     start = time.time()
     while time.time() < start + timeout:

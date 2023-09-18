@@ -7,7 +7,7 @@ from fastapi import Body, Depends, HTTPException
 
 from backend import db
 from backend.math import paypaltime2datetime
-from backend.http import APIRouter, PayPalAPI, idempotent_retries
+from backend.http import APIRouter, PayPalAPI, pooling
 from backend.system import SECRETS, MEMBERSHIP, log
 
 router = [
@@ -79,7 +79,7 @@ async def paypal_payment_webhook(event: dict = Body(...)):
             fee_amount=amount_info["fee_amount"]["value"],
             net_amount=amount_info["net_amount"]["value"],
         )
-        await idempotent_retries(  # 회원가입 결제시 유저 생성 완료까지 풀링해야 될 수 있음
+        await pooling(  # 회원가입 결제시 유저 생성 완료까지 풀링해야 될 수 있음
             insert_func, exceptions=psycopg.errors.NotNullViolation, timeout=60
         )
     except psycopg.errors.NotNullViolation:

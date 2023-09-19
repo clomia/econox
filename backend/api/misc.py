@@ -7,7 +7,7 @@ from fastapi import Body, Depends, HTTPException
 
 from backend import db
 from backend.math import paypaltime2datetime
-from backend.http import APIRouter, PayPalAPI, pooling
+from backend.http import APIRouter, PayPalAPI, PayPalWebhookAuth, pooling
 from backend.system import SECRETS, MEMBERSHIP, log
 
 router = [
@@ -31,10 +31,10 @@ async def paypal_info():
 
 @webhook.public.post(
     "/paypal/payment-sale-complete",
-    dependencies=[PayPalAPI.webhook_verifier(event_type="PAYMENT.SALE.COMPLETED")],
+    dependencies=[Depends(PayPalWebhookAuth("PAYMENT.SALE.COMPLETED"))],
 )  # PayPal 결제 완료 웹훅 API
 async def paypal_payment_webhook(event: dict = Body(...)):
-    if (event_type := event["event_type"]) != "PAYMENT.SALE.COMPLETED":
+    if (event_type := event.get("event_type")) != "PAYMENT.SALE.COMPLETED":
         raise HTTPException(status_code=400, detail=f"Invalid event type: {event_type}")
     subscription_id = event["resource"]["billing_agreement_id"]
 

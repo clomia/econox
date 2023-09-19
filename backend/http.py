@@ -332,38 +332,6 @@ class PayPalAPI:
         resp.raise_for_status()
         cls.access_token = resp.json()["access_token"]
 
-    @classmethod
-    async def _webhook_verifier(cls, event_type: str, event: Request = None):
-        body = await event.json()
-        webhook_id = json.loads(SECRETS["PAYPAL_WEBHOOK_ID"])
-        try:
-            result = await cls("/v1/notifications/verify-webhook-signature").post(
-                {
-                    "auth_algo": event.headers["paypal-auth-algo"],
-                    "cert_url": event.headers["paypal-cert-url"],
-                    "transmission_id": event.headers["paypal-transmission-id"],
-                    "transmission_sig": event.headers["paypal-transmission-sig"],
-                    "transmission_time": event.headers["paypal-transmission-time"],
-                    "webhook_id": webhook_id[event_type],
-                    "webhook_event": body,
-                }
-            )
-            assert result["verification_status"] == "SUCCESS"
-        except (httpx.HTTPStatusError, AssertionError, KeyError) as e:
-            log.warning(
-                f"PayPal 웹훅 페이로드 인증 실패, 요청을 무시합니다."
-                f"\n[Header]:{dict(event.headers)}\n[Body]: {body}\n[Error] {type(e).__name__}: {e}"
-            )
-            raise HTTPException(status_code=401, detail="Event verification failed")
-
-    @classmethod
-    def webhook_verifier(cls, event_type: str) -> Depends:
-        """
-        - 웹훅 이벤트 타입 문자열을 받아서 해당 이벤트를 검증하는 의존성 함수를 반환합니다.
-        - secrets_manager에 PAYPAL_WEBHOOK_ID 키로 JSON 형식의 웹훅 ID 정의가 있어야 합니다.
-        """
-        return Depends(partial(cls._webhook_verifier, event_type))
-
     async def _execute_request(self, request: Awaitable, retry: Awaitable[dict | list]):
         """API 요청을 실행하고 토큰을 갱신하는 부분을 캡슐화"""
         try:
@@ -402,6 +370,38 @@ class PayPalAPI:
                 params=params,
             )
             return await self._execute_request(request, retry=partial(self.get, params))
+
+
+class PayPalWebhookAuth:
+    def __init__(self, event_type: str):
+        self.event_type = event_type
+
+    async def __call__(self, event: Request = None):
+        """
+        - secrets_manager에 PAYPAL_WEBHOOK_ID 키로 JSON 형식의 웹훅 ID 정의가 있어야 합니다.
+        """
+
+        body = await event.json()
+        webhook_id = json.loads(SECRETS["PAYPAL_WEBHOOK_ID"])
+        try:
+            result = await PayPalAPI("/v1/notifications/verify-webhook-signature").post(
+                {
+                    "auth_algo": event.headers["paypal-auth-algo"],
+                    "cert_url": event.headers["paypal-cert-url"],
+                    "transmission_id": event.headers["paypal-transmission-id"],
+                    "transmission_sig": event.headers["paypal-transmission-sig"],
+                    "transmission_time": event.headers["paypal-transmission-time"],
+                    "webhook_id": webhook_id[self.event_type],
+                    "webhook_event": body,
+                }
+            )
+            assert result["verification_status"] == "SUCCESS"
+        except (httpx.HTTPStatusError, AssertionError, KeyError) as e:
+            log.warning(
+                f"PayPal 웹훅 페이로드 인증 실패, 요청을 무시합니다."
+                f"\n[Header]:{dict(event.headers)}\n[Body]: {body}\n[Error] {type(e).__name__}: {e}"
+            )
+            raise HTTPException(status_code=401, detail="Event verification failed")
 
 
 async def pooling(

@@ -65,7 +65,8 @@ async def paypal_payment_webhook(event: dict = Body(...)):
         )
         await db.exec(
             """
-            UPDATE users SET next_billing_date={next_billing_date} 
+            UPDATE users  
+            SET next_billing_date={next_billing_date}, origin_billing_date=base_billing_date
             WHERE paypal_subscription_id={subscription_id};
             """,
             next_billing_date=paypaltime2datetime(
@@ -73,7 +74,6 @@ async def paypal_payment_webhook(event: dict = Body(...)):
             ),
             subscription_id=subscription_id,
         )
-
     except psycopg.errors.NotNullViolation:
         log.warning(
             "[paypal webhook: PAYMENT.SALE.COMPLETED]"

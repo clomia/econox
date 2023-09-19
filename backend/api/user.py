@@ -149,6 +149,7 @@ async def signup(item: SignupInfo):
             phone=item.phone,
             membership=item.membership,
             currency=item.currency,
+            origin_billing_date=now if signup_history else None,
             base_billing_date=now if signup_history else None,
             current_billing_date=now if signup_history else None,
             next_billing_date=next_billing,
@@ -333,6 +334,7 @@ async def change_membership(
     (
         current_membership,
         currency,
+        origin_billing_date,
         base_billing_date,
         current_billing_date,
         paypal_subscription_id,
@@ -340,6 +342,7 @@ async def change_membership(
         template=db.Template(table="users").select_query(
             "membership",
             "currency",
+            "origin_billing_date",
             "base_billing_date",
             "current_billing_date",
             "paypal_subscription_id",
@@ -356,46 +359,57 @@ async def change_membership(
         )
     if current_billing_date is None:  # 결제가 필요 없는 계정이므로 맴버십만 바꾸면 됌
         await db.exec(
-            "UPDATE users SET membership={new_membership}, WHERE id={user_id};",
+            "UPDATE users SET membership={new_membership} WHERE id={user_id};",
             new_membership=new_membership,
             user_id=user["id"],
         )
         return {"message": "Membership change successful"}
 
-    adjusted_next_billing: datetime = next_billing_date_adjust_membership_change(
-        base_billing=base_billing_date,
-        current_billing=current_billing_date,
-        current_membership=current_membership,
-        new_membership=new_membership,
-        change_day=datetime.now(),
-        currency=currency,
-    )
-
-    db_update_func = partial(
-        db.exec,
-        """
+    if origin_billing_date == base_billing_date:  # 맴버십 변경
+        adjusted_next_billing: datetime = next_billing_date_adjust_membership_change(
+            base_billing=base_billing_date,
+            current_billing=current_billing_date,
+            current_membership=current_membership,
+            new_membership=new_membership,
+            change_day=datetime.now(),
+            currency=currency,
+        )
+        db_update_func = partial(
+            db.exec,
+            """
+                UPDATE users SET membership={new_membership}, 
+                    base_billing_date={next_billing},
+                    next_billing_date={next_billing}
+                WHERE id={user_id};""",
+            new_membership=new_membership,
+            next_billing=adjusted_next_billing,
+            user_id=user["id"],
+        )
+    else:  # 변경된 맴버십 롤백
+        adjusted_next_billing = next_billing_date(
+            base=origin_billing_date, current=current_billing_date
+        )
+        db_update_func = partial(
+            db.exec,
+            """
             UPDATE users SET membership={new_membership}, 
-                base_billing_date={next_billing},
+                base_billing_date={base_billing_date},
                 next_billing_date={next_billing}
             WHERE id={user_id};""",
-        new_membership=new_membership,
-        next_billing=adjusted_next_billing,
-        user_id=user["id"],
-    )
+            new_membership=new_membership,
+            next_billing=adjusted_next_billing,
+            base_billing_date=origin_billing_date,
+            user_id=user["id"],
+        )
 
     if currency == "KRW":  # Tosspayments
         await db_update_func()
     else:  # PayPal
-        resp = await PayPalAPI(
-            f"/v1/billing/subscriptions/{paypal_subscription_id}/revise"
-        ).post({"plan_id": MEMBERSHIP[new_membership]["paypal_plan"]})
-        approve_url = [ele["href"] for ele in resp["links"] if ele["rel"] == "approve"]
-        if approve_url:
-            return RedirectResponse(approve_url[0])
+        ...
         await db_update_func()
     return {"message": "Membership change successful"}
 
 
-@router.private.post("/membership-change-confirm")
-def func():  # URL 아직 못정함, paypal에서 approve를 필요로 할 경우 approve완료 후 svelte에서 여기로 쏴주게 만들거임
-    pass
+# @router.private.post("/membership-change-confirm")
+# def func():  # URL 아직 못정함, paypal에서 approve를 필요로 할 경우 approve완료 후 svelte에서 여기로 쏴주게 만들거임
+#     pass

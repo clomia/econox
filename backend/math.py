@@ -102,15 +102,16 @@ def marge_lists(*lists: list, limit: int) -> list:
 
 def paypaltime2datetime(timestring: str) -> datetime:
     """PayPal에서 사용하는 시간 문자열을 한국 시간대로 변환한 datetime 객체로 만들어 반환합니다."""
-    return datetime.fromisoformat(timestring.replace("Z", "+00:00")).astimezone(
-        timezone(timedelta(hours=9))
-    )
+    return datetime.fromisoformat(
+        timestring.replace("Z", "+00:00"),
+    ).astimezone(timezone(timedelta(hours=9)))
 
 
 def next_billing_date(base: datetime, current: datetime) -> datetime:
     """
     - 다음 청구 날짜 계산
     - PayPal에서 사용하는 알고리즘과 동일합니다.
+    - 맴버십 변경 시에는 next_billing_date_adjust_membership_change 함수를 사용하세요.
     - base: 기준 청구일시
     - current: 최근 청구 날짜
     - return: 다음 청구 날짜
@@ -153,6 +154,8 @@ def next_billing_date_adjust_membership_change(
 ) -> datetime:
     """
     - 맴버십 변경에 따른 차액이 적용된 다음 결제일을 계산합니다.
+    - 변경된 맴버십을 되돌리는 경우의 다음 결제일은 next_billing_date 함수를 사용하세요.
+        - 이 함수는 맴버십 변경 여부를 알 수 없으므로 역산이 성립되지 않습니다.
     - base_billing: 기준 청구일
     - current_billing: 현재 맴버십 청구 날짜
     - current_membership: 현재 맴버십

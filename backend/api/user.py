@@ -6,18 +6,15 @@ from functools import partial
 
 import httpx
 import boto3
-import ipinfo
 import psycopg
 from pydantic import BaseModel, constr
-from fastapi import HTTPException, Request, Body
-from fastapi.responses import RedirectResponse
+from fastapi import HTTPException, Body
 
 from backend import db
 from backend.http import APIRouter, TosspaymentsAPI, PayPalAPI, pooling
-from backend.system import SECRETS, run_async, log, MEMBERSHIP
+from backend.system import SECRETS, run_async, MEMBERSHIP
 from backend.math import (
     paypaltime2datetime,
-    datetime2paypaltime,
     next_billing_date,
     next_billing_date_adjust_membership_change,
 )
@@ -183,7 +180,11 @@ async def delete_user(user=router.private.auth):
     """
     await db.exec(
         "DELETE FROM users WHERE id={user_id};",
-        "UPDATE signup_histories SET user_delete_at = CURRENT_TIMESTAMP;",
+        """
+        UPDATE signup_histories 
+        SET user_deleted = CURRENT_TIMESTAMP 
+        WHERE user_id={user_id};
+        """,
         user_id=user["id"],
     )
     await run_async(
@@ -229,35 +230,6 @@ async def create_cognito_user(
     ):
         raise HTTPException(status_code=400, detail="Email is not valid")
     return {"cognito_id": result["UserSub"]}
-
-
-@router.public.get("/country")
-async def get_user_country(request: Request):
-    """
-    - HTTP 요청이 이루어진 국가를 응답합니다.
-    - Response: 국가와 타임존 정보
-    """
-    header = {k.casefold(): v for k, v in request.headers.items()}
-    # AWS ELB는 헤더의 x-forwarded-for에 원본 ip를 넣어준다.
-    ip = header.get("x-forwarded-for", request.client.host)
-    try:
-        handler = ipinfo.getHandlerAsync(SECRETS["IPINFO_API_KEY"])
-        client_info = await handler.getDetails(ip)
-        return {
-            "country": client_info.country,
-            "timezone": client_info.timezone,
-        }
-    except AttributeError:  # if host is localhost
-        default = {"country": "KR", "timezone": "Asia/Seoul"}
-        default = {"country": "US", "timezone": "America/Chicago"}
-        log.warning(
-            "GET /user/country"
-            f"\n국가 정보 취득에 실패했습니다. 기본값을 응답합니다."
-            f"\nIP: {request.client.host} , 응답된 기본값: {default}"
-        )
-        return default
-    finally:
-        await handler.deinit()
 
 
 @router.private.patch("/name")

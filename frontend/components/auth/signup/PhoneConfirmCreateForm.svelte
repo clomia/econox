@@ -50,7 +50,7 @@
 <div class="description">{$text.phoneConfirmDescription}</div>
 
 <form on:submit|preventDefault={phoneConfirm}>
-    {#await api.public.get("/user/country") then response}
+    {#await api.public.get("/country") then response}
         <label>
             <span>{$text.country}</span>
             <select name="countryCode" value={response.data.country}>

@@ -1,9 +1,10 @@
 """ 모듈로 분류하기 어려운 앤드포인트들 """
 from functools import partial
-from datetime import timezone, timedelta, datetime
+from datetime import datetime
 
+import ipinfo
 import psycopg
-from fastapi import Body, Depends, HTTPException
+from fastapi import Request, Body, Depends, HTTPException
 
 from backend import db
 from backend.math import (
@@ -16,9 +17,39 @@ from backend.http import APIRouter, PayPalAPI, PayPalWebhookAuth, pooling
 from backend.system import SECRETS, MEMBERSHIP, log
 
 router = [
+    country := APIRouter("country"),
     paypal := APIRouter("paypal"),
     webhook := APIRouter("webhook"),
 ]
+
+
+@country.public.get()
+async def get_request_country(request: Request):
+    """
+    - 요청이 이루어진 국가 정보를 응답합니다.
+    - Response: 국가와 타임존 정보
+    """
+    header = {k.casefold(): v for k, v in request.headers.items()}
+    # AWS ELB는 헤더의 x-forwarded-for에 원본 ip를 넣어준다.
+    ip = header.get("x-forwarded-for", request.client.host)
+    try:
+        handler = ipinfo.getHandlerAsync(SECRETS["IPINFO_API_KEY"])
+        client_info = await handler.getDetails(ip)
+        return {
+            "country": client_info.country,
+            "timezone": client_info.timezone,
+        }
+    except AttributeError:  # if host is localhost
+        default = {"country": "KR", "timezone": "Asia/Seoul"}
+        default = {"country": "US", "timezone": "America/Chicago"}
+        log.warning(
+            "GET /country"
+            f"\n국가 정보 취득에 실패했습니다. 기본값을 응답합니다."
+            f"\nIP: {request.client.host} , 응답된 기본값: {default}"
+        )
+        return default
+    finally:
+        await handler.deinit()
 
 
 @paypal.public.get("/plans")

@@ -19,7 +19,7 @@
     };
 
     onMount(async () => {
-        const response = await api.public.get("/user/country");
+        const response = await api.public.get("/country");
         currency = response.data.country === "KR" ? "KRW" : "USD";
     });
 </script>

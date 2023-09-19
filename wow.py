@@ -30,23 +30,26 @@ plan_id = {
 KST = timezone(timedelta(hours=9))  # 타임존이 포함된 isoformat 문자열 생성에 필요
 now = datetime.now(KST)
 
-params = {
-    "start_time": (now - timedelta(days=365)).isoformat(),
-    "end_time": now.isoformat(),
-}
-print(params)
 response = requests.get(
-    f"https://api.sandbox.paypal.com/v1/billing/subscriptions/{subscription_id}/transactions",
+    f"https://api.sandbox.paypal.com/v1/billing/subscriptions/{subscription_id}",
     headers={
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json",
     },
-    params=params,
+)
+
+plan_id = response.json()["plan_id"]
+response = requests.get(
+    f"https://api.sandbox.paypal.com/v1/billing/plans/{plan_id}",
+    headers={
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+    },
 )
 
 
 # Extract approval link from response
-print(response.json())
+print(response.json()["name"])
 # url = next(ele["href"] for ele in response.json()["links"] if ele["rel"] == "approve")
 # print(f"Approve link: {url}")
 

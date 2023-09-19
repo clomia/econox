@@ -1,6 +1,6 @@
 """ 모듈로 분류하기 어려운 앤드포인트들 """
 from functools import partial
-from datetime import datetime, timezone, timedelta
+from datetime import timezone, timedelta
 
 import psycopg
 from fastapi import Body, Depends, HTTPException
@@ -36,62 +36,50 @@ async def paypal_info():
 async def paypal_payment_webhook(event: dict = Body(...)):
     if (event_type := event.get("event_type")) != "PAYMENT.SALE.COMPLETED":
         raise HTTPException(status_code=400, detail=f"Invalid event type: {event_type}")
-    subscription_id = event["resource"]["billing_agreement_id"]
-
-    now = datetime.now(KST)
-    start = (now - timedelta(days=2)).isoformat()
-    end = now.isoformat()
-    resp = await PayPalAPI(  # 구독에 대한 이틀치 트렌젝션 리스트를 가져온다
-        f"/v1/billing/subscriptions/{subscription_id}/transactions"
-    ).get(params={"start_time": start, "end_time": end})
-
-    if transactions := resp.get("transactions"):
-        last_transaction: dict = sorted(
-            transactions,
-            key=lambda x: datetime.fromisoformat(x["time"].replace("Z", "+00:00")),
-        )[-1]
-    else:
-        log.warning(
-            "[paypal webhook: PAYMENT.SALE.COMPLETED]"
-            "PayPal에서 구독에 대한 트렌젝션 데이터를 찾지 못했습니다."
-            f"\nSummary: {event['summary']}, 구독 ID:{subscription_id}"
-        )  # 4xx 응답 시 paypal이 좀 이따가 웹훅을 재호출해줌, 좀 있으면 데이터 있을 수 있으므로 이렇게 예외 처리
-        raise HTTPException(status_code=404, detail="No data to apply")
-
-    amount_info = last_transaction["amount_with_breakdown"]
     try:
+        subscription_id = event["resource"]["billing_agreement_id"]
+        subscription = await PayPalAPI(
+            f"/v1/billing/subscriptions/{subscription_id}"
+        ).get()
+        plan = await PayPalAPI(f"/v1/billing/plans/{subscription['plan_id']}").get()
         insert_func = partial(
             db.exec,
             """
             INSERT INTO paypal_billings (user_id, transaction_id, transaction_time, 
-                total_amount, fee_amount, net_amount)
+                order_name, total_amount, fee_amount)
             VALUES (
                 (SELECT id FROM users WHERE paypal_subscription_id={subscription_id} LIMIT 1),
-                {transaction_id}, {transaction_time}, {total_amount}, {fee_amount}, {net_amount}
+                {transaction_id}, {transaction_time}, {order_name}, {total_amount}, {fee_amount}
             )
             """,
             silent=True,
             subscription_id=subscription_id,
-            transaction_id=last_transaction["id"],
-            transaction_time=paypaltime2datetime(last_transaction["time"]),
-            total_amount=amount_info["gross_amount"]["value"],
-            fee_amount=amount_info["fee_amount"]["value"],
-            net_amount=amount_info["net_amount"]["value"],
+            transaction_id=event["resource"]["id"],
+            transaction_time=paypaltime2datetime(event["resource"]["create_time"]),
+            order_name=plan["name"],
+            total_amount=float(event["resource"]["amount"]["total"]),
+            fee_amount=float(event["resource"]["transaction_fee"]["value"]),
         )
         await pooling(  # 회원가입 결제시 유저 생성 완료까지 풀링해야 될 수 있음
-            insert_func, exceptions=psycopg.errors.NotNullViolation, timeout=60
+            insert_func, exceptions=psycopg.errors.NotNullViolation, timeout=30
         )
     except psycopg.errors.NotNullViolation:
         log.warning(
             "[paypal webhook: PAYMENT.SALE.COMPLETED]"
             "구독에 해당하는 유저가 존재하지 않습니다."
-            f"\nSummary: {event['summary']}, 구독 ID:{subscription_id}"
+            f"\nSummary: {event['summary']}, 구독 ID:{event['resource']['billing_agreement_id']}"
         )
     except psycopg.errors.UniqueViolation:
         log.warning(  # transaction_id 필드의 UNIQUE 제약에 걸린 경우임
             "[paypal webhook: PAYMENT.SALE.COMPLETED]"
             "멱등 처리: 중복된 트렌젝션을 수신하였기 때문에 무시합니다."
-            f"\nSummary: {event['summary']}, 구독 ID:{subscription_id}"
+            f"\nSummary: {event['summary']}, 구독 ID:{event['resource']['billing_agreement_id']}"
+        )
+    except KeyError:
+        log.warning(
+            "[paypal webhook: PAYMENT.SALE.COMPLETED]"
+            "KeyError: 검사에 성공했지만 내용이 올바르지 않습니다."
+            f"\nevent: {event}"
         )
 
     return {"message": "Apply success"}

@@ -1,4 +1,4 @@
---- Last commit: 2023-09-18 14:47:45 ---
+--- Last commit: 2023-09-19 12:28:36 ---
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ------------------------------------------------
@@ -29,7 +29,7 @@ CREATE TABLE users (
 CREATE TABLE signup_histories (
     "id" SERIAL NOT NULL PRIMARY KEY,
     "user_id" UUID NOT NULL,
-    "user_delete_at" TIMESTAMP DEFAULT NULL,
+    "user_deleted" TIMESTAMP DEFAULT NULL,
     "email" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
@@ -66,8 +66,8 @@ CREATE TABLE paypal_billings (
     "user_id" UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     "transaction_id" VARCHAR(60) UNIQUE NOT NULL, -- 멱등키로 사용
     "transaction_time" TIMESTAMP NOT NULL,
+    "order_name" VARCHAR(255) NOT NULL, -- 상품명
     "total_amount" FLOAT NOT NULL, -- 고객이 결제한 금액
     "fee_amount" FLOAT NOT NULL, -- PayPal 수수료
-    "net_amount" FLOAT NOT NULL, -- 순수익
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 );

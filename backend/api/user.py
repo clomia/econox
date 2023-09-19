@@ -346,7 +346,7 @@ async def change_membership(
             "base_billing_date",
             "current_billing_date",
             "paypal_subscription_id",
-            where={"user_id": user["id"]},
+            where={"id": user["id"]},
             limit=1,
         ),
         embed=True,
@@ -355,7 +355,7 @@ async def change_membership(
     if current_membership == new_membership or new_membership not in MEMBERSHIP:
         raise HTTPException(
             status_code=409,
-            detail=f"The {new_membership} is either identical to the already set value or invalid",
+            detail=f"The {new_membership} membership is either identical to the already set value or invalid",
         )
     if current_billing_date is None:  # 결제가 필요 없는 계정이므로 맴버십만 바꾸면 됌
         await db.exec(

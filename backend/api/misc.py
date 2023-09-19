@@ -31,9 +31,7 @@ async def paypal_info():
 
 @webhook.public.post(
     "/paypal/payment-sale-complete",
-    dependencies=[
-        Depends(PayPalAPI.webhook_verifier(event_type="PAYMENT.SALE.COMPLETED"))
-    ],
+    dependencies=[PayPalAPI.webhook_verifier(event_type="PAYMENT.SALE.COMPLETED")],
 )  # PayPal 결제 완료 웹훅 API
 async def paypal_payment_webhook(event: dict = Body(...)):
     if (event_type := event["event_type"]) != "PAYMENT.SALE.COMPLETED":

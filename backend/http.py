@@ -357,12 +357,12 @@ class PayPalAPI:
             raise HTTPException(status_code=401, detail="Event verification failed")
 
     @classmethod
-    def webhook_verifier(cls, event_type: str):
+    def webhook_verifier(cls, event_type: str) -> Depends:
         """
         - 웹훅 이벤트 타입 문자열을 받아서 해당 이벤트를 검증하는 의존성 함수를 반환합니다.
         - secrets_manager에 PAYPAL_WEBHOOK_ID 키로 JSON 형식의 웹훅 ID 정의가 있어야 합니다.
         """
-        return partial(cls._webhook_verifier, event_type)
+        return Depends(partial(cls._webhook_verifier, event_type))
 
     async def _execute_request(self, request: Awaitable, retry: Awaitable[dict | list]):
         """API 요청을 실행하고 토큰을 갱신하는 부분을 캡슐화"""

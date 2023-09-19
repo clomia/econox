@@ -70,6 +70,7 @@ async def paypal_payment_webhook(event: dict = Body(...)):
                 {transaction_id}, {transaction_time}, {total_amount}, {fee_amount}, {net_amount}
             )
             """,
+            silent=True,
             subscription_id=subscription_id,
             transaction_id=last_transaction["id"],
             transaction_time=paypaltime2datetime(last_transaction["time"]),

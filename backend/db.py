@@ -19,7 +19,11 @@ from backend.system import SECRETS, run_async, log
 
 
 async def exec(
-    *queries: str, template: Tuple[str, dict] = None, embed=False, **params
+    *queries: str,
+    template: Tuple[str, dict] = None,
+    silent=False,
+    embed=False,
+    **params,
 ) -> list | tuple:
     """
     - DB에 SQL 쿼리를 실행하고 결과를 반환합니다.
@@ -29,6 +33,7 @@ async def exec(
     - template: 쿼리 문자열과 파라미터 딕셔너리로 이루어진 튜플입니다.
         - queries, params 매개변수를 직접 넣지 않고 Template 클래스를 통해 쿼리를 생성하는 경우 사용합니다.
         - template 여러개를 단일 트렌젝션으로 실행하려면 Transaction 클래스를 사용하세요
+    - silent: 에러 로그를 띄우지 않으려면 True로 설정하세요, 적절한 예외처리가 있다면 True로 설정하세요.
     - embed: 결과중 첫번째 튜플을 반환합니다. 단일 행을 읽을때 True로 설정하세요
     - 사용 예
         - `db.exec("SELECT name={name} FROM {table};", table="user", name="John")`
@@ -76,7 +81,8 @@ async def exec(
             return sync_exec()
         except Exception as e:
             conn.rollback()
-            log.critical(f"\n{e}\nDB 쿼리 실행 오류가 발생하여 롤백하였습니다.\nQuery: {query}")
+            if not silent:
+                log.critical(f"\n{e}\nDB 쿼리 실행 오류가 발생하여 롤백하였습니다.\nQuery: {query}")
             raise e
         finally:
             cur.close()

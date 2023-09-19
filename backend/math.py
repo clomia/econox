@@ -107,6 +107,11 @@ def paypaltime2datetime(timestring: str) -> datetime:
     ).astimezone(timezone(timedelta(hours=9)))
 
 
+def datetime2paypaltime(dt: datetime) -> str:
+    """datetime 객체를 PayPal에서 사용하는 시간 문자열로 변환합니다. (ISO 8601)"""
+    return dt.strftime("%Y-%m-%dT%H:%M:%S.%f") + "+09:00"
+
+
 def next_billing_date(base: datetime, current: datetime) -> datetime:
     """
     - 다음 청구 날짜 계산

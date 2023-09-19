@@ -17,6 +17,7 @@ from backend.http import APIRouter, TosspaymentsAPI, PayPalAPI, pooling
 from backend.system import SECRETS, run_async, log, MEMBERSHIP
 from backend.math import (
     paypaltime2datetime,
+    datetime2paypaltime,
     next_billing_date,
     next_billing_date_adjust_membership_change,
 )
@@ -141,6 +142,10 @@ async def signup(item: SignupInfo):
                 detail="Correct billing information is required",
             )
 
+    tosspayments_billing_key = (
+        tosspayments_billing["key"] if item.tosspayments else None
+    )
+    paypal_subscription_id = item.paypal.subscription if item.paypal else None
     signup_transaction.prepend(  # 외래키 제약조건으로 인해 가장 먼저 실행되어야 함
         template=db.Template(table="users").insert_query(
             id=cognito_user_id,
@@ -153,10 +158,8 @@ async def signup(item: SignupInfo):
             base_billing_date=now if signup_history else None,
             current_billing_date=now if signup_history else None,
             next_billing_date=next_billing,
-            tosspayments_billing_key=tosspayments_billing["key"]
-            if item.tosspayments
-            else None,
-            paypal_subscription_id=item.paypal.subscription if item.paypal else None,
+            tosspayments_billing_key=tosspayments_billing_key,
+            paypal_subscription_id=paypal_subscription_id,
         )
     )
     signup_transaction.append(
@@ -321,23 +324,31 @@ async def change_password(
         return {"message": "Password change successful"}
 
 
+class PayPalSubscription(BaseModel):
+    subscription: constr(min_length=1)
+    next_billing: datetime  # (ISO 8601): YYYY-MM-DDTHH:MM:SS
+
+
+class MembershipChangeRequest(BaseModel):
+    new_membership: constr(min_length=1)
+    paypal: PayPalSubscription | None = None
+
+
 @router.private.patch("/membership")
-async def change_membership(
-    new_membership: str = Body(..., min_length=1, embed=True),
-    user=router.private.auth,
-):
+async def change_membership(item: MembershipChangeRequest, user=router.private.auth):
     """
     - 맴버십을 변경합니다.
     - new_membership: 변경 후 맴버십
+    - paypal_subscription_id[Optional]: USD 통화를 사용하는 PayPal 유저인 경우 새로운 PayPal 구독 ID를 발급받아 입력
+        - 구독 생성 시 GET /api/paypal/membership-change-subscription-start-time 를 사용하게요
+    - Response: 조정된 다음 청구일시 (서울 시간대)
     """
-
     (
         current_membership,
         currency,
         origin_billing_date,
         base_billing_date,
         current_billing_date,
-        paypal_subscription_id,
     ) = await db.exec(
         template=db.Template(table="users").select_query(
             "membership",
@@ -345,13 +356,13 @@ async def change_membership(
             "origin_billing_date",
             "base_billing_date",
             "current_billing_date",
-            "paypal_subscription_id",
             where={"id": user["id"]},
             limit=1,
         ),
         embed=True,
     )
 
+    new_membership = item.new_membership
     if current_membership == new_membership or new_membership not in MEMBERSHIP:
         raise HTTPException(
             status_code=409,
@@ -366,31 +377,35 @@ async def change_membership(
         return {"message": "Membership change successful"}
 
     if origin_billing_date == base_billing_date:  # 맴버십 변경
-        adjusted_next_billing: datetime = next_billing_date_adjust_membership_change(
-            base_billing=base_billing_date,
-            current_billing=current_billing_date,
-            current_membership=current_membership,
-            new_membership=new_membership,
-            change_day=datetime.now(),
-            currency=currency,
-        )
-        db_update_func = partial(
-            db.exec,
+        if item.paypal:
+            adjusted_next_billing = item.paypal.next_billing
+        else:
+            adjusted_next_billing = next_billing_date_adjust_membership_change(
+                base_billing=base_billing_date,
+                current_billing=current_billing_date,
+                current_membership=current_membership,
+                new_membership=new_membership,
+                change_day=datetime.now(),
+                currency=currency,
+            )
+        await db.exec(
             """
-                UPDATE users SET membership={new_membership}, 
-                    base_billing_date={next_billing},
-                    next_billing_date={next_billing}
-                WHERE id={user_id};""",
+            UPDATE users SET membership={new_membership}, 
+                base_billing_date={next_billing},
+                next_billing_date={next_billing}
+            WHERE id={user_id};""",
             new_membership=new_membership,
             next_billing=adjusted_next_billing,
             user_id=user["id"],
         )
     else:  # 변경된 맴버십 롤백
-        adjusted_next_billing = next_billing_date(
-            base=origin_billing_date, current=current_billing_date
-        )
-        db_update_func = partial(
-            db.exec,
+        if item.paypal:
+            adjusted_next_billing = item.paypal.next_billing
+        else:
+            adjusted_next_billing = next_billing_date(
+                base=origin_billing_date, current=current_billing_date
+            )
+        await db.exec(
             """
             UPDATE users SET membership={new_membership}, 
                 base_billing_date={base_billing_date},
@@ -402,14 +417,4 @@ async def change_membership(
             user_id=user["id"],
         )
 
-    if currency == "KRW":  # Tosspayments
-        await db_update_func()
-    else:  # PayPal
-        ...
-        await db_update_func()
-    return {"message": "Membership change successful"}
-
-
-# @router.private.post("/membership-change-confirm")
-# def func():  # URL 아직 못정함, paypal에서 approve를 필요로 할 경우 approve완료 후 svelte에서 여기로 쏴주게 만들거임
-#     pass
+    return {"adjusted_next_billing": adjusted_next_billing}

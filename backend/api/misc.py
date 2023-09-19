@@ -1,31 +1,92 @@
 """ 모듈로 분류하기 어려운 앤드포인트들 """
 from functools import partial
-from datetime import timezone, timedelta
+from datetime import timezone, timedelta, datetime
 
 import psycopg
 from fastapi import Body, Depends, HTTPException
 
 from backend import db
-from backend.math import paypaltime2datetime
+from backend.math import (
+    paypaltime2datetime,
+    datetime2paypaltime,
+    next_billing_date,
+    next_billing_date_adjust_membership_change,
+)
 from backend.http import APIRouter, PayPalAPI, PayPalWebhookAuth, pooling
 from backend.system import SECRETS, MEMBERSHIP, log
 
 router = [
-    setting := APIRouter("setting"),
+    paypal := APIRouter("paypal"),
     webhook := APIRouter("webhook"),
 ]
 
-KST = timezone(timedelta(hours=9))  # 타임존이 포함된 isoformat 문자열 생성에 필요
 
-
-@setting.public.get("/paypal-plans")
-async def paypal_info():
+@paypal.public.get("/plans")
+async def paypal_plan_info():
+    """
+    - Response: JS SDK로 PayPal 위젯을 띄우는데 필요한 정보들
+    """
     return {
         "client_id": SECRETS["PAYPAL_CLIENT_ID"],
         "plan_id": {
             "basic": MEMBERSHIP["basic"]["paypal_plan"],
             "professional": MEMBERSHIP["professional"]["paypal_plan"],
         },
+    }
+
+
+@paypal.private.get("/membership-change-subscription-start-time")
+async def calculation_of_next_billing_date_according_to_membership_change(
+    new_membership: str, user=paypal.private.auth
+):
+    """
+    - PayPal 유저의 맴버십 변경 시 PATCH /api/user/membership 호출 이전에 이 API로 구독 시작일을 계산한 뒤
+        브라우저에서 SDK를 통해 구독을 생성해야 함
+    - Response: PayPal Create subscription API의 start_time 매개변수로 넣어줘야 하는 날짜 조정값
+        - next_billing: PATCH /api/user/membership 호출 시 사용
+        - next_billing_paypal_format: PayPal SDK 생성 시 start_time 매개변수로 사용
+    """
+    (
+        current_membership,
+        currency,
+        origin_billing_date,
+        base_billing_date,
+        current_billing_date,
+    ) = await db.exec(
+        template=db.Template(table="users").select_query(
+            "membership",
+            "currency",
+            "origin_billing_date",
+            "base_billing_date",
+            "current_billing_date",
+            where={"id": user["id"]},
+            limit=1,
+        ),
+        embed=True,
+    )
+    if currency != "USD":
+        raise HTTPException(status_code=409, detail="The user does not use PayPal.")
+    if current_membership == new_membership or new_membership not in MEMBERSHIP:
+        raise HTTPException(
+            status_code=409,
+            detail=f"The {new_membership} membership is either identical to the already set value or invalid",
+        )
+    if origin_billing_date == base_billing_date:  # 맴버십 변경
+        adjusted_next_billing = next_billing_date_adjust_membership_change(
+            base_billing=base_billing_date,
+            current_billing=current_billing_date,
+            current_membership=current_membership,
+            new_membership=new_membership,
+            change_day=datetime.now(),
+            currency="USD",
+        )
+    else:  # 변경된 맴버십 롤백
+        adjusted_next_billing = next_billing_date(
+            base=origin_billing_date, current=current_billing_date
+        )
+    return {
+        "next_billing": adjusted_next_billing,
+        "next_billing_paypal_format": datetime2paypaltime(adjusted_next_billing),
     }
 
 

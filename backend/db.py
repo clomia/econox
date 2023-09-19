@@ -8,7 +8,7 @@
 
 import re
 import json
-from typing import Tuple
+from typing import Tuple, Dict, Any
 
 import boto3
 import psycopg
@@ -20,23 +20,23 @@ from backend.system import SECRETS, run_async, log
 
 async def exec(
     *queries: str,
+    params: Dict[str, Any],
     template: Tuple[str, dict] = None,
     silent=False,
     embed=False,
-    **params,
 ) -> list | tuple:
     """
     - DB에 SQL 쿼리를 실행하고 결과를 반환합니다.
     - queries: 쿼리 템플릿 문자열
-    - params: 템플릿 문자열에 할당해야 하는 매개변수
-        - Python 객체를 받습니다. PostgreSQL 객체를 문자열로 표현하지 마세요
+    - params: 템플릿 문자열에 할당해야 하는 값이 매핑된 딕셔너리
+        - 값은 Python 객체여야 합니다. PostgreSQL 객체를 문자열로 표현하지 마세요
     - template: 쿼리 문자열과 파라미터 딕셔너리로 이루어진 튜플입니다.
         - queries, params 매개변수를 직접 넣지 않고 Template 클래스를 통해 쿼리를 생성하는 경우 사용합니다.
         - template 여러개를 단일 트렌젝션으로 실행하려면 Transaction 클래스를 사용하세요
     - silent: 에러 로그를 띄우지 않으려면 True로 설정하세요, 적절한 예외처리가 있다면 True로 설정하세요.
     - embed: 결과중 첫번째 튜플을 반환합니다. 단일 행을 읽을때 True로 설정하세요
     - 사용 예
-        - `db.exec("SELECT name={name} FROM {table};", table="user", name="John")`
+        - `db.exec("SELECT name={name} FROM {table};", params={"table":"user", "name":"John"})`
         - 여러개의 쿼리 문자열도 허용됩니다. (너무 길어서 예시코드 안만듬)
     """
     if template:
@@ -150,12 +150,12 @@ class Transaction:
         self.param_dict |= params
 
     async def exec(self):
-        return await exec(*self.query_list, **self.param_dict)
+        return await exec(*self.query_list, params=self.param_dict)
 
 
 async def user_exists(email: str) -> bool:
     query = "SELECT 1 FROM users WHERE email={email} LIMIT 1;"
-    return bool(await exec(query, email=email))
+    return bool(await exec(query, params={"email": email}))
 
 
 async def signup_history_exists(email: str, phone: str) -> bool:
@@ -164,4 +164,4 @@ async def signup_history_exists(email: str, phone: str) -> bool:
         WHERE email={email} or phone={phone}
         LIMIT 1;
     """
-    return bool(await exec(query, email=email, phone=phone))
+    return bool(await exec(query, params={"email": email, "phone": phone}))

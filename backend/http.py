@@ -14,6 +14,7 @@ from aiocache import cached
 from fastapi import routing, HTTPException, Request, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
+from backend import db
 from backend.system import SECRETS, log, run_async
 
 T = TypeVar("T")
@@ -76,6 +77,7 @@ class CognitoTokenBearer(HTTPBearer):
     """
     - 이 토큰은 Cognito idToken과 accessToken을 '|'로 이어붙인것입니다.
     - 두 토큰을 검증한 뒤 유저정보(id, email)를 제공합니다.
+    - 유저가 존재하지 않는 경우 404 예외를 응답합니다.
     """
 
     async def __call__(self, request: Request) -> dict:
@@ -91,6 +93,8 @@ class CognitoTokenBearer(HTTPBearer):
         token = CognitoToken(id_token, access_token)
         try:
             user_info = await token.authentication()
+            if not await db.user_exists(user_info["email"]):
+                raise HTTPException(status_code=404, detail="User does not exist")
             return user_info
         except jwt.PyJWTError as e:
             e_str = str(e)
@@ -242,64 +246,49 @@ class TosspaymentsAPI:
         resp.raise_for_status()
         return resp.json()
 
-    @classmethod
-    async def create_billing(
-        cls,
-        cognito_user_id: str,
+
+class TosspaymentsBilling:
+    def __init__(self, user_id):
+        self.user_id = user_id
+
+    async def get_billing_key(
+        self,
         card_number: str,
         expiration_year: str,
         expiration_month: str,
         owner_id: str,
-        email: str,
-        order_name: str,
-        amount: int,
-    ) -> dict:
-        """
-        - 빌링키를 발급받고 카드 정보로 대금을 결제합니다
-        - return: 빌링키와 결제정보
-            - 빌링키 이미 있으면 billing 메서드를 통해 빌링키로 결제하세요
-        """
-        # -- 빌링 키 발급 --
-        try:
-            billing_info = await cls("/v1/billing/authorizations/card").post(
-                {
-                    "customerKey": cognito_user_id,
-                    "cardNumber": card_number,
-                    "cardExpirationYear": expiration_year,
-                    "cardExpirationMonth": expiration_month,
-                    "customerIdentityNumber": owner_id,
-                }
-            )
-            # -- 첫달 구독료 결제 --
-            billing_key = billing_info["billingKey"]
-            payment_info = await cls.billing(
-                billing_key, cognito_user_id, order_name, amount, email
-            )
-        except httpx.HTTPStatusError as e:
-            raise HTTPException(
-                status_code=402,
-                detail=f"The Tosspayments information provided is incorrect\nResponse detail: {e}",
-            )
-        return {"key": billing_key, "payment": payment_info}
+    ) -> str:
+        billing_info = await TosspaymentsAPI("/v1/billing/authorizations/card").post(
+            {
+                "customerKey": self.user_id,
+                "cardNumber": card_number,
+                "cardExpirationYear": expiration_year,
+                "cardExpirationMonth": expiration_month,
+                "customerIdentityNumber": owner_id,
+            }
+        )
+        return billing_info["billingKey"]
 
-    @classmethod
     async def billing(
-        cls, key: str, cognito_user_id: str, order_name: str, amount: int, email: str
-    ):
+        self, key: str, order_name: str, amount: int, email: str | None = None
+    ) -> dict:
         """
         - 빌링 키로 대금을 결제합니다
         - key: tosspayments billingKey
         - return: POST /v1/billing/{billingKey} 요청에 대한 응답
         """
-        return await cls(f"/v1/billing/{key}").post(
+        payment_info = await TosspaymentsAPI(f"/v1/billing/{key}").post(
             {
-                "customerKey": cognito_user_id,
+                "customerKey": self.user_id,
                 "orderId": str(uuid4()),
                 "orderName": order_name,
                 "amount": amount,
-                "customerEmail": email,
             }
+            | {"customerEmail": email}
+            if email
+            else {}
         )
+        return payment_info
 
 
 class PayPalAPI:

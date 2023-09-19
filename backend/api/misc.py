@@ -126,13 +126,21 @@ async def calculation_of_next_billing_date_according_to_membership_change(
     dependencies=[Depends(PayPalWebhookAuth("PAYMENT.SALE.COMPLETED"))],
 )  # PayPal 결제 완료 웹훅 API
 async def paypal_payment_webhook(event: dict = Body(...)):
+    """
+    - PayPal에서 PAYMENT.SALE.COMPLETED 이벤트에 대해 호출하는 웹훅 엔드포인트
+    - PayPal 결제 완료 상태를 서버에 적용합니다.
+    """
     if (event_type := event.get("event_type")) != "PAYMENT.SALE.COMPLETED":
         raise HTTPException(status_code=400, detail=f"Invalid event type: {event_type}")
     try:
+        transaction_time = paypaltime2datetime(event["resource"]["create_time"])
         subscription_id = event["resource"]["billing_agreement_id"]
         subscription = await PayPalAPI(
             f"/v1/billing/subscriptions/{subscription_id}"
         ).get()
+        next_billing = paypaltime2datetime(
+            subscription["billing_info"]["next_billing_time"]
+        )
         plan = await PayPalAPI(f"/v1/billing/plans/{subscription['plan_id']}").get()
         insert_func = partial(
             db.exec,
@@ -144,13 +152,15 @@ async def paypal_payment_webhook(event: dict = Body(...)):
                 {transaction_id}, {transaction_time}, {order_name}, {total_amount}, {fee_amount}
             )
             """,
+            params={
+                "subscription_id": subscription_id,
+                "transaction_id": event["resource"]["id"],
+                "transaction_time": transaction_time,
+                "order_name": plan["name"],
+                "total_amount": float(event["resource"]["amount"]["total"]),
+                "fee_amount": float(event["resource"]["transaction_fee"]["value"]),
+            },
             silent=True,
-            subscription_id=subscription_id,
-            transaction_id=event["resource"]["id"],
-            transaction_time=paypaltime2datetime(event["resource"]["create_time"]),
-            order_name=plan["name"],
-            total_amount=float(event["resource"]["amount"]["total"]),
-            fee_amount=float(event["resource"]["transaction_fee"]["value"]),
         )
         await pooling(  # 유저 생성 완료 전 요청 수신 시를 대비한 풀링 로직
             insert_func, exceptions=psycopg.errors.NotNullViolation, timeout=30
@@ -161,10 +171,10 @@ async def paypal_payment_webhook(event: dict = Body(...)):
             SET next_billing_date={next_billing_date}, origin_billing_date=base_billing_date
             WHERE paypal_subscription_id={subscription_id};
             """,
-            next_billing_date=paypaltime2datetime(
-                subscription["billing_info"]["next_billing_time"]
-            ),
-            subscription_id=subscription_id,
+            params={
+                "next_billing_date": next_billing,
+                "subscription_id": subscription_id,
+            },
         )
     except psycopg.errors.NotNullViolation:
         log.warning(

@@ -11,8 +11,14 @@ from pydantic import BaseModel, constr
 from fastapi import HTTPException, Body
 
 from backend import db
-from backend.http import APIRouter, TosspaymentsAPI, PayPalAPI, pooling
 from backend.system import SECRETS, run_async, MEMBERSHIP
+from backend.http import (
+    APIRouter,
+    TosspaymentsAPI,
+    TosspaymentsBilling,
+    PayPalAPI,
+    pooling,
+)
 from backend.math import (
     paypaltime2datetime,
     next_billing_date,
@@ -61,7 +67,7 @@ async def signup(item: SignupInfo):
             UserPoolId=SECRETS["COGNITO_USER_POOL_ID"],
             Username=item.email,
         )
-        cognito_user_id: str = cognito_user["Username"]
+        user_id: str = cognito_user["Username"]
     except cognito.exceptions.UserNotFoundException:
         raise HTTPException(status_code=409, detail="Cognito user not found")
     if cognito_user["UserStatus"] != "CONFIRMED":
@@ -75,20 +81,29 @@ async def signup(item: SignupInfo):
     if signup_history:
         # 회원가입 내역이 있다면 결제정보 필요함
         if item.currency == "KRW" and item.tosspayments:  # 토스페이먼츠 빌링
-            tosspayments_billing: dict = await TosspaymentsAPI.create_billing(
-                cognito_user_id,
-                item.tosspayments.card_number,
-                item.tosspayments.expiration_year,
-                item.tosspayments.expiration_month,
-                item.tosspayments.owner_id,
-                item.email,
-                order_name=f"Econox {item.membership.capitalize()} Membership",
-                amount=MEMBERSHIP[item.membership][item.currency],
-            )
-            payment = tosspayments_billing["payment"]
+            tosspayments = TosspaymentsBilling(user_id)
+            try:
+                billing_key = await tosspayments.get_billing_key(
+                    item.tosspayments.card_number,
+                    item.tosspayments.expiration_year,
+                    item.tosspayments.expiration_month,
+                    item.tosspayments.owner_id,
+                )
+                payment = tosspayments.billing(
+                    billing_key,
+                    order_name=f"Econox {item.membership.capitalize()} Membership",
+                    amount=MEMBERSHIP[item.membership][item.currency],
+                    email=item.email,
+                )
+            except httpx.HTTPStatusError:
+                raise HTTPException(
+                    status_code=402,
+                    detail=f"The Tosspayments information provided is incorrect\nResponse detail: {e}",
+                )
+
             signup_transaction.append(
                 template=db.Template(table="tosspayments_billings").insert_query(
-                    user_id=cognito_user_id,
+                    user_id=user_id,
                     order_id=payment["orderId"],
                     transaction_time=datetime.fromisoformat(payment["approvedAt"]),
                     payment_key=payment["paymentKey"],
@@ -120,8 +135,8 @@ async def signup(item: SignupInfo):
                         PayPalAPI(subscription_detail_api).get(),
                     ),
                     inspecter=(  # 주문 정보와 구독 정보가 완료상태인지 확인합니다.
-                        lambda results: results[0]["status"] != "APPROVED"
-                        or results[1]["status"] == "ACTIVE"
+                        lambda results: results[0]["status"] == "APPROVED"
+                        and results[1]["status"] == "ACTIVE"
                     ),
                     timeout=30,  # 조건이 만족될때까지 최대 30초 재시도합니다.
                 )  # timeout이 초과되어도 조건이 만족되지 않으면 AssertionError
@@ -131,7 +146,7 @@ async def signup(item: SignupInfo):
             except (httpx.HTTPStatusError, AssertionError) as e:
                 raise HTTPException(
                     status_code=402,
-                    detail=f"PayPal does not have subscription and order information\nResponse detail: {e}",
+                    detail=f"Your order and subscription status in paypal server is incorrect\nResponse detail: {e}",
                 )
         else:
             raise HTTPException(
@@ -139,13 +154,11 @@ async def signup(item: SignupInfo):
                 detail="Correct billing information is required",
             )
 
-    tosspayments_billing_key = (
-        tosspayments_billing["key"] if item.tosspayments else None
-    )
+    tosspayments_billing_key = billing_key if item.tosspayments else None
     paypal_subscription_id = item.paypal.subscription if item.paypal else None
     signup_transaction.prepend(  # 외래키 제약조건으로 인해 가장 먼저 실행되어야 함
         template=db.Template(table="users").insert_query(
-            id=cognito_user_id,
+            id=user_id,
             email=item.email,
             name=item.email.split("@")[0],
             phone=item.phone,
@@ -161,7 +174,7 @@ async def signup(item: SignupInfo):
     )
     signup_transaction.append(
         template=db.Template(table="signup_histories").insert_query(
-            user_id=cognito_user_id,
+            user_id=user_id,
             email=item.email,
             phone=item.phone,
         )
@@ -185,7 +198,7 @@ async def delete_user(user=router.private.auth):
         SET user_deleted = CURRENT_TIMESTAMP 
         WHERE user_id={user_id};
         """,
-        user_id=user["id"],
+        params={"user_id": user["id"]},
     )
     await run_async(
         cognito.delete_user,
@@ -242,8 +255,7 @@ async def change_user_name(
     """
     await db.exec(
         "UPDATE users SET name={user_name} WHERE id={user_id}",
-        user_name=new_name,
-        user_id=user["id"],
+        params={"user_name": new_name, "user_id": user["id"]},
     )
     return {"message": "Changed successfully"}
 
@@ -254,8 +266,6 @@ async def password_reset_and_send_confirmation_code(user=router.private.auth):
     - 비밀번호를 리셋하고 비밀번호 재설정을 위해 이메일로 인증코드를 전송합니다.
     - PATCH /api/user/password API에 인증코드를 사용하여 비밀번호를 재설정해야 합니다.
     """
-    if not await db.user_exists(user["email"]):
-        raise HTTPException(status_code=404, detail="user does not exist")
     try:
         await run_async(
             cognito.forgot_password,
@@ -280,8 +290,6 @@ async def change_password(
     - password: 변경 후 비밀번호
     - confirm_code: POST /api/user/password/reset API를 통해 유저에게 발송된 인증코드
     """
-    if not await db.user_exists(user["email"]):
-        raise HTTPException(status_code=404, detail="User does not exist")
     try:
         await run_async(
             cognito.confirm_forgot_password,
@@ -312,7 +320,7 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
     - 맴버십을 변경합니다.
     - new_membership: 변경 후 맴버십
     - paypal_subscription_id[Optional]: USD 통화를 사용하는 PayPal 유저인 경우 새로운 PayPal 구독 ID를 발급받아 입력
-        - 구독 생성 시 GET /api/paypal/membership-change-subscription-start-time 를 사용하게요
+        - 구독 생성 시 GET /api/paypal/membership-change-subscription-start-time 를 사용하세요
     - Response: 조정된 다음 청구일시 (서울 시간대)
     """
     (
@@ -343,8 +351,7 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
     if current_billing_date is None:  # 결제가 필요 없는 계정이므로 맴버십만 바꾸면 됌
         await db.exec(
             "UPDATE users SET membership={new_membership} WHERE id={user_id};",
-            new_membership=new_membership,
-            user_id=user["id"],
+            params={"new_membership": new_membership, "user_id": user["id"]},
         )
         return {"message": "Membership change successful"}
 
@@ -366,9 +373,11 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
                 base_billing_date={next_billing},
                 next_billing_date={next_billing}
             WHERE id={user_id};""",
-            new_membership=new_membership,
-            next_billing=adjusted_next_billing,
-            user_id=user["id"],
+            params={
+                "new_membership": new_membership,
+                "next_billing": adjusted_next_billing,
+                "user_id": user["id"],
+            },
         )
     else:  # 변경된 맴버십 롤백
         if item.paypal:
@@ -383,10 +392,79 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
                 base_billing_date={base_billing_date},
                 next_billing_date={next_billing}
             WHERE id={user_id};""",
-            new_membership=new_membership,
-            next_billing=adjusted_next_billing,
-            base_billing_date=origin_billing_date,
-            user_id=user["id"],
+            params={
+                "new_membership": new_membership,
+                "next_billing": adjusted_next_billing,
+                "base_billing_date": origin_billing_date,
+                "user_id": user["id"],
+            },
         )
 
     return {"adjusted_next_billing": adjusted_next_billing}
+
+
+class PaymentMethodInfo(BaseModel):
+    tosspayments: TosspaymentsBillingInfo | None = None
+    paypal: PaypalBillingInfo | None = None
+
+
+@router.private.patch("/payment-method")
+async def change_payment_method(item: PaymentMethodInfo, user=router.private.auth):
+    """
+    - 결제수단을 변경합니다. PG사 변경은 불가능합니다.
+    """
+    currency = await db.exec(
+        "SELECT currency FROM users WHERE id={user_id}",
+        params={"user_id": user["id"]},
+        embed=True,
+    )
+    if currency == "KRW" and item.tosspayments:
+        tosspayments = TosspaymentsBilling(user_id=user["id"])
+        billing_key = await tosspayments.get_billing_key(
+            item.tosspayments.card_number,
+            item.tosspayments.expiration_year,
+            item.tosspayments.expiration_month,
+            item.tosspayments.owner_id,
+        )
+        payment_info = await tosspayments.billing(billing_key, "confirm", 1)  # 1원 결제
+        await TosspaymentsAPI(f"/v1/payments/{payment_info['paymentKey']}/cancel").post(
+            {"cancelReason": "confirmed"}  # 1원 환불
+        )
+        await db.exec(
+            "UPDATE users SET tosspayments_billing_key={billing_key} WHERE id={user_id}",
+            params={"billing_key": billing_key, "user_id": user["id"]},
+        )
+    elif currency == "USD" and item.paypal:  # 페이팔 빌링
+        try:
+            subscription = await pooling(
+                target=PayPalAPI(
+                    f"/v1/billing/subscriptions/{item.paypal.subscription}"
+                ).get,
+                inspecter=lambda subscription: subscription["status"] == "ACTIVE",
+                timeout=30,  # 조건이 만족될때까지 최대 30초 재시도합니다.
+            )  # timeout이 초과되어도 조건이 만족되지 않으면 AssertionError
+            next_billing = paypaltime2datetime(
+                subscription["billing_info"]["next_billing_time"]
+            )
+        except AssertionError as e:
+            raise HTTPException(
+                status_code=402,
+                detail=f"Your subscription status in paypal server is incorrect\nResponse detail: {e}",
+            )
+        await db.exec(
+            """
+            UPDATE users SET paypal_subscription_id={subscription}, 
+                next_billing_date={next_billing} 
+            WHERE id={user_id}
+            """,
+            params={
+                "subscription": item.paypal.subscription,
+                "next_billing": next_billing,
+                "user_id": user["id"],
+            },
+        )
+    else:
+        raise HTTPException(
+            status_code=409,
+            detail=f"User payment method is not registered",
+        )

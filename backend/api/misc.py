@@ -60,9 +60,20 @@ async def paypal_payment_webhook(event: dict = Body(...)):
             total_amount=float(event["resource"]["amount"]["total"]),
             fee_amount=float(event["resource"]["transaction_fee"]["value"]),
         )
-        await pooling(  # 회원가입 결제시 유저 생성 완료까지 풀링해야 될 수 있음
+        await pooling(  # 유저 생성 완료 전 요청 수신 시를 대비한 풀링 로직
             insert_func, exceptions=psycopg.errors.NotNullViolation, timeout=30
         )
+        await db.exec(
+            """
+            UPDATE users SET next_billing_date={next_billing_date} 
+            WHERE paypal_subscription_id={subscription_id};
+            """,
+            next_billing_date=paypaltime2datetime(
+                subscription["billing_info"]["next_billing_time"]
+            ),
+            subscription_id=subscription_id,
+        )
+
     except psycopg.errors.NotNullViolation:
         log.warning(
             "[paypal webhook: PAYMENT.SALE.COMPLETED]"

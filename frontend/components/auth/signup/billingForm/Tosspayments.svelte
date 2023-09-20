@@ -114,7 +114,7 @@
         <LoadingAnimation />
     {/await}
     {#if !(response instanceof Promise)}
-        <button class="submit-button" type="submit">{$text.next}</button>
+        <button class="submit-button" type="submit">{$text.Next}</button>
     {/if}
 </form>
 

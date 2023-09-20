@@ -1,103 +1,76 @@
 # 언어별 UI 텍스트 정의 문서 (영어 텍스트는 모든 항목에 필수입니다!)
-featureHub: 
+FeatureHub: 
   en: "Feature Hub"
   ko: "피쳐 허브"
-console:
+Console:
   en: "Console"
   ko: "콘솔"
-signInOut:
+SignInOut:
   en: "Sign In/Out"
   ko: "로그인/회원가입"
-login:
+Login:
   en: "Login"
   ko: "로그인"
-signup:
+Signup:
   en: "Signup"
   ko: "회원가입"
-email:
-  en: "EMAIL"
+Email:
+  en: "Email"
   ko: "이메일"
-password:
-  en: "PASSWORD"
+Password:
+  en: "Password"
   ko: "비밀번호"
-retypePassword:
-  en: "RETYPE PASSWORD" # 다 대문자로 하기로 했음, 아니다 대문자로 하면 글자 좀 이상함
+RetypePassword:
+  en: "Retype password" 
   ko: "비밀번호 확인"
-loginFailed:
+LoginInfoIncorrect:
   en: "Email or password is incorrect."
   ko: "이메일 또는 비밀번호가 올바르지 않습니다."
-signupFailed:
-  en: "Email or password is incorrect."
-  ko: "이메일 또는 비밀번호가 올바르지 않습니다."
-error:
+UnexpectedError:
   en: "An unexpected error has occurred"
   ko: "예상치 못한 오류가 발생했습니다"
-sessionInvalid:
-  en: "Your session has expired, please log in again"
-  ko: "세션이 만료되었으니 다시 로그인해주세요"
-loginRequired:
-  en: "Login is required."
-  ko: "로그인이 필요합니다."
-ok:
+Ok:
   en: "OK"
   ko: "확인"
-passwordMismatch:
+RetypePasswordMismatch: 
   en: "Passwords do not match."
   ko: "비밀번호가 일치하지 않습니다."
-alreadyExistsUser:
+UserAlreadyExists:  
   en: "This email is already registered."
   ko: "이미 가입되어있는 이메일입니다."
-invalidInput:
-  en: "Invalid input"
-  ko: "입력이 잘못되었습니다."
-passwordLengthWarning:
+IncorrectPasswordLength:
   en: "Password must be 6 characters or more."
   ko: "비밀번호는 6글자 이상이어야 합니다."
-enterEmailConfirmationCode:
+PleaseEnterEmailConfirmCode:
   en: "Please enter the code sent to your email."
   ko: "이메일로 전송된 코드를 입력해주세요."
-confirmationCode:
-  en: "confirmation code"
-  ko: "확인 코드"
-expiredConfirmCode:
+ConfirmCodeAlreadyExpired:
   en: "The verification code sent has already expired."
   ko: "전송된 확인 코드는 이미 만료되었습니다."
-confirmCodeMismatch:
-  en: "Confirmation code is incorrect."
-  ko: "확인 코드가 올바르지 않습니다."
-next:
-  en: "Next"
-  ko: "다음"
-confirmCodeExpiration:
+ConfirmCodeExpired:
   en: "Confirmation code has expired."
   ko: "인증코드가 만료되었습니다."
-selectMembership:
+ConfirmCodeMismatch:
+  en: "Confirmation code is incorrect."
+  ko: "확인 코드가 올바르지 않습니다."
+Next:
+  en: "Next"
+  ko: "다음"
+SelectMembership:
   en: "Select Membership"
   ko: "맴버십 선택"
-selectMembershipSubtitle:
+SelectMembershipSubtitle:
   en: "For customers who sign up for the first time, the selected membership is provided free of charge for the first month!"
   ko: "첫 회원가입 고객을 대상으로 선택한 맴버십이 첫 한달간 결제 없이 무료로 제공됩니다!"
-dollarPlan:
-  en: "dollar plan"
-  ko: "달러 요금제"
-wonPlan:
-  en: "won plan"
-  ko: "원화 요금제"
-dollarPlanLimit:
-  en: "The dollar plan does not support Korean payment methods."
-  ko: "달러 요금제는 한국 결제수단을 지원하지 않습니다."
-wonPlanLimit:
-  en: "For KRW rate plans, only Korean payment methods are supported."
-  ko: "원화 요금제는 한국 결제수단만 지원됩니다."
-basicPlan:
+BasicPlan:
   en: "Basic"
   ko: "일반"
-basicPlanDollerPrice:
+BasicPlanDollerPrice:
   en: "$14.9"
-basicPlanWonPrice:
+BasicPlanWonPrice:
   en: "KRW 14,900"
   ko: "14,900원/월"
-basicPlanDescription:
+BasicPlanDescription:
   en: >
     Compare financial markets, national economies and business data from around the world to discover connections.
     Compare all data in a time series graph to understand macroeconomics at a glance
@@ -106,39 +79,39 @@ basicPlanDescription:
     전세계 금융시장, 국가경제, 기업 데이터를 비교해서 연관성을 발견하세요.
     모든 데이터를 시계열 그래프로 비교해서 거시경제를 한눈에 파악하고
     투자에 필요한 통찰을 얻을 수 있습니다.
-professionalPlan:
+ProfessionalPlan:
   en: "Professional"
   ko: "전문가"
-professionalPlanDollerPrice:
+ProfessionalPlanDollerPrice:
   en: "$18.9/Month"
-professionalPlanWonPrice:
+ProfessionalPlanWonPrice:
   en: "KRW 18,900"
   ko: "18,900원"
-professionalPlanDescription:
+ProfessionalPlanDescription:
   en: "Unlimited downloads of all data as CSV!"
   ko: "모든 데이터를 CSV로 무제한 다운로드할 수 있습니다!"
-phoneConfirmDescription:
+PhoneConfirmReason: 
   en: "Phone number verification is required to check whether you are eligible for the initial membership benefits."
   ko: "최초 회원가입 혜택 대상자 여부를 확인하기 위해 전화번호 인증이 필요합니다."
-inputPhoneNumber:
+EnterPhoneNumber:
   en: "Enter phone number"
   ko: "전화번호 입력"
-sendVerificationCode:
+SendVerificationCode:
   en: "Send verification code"
   ko: "인증코드 발송"
-country:
+Country:
   en: "country"
   ko: "국가"
-phoneConfirmRequestFailed:
+PhoneConfirmCodeSendFailed: 
   en: "Failed to send verification code. Please check that the phone number you entered is correct"
   ko: "인증번호 전송에 실패하였습니다. 입력한 전화번호가 올바른지 확인해주세요"
-noPhoneNumber:
+PleaseEnterPhoneNumber:
   en: "Please enter your phone number."
   ko: "전화번호를 입력해주세요."
-phoneNumberNotNumber:
+PhoneNumberShouldBeNumeric: 
   en: "Phone numbers can only contain numbers."
   ko: "전화번호는 숫자만 입력할 수 있습니다."
-enterPhoneConfirmationCode:
+PleaseEnterPhoneConfirmCode:
   en: "Enter the verification code sent by text message"
   ko: "문자 메세지로 전송된 인증코드를 입력해주세요"
 missingInput:

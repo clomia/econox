@@ -17,7 +17,7 @@
         try {
             response = login(email, password);
         } catch (error) {
-            message = error.response?.status === 401 ? $text.loginFailed : $text.error;
+            message = error.response?.status === 401 ? $text.LoginInfoIncorrect : $text.UnexpectedError;
         }
     };
 </script>
@@ -25,13 +25,13 @@
 <form on:submit|preventDefault={loginProcess}>
     <section>
         <label>
-            <span>{$text.email}</span>
+            <span>{$text.Email}</span>
             <input type="text" name="email" autocomplete="email" />
         </label>
     </section>
     <section>
         <label>
-            <span>{$text.password}</span>
+            <span>{$text.Password}</span>
             <input class="password-input" type="password" name="password" autocomplete="current-password" />
         </label>
     </section>
@@ -40,7 +40,7 @@
     {/await}
     <div>{message}</div>
     {#if !(response instanceof Promise)}
-        <button type="submit">{$text.login}</button>
+        <button type="submit">{$text.Login}</button>
     {/if}
 </form>
 

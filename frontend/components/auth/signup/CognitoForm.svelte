@@ -27,12 +27,12 @@
         }
 
         if (password !== retypePassword) {
-            message = $text.passwordMismatch;
+            message = $text.RetypePasswordMismatch;
             return;
         }
 
         if (password.length < 6) {
-            message = $text.passwordLengthWarning;
+            message = $text.IncorrectPasswordLength;
             return;
         }
 
@@ -48,10 +48,10 @@
         } catch (error) {
             response = null;
             const statusMessages = {
-                409: $text.alreadyExistsUser,
+                409: $text.UserAlreadyExists,
                 400: $text.invalidEmailInput,
             };
-            message = statusMessages[error.response?.status] || $text.error;
+            message = statusMessages[error.response?.status] || $text.UnexpectedError;
         }
     };
 </script>
@@ -65,13 +65,13 @@
     </section>
     <section>
         <label>
-            <span>{$text.password}</span>
+            <span>{$text.Password}</span>
             <input class="password-input" type="password" name="password" autocomplete="off" />
         </label>
     </section>
     <section>
         <label>
-            <span>{$text.retypePassword}</span>
+            <span>{$text.RetypePassword}</span>
             <input class="password-input" type="password" name="retypePassword" autocomplete="off" />
         </label>
     </section>
@@ -80,7 +80,7 @@
     {/await}
     <div>{message}</div>
     {#if !(response instanceof Promise)}
-        <button type="submit">{$text.next}</button>
+        <button type="submit">{$text.Next}</button>
     {/if}
 </form>
 

@@ -13,7 +13,7 @@
     const dispatch = createEventDispatcher();
 
     let response: null | Promise<any> = null; // 요청 전
-    let message = $text.enterPhoneConfirmationCode;
+    let message = $text.PleaseEnterPhoneConfirmCode;
 
     if ($phoneConfirmTimeLimit === -1) {
         $phoneConfirmTimeLimit = 180;
@@ -21,7 +21,7 @@
     onMount(() => setInterval(() => $phoneConfirmTimeLimit > 0 && $phoneConfirmTimeLimit--, 1000));
 
     $: placeHolder =
-        $phoneConfirmTimeLimit > 0 ? timeToString($phoneConfirmTimeLimit) : $text.confirmCodeExpiration;
+        $phoneConfirmTimeLimit > 0 ? timeToString($phoneConfirmTimeLimit) : $text.ConfirmCodeExpired;
 
     const codeConfirmation = async (event: SubmitEvent) => {
         message = "";
@@ -43,10 +43,10 @@
         } catch (error) {
             response = null;
             const statusMessage = {
-                409: $text.confirmCodeMismatch, // 인증 코드가 올바르지 않음
-                401: $text.expiredConfirmCode, // 인증 코드가 만료됌
+                409: $text.ConfirmCodeMismatch, // 인증 코드가 올바르지 않음
+                401: $text.ConfirmCodeAlreadyExpired, // 인증 코드가 만료됌
             };
-            message = statusMessage[error.response?.status] || $text.error;
+            message = statusMessage[error.response?.status] || $text.UnexpectedError;
         }
     };
 
@@ -57,7 +57,7 @@
             message = $text.codeSended;
             $phoneConfirmTimeLimit = 180;
         } catch (error) {
-            message = error.response?.status === 429 ? $text.tooManyRequests : $text.error;
+            message = error.response?.status === 429 ? $text.tooManyRequests : $text.UnexpectedError;
         }
         response = null;
     };
@@ -77,7 +77,7 @@
         <div>{message}</div>
         <div class="buttons">
             <button type="button" on:click={resendCode}>{$text.resendCode}</button>
-            <button type="submit">{$text.next}</button>
+            <button type="submit">{$text.Next}</button>
         </div>
     {/if}
 </form>

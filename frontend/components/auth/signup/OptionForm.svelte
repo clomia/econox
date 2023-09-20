@@ -25,31 +25,31 @@
 </script>
 
 <main>
-    <div class="title">{$text.selectMembership}</div>
-    <div class="subtitle">{$text.selectMembershipSubtitle}</div>
+    <div class="title">{$text.SelectMembership}</div>
+    <div class="subtitle">{$text.SelectMembershipSubtitle}</div>
 
     <button class="basic" on:click={submit("basic")}>
-        <div class="basic__title">{$text.basicPlan}</div>
+        <div class="basic__title">{$text.BasicPlan}</div>
         <div class="basic__price">
             {#if currency === "KRW"}
-                {$text.basicPlanWonPrice}
+                {$text.BasicPlanWonPrice}
             {:else}
-                {$text.basicPlanDollerPrice}
+                {$text.BasicPlanDollerPrice}
             {/if}
         </div>
-        <p>{$text.basicPlanDescription}</p>
+        <p>{$text.BasicPlanDescription}</p>
     </button>
 
     <button class="professional" on:click={submit("professional")}>
-        <div class="professional__title">{$text.professionalPlan}</div>
+        <div class="professional__title">{$text.ProfessionalPlan}</div>
         <div class="professional__price">
             {#if currency === "KRW"}
-                {$text.professionalPlanWonPrice}
+                {$text.ProfessionalPlanWonPrice}
             {:else}
-                {$text.professionalPlanDollerPrice}
+                {$text.ProfessionalPlanDollerPrice}
             {/if}
         </div>
-        <p>{$text.professionalPlanDescription}</p>
+        <p>{$text.ProfessionalPlanDescription}</p>
     </button>
 </main>
 

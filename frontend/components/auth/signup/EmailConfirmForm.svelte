@@ -14,7 +14,7 @@
     const dispatch = createEventDispatcher();
 
     let response: null | Promise<AxiosResponse> = null; // 요청 전
-    let message = $text.enterEmailConfirmationCode;
+    let message = $text.PleaseEnterEmailConfirmCode;
 
     if ($emailConfirmTimeLimit === -1) {
         $emailConfirmTimeLimit = 180;
@@ -23,7 +23,7 @@
     onMount(() => setInterval(() => $emailConfirmTimeLimit > 0 && $emailConfirmTimeLimit--, 1000));
 
     $: placeHolder =
-        $emailConfirmTimeLimit > 0 ? timeToString($emailConfirmTimeLimit) : $text.confirmCodeExpiration;
+        $emailConfirmTimeLimit > 0 ? timeToString($emailConfirmTimeLimit) : $text.ConfirmCodeExpired;
 
     const codeConfirmation = async (event: SubmitEvent) => {
         message = "";
@@ -43,11 +43,11 @@
         } catch (error) {
             response = null;
             const statusMessage = {
-                409: $text.confirmCodeMismatch,
-                401: $text.expiredConfirmCode,
+                409: $text.ConfirmCodeMismatch,
+                401: $text.ConfirmCodeAlreadyExpired,
                 429: $text.tooManyRequests,
             };
-            message = statusMessage[error.response?.status] || $text.error;
+            message = statusMessage[error.response?.status] || $text.UnexpectedError;
         }
     };
 
@@ -58,7 +58,7 @@
             message = $text.codeSended;
             $emailConfirmTimeLimit = 180;
         } catch (error) {
-            message = error.response?.status === 429 ? $text.tooManyRequests : $text.error;
+            message = error.response?.status === 429 ? $text.tooManyRequests : $text.UnexpectedError;
         }
         response = null;
     };
@@ -78,7 +78,7 @@
         <div>{message}</div>
         <div class="buttons">
             <button type="button" on:click={resendCode}>{$text.resendCode}</button>
-            <button type="submit">{$text.next}</button>
+            <button type="submit">{$text.Next}</button>
         </div>
     {/if}
 </form>

@@ -10,7 +10,7 @@ interface UiTextObjectType { // yaml 파일 데이터
 
 const getUiTextObject = async () => {
     const requests = axios.create({ baseURL: window.location.origin });
-    const uiTextYaml = await requests.get("/static/uiText.yaml")
+    const uiTextYaml = await requests.get("/static/UiText.yaml")
     return yaml.load(uiTextYaml.data) as UiTextObjectType;
 }
 

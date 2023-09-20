@@ -58,7 +58,7 @@
             401: $text.failureSignup401, // 이메일 인증 안됌
             409: $text.failureSignup409,
         };
-        return statusMessages[error.response?.status] || $text.error;
+        return statusMessages[error.response?.status] || $text.UnexpectedError;
     };
 
     const cancelProcess = async () => {
@@ -93,14 +93,14 @@
                 <div class="sucess_login-timer">{format($text.loginTimer, { time: timeout })}</div>
                 {#await loginPromise then}
                     {#if animationEnd}
-                        <button bind:this={sucessBtn} on:click={sucessRedirect}>{$text.login}</button>
+                        <button bind:this={sucessBtn} on:click={sucessRedirect}>{$text.Login}</button>
                     {/if}
                 {/await}
             </section>
         {:catch error}
             <section class="failure">
                 <div class="failure__message">{failureMessage(error)}</div>
-                <button on:click={cancelProcess}>{$text.ok}</button>
+                <button on:click={cancelProcess}>{$text.Ok}</button>
             </section>
         {/await}
     {/if}

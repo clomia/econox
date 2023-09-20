@@ -26,12 +26,12 @@
         const callingCode = getCountryCallingCode(form.countryCode.value as CountryCode);
         const phone = `+${callingCode}${phoneNumber}`; // "-" & 공백 제거}
         if (!phoneNumber) {
-            message = $text.noPhoneNumber;
+            message = $text.PleaseEnterPhoneNumber;
             return;
         }
         // 앞에 + 빼고 숫자만 있는지 검사
         if (/\D/.test(phone.slice(1))) {
-            message = $text.phoneNumberNotNumber;
+            message = $text.PhoneNumberShouldBeNumeric;
             return;
         }
         try {
@@ -42,17 +42,17 @@
             dispatch("complete");
         } catch (error) {
             response = null;
-            message = $text.phoneConfirmRequestFailed;
+            message = $text.PhoneConfirmCodeSendFailed;
         }
     };
 </script>
 
-<div class="description">{$text.phoneConfirmDescription}</div>
+<div class="description">{$text.PhoneConfirmReason}</div>
 
 <form on:submit|preventDefault={phoneConfirm}>
     {#await api.public.get("/country") then response}
         <label>
-            <span>{$text.country}</span>
+            <span>{$text.Country}</span>
             <select name="countryCode" value={response.data.country}>
                 {#each getCodes() as country}
                     <option value={country}>{getName(country)}</option>
@@ -61,12 +61,12 @@
         </label>
     {/await}
     <label class="phone-number">
-        <span>{$text.inputPhoneNumber}</span>
+        <span>{$text.EnterPhoneNumber}</span>
         <input bind:value={phoneNumber} name="phone" type="text" />
     </label>
     <div class="message">{message}</div>
     {#if !(response instanceof Promise)}
-        <button>{$text.sendVerificationCode}</button>
+        <button>{$text.SendVerificationCode}</button>
     {/if}
     {#await response}
         <LoadingAnimation />

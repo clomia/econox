@@ -8,9 +8,9 @@
 
 <section>
     <button>Econox</button>
-    <button>{$text.console}</button>
-    <button>{$text.featureHub}</button>
-    <button on:click={() => (authToggle = !authToggle)}>{$text.signInOut}</button>
+    <button>{$text.Console}</button>
+    <button>{$text.FeatureHub}</button>
+    <button on:click={() => (authToggle = !authToggle)}>{$text.SignInOut}</button>
 </section>
 
 {#if authToggle}

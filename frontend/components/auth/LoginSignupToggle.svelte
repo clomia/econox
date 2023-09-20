@@ -20,8 +20,8 @@
 </script>
 
 <div class="toggle">
-    <button on:click={() => select("login")} style={styles.login}>{$text.login}</button>
-    <button on:click={() => select("signup")} style={styles.signup}>{$text.signup}</button>
+    <button on:click={() => select("login")} style={styles.login}>{$text.Login}</button>
+    <button on:click={() => select("signup")} style={styles.signup}>{$text.Signup}</button>
 </div>
 
 <style>

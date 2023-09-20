@@ -115,12 +115,15 @@ class Template:
         """
         - columns: 선택할 열 이름들
         - where: 조건을 구성할 딕셔너리
+            - "="조건만 가능합니다. 복잡한 쿼리는 db.exec 함수를 사용하세요
         - limit: LIMIT 인자
         """
         select = ", ".join(columns)
-        cond = " AND ".join(f"{key}='{value}'" for key, value in where.items())
-        end = f"LIMIT {limit};" if limit else ";"
-        return f"SELECT {select} FROM {self.table} WHERE {cond} {end}", {}
+        cond = " AND ".join(f"{key}={{{key}}}" for key in where.keys())
+        end = "LIMIT {limit};" if limit else ";"
+        if limit:
+            where["limit"] = limit
+        return f"SELECT {select} FROM {self.table} WHERE {cond} {end}", where
 
 
 # ======== 쿼리 실행 추상화 함수 =========

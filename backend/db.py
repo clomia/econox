@@ -20,7 +20,7 @@ from backend.system import SECRETS, run_async, log
 
 async def exec(
     *queries: str,
-    params: Dict[str, Any],
+    params: Dict[str, Any] = None,
     template: Tuple[str, dict] = None,
     silent=False,
     embed=False,

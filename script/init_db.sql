@@ -1,4 +1,4 @@
---- Last commit: 2023-09-19 14:29:26 ---
+--- Last commit: 2023-09-20 13:57:47 ---
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ------------------------------------------------
@@ -32,7 +32,7 @@ CREATE INDEX idx_paypal_subscription_id ON users (paypal_subscription_id);
 CREATE TABLE signup_histories (
     "id" SERIAL NOT NULL PRIMARY KEY,
     "user_id" UUID NOT NULL,
-    "user_deleted" TIMESTAMP DEFAULT NULL,
+    "user_deleted" TIMESTAMP,
     "email" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
@@ -60,7 +60,7 @@ CREATE TABLE tosspayments_billings (
     "receipt_url" TEXT NOT NULL, -- 영수증 URL
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 );
-
+CREATE INDEX idx_tosspayments_billings_user_id ON tosspayments_billings(user_id);
 ------------------------------------------------
 -- PayPal 청구 내역
 ------------------------------------------------
@@ -74,3 +74,4 @@ CREATE TABLE paypal_billings (
     "fee_amount" FLOAT NOT NULL, -- PayPal 수수료
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 );
+CREATE INDEX idx_paypal_billings_user_id ON paypal_billings(user_id);

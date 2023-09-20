@@ -77,7 +77,6 @@ class CognitoTokenBearer(HTTPBearer):
     """
     - 이 토큰은 Cognito idToken과 accessToken을 '|'로 이어붙인것입니다.
     - 두 토큰을 검증한 뒤 유저정보(id, email)를 제공합니다.
-    - 유저가 존재하지 않는 경우 404 예외를 응답합니다.
     """
 
     async def __call__(self, request: Request) -> dict:
@@ -93,8 +92,6 @@ class CognitoTokenBearer(HTTPBearer):
         token = CognitoToken(id_token, access_token)
         try:
             user_info = await token.authentication()
-            if not await db.user_exists(user_info["email"]):
-                raise HTTPException(status_code=404, detail="User does not exist")
             return user_info
         except jwt.PyJWTError as e:
             e_str = str(e)

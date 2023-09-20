@@ -8,10 +8,10 @@ from fastapi import Request, Body, Depends, HTTPException
 
 from backend import db
 from backend.math import (
-    paypaltime2datetime,
-    datetime2paypaltime,
-    next_billing_date,
-    next_billing_date_adjust_membership_change,
+    utcstr2datetime,
+    datetime2utcstr,
+    calc_next_billing_date,
+    calc_next_billing_date_adjust_membership_change,
 )
 from backend.http import APIRouter, PayPalAPI, PayPalWebhookAuth, pooling
 from backend.system import SECRETS, MEMBERSHIP, log
@@ -41,7 +41,7 @@ async def get_request_country(request: Request):
         }
     except AttributeError:  # if host is localhost
         default = {"country": "KR", "timezone": "Asia/Seoul"}
-        # default = {"country": "US", "timezone": "America/Chicago"}
+        default = {"country": "US", "timezone": "America/Chicago"}
         log.warning(
             "GET /country"
             f"\n국가 정보 취득에 실패했습니다. 기본값을 응답합니다."
@@ -74,8 +74,9 @@ async def calculation_of_next_billing_date_according_to_membership_change(
     - PayPal 유저의 맴버십 변경 시 PATCH /api/user/membership 호출 이전에 이 API로 구독 시작일을 계산한 뒤
         브라우저에서 SDK를 통해 구독을 생성해야 함
     - Response: PayPal Create subscription API의 start_time 매개변수로 넣어줘야 하는 날짜 조정값
-        - next_billing: PATCH /api/user/membership 호출 시 사용
-        - next_billing_paypal_format: PayPal SDK 생성 시 start_time 매개변수로 사용
+        - next_billing_date:
+            - PATCH /api/user/membership 호출 시 사용
+            - PayPal SDK 생성 시 start_time 매개변수로 사용
     """
     (
         current_membership,
@@ -103,7 +104,7 @@ async def calculation_of_next_billing_date_according_to_membership_change(
             detail=f"The {new_membership} membership is either identical to the already set value or invalid",
         )
     if origin_billing_date == base_billing_date:  # 맴버십 변경
-        adjusted_next_billing = next_billing_date_adjust_membership_change(
+        adjusted_next_billing = calc_next_billing_date_adjust_membership_change(
             base_billing=base_billing_date,
             current_billing=current_billing_date,
             current_membership=current_membership,
@@ -112,13 +113,10 @@ async def calculation_of_next_billing_date_according_to_membership_change(
             currency="USD",
         )
     else:  # 변경된 맴버십 롤백
-        adjusted_next_billing = next_billing_date(
+        adjusted_next_billing = calc_next_billing_date(
             base=origin_billing_date, current=current_billing_date
         )
-    return {
-        "next_billing": adjusted_next_billing,
-        "next_billing_paypal_format": datetime2paypaltime(adjusted_next_billing),
-    }
+    return {"next_billing_date": datetime2utcstr(adjusted_next_billing)}
 
 
 @webhook.public.post(
@@ -133,16 +131,16 @@ async def paypal_payment_webhook(event: dict = Body(...)):
     if (event_type := event.get("event_type")) != "PAYMENT.SALE.COMPLETED":
         raise HTTPException(status_code=400, detail=f"Invalid event type: {event_type}")
     try:
-        transaction_time = paypaltime2datetime(event["resource"]["create_time"])
+        transaction_time = utcstr2datetime(event["resource"]["create_time"])
         subscription_id = event["resource"]["billing_agreement_id"]
         subscription = await PayPalAPI(
             f"/v1/billing/subscriptions/{subscription_id}"
         ).get()
-        next_billing = paypaltime2datetime(
+        next_billing = utcstr2datetime(
             subscription["billing_info"]["next_billing_time"]
         )
         plan = await PayPalAPI(f"/v1/billing/plans/{subscription['plan_id']}").get()
-        insert_func = partial(
+        db_insert_func = partial(
             db.exec,
             """
             INSERT INTO paypal_billings (user_id, transaction_id, transaction_time, 
@@ -163,7 +161,7 @@ async def paypal_payment_webhook(event: dict = Body(...)):
             silent=True,
         )
         await pooling(  # 유저 생성 완료 전 요청 수신 시를 대비한 풀링 로직
-            insert_func, exceptions=psycopg.errors.NotNullViolation, timeout=30
+            db_insert_func, exceptions=psycopg.errors.NotNullViolation, timeout=30
         )
         await db.exec(
             """

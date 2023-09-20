@@ -3,6 +3,7 @@ import math
 from typing import Callable
 from datetime import datetime, timezone, timedelta
 
+import pytz
 import numpy as np
 import xarray as xr
 from scipy.interpolate import PchipInterpolator
@@ -100,19 +101,21 @@ def marge_lists(*lists: list, limit: int) -> list:
     return result
 
 
-def paypaltime2datetime(timestring: str) -> datetime:
-    """PayPal에서 사용하는 시간 문자열을 한국 시간대로 변환한 datetime 객체로 만들어 반환합니다."""
-    return datetime.fromisoformat(
+def utcstr2datetime(timestring: str) -> datetime:
+    """UTC 시간대 ISO 8601 문자열 -> Asia/Seoul 시간대 datetime 객체"""
+    utc_time = datetime.fromisoformat(
         timestring.replace("Z", "+00:00"),
-    ).astimezone(timezone(timedelta(hours=9)))
+    ).astimezone(pytz.utc)
+    return utc_time.astimezone(pytz.timezone("Asia/Seoul"))
 
 
-def datetime2paypaltime(dt: datetime) -> str:
-    """datetime 객체를 PayPal에서 사용하는 시간 문자열로 변환합니다. (ISO 8601)"""
-    return dt.strftime("%Y-%m-%dT%H:%M:%S.%f") + "+09:00"
+def datetime2utcstr(dt: datetime) -> str:
+    """Asia/Seoul 시간대 datetime 객체 -> UTC 시간대 ISO 8601 문자열"""
+    utc_datetime = dt - timedelta(hours=9)
+    return utc_datetime.strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
 
-def next_billing_date(base: datetime, current: datetime) -> datetime:
+def calc_next_billing_date(base: datetime, current: datetime) -> datetime:
     """
     - 다음 청구 날짜 계산
     - PayPal에서 사용하는 알고리즘과 동일합니다.
@@ -149,7 +152,7 @@ def next_billing_date(base: datetime, current: datetime) -> datetime:
     return datetime(year, next_month, day, base.hour, base.minute, base.second)
 
 
-def next_billing_date_adjust_membership_change(
+def calc_next_billing_date_adjust_membership_change(
     base_billing: datetime,
     current_billing: datetime,
     current_membership: str,
@@ -169,7 +172,7 @@ def next_billing_date_adjust_membership_change(
     - return: 다음 청구 날짜
     """
 
-    default_next_billing = next_billing_date(base_billing, current_billing)
+    default_next_billing = calc_next_billing_date(base_billing, current_billing)
 
     membership_days = (default_next_billing - current_billing).days
     current_daily_amount = MEMBERSHIP[current_membership][currency] / membership_days

@@ -60,7 +60,7 @@
     <section>
         <label>
             <span>{$text.email}</span>
-            <input type="text" name="email" autocomplete="email" />
+            <input type="text" name="email" autocomplete="off" />
         </label>
     </section>
     <section>

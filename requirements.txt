@@ -22,6 +22,7 @@ PyJWT==2.8.0
 jwcrypto==1.5.0
 PyYAML==6.0.1
 ipinfo==4.4.2
+pytz==2023.3.post1
 
 # Infra
 boto3==1.26.158

@@ -279,14 +279,12 @@ class TosspaymentsBilling:
         """
         payment_info = await TosspaymentsAPI(f"/v1/billing/{key}").post(
             {
+                "amount": str(amount),
                 "customerKey": self.user_id,
                 "orderId": str(uuid4()),
                 "orderName": order_name,
-                "amount": amount,
+                "customerEmail": email,
             }
-            | {"customerEmail": email}
-            if email
-            else {}
         )
         return payment_info
 

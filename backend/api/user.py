@@ -89,7 +89,7 @@ async def signup(item: SignupInfo):
                     item.tosspayments.expiration_month,
                     item.tosspayments.owner_id,
                 )
-                payment = tosspayments.billing(
+                payment = await tosspayments.billing(
                     billing_key,
                     order_name=f"Econox {item.membership.capitalize()} Membership",
                     amount=MEMBERSHIP[item.membership][item.currency],
@@ -98,7 +98,7 @@ async def signup(item: SignupInfo):
             except httpx.HTTPStatusError:
                 raise HTTPException(
                     status_code=402,
-                    detail=f"The Tosspayments information provided is incorrect\nResponse detail: {e}",
+                    detail=f"[Tosspayments] Your payment information is incorrect.",
                 )
 
             signup_transaction.append(
@@ -143,10 +143,10 @@ async def signup(item: SignupInfo):
                 next_billing = paypaltime2datetime(
                     subscription["billing_info"]["next_billing_time"]
                 )
-            except (httpx.HTTPStatusError, AssertionError) as e:
+            except (httpx.HTTPStatusError, AssertionError):
                 raise HTTPException(
                     status_code=402,
-                    detail=f"Your order and subscription status in paypal server is incorrect\nResponse detail: {e}",
+                    detail=f"[PayPal] Your subscription or order status in paypal server is incorrect",
                 )
         else:
             raise HTTPException(
@@ -413,23 +413,33 @@ async def change_payment_method(item: PaymentMethodInfo, user=router.private.aut
     """
     - 결제수단을 변경합니다. PG사 변경은 불가능합니다.
     """
-    currency = await db.exec(
+    currency, *_ = await db.exec(
         "SELECT currency FROM users WHERE id={user_id}",
         params={"user_id": user["id"]},
         embed=True,
     )
     if currency == "KRW" and item.tosspayments:
         tosspayments = TosspaymentsBilling(user_id=user["id"])
-        billing_key = await tosspayments.get_billing_key(
-            item.tosspayments.card_number,
-            item.tosspayments.expiration_year,
-            item.tosspayments.expiration_month,
-            item.tosspayments.owner_id,
-        )
-        payment_info = await tosspayments.billing(billing_key, "confirm", 1)  # 1원 결제
-        await TosspaymentsAPI(f"/v1/payments/{payment_info['paymentKey']}/cancel").post(
-            {"cancelReason": "confirmed"}  # 1원 환불
-        )
+        try:
+            billing_key = await tosspayments.get_billing_key(
+                item.tosspayments.card_number,
+                item.tosspayments.expiration_year,
+                item.tosspayments.expiration_month,
+                item.tosspayments.owner_id,
+            )
+            payment_info = await tosspayments.billing(
+                billing_key, amount=100, order_name="Payment method confirmation"
+            )  # 100원 결제
+            await TosspaymentsAPI(
+                f"/v1/payments/{payment_info['paymentKey']}/cancel"
+            ).post(
+                {"cancelReason": "Confirmed"}  # 100원 환불
+            )
+        except httpx.HTTPStatusError:
+            raise HTTPException(
+                status_code=402,
+                detail=f"[Tosspayments] Your payment information is incorrect.",
+            )
         await db.exec(
             "UPDATE users SET tosspayments_billing_key={billing_key} WHERE id={user_id}",
             params={"billing_key": billing_key, "user_id": user["id"]},
@@ -446,10 +456,10 @@ async def change_payment_method(item: PaymentMethodInfo, user=router.private.aut
             next_billing = paypaltime2datetime(
                 subscription["billing_info"]["next_billing_time"]
             )
-        except AssertionError as e:
+        except AssertionError:
             raise HTTPException(
                 status_code=402,
-                detail=f"Your subscription status in paypal server is incorrect\nResponse detail: {e}",
+                detail=f"[PayPal] Your subscription status in paypal server is incorrect",
             )
         await db.exec(
             """

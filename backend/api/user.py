@@ -436,7 +436,8 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
         )
         adjusted_next_billing = next_billing_date
     elif origin_billing_date == base_billing_date:  # 이전에 결제된 맴버십을 다른것으로 변경하는 경우
-        if item.paypal:  # PayPal -> 다음 청구 날짜는 PayPal이 통지한 날짜로 해야 함
+        if currency == "USD" and item.paypal:
+            # PayPal -> 다음 청구 날짜는 PayPal이 통지한 날짜로 해야 함
             adjusted_next_billing = utcstr2datetime(item.paypal.next_billing)
             await db.exec(
                 update_query_paypal,
@@ -448,7 +449,8 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
                     "subscription_id": item.paypal.subscription,
                 },
             )
-        else:  # Tosspayments -> 다음 청구 날짜 직접 계산
+        elif currency == "KRW":
+            # Tosspayments -> 다음 청구 날짜 직접 계산
             adjusted_next_billing = calc_next_billing_date_adjust_membership_change(
                 base_billing=base_billing_date,
                 current_billing=current_billing_date,
@@ -466,8 +468,8 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
                     "user_id": user["id"],
                 },
             )
-    else:  # 결제가 이루어지기 전에, 이전에 결제한 맴버십으로 변경하는 경우
-        if item.paypal:
+    else:  # 결제가 이루어지기 전에, 기존 맴버십으로 롤백하는 경우
+        if currency == "USD" and item.paypal:
             adjusted_next_billing = utcstr2datetime(item.paypal.next_billing)
             await db.exec(
                 update_query_paypal,
@@ -479,7 +481,7 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
                     "subscription_id": item.paypal.subscription,
                 },
             )
-        else:
+        elif currency == "KRW":
             adjusted_next_billing = calc_next_billing_date(
                 base=origin_billing_date, current=current_billing_date
             )

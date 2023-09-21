@@ -21,7 +21,7 @@ export const login = async (email: string, password: string, redirect = true) =>
 export const format = (template: string, { ...kwargs }) => {
     return template.replace(/{(\w+)}/g, function (match, key) {
         return kwargs.hasOwnProperty(key) ? kwargs[key] : match;
-    });
+    })
 }
 
 

@@ -169,7 +169,7 @@ async def cognito_confirm_sign_up(
     return {"message": "Confirmed"}
 
 
-@router.public.post("/cognito-refresh-token")
+@router.public.post("/refresh-cognito-token")
 async def cognito_token_refresh(
     cognito_refresh_token: str = Body(..., min_length=1, embed=True)
 ):

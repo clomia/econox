@@ -73,28 +73,21 @@
         </label>
         <label class="card-detail__type">
             <span>{$Text.CardType}</span>
-            <div>
+            <button
+                type="button"
+                on:click={() => (cardType = cardType === "personal" ? "business" : "personal")}
+            >
                 <div
                     class="card-detail__type__toggle"
                     style={cardType === "personal" ? "left:0" : "left:50%"}
                 />
-                <button
-                    type="button"
-                    class="card-detail__type__text"
-                    on:click={() => (cardType = "personal")}
-                    style="{cardType === 'personal' ? 'color: white' : ''};"
-                >
+                <div class="card-detail__type__text" style="{cardType === 'personal' ? 'color: white' : ''};">
                     {$Text.Card_Personal}
-                </button>
-                <button
-                    type="button"
-                    class="card-detail__type__text"
-                    on:click={() => (cardType = "business")}
-                    style="{cardType === 'business' ? 'color: white' : ''};"
-                >
+                </div>
+                <div class="card-detail__type__text" style="{cardType === 'business' ? 'color: white' : ''};">
                     {$Text.Card_Business}
-                </button>
-            </div>
+                </div>
+            </button>
         </label>
     </section>
     <section class="owner-id">
@@ -192,10 +185,10 @@
     .card-detail__type:hover span {
         opacity: 1;
     }
-    .card-detail__type > div button:hover {
+    .card-detail__type > button:hover {
         cursor: pointer;
     }
-    .card-detail__type > div {
+    .card-detail__type > button {
         position: relative;
         height: 2.5rem;
         width: 100%;
@@ -217,6 +210,9 @@
     }
     .card-detail__type__text {
         color: rgba(255, 255, 255, 0.5);
+        height: 100%;
+        display: flex;
+        align-items: center;
     }
     .owner-id {
         width: 100%;

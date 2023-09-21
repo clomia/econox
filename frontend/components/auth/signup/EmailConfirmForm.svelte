@@ -30,7 +30,7 @@
         const form = event.target as HTMLFormElement;
         const code = form.code.value;
         if (!code) {
-            message = $text.missingInput;
+            message = $text.InsufficientInput;
             return;
         }
         try {
@@ -45,7 +45,7 @@
             const statusMessage = {
                 409: $text.ConfirmCodeMismatch,
                 401: $text.ConfirmCodeAlreadyExpired,
-                429: $text.tooManyRequests,
+                429: $text.TooManyRequests,
             };
             message = statusMessage[error.response?.status] || $text.UnexpectedError;
         }
@@ -55,10 +55,10 @@
         try {
             response = api.public.post("/auth/email", { email: $inputResult.email });
             await response;
-            message = $text.codeSended;
+            message = $text.ConfirmCodeSended;
             $emailConfirmTimeLimit = 180;
         } catch (error) {
-            message = error.response?.status === 429 ? $text.tooManyRequests : $text.UnexpectedError;
+            message = error.response?.status === 429 ? $text.TooManyRequests : $text.UnexpectedError;
         }
         response = null;
     };
@@ -77,7 +77,7 @@
     {#if !(response instanceof Promise)}
         <div>{message}</div>
         <div class="buttons">
-            <button type="button" on:click={resendCode}>{$text.resendCode}</button>
+            <button type="button" on:click={resendCode}>{$text.ResendConfirmCode}</button>
             <button type="submit">{$text.Next}</button>
         </div>
     {/if}

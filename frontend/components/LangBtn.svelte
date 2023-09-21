@@ -11,7 +11,10 @@
 
     let lang = "";
     onMount(async () => {
-        lang = await currentLang();
+        while (!lang) {
+            lang = await currentLang();
+            if (lang) break;
+        } // App.svelte에서 언어 불러오는 시간 간극을 풀링으로 처리
     });
 </script>
 
@@ -19,7 +22,7 @@
     <section>
         <button on:click={() => (toggle = !toggle)}> <LanguageIcon /> </button>
         {#if toggle}
-            <select value={lang} on:change={apply}>
+            <select bind:value={lang} on:change={apply}>
                 {#each Object.entries(langs) as [code, name]}
                     <option value={code}>{name}</option>
                 {/each}

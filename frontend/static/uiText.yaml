@@ -1,7 +1,10 @@
 # 언어별 UI 텍스트 정의 문서 (영어 텍스트는 모든 항목에 필수입니다!)
+Econox:
+  en: "Econox"
+  ko: "에코녹스"
 FeatureHub: 
   en: "Feature Hub"
-  ko: "피쳐 허브"
+  ko: "피처 허브"
 Console:
   en: "Console"
   ko: "콘솔"
@@ -24,35 +27,35 @@ RetypePassword:
   en: "Retype password" 
   ko: "비밀번호 확인"
 LoginInfoIncorrect:
-  en: "Email or password is incorrect."
-  ko: "이메일 또는 비밀번호가 올바르지 않습니다."
+  en: "Email or password is incorrect"
+  ko: "이메일 또는 비밀번호가 올바르지 않습니다"
 UnexpectedError:
   en: "An unexpected error has occurred"
-  ko: "예상치 못한 오류가 발생했습니다"
+  ko: "예기치 못한 오류가 발생했습니다"
 Ok:
   en: "OK"
   ko: "확인"
 RetypePasswordMismatch: 
-  en: "Passwords do not match."
-  ko: "비밀번호가 일치하지 않습니다."
+  en: "Passwords do not match"
+  ko: "비밀번호가 일치하지 않습니다"
 UserAlreadyExists:  
-  en: "This email is already registered."
-  ko: "이미 가입되어있는 이메일입니다."
+  en: "This email is already registered"
+  ko: "이미 가입되어있는 이메일입니다"
 IncorrectPasswordLength:
-  en: "Password must be 6 characters or more."
-  ko: "비밀번호는 6글자 이상이어야 합니다."
+  en: "Password must be at least 6 characters long"
+  ko: "비밀번호는 6글자 이상이어야 합니다"
 PleaseEnterEmailConfirmCode:
-  en: "Please enter the code sent to your email."
-  ko: "이메일로 전송된 코드를 입력해주세요."
+  en: "Please enter the code sent to your email"
+  ko: "이메일로 전송된 코드를 입력해주세요"
 ConfirmCodeAlreadyExpired:
-  en: "The verification code sent has already expired."
-  ko: "전송된 확인 코드는 이미 만료되었습니다."
+  en: "The code you received has already expired"
+  ko: "전송된 인증 코드는 이미 만료되었습니다"
 ConfirmCodeExpired:
-  en: "Confirmation code has expired."
-  ko: "인증코드가 만료되었습니다."
+  en: "Verification code has expired"
+  ko: "인증 코드가 만료되었습니다"
 ConfirmCodeMismatch:
-  en: "Confirmation code is incorrect."
-  ko: "확인 코드가 올바르지 않습니다."
+  en: "Verification code is incorrect"
+  ko: "인증 코드가 올바르지 않습니다"
 Next:
   en: "Next"
   ko: "다음"
@@ -60,133 +63,121 @@ SelectMembership:
   en: "Select Membership"
   ko: "맴버십 선택"
 SelectMembershipSubtitle:
-  en: "For customers who sign up for the first time, the selected membership is provided free of charge for the first month!"
+  en: "New members receive their chosen membership free for the first month with no charge!"
   ko: "첫 회원가입 고객을 대상으로 선택한 맴버십이 첫 한달간 결제 없이 무료로 제공됩니다!"
 BasicPlan:
   en: "Basic"
   ko: "일반"
 BasicPlanDollerPrice:
-  en: "$14.9"
+  en: "$9.99/month"
+  ko: "$9.99/월"
 BasicPlanWonPrice:
-  en: "KRW 14,900"
-  ko: "14,900원/월"
+  en: "₩11,900/month"
+  ko: "11,900원/월"
 BasicPlanDescription:
   en: >
-    Compare financial markets, national economies and business data from around the world to discover connections.
-    Compare all data in a time series graph to understand macroeconomics at a glance
-    Get the insight you need to invest.
+    Discover causality by comparing time-series from global markets, economies, and corporate data. 
+    Grasp the macroeconomy at a glance and gain crucial investment insights.
   ko: > 
-    전세계 금융시장, 국가경제, 기업 데이터를 비교해서 연관성을 발견하세요.
-    모든 데이터를 시계열 그래프로 비교해서 거시경제를 한눈에 파악하고
-    투자에 필요한 통찰을 얻을 수 있습니다.
+    전세계 금융시장, 국가경제, 기업데이터 시계열을 비교해서 선후관계를 발견하세요. 
+    거시경제를 한눈에 파악하고 투자에 필요한 통찰을 얻을 수 있습니다.
 ProfessionalPlan:
   en: "Professional"
   ko: "전문가"
 ProfessionalPlanDollerPrice:
-  en: "$18.9/Month"
+  en: "$12.99/month"
+  ko: "$12.99/월"
 ProfessionalPlanWonPrice:
-  en: "KRW 18,900"
-  ko: "18,900원"
+  en: "₩15,900/month"
+  ko: "15,900원/월"
 ProfessionalPlanDescription:
-  en: "Unlimited downloads of all data as CSV!"
-  ko: "모든 데이터를 CSV로 무제한 다운로드할 수 있습니다!"
+  en: "Download all data without any limits!"
+  ko: "모든 데이터를 무제한으로 다운로드 할 수 있습니다!"
 PhoneConfirmReason: 
-  en: "Phone number verification is required to check whether you are eligible for the initial membership benefits."
-  ko: "최초 회원가입 혜택 대상자 여부를 확인하기 위해 전화번호 인증이 필요합니다."
+  en: "Phone verification is required to determine if you are eligible for the new member benefits"
+  ko: "최초 회원가입 혜택 대상자 여부를 확인하기 위해 전화번호 인증이 필요합니다"
 EnterPhoneNumber:
-  en: "Enter phone number"
+  en: "Enter Phone Number"
   ko: "전화번호 입력"
 SendVerificationCode:
-  en: "Send verification code"
+  en: "Send Verification Code"
   ko: "인증코드 발송"
 Country:
-  en: "country"
+  en: "Country"
   ko: "국가"
 PhoneConfirmCodeSendFailed: 
-  en: "Failed to send verification code. Please check that the phone number you entered is correct"
+  en: "Failed to send verification code. Please check if the phone number entered is correct"
   ko: "인증번호 전송에 실패하였습니다. 입력한 전화번호가 올바른지 확인해주세요"
 PleaseEnterPhoneNumber:
-  en: "Please enter your phone number."
-  ko: "전화번호를 입력해주세요."
-PhoneNumberShouldBeNumeric: 
-  en: "Phone numbers can only contain numbers."
-  ko: "전화번호는 숫자만 입력할 수 있습니다."
+  en: "Please enter your phone number"
+  ko: "전화번호를 입력해주세요"
 PleaseEnterPhoneConfirmCode:
-  en: "Enter the verification code sent by text message"
+  en: "Please enter the verification code sent via text message"
   ko: "문자 메세지로 전송된 인증코드를 입력해주세요"
-missingInput:
-  en: "There are missing values."
-  ko: "누락된 값이 있습니다."
-invalidEmailInput:
-  en: "Email verification cannot proceed. Please make sure this is the correct email"
+InsufficientInput: 
+  en: "There are missing values"
+  ko: "누락된 값이 있습니다"
+EmailInputIncorrect: 
+  en: "Unable to proceed with email verification. Please enter a valid email"
   ko: "이메일 인증을 진행할 수 없습니다. 올바른 이메일을 입력해주세요"
-tooManyRequests:
-  en: "Too many requests detected. Please try again later."
-  ko: "너무 많은 요청이 감지되었습니다. 나중에 다시 시도하세요."
-codeSended:
-  en: "Verification code sent"
+TooManyRequests:
+  en: "Too many requests detected. Please try again later"
+  ko: "너무 많은 요청이 감지되었습니다. 나중에 다시 시도하세요"
+ConfirmCodeSended: 
+  en: "Verification code has been sent"
   ko: "인증 코드가 전송되었습니다"
-reregistrationTrue:
-  en: "You are not eligible for first-time membership benefits."
-  ko: "최초 회원가입 혜택 대상자가 아닙니다."
-reregistrationFalse:
-  en: "You are eligible for first-time membership benefits."
-  ko: "최초 회원가입 혜택 대상자입니다."
-sucessSignup:
-  en: "Sign up is complete"
+SignupComplete:
+  en: "Signup is complete"
   ko: "회원가입이 완료되었습니다"
-benefitsResultSummry:
+BenefitExplanation: 
   en: >
-    As a first-time member sign-up benefit, free membership is provided for the first month without registering a payment method!
-    When the free use ends, you will be guided to register a payment method and the monthly membership fee will be charged.
+    Enjoy your first month of membership for free as part of our new member benefits! 
+    After that, you'll be asked to enter your payment details, and your monthly subscription fee will apply
   ko: >
-    최초 회원가입 혜택으로 결제수단 등록 없이 첫 달 동안 맴버십 무료 이용이 제공됩니다!
-    무료 이용이 끝나면 결제수단 등록으로 안내되며 매달 맴버십 금액이 청구됩니다.
-failureSignup401:
-  en: "Email verification has not been completed"
+    최초 회원가입 혜택으로 첫 달 맴버십이 무료로 제공됩니다! 
+    혜택 종료 후 결제수단 등록으로 안내되며 매달 맴버십 금액이 청구됩니다
+EmailConfirmIncompleted:
+  en: "Email verification is not yet completed"
   ko: "이메일 인증이 완료되지 않았습니다"
-failureSignup402:
-  en: "Payment information is missing"
-  ko: "결제 정보가 누락되었습니다"
-failureSignup409:
-  en: "This is not a normal signup request"
+UnusualSignupRequest: 
+  en: "This is not a valid signup request"
   ko: "정상적인 회원가입 요청이 아닙니다"
-emailFormatError:
-  en: "The email format is incorrect."
-  ko: "이메일 형식이 올바르지 않습니다."
-resendCode:
-  en: "Resend code"
+EmailFormatIncorrect:
+  en: "The email format is not valid"
+  ko: "이메일 형식이 올바르지 않습니다"
+ResendConfirmCode:
+  en: "Resend Code"
   ko: "코드 재전송"
-loginTimer:
-  en: "Logging in automatically in {time} seconds"
+AutoLoginTimer:
+  en: "You will be automatically logged in after {time} seconds"
   ko: "{time}초 후 자동으로 로그인됩니다"
-noFirstPleasePayment:
-  en: "You are not eligible for the first-time membership benefit. Please enter your payment information."
-  ko: "첫 회원가입 혜택 대상자가 아닙니다 결제 정보를 입력해주세요"
-paymentError:
-  en: "Your payment information is incorrect. Please enter it again."
+NoBenefitPleasePayment: 
+  en: "You are not eligible for the new member benefits. Please enter your payment information"
+  ko: "첫 회원가입 혜택 대상자가 아닙니다. 결제 정보를 입력해주세요"
+PaymentInfoIncorrect: 
+  en: "The payment information is not valid. Please re-enter"
   ko: "결제 정보가 올바르지 않습니다 다시 입력해주세요"
-creditCardNumber:
-  en: "Credit card number"
+CreditCardNumber:
+  en: "Credit Card Number"
   ko: "결제 카드 번호"
-expiryDate:
-  en: "Expiry date"
+ExpiryDate:
+  en: "Expiry Date"
   ko: "유효기간"
-cardType:
-  en: "Card type"
+CardType:
+  en: "Card Type"
   ko: "카드 종류"
-personalCard:
+Card_Personal:
   en: "Personal"
   ko: "개인"
-businessCard:
+Card_Business:
   en: "Business"
   ko: "사업자"
-birthDate:
-  en: "Birth date"
+BirthDate:
+  en: "Date of Birth"
   ko: "생년월일"
-businessNumber:
+BusinessNumber:
   en: "Business Number"
   ko: "사업자등록번호"
-signupBtnAlert:
-  en: "Click the login button to complete membership registration."
+ClickLogin_for_SignupComplete: 
+  en: "Click the 'Login' button to complete your signup"
   ko: "로그인 버튼을 눌러 회원가입을 완료하세요"

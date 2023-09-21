@@ -24,14 +24,9 @@
         message = "";
         const form = event.target as HTMLFormElement;
         const callingCode = getCountryCallingCode(form.countryCode.value as CountryCode);
-        const phone = `+${callingCode}${phoneNumber}`; // "-" & 공백 제거}
+        const phone = `+${callingCode}${phoneNumber}`;
         if (!phoneNumber) {
             message = $text.PleaseEnterPhoneNumber;
-            return;
-        }
-        // 앞에 + 빼고 숫자만 있는지 검사
-        if (/\D/.test(phone.slice(1))) {
-            message = $text.PhoneNumberShouldBeNumeric;
             return;
         }
         try {

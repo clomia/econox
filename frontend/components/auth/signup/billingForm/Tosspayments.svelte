@@ -58,7 +58,7 @@
 <form on:submit|preventDefault={billing}>
     <section class="card-number">
         <label>
-            <span>{$text.creditCardNumber}</span>
+            <span>{$text.CreditCardNumber}</span>
             <input
                 type="text"
                 placeholder="••••  ••••  ••••  ••••"
@@ -69,11 +69,11 @@
     </section>
     <section class="card-detail">
         <label class="card-detail__expiry">
-            <span>{$text.expiryDate}</span>
+            <span>{$text.ExpiryDate}</span>
             <input type="text" bind:value={expiryDate} on:input={expiryDateHandler} placeholder="MM / YY" />
         </label>
         <label class="card-detail__type">
-            <span>{$text.cardType}</span>
+            <span>{$text.CardType}</span>
             <div>
                 <div
                     class="card-detail__type__toggle"
@@ -85,7 +85,7 @@
                     on:click={() => (cardType = "personal")}
                     style="{cardType === 'personal' ? 'color: white' : ''};"
                 >
-                    {$text.personalCard}
+                    {$text.Card_Personal}
                 </button>
                 <button
                     type="button"
@@ -93,14 +93,14 @@
                     on:click={() => (cardType = "business")}
                     style="{cardType === 'business' ? 'color: white' : ''};"
                 >
-                    {$text.businessCard}
+                    {$text.Card_Business}
                 </button>
             </div>
         </label>
     </section>
     <section class="owner-id">
         <label>
-            <span>{cardType === "personal" ? $text.birthDate : $text.businessNumber}</span>
+            <span>{cardType === "personal" ? $text.BirthDate : $text.BusinessNumber}</span>
             <input
                 type="text"
                 bind:value={ownerId}

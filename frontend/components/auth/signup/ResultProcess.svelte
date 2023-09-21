@@ -43,7 +43,7 @@
     });
 
     const sucessMessage = (response: AxiosResponse<any>) => {
-        return response.data.first_signup_benefit ? $text.benefitsResultSummry : "";
+        return response.data.first_signup_benefit ? $text.BenefitExplanation : "";
     };
 
     const failureMessage = (error: AxiosError): string => {
@@ -55,8 +55,8 @@
             $currentStep = 5;
         }
         const statusMessages = {
-            401: $text.failureSignup401, // 이메일 인증 안됌
-            409: $text.failureSignup409,
+            401: $text.EmailConfirmIncompleted, // 이메일 인증 안됌
+            409: $text.UnusualSignupRequest,
         };
         return statusMessages[error.response?.status] || $text.UnexpectedError;
     };
@@ -68,7 +68,7 @@
     const focusOnExitBtnAlert = async (event: Event) => {
         if (animationEnd && event.target !== sucessBtn) {
             Swal.fire({
-                title: $text.signupBtnAlert,
+                title: $text.ClickLogin_for_SignupComplete,
                 toast: true,
                 position: "top",
                 showConfirmButton: false,
@@ -88,9 +88,9 @@
         {:then data}
             <section class="sucess">
                 <div class="sucess__wellcome"><WellcomeAnimation /></div>
-                <div class="sucess__title">{$text.sucessSignup}</div>
+                <div class="sucess__title">{$text.SignupComplete}</div>
                 <div class="sucess__message">{sucessMessage(data)}</div>
-                <div class="sucess_login-timer">{format($text.loginTimer, { time: timeout })}</div>
+                <div class="sucess_login-timer">{format($text.AutoLoginTimer, { time: timeout })}</div>
                 {#await loginPromise then}
                     {#if animationEnd}
                         <button bind:this={sucessBtn} on:click={sucessRedirect}>{$text.Login}</button>

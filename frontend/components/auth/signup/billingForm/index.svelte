@@ -17,7 +17,7 @@
     });
 </script>
 
-<div>{$paymentError ? $text.paymentError : $text.noFirstPleasePayment}</div>
+<div>{$paymentError ? $text.PaymentInfoIncorrect : $text.NoBenefitPleasePayment}</div>
 
 {#if $inputResult.reregistration && $inputResult.currency === "KRW"}
     <Tosspayments on:complete={() => dispatch("complete")} />

@@ -11,7 +11,7 @@
         const email = form.email.value;
         const password = form.password.value;
         if (!email || !password) {
-            message = $text.missingInput;
+            message = $text.InsufficientInput;
             return;
         }
         try {

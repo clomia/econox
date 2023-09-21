@@ -54,10 +54,10 @@
         try {
             response = api.public.post("/auth/phone", { phone: $inputResult.phone });
             await response;
-            message = $text.codeSended;
+            message = $text.ConfirmCodeSended;
             $phoneConfirmTimeLimit = 180;
         } catch (error) {
-            message = error.response?.status === 429 ? $text.tooManyRequests : $text.UnexpectedError;
+            message = error.response?.status === 429 ? $text.TooManyRequests : $text.UnexpectedError;
         }
         response = null;
     };
@@ -76,7 +76,7 @@
     {#if !(response instanceof Promise)}
         <div>{message}</div>
         <div class="buttons">
-            <button type="button" on:click={resendCode}>{$text.resendCode}</button>
+            <button type="button" on:click={resendCode}>{$text.ResendConfirmCode}</button>
             <button type="submit">{$text.Next}</button>
         </div>
     {/if}

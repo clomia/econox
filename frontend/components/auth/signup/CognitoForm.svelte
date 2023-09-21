@@ -22,7 +22,7 @@
         const password = form.password.value as string;
         const retypePassword = form.retypePassword.value as string;
         if (!email || !password) {
-            message = $text.missingInput;
+            message = $text.InsufficientInput;
             return;
         }
 
@@ -37,7 +37,7 @@
         }
 
         if (!email.includes("@") || !email.includes(".")) {
-            message = $text.emailFormatError;
+            message = $text.EmailFormatIncorrect;
             return;
         }
         try {
@@ -49,7 +49,7 @@
             response = null;
             const statusMessages = {
                 409: $text.UserAlreadyExists,
-                400: $text.invalidEmailInput,
+                400: $text.EmailInputIncorrect,
             };
             message = statusMessages[error.response?.status] || $text.UnexpectedError;
         }
@@ -59,7 +59,7 @@
 <form on:submit|preventDefault={signup}>
     <section>
         <label>
-            <span>{$text.email}</span>
+            <span>{$text.Email}</span>
             <input type="text" name="email" autocomplete="off" />
         </label>
     </section>

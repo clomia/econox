@@ -9,6 +9,12 @@
     import { api } from "./modules/request";
     import { Text, UserInfo } from "./modules/state";
 
+    const userSetup = async () => {
+        if (await isLoggedIn()) {
+            return await api.private.get("/user"); // 유저정보 가져오는 동안 로딩잠깐 띄우기?
+        }
+    };
+
     onMount(async () => {
         const currentUrl = new URL(window.location.href);
         const { hostname } = currentUrl;
@@ -18,13 +24,10 @@
             currentUrl.hostname = "www." + hostname;
             window.location.href = currentUrl.toString();
         }
-        const [{ text }, loggedIn] = await Promise.all([loadUiText(), isLoggedIn()]);
-
+        // ==================================================================
+        const [{ text }, userInfo] = await Promise.all([loadUiText(), userSetup()]);
         $Text = text;
-        if (loggedIn) {
-            // 유저정보 가져오는 동안 로딩잠깐 띄우기?
-            $UserInfo = await api.private.get("/user");
-        }
+        $UserInfo = userInfo;
     });
 </script>
 

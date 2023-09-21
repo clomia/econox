@@ -2,8 +2,8 @@
     import { createEventDispatcher, onMount } from "svelte";
     import { api } from "../../../modules/request";
     import { timeToString } from "../../../modules/functions";
-    import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
     import { Text, auth } from "../../../modules/state";
+    import DefaultLoader from "../../../assets/animation/DefaultLoader.svelte";
 
     const InputResult = auth.signup.InputResult;
     const PhoneConfirmTimeLimit = auth.signup.PhoneConfirmTimeLimit;
@@ -69,9 +69,8 @@
             <input type="text" name="code" placeholder={placeHolder} autocomplete="off" />
         </label>
     </section>
-    {#await response}
-        <LoadingAnimation />
-    {/await}
+    {#await response}<DefaultLoader />{/await}
+
     {#if !(response instanceof Promise)}
         <div>{message}</div>
         <div class="buttons">

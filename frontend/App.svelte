@@ -3,33 +3,22 @@
     import { Router, Route } from "svelte-routing";
     import { routes } from "./pages";
     import Navigator from "./components/Navigator.svelte";
+    import CircleLoader from "./assets/animation/CircleLoader.svelte";
     import LangBtn from "./components/LangBtn.svelte";
-    import { loadUiText } from "./modules/uiText";
-    import { isLoggedIn } from "./modules/functions";
-    import { api } from "./modules/request";
-    import { Text, UserInfo } from "./modules/state";
+    import { init } from "./modules/functions";
 
-    const userSetup = async () => {
-        if (await isLoggedIn()) {
-            return await api.private.get("/user"); // 유저정보 가져오는 동안 로딩잠깐 띄우기?
-        }
-    };
-
+    let initPromise;
     onMount(async () => {
-        const currentUrl = new URL(window.location.href);
-        const { hostname } = currentUrl;
-        const localHosts = ["localhost", "127.0.0.1"];
-
-        if (!hostname.startsWith("www.") && !localHosts.includes(hostname)) {
-            currentUrl.hostname = "www." + hostname;
-            window.location.href = currentUrl.toString();
-        }
-        // ==================================================================
-        const [{ text }, userInfo] = await Promise.all([loadUiText(), userSetup()]);
-        $Text = text;
-        $UserInfo = userInfo?.data;
+        initPromise = init();
+        await initPromise;
     });
 </script>
+
+{#await initPromise}
+    <div class="loading">
+        <div><CircleLoader /></div>
+    </div>
+{/await}
 
 <header>
     <Navigator />
@@ -48,3 +37,18 @@
 <aside>
     <LangBtn />
 </aside>
+
+<style>
+    .loading {
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 25vh;
+        background: -webkit-linear-gradient(to bottom, #202123, #1f3036);
+        background: linear-gradient(to bottom, #202123, #1f3036);
+        z-index: 1;
+    }
+</style>

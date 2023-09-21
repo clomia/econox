@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import LanguageIcon from "../assets/LanguageIcon.svelte";
     import { currentLang, supportedLangs, changeLang } from "../modules/uiText";
+    import LanguageIcon from "../assets/LanguageIcon.svelte";
 
     let toggle = false;
     const apply = async (event: Event) => {

@@ -1,6 +1,6 @@
 <script lang="ts">
-    import Auth from "./auth/Index.svelte";
     import { UserInfo, Text } from "../modules/state";
+    import Auth from "./auth/Index.svelte";
 
     let authToggle = false;
 </script>

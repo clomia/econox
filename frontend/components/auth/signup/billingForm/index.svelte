@@ -1,8 +1,8 @@
 <script lang="ts">
     import { onMount, createEventDispatcher } from "svelte";
+    import { Text, auth } from "../../../../modules/state";
     import Paypal from "./Paypal.svelte";
     import Tosspayments from "./Tosspayments.svelte";
-    import { Text, auth } from "../../../../modules/state";
 
     const InputResult = auth.signup.InputResult;
     const PaymentError = auth.signup.PaymentError;

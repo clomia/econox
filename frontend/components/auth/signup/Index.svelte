@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { auth } from "../../../modules/state";
     import CognitoForm from "./CognitoForm.svelte";
     import EmailConfirmForm from "./EmailConfirmForm.svelte";
     import OptionForm from "./OptionForm.svelte";
@@ -6,7 +7,6 @@
     import PhoneConfirmForm from "./PhoneConfirmForm.svelte";
     import BillingForm from "./billingForm/index.svelte";
     import ResultProcess from "./ResultProcess.svelte";
-    import { auth } from "../../../modules/state";
 
     const componentStep = [
         CognitoForm,

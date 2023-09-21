@@ -1,7 +1,7 @@
 <script lang="ts">
-    import LoadingAnimation from "../../assets/LoadingAnimation.svelte";
     import { login } from "../../modules/functions";
     import { Text } from "../../modules/state";
+    import DefaultLoader from "../../assets/animation/DefaultLoader.svelte";
 
     let message = "";
     let response: string | Promise<void> = "before"; // 요청 전
@@ -34,9 +34,7 @@
             <input class="password-input" type="password" name="password" autocomplete="current-password" />
         </label>
     </section>
-    {#await response}
-        <LoadingAnimation />
-    {/await}
+    {#await response}<DefaultLoader />{/await}
     <div>{message}</div>
     {#if !(response instanceof Promise)}
         <button type="submit">{$Text.Login}</button>

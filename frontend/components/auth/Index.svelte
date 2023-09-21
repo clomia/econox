@@ -1,8 +1,8 @@
 <script lang="ts">
+    import { auth } from "../../modules/state";
     import Login from "./Login.svelte";
     import Signup from "./signup/Index.svelte";
     import LoginSignupToggle from "./LoginSignupToggle.svelte";
-    import { auth } from "../../modules/state";
 
     const Toggle = auth.Toggle;
 </script>

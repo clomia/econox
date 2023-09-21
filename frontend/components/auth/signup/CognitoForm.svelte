@@ -1,8 +1,8 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
     import { api } from "../../../modules/request";
-    import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
     import { Text, auth } from "../../../modules/state";
+    import DefaultLoader from "../../../assets/animation/DefaultLoader.svelte";
     import type { AxiosResponse } from "axios";
 
     const InputResult = auth.signup.InputResult;
@@ -72,9 +72,7 @@
             <input class="password-input" type="password" name="retypePassword" autocomplete="off" />
         </label>
     </section>
-    {#await response}
-        <LoadingAnimation />
-    {/await}
+    {#await response}<DefaultLoader />{/await}
     <div>{message}</div>
     {#if !(response instanceof Promise)}
         <button type="submit">{$Text.Next}</button>

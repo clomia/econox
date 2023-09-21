@@ -1,8 +1,9 @@
 import axios from "axios";
 import ISO6391 from "iso-639-1";
 import * as yaml from "js-yaml";
-
 import { settingObjectStore } from "./_storage";
+
+import type { defaultObject } from "./state"
 
 interface UiTextObjectType { // yaml 파일 데이터
     [key: string]: { [key: string]: string }

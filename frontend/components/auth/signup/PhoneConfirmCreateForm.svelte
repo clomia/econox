@@ -3,8 +3,8 @@
     import { getCodes, getName } from "country-list";
     import { getCountryCallingCode } from "libphonenumber-js";
     import { api } from "../../../modules/request";
-    import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
     import { Text, auth } from "../../../modules/state";
+    import DefaultLoader from "../../../assets/animation/DefaultLoader.svelte";
     import type { CountryCode } from "libphonenumber-js";
 
     const InputResult = auth.signup.InputResult;
@@ -60,9 +60,7 @@
     {#if !(response instanceof Promise)}
         <button>{$Text.SendVerificationCode}</button>
     {/if}
-    {#await response}
-        <LoadingAnimation />
-    {/await}
+    {#await response}<DefaultLoader />{/await}
 </form>
 
 <style>

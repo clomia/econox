@@ -1,7 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
-    import LoadingAnimation from "../../../../assets/LoadingAnimation.svelte";
     import { Text, auth } from "../../../../modules/state";
+    import DefaultLoader from "../../../../assets/animation/DefaultLoader.svelte";
 
     const dispatch = createEventDispatcher();
     const InputResult = auth.signup.InputResult;
@@ -102,9 +102,7 @@
             />
         </label>
     </section>
-    {#await response}
-        <LoadingAnimation />
-    {/await}
+    {#await response}<DefaultLoader />{/await}
     {#if !(response instanceof Promise)}
         <button class="submit-button" type="submit">{$Text.Next}</button>
     {/if}

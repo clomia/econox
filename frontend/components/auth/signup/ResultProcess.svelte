@@ -2,10 +2,10 @@
     import { onMount } from "svelte";
     import Swal from "sweetalert2";
     import { api } from "../../../modules/request";
-    import LoadingTextAnimation from "../../../assets/LoadingTextAnimation.svelte";
-    import WellcomeAnimation from "../../../assets/WellcomeAnimation.svelte";
     import { login, format } from "../../../modules/functions";
     import { Text, auth } from "../../../modules/state";
+    import TextLoader from "../../../assets/animation/TextLoader.svelte";
+    import Wellcome from "../../../assets/animation/Wellcome.svelte";
 
     import type { AxiosResponse, AxiosError } from "axios";
 
@@ -82,13 +82,13 @@
     {#if response}
         {#await response}
             <section class="loading">
-                <LoadingTextAnimation />
+                <TextLoader />
             </section>
         {:then data}
+            <div class="sucess__title">{$Text.SignupComplete}</div>
+            <div class="sucess__message">{sucessMessage(data)}</div>
             <section class="sucess">
-                <div class="sucess__wellcome"><WellcomeAnimation /></div>
-                <div class="sucess__title">{$Text.SignupComplete}</div>
-                <div class="sucess__message">{sucessMessage(data)}</div>
+                <div class="sucess__wellcome"><Wellcome /></div>
                 <div class="sucess_login-timer">{format($Text.AutoLoginTimer, { time: timeout })}</div>
                 {#await loginPromise then}
                     {#if animationEnd}

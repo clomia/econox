@@ -186,7 +186,10 @@ async def cognito_token_refresh(
             AuthParameters={"REFRESH_TOKEN": cognito_refresh_token},
             ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
         )
-    except cognito.exceptions.NotAuthorizedException:
+    except (
+        cognito.exceptions.NotAuthorizedException,
+        cognito.exceptions.UserNotFoundException,
+    ):
         raise HTTPException(status_code=401, detail="Invalid token")
     id_token = result["AuthenticationResult"]["IdToken"]
     access_token = result["AuthenticationResult"]["AccessToken"]

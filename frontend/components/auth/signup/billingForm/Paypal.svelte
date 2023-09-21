@@ -2,7 +2,7 @@
     import { onMount, createEventDispatcher } from "svelte";
     import { api } from "../../../../modules/request";
     import { auth } from "../../../../modules/state";
-    import LoadingAnimation from "../../../../assets/LoadingAnimation.svelte";
+    import DefaultLoader from "../../../../assets/animation/DefaultLoader.svelte";
 
     const dispatch = createEventDispatcher();
     const InputResult = auth.signup.InputResult;
@@ -59,7 +59,7 @@
 
 <main>
     <section>
-        {#if !isSdkLoaded} <LoadingAnimation /> {/if}
+        {#if !isSdkLoaded} <DefaultLoader /> {/if}
         <div id="paypal-button" style={!isSdkLoaded ? "display: none;" : ""} />
     </section>
 </main>

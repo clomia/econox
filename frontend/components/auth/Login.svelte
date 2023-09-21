@@ -1,11 +1,14 @@
 <script lang="ts">
     import { login } from "../../modules/functions";
     import { Text } from "../../modules/state";
+    import { api } from "../../modules/request";
     import DefaultLoader from "../../assets/animation/DefaultLoader.svelte";
+    import type { AxiosResponse } from "axios";
 
     let message = "";
-    let response: string | Promise<void> = "before"; // 요청 전
+    let response: null | Promise<AxiosResponse> = null; // 요청 전
     const loginProcess = async (event: SubmitEvent) => {
+        message = "";
         const form = event.target as HTMLFormElement;
         const email = form.email.value;
         const password = form.password.value;
@@ -14,9 +17,16 @@
             return;
         }
         try {
-            response = login(email, password);
+            response = api.public.post("/auth/user", { email, password });
+            const result = await response;
+            await login(result["cognito_token"], result["cognito_refresh_token"]);
         } catch (error) {
-            message = error.response?.status === 401 ? $Text.LoginInfoIncorrect : $Text.UnexpectedError;
+            response = null;
+            const statusMessages = {
+                404: $Text.LoginInfoIncorrect,
+                401: $Text.LoginInfoIncorrect,
+            };
+            message = statusMessages[error.response?.status] || $Text.UnexpectedError;
         }
     };
 </script>

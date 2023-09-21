@@ -8,16 +8,15 @@ export const logout = async () => {
         settingObjectStore.delete("cognitoToken"),
         settingObjectStore.delete("cognitoRefreshToken")
     ])
-    window.location.href = window.location.origin; // 홈으로 리로딩
+    window.location.replace(window.location.origin) // 홈으로 리로딩
 }
 
-export const login = async (email: string, password: string, redirect = true) => {
-    const response = await api.public.post("/auth/user", { email, password });
+export const login = async (cognitoToken: string, cognitoRefreshToken: string) => {
     await Promise.all([
-        settingObjectStore.put("cognitoToken", response.data["cognito_token"]),
-        settingObjectStore.put("cognitoRefreshToken", response.data["cognito_refresh_token"])
+        settingObjectStore.put("cognitoToken", cognitoToken),
+        settingObjectStore.put("cognitoRefreshToken", cognitoRefreshToken)
     ])
-    if (redirect) { window.location.replace(window.location.origin + "/console") }
+    window.location.replace(window.location.origin + "/console") // 콘솔로 리로딩
 }
 
 export const format = (template: string, { ...kwargs }) => {

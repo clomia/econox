@@ -18,10 +18,10 @@
             currentUrl.hostname = "www." + hostname;
             window.location.href = currentUrl.toString();
         }
+        const [{ text }, loggedIn] = await Promise.all([loadUiText(), isLoggedIn()]);
 
-        const { text } = await loadUiText();
         $Text = text;
-        if (await isLoggedIn()) {
+        if (loggedIn) {
             // 유저정보 가져오는 동안 로딩잠깐 띄우기?
             $UserInfo = await api.private.get("/user");
         }

@@ -10,7 +10,11 @@
     <button>{$Text.Console}</button>
     <button>{$Text.FeatureHub}</button>
     {#if $UserInfo}
-        <button>{$UserInfo["name"]}</button>
+        <button>
+            <img src="static/img/profile.png" alt="profile" />
+            <div class="profile-padding" />
+            {$UserInfo["name"]}
+        </button>
     {:else}
         <button on:click={() => (authToggle = !authToggle)}>{$Text.SignInOut}</button>
     {/if}
@@ -21,6 +25,15 @@
 {/if}
 
 <style>
+    img {
+        width: 1.6rem;
+        height: 1.6rem;
+        position: absolute;
+        left: 0.4rem;
+    }
+    .profile-padding {
+        width: 1rem;
+    }
     section {
         display: flex;
         justify-content: center;
@@ -38,6 +51,7 @@
         color: white;
         border: solid white thin;
         border-radius: 2rem;
+        position: relative;
     }
 
     section button:hover {

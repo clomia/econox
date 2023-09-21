@@ -27,7 +27,7 @@
         // ==================================================================
         const [{ text }, userInfo] = await Promise.all([loadUiText(), userSetup()]);
         $Text = text;
-        $UserInfo = userInfo.data;
+        $UserInfo = userInfo?.data;
     });
 </script>
 

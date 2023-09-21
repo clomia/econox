@@ -6,7 +6,7 @@ export const logout = async () => {
         settingObjectStore.delete("cognitoToken"),
         settingObjectStore.delete("cognitoRefreshToken")
     ])
-    window.location.reload()
+    window.location.href = window.location.origin; // 홈으로 리로딩
 }
 
 export const login = async (email: string, password: string, redirect = true) => {

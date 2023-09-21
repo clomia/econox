@@ -47,6 +47,7 @@ async def login(
                 ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
             )
         except cognito.exceptions.NotAuthorizedException:
+            # 퍼블릭 라우터라 401 응답해도 ㄱㅊ, Front에서도 퍼블릭 Axios객체 씀
             raise HTTPException(status_code=401, detail="Invalid password")
         id_token = auth["AuthenticationResult"]["IdToken"]
         access_token = auth["AuthenticationResult"]["AccessToken"]

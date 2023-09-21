@@ -2,9 +2,10 @@ import axios from "axios";
 import * as jwt from "jsonwebtoken";
 
 import { settingObjectStore } from "./_storage";
+import { logout } from "./functions";
 
 import type { JwtPayload } from "jsonwebtoken";
-import type { InternalAxiosRequestConfig } from "axios";
+import type { AxiosError, InternalAxiosRequestConfig } from "axios";
 
 export const apiHostPath = window.location.origin + "/api"
 export const api = {
@@ -42,4 +43,11 @@ const tokenInsert = async (config: InternalAxiosRequestConfig) => {
     return config
 }
 
+const authenticationFailureHandler = async (error: AxiosError) => {
+    if (error.response && error.response.status === 401) {
+        await logout() // 401 응답 시 토큰들 삭제 후 홈으로 이동
+    }
+}
+
 api.private.interceptors.request.use(tokenInsert)
+api.private.interceptors.response.use(undefined, authenticationFailureHandler)

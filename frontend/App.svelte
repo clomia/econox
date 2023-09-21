@@ -10,13 +10,6 @@
     import { Text, UserInfo } from "./modules/state";
 
     onMount(async () => {
-        const { text } = await loadUiText();
-        $Text = text;
-        if (await isLoggedIn()) {
-            // 유저정보 가져오는 동안 로딩잠깐 띄우기?
-            $UserInfo = await api.private.get("/user");
-        }
-
         const currentUrl = new URL(window.location.href);
         const { hostname } = currentUrl;
         const localHosts = ["localhost", "127.0.0.1"];
@@ -24,6 +17,13 @@
         if (!hostname.startsWith("www.") && !localHosts.includes(hostname)) {
             currentUrl.hostname = "www." + hostname;
             window.location.href = currentUrl.toString();
+        }
+
+        const { text } = await loadUiText();
+        $Text = text;
+        if (await isLoggedIn()) {
+            // 유저정보 가져오는 동안 로딩잠깐 띄우기?
+            $UserInfo = await api.private.get("/user");
         }
     });
 </script>

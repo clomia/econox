@@ -10,7 +10,7 @@
     <button>{$Text.Console}</button>
     <button>{$Text.FeatureHub}</button>
     {#if $UserInfo}
-        <button />
+        <button>{$UserInfo["name"]}</button>
     {:else}
         <button on:click={() => (authToggle = !authToggle)}>{$Text.SignInOut}</button>
     {/if}

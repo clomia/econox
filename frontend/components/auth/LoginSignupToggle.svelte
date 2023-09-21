@@ -1,8 +1,7 @@
 <script lang="ts">
-    import * as state from "../../modules/state";
+    import { Text, auth } from "../../modules/state";
 
-    const text = state.uiText.text;
-    const toggleState = state.auth.toggle;
+    const Toggle = auth.Toggle;
 
     const color = {
         activate: "white",
@@ -10,18 +9,18 @@
     };
 
     const select = (key: string) => {
-        toggleState.set({ login: key === "login", signup: key === "signup" });
+        $Toggle = { login: key === "login", signup: key === "signup" };
     };
 
     $: styles = {
-        login: `border-bottom-color: ${$toggleState.login ? color.activate : color.deactivate}`,
-        signup: `border-bottom-color: ${$toggleState.signup ? color.activate : color.deactivate}`,
+        login: `border-bottom-color: ${$Toggle.login ? color.activate : color.deactivate}`,
+        signup: `border-bottom-color: ${$Toggle.signup ? color.activate : color.deactivate}`,
     };
 </script>
 
 <div class="toggle">
-    <button on:click={() => select("login")} style={styles.login}>{$text.Login}</button>
-    <button on:click={() => select("signup")} style={styles.signup}>{$text.Signup}</button>
+    <button on:click={() => select("login")} style={styles.login}>{$Text.Login}</button>
+    <button on:click={() => select("signup")} style={styles.signup}>{$Text.Signup}</button>
 </div>
 
 <style>

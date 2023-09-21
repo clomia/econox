@@ -6,8 +6,7 @@
     import PhoneConfirmForm from "./PhoneConfirmForm.svelte";
     import BillingForm from "./billingForm/index.svelte";
     import ResultProcess from "./ResultProcess.svelte";
-
-    import * as state from "../../../modules/state";
+    import { auth } from "../../../modules/state";
 
     const componentStep = [
         CognitoForm,
@@ -18,18 +17,15 @@
         BillingForm,
         ResultProcess,
     ];
-    const currentStep = state.auth.signup.step;
+    const Step = auth.signup.Step;
 </script>
 
 <div class="component">
-    <svelte:component
-        this={componentStep[$currentStep]}
-        on:complete={() => currentStep.set($currentStep + 1)}
-    />
+    <svelte:component this={componentStep[$Step]} on:complete={() => $Step++} />
 </div>
 
 <!-- ResultProcess 상태일때 다른 컴포넌트가 클릭되지 않도록 바로 밑에 얆은 막 깔기 -->
-{#if $currentStep === 6}
+{#if $Step === 6}
     <div class="membrane" />
 {/if}
 

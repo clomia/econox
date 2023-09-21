@@ -1,11 +1,10 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
     import LoadingAnimation from "../../../../assets/LoadingAnimation.svelte";
-    import * as state from "../../../../modules/state";
+    import { Text, auth } from "../../../../modules/state";
 
     const dispatch = createEventDispatcher();
-    const inputResult = state.auth.signup.inputResult;
-    const text = state.uiText.text;
+    const InputResult = auth.signup.InputResult;
 
     let cardNumber = "";
     let expiryDate = "";
@@ -41,16 +40,16 @@
     let response = null;
     const billing = async () => {
         const [expir_month, expir_year] = expiryDate.replace(/\s/g, "").split("/");
-        inputResult.set({
-            ...$inputResult,
+        $InputResult = {
+            ...$InputResult,
             tosspayments: {
-                user_id: $inputResult.cognitoId,
+                user_id: $InputResult.cognitoId,
                 card_number: cardNumber.replace(/\s/g, ""),
                 expiration_year: expir_year,
                 expiration_month: expir_month,
                 owner_id: ownerId,
             },
-        });
+        };
         dispatch("complete");
     };
 </script>
@@ -58,7 +57,7 @@
 <form on:submit|preventDefault={billing}>
     <section class="card-number">
         <label>
-            <span>{$text.CreditCardNumber}</span>
+            <span>{$Text.CreditCardNumber}</span>
             <input
                 type="text"
                 placeholder="••••  ••••  ••••  ••••"
@@ -69,11 +68,11 @@
     </section>
     <section class="card-detail">
         <label class="card-detail__expiry">
-            <span>{$text.ExpiryDate}</span>
+            <span>{$Text.ExpiryDate}</span>
             <input type="text" bind:value={expiryDate} on:input={expiryDateHandler} placeholder="MM / YY" />
         </label>
         <label class="card-detail__type">
-            <span>{$text.CardType}</span>
+            <span>{$Text.CardType}</span>
             <div>
                 <div
                     class="card-detail__type__toggle"
@@ -85,7 +84,7 @@
                     on:click={() => (cardType = "personal")}
                     style="{cardType === 'personal' ? 'color: white' : ''};"
                 >
-                    {$text.Card_Personal}
+                    {$Text.Card_Personal}
                 </button>
                 <button
                     type="button"
@@ -93,14 +92,14 @@
                     on:click={() => (cardType = "business")}
                     style="{cardType === 'business' ? 'color: white' : ''};"
                 >
-                    {$text.Card_Business}
+                    {$Text.Card_Business}
                 </button>
             </div>
         </label>
     </section>
     <section class="owner-id">
         <label>
-            <span>{cardType === "personal" ? $text.BirthDate : $text.BusinessNumber}</span>
+            <span>{cardType === "personal" ? $Text.BirthDate : $Text.BusinessNumber}</span>
             <input
                 type="text"
                 bind:value={ownerId}
@@ -114,7 +113,7 @@
         <LoadingAnimation />
     {/await}
     {#if !(response instanceof Promise)}
-        <button class="submit-button" type="submit">{$text.Next}</button>
+        <button class="submit-button" type="submit">{$Text.Next}</button>
     {/if}
 </form>
 

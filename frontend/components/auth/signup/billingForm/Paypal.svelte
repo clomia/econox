@@ -1,11 +1,11 @@
 <script lang="ts">
     import { onMount, createEventDispatcher } from "svelte";
     import { api } from "../../../../modules/request";
-    import * as state from "../../../../modules/state";
+    import { auth } from "../../../../modules/state";
     import LoadingAnimation from "../../../../assets/LoadingAnimation.svelte";
 
     const dispatch = createEventDispatcher();
-    const inputResult = state.auth.signup.inputResult;
+    const InputResult = auth.signup.InputResult;
 
     let isSdkLoaded = false;
 
@@ -24,13 +24,13 @@
                     });
                 },
                 onApprove: (data: any, actions: any) => {
-                    inputResult.set({
-                        ...$inputResult,
+                    $InputResult = {
+                        ...$InputResult,
                         paypal: {
                             order: data.orderID as string,
                             subscription: data.subscriptionID as string,
                         },
-                    });
+                    };
                     dispatch("complete");
                 },
             })
@@ -39,7 +39,7 @@
 
     onMount(async () => {
         const paypalPlans = await api.public.get("/paypal/plans");
-        const planId = paypalPlans.data["plan_id"][$inputResult.membership];
+        const planId = paypalPlans.data["plan_id"][$InputResult.membership];
         const clientId = paypalPlans.data["client_id"];
 
         if ((window as any).paypal) {

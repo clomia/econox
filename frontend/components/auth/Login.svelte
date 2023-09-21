@@ -1,8 +1,7 @@
 <script lang="ts">
     import LoadingAnimation from "../../assets/LoadingAnimation.svelte";
-    import * as state from "../../modules/state";
     import { login } from "../../modules/functions";
-    const text = state.uiText.text;
+    import { Text } from "../../modules/state";
 
     let message = "";
     let response: string | Promise<void> = "before"; // 요청 전
@@ -11,13 +10,13 @@
         const email = form.email.value;
         const password = form.password.value;
         if (!email || !password) {
-            message = $text.InsufficientInput;
+            message = $Text.InsufficientInput;
             return;
         }
         try {
             response = login(email, password);
         } catch (error) {
-            message = error.response?.status === 401 ? $text.LoginInfoIncorrect : $text.UnexpectedError;
+            message = error.response?.status === 401 ? $Text.LoginInfoIncorrect : $Text.UnexpectedError;
         }
     };
 </script>
@@ -25,13 +24,13 @@
 <form on:submit|preventDefault={loginProcess}>
     <section>
         <label>
-            <span>{$text.Email}</span>
+            <span>{$Text.Email}</span>
             <input type="text" name="email" autocomplete="email" />
         </label>
     </section>
     <section>
         <label>
-            <span>{$text.Password}</span>
+            <span>{$Text.Password}</span>
             <input class="password-input" type="password" name="password" autocomplete="current-password" />
         </label>
     </section>
@@ -40,7 +39,7 @@
     {/await}
     <div>{message}</div>
     {#if !(response instanceof Promise)}
-        <button type="submit">{$text.Login}</button>
+        <button type="submit">{$Text.Login}</button>
     {/if}
 </form>
 

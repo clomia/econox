@@ -2,16 +2,13 @@
     import { createEventDispatcher } from "svelte";
     import { getCodes, getName } from "country-list";
     import { getCountryCallingCode } from "libphonenumber-js";
-
-    import * as state from "../../../modules/state";
     import { api } from "../../../modules/request";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
-
+    import { Text, auth } from "../../../modules/state";
     import type { CountryCode } from "libphonenumber-js";
 
-    const text = state.uiText.text;
-    const inputResult = state.auth.signup.inputResult;
-    const inputPhoneNumberStore = state.auth.signup.inputPhoneNumber;
+    const InputResult = auth.signup.InputResult;
+    const InputPhoneNumber = auth.signup.InputPhoneNumber;
 
     const dispatch = createEventDispatcher();
 
@@ -26,28 +23,28 @@
         const callingCode = getCountryCallingCode(form.countryCode.value as CountryCode);
         const phone = `+${callingCode}${phoneNumber}`;
         if (!phoneNumber) {
-            message = $text.PleaseEnterPhoneNumber;
+            message = $Text.PleaseEnterPhoneNumber;
             return;
         }
         try {
             response = api.public.post("/auth/phone", { phone });
             await response;
-            $inputResult = { ...$inputResult, phone };
-            $inputPhoneNumberStore = phoneNumber;
+            $InputResult = { ...$InputResult, phone };
+            $InputPhoneNumber = phoneNumber;
             dispatch("complete");
         } catch (error) {
             response = null;
-            message = $text.PhoneConfirmCodeSendFailed;
+            message = $Text.PhoneConfirmCodeSendFailed;
         }
     };
 </script>
 
-<div class="description">{$text.PhoneConfirmReason}</div>
+<div class="description">{$Text.PhoneConfirmReason}</div>
 
 <form on:submit|preventDefault={phoneConfirm}>
     {#await api.public.get("/country") then response}
         <label>
-            <span>{$text.Country}</span>
+            <span>{$Text.Country}</span>
             <select name="countryCode" value={response.data.country}>
                 {#each getCodes() as country}
                     <option value={country}>{getName(country)}</option>
@@ -56,12 +53,12 @@
         </label>
     {/await}
     <label class="phone-number">
-        <span>{$text.EnterPhoneNumber}</span>
+        <span>{$Text.EnterPhoneNumber}</span>
         <input bind:value={phoneNumber} name="phone" type="text" />
     </label>
     <div class="message">{message}</div>
     {#if !(response instanceof Promise)}
-        <button>{$text.SendVerificationCode}</button>
+        <button>{$Text.SendVerificationCode}</button>
     {/if}
     {#await response}
         <LoadingAnimation />

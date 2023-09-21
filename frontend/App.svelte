@@ -5,11 +5,17 @@
     import Navigator from "./components/Navigator.svelte";
     import LangBtn from "./components/LangBtn.svelte";
     import { loadUiText } from "./modules/uiText";
-    import * as state from "./modules/state";
+    import { isLoggedIn } from "./modules/functions";
+    import { api } from "./modules/request";
+    import { Text, UserInfo } from "./modules/state";
 
     onMount(async () => {
         const { text } = await loadUiText();
-        state.uiText.text.set(text);
+        $Text = text;
+        if (await isLoggedIn()) {
+            // 유저정보 가져오는 동안 로딩잠깐 띄우기?
+            $UserInfo = await api.private.get("/user");
+        }
 
         const currentUrl = new URL(window.location.href);
         const { hostname } = currentUrl;

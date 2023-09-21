@@ -1,16 +1,19 @@
 <script lang="ts">
     import Auth from "./auth/Index.svelte";
-    import * as state from "../modules/state";
+    import { UserInfo, Text } from "../modules/state";
 
-    let text = state.uiText.text;
     let authToggle = false;
 </script>
 
 <section>
-    <button>{$text.Econox}</button>
-    <button>{$text.Console}</button>
-    <button>{$text.FeatureHub}</button>
-    <button on:click={() => (authToggle = !authToggle)}>{$text.SignInOut}</button>
+    <button>{$Text.Econox}</button>
+    <button>{$Text.Console}</button>
+    <button>{$Text.FeatureHub}</button>
+    {#if $UserInfo}
+        <button />
+    {:else}
+        <button on:click={() => (authToggle = !authToggle)}>{$Text.SignInOut}</button>
+    {/if}
 </section>
 
 {#if authToggle}

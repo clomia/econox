@@ -1,17 +1,17 @@
 <script lang="ts">
-    import * as state from "../../modules/state";
     import Login from "./Login.svelte";
     import Signup from "./signup/Index.svelte";
     import LoginSignupToggle from "./LoginSignupToggle.svelte";
+    import { auth } from "../../modules/state";
 
-    const toggleState = state.auth.toggle;
+    const Toggle = auth.Toggle;
 </script>
 
 <div class="ground">
     <div class="ground__window">
         <LoginSignupToggle />
         <section>
-            {#if $toggleState.login}
+            {#if $Toggle.login}
                 <Login />
             {:else}
                 <Signup />

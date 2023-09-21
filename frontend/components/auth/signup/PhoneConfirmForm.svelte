@@ -1,63 +1,62 @@
 <script lang="ts">
     import { createEventDispatcher, onMount } from "svelte";
-    import * as state from "../../../modules/state";
     import { api } from "../../../modules/request";
     import { timeToString } from "../../../modules/functions";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
+    import { Text, auth } from "../../../modules/state";
 
-    const text = state.uiText.text;
-    const inputResult = state.auth.signup.inputResult;
-    const phoneConfirmTimeLimit = state.auth.signup.phoneConfirmTimeLimit;
-    const inputPhoneNumber = state.auth.signup.inputPhoneNumber;
+    const InputResult = auth.signup.InputResult;
+    const PhoneConfirmTimeLimit = auth.signup.PhoneConfirmTimeLimit;
+    const InputPhoneNumber = auth.signup.InputPhoneNumber;
 
     const dispatch = createEventDispatcher();
 
     let response: null | Promise<any> = null; // 요청 전
-    let message = $text.PleaseEnterPhoneConfirmCode;
+    let message = $Text.PleaseEnterPhoneConfirmCode;
 
-    if ($phoneConfirmTimeLimit === -1) {
-        $phoneConfirmTimeLimit = 180;
+    if ($PhoneConfirmTimeLimit === -1) {
+        $PhoneConfirmTimeLimit = 180;
     }
-    onMount(() => setInterval(() => $phoneConfirmTimeLimit > 0 && $phoneConfirmTimeLimit--, 1000));
+    onMount(() => setInterval(() => $PhoneConfirmTimeLimit > 0 && $PhoneConfirmTimeLimit--, 1000));
 
     $: placeHolder =
-        $phoneConfirmTimeLimit > 0 ? timeToString($phoneConfirmTimeLimit) : $text.ConfirmCodeExpired;
+        $PhoneConfirmTimeLimit > 0 ? timeToString($PhoneConfirmTimeLimit) : $Text.ConfirmCodeExpired;
 
     const codeConfirmation = async (event: SubmitEvent) => {
         message = "";
         const form = event.target as HTMLFormElement;
         try {
             const phoneConfirm = api.public.post("/auth/phone/confirm", {
-                phone: $inputResult.phone,
+                phone: $InputResult.phone,
                 confirm_code: form.code.value,
             });
             const reregistrationConfirm = api.public.post("/auth/is-reregistration", {
-                email: $inputResult.email,
-                phone: $inputResult.phone,
+                email: $InputResult.email,
+                phone: $InputResult.phone,
             });
             response = Promise.all([phoneConfirm, reregistrationConfirm]);
             const [, reregistrationConfirmResponse] = await response;
             const reregistration: boolean = reregistrationConfirmResponse.data.reregistration; // 재등록 여부
-            inputResult.set({ ...$inputResult, reregistration });
+            $InputResult = { ...$InputResult, reregistration };
             dispatch("complete");
         } catch (error) {
             response = null;
             const statusMessage = {
-                409: $text.ConfirmCodeMismatch, // 인증 코드가 올바르지 않음
-                401: $text.ConfirmCodeAlreadyExpired, // 인증 코드가 만료됌
+                409: $Text.ConfirmCodeMismatch, // 인증 코드가 올바르지 않음
+                401: $Text.ConfirmCodeAlreadyExpired, // 인증 코드가 만료됌
             };
-            message = statusMessage[error.response?.status] || $text.UnexpectedError;
+            message = statusMessage[error.response?.status] || $Text.UnexpectedError;
         }
     };
 
     const resendCode = async () => {
         try {
-            response = api.public.post("/auth/phone", { phone: $inputResult.phone });
+            response = api.public.post("/auth/phone", { phone: $InputResult.phone });
             await response;
-            message = $text.ConfirmCodeSended;
-            $phoneConfirmTimeLimit = 180;
+            message = $Text.ConfirmCodeSended;
+            $PhoneConfirmTimeLimit = 180;
         } catch (error) {
-            message = error.response?.status === 429 ? $text.TooManyRequests : $text.UnexpectedError;
+            message = error.response?.status === 429 ? $Text.TooManyRequests : $Text.UnexpectedError;
         }
         response = null;
     };
@@ -66,7 +65,7 @@
 <form on:submit|preventDefault={codeConfirmation}>
     <section>
         <label>
-            <span>{$inputPhoneNumber}</span>
+            <span>{$InputPhoneNumber}</span>
             <input type="text" name="code" placeholder={placeHolder} autocomplete="off" />
         </label>
     </section>
@@ -76,8 +75,8 @@
     {#if !(response instanceof Promise)}
         <div>{message}</div>
         <div class="buttons">
-            <button type="button" on:click={resendCode}>{$text.ResendConfirmCode}</button>
-            <button type="submit">{$text.Next}</button>
+            <button type="button" on:click={resendCode}>{$Text.ResendConfirmCode}</button>
+            <button type="submit">{$Text.Next}</button>
         </div>
     {/if}
 </form>

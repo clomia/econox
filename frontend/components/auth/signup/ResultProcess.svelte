@@ -1,18 +1,17 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import Swal from "sweetalert2";
-    import * as state from "../../../modules/state";
     import { api } from "../../../modules/request";
     import LoadingTextAnimation from "../../../assets/LoadingTextAnimation.svelte";
     import WellcomeAnimation from "../../../assets/WellcomeAnimation.svelte";
     import { login, format } from "../../../modules/functions";
+    import { Text, auth } from "../../../modules/state";
 
     import type { AxiosResponse, AxiosError } from "axios";
 
-    const inputResult = state.auth.signup.inputResult;
-    const currentStep = state.auth.signup.step;
-    const paymentError = state.auth.signup.paymentError;
-    const text = state.uiText.text;
+    const InputResult = auth.signup.InputResult;
+    const Step = auth.signup.Step;
+    const PaymentError = auth.signup.PaymentError;
 
     let response: null | Promise<any> = null;
     let loginPromise: null | Promise<void> = null;
@@ -23,17 +22,17 @@
     const sucessRedirect = () => window.location.replace(window.location.origin + "/console");
     onMount(async () => {
         response = api.public.post("/user", {
-            cognito_id: $inputResult.cognitoId,
-            email: $inputResult.email,
-            phone: $inputResult.phone,
-            membership: $inputResult.membership,
-            currency: $inputResult.currency,
-            tosspayments: $inputResult.tosspayments,
-            paypal: $inputResult.paypal,
+            cognito_id: $InputResult.cognitoId,
+            email: $InputResult.email,
+            phone: $InputResult.phone,
+            membership: $InputResult.membership,
+            currency: $InputResult.currency,
+            tosspayments: $InputResult.tosspayments,
+            paypal: $InputResult.paypal,
         });
         await response;
         setTimeout(() => (animationEnd = true), 4300);
-        loginPromise = login($inputResult.email, $inputResult.password, false);
+        loginPromise = login($InputResult.email, $InputResult.password, false);
         setInterval(() => {
             timeout -= 1;
             if (timeout <= 0) {
@@ -43,22 +42,22 @@
     });
 
     const sucessMessage = (response: AxiosResponse<any>) => {
-        return response.data.first_signup_benefit ? $text.BenefitExplanation : "";
+        return response.data.first_signup_benefit ? $Text.BenefitExplanation : "";
     };
 
     const failureMessage = (error: AxiosError): string => {
         if (error.response?.status === 402) {
             // 결제 실패인 경우 결제정보 입력 단계로 롤백
-            $paymentError = true;
-            $inputResult.tosspayments = null;
-            $inputResult.paypal = null;
-            $currentStep = 5;
+            $PaymentError = true;
+            $InputResult.tosspayments = null;
+            $InputResult.paypal = null;
+            $Step = 5;
         }
         const statusMessages = {
-            401: $text.EmailConfirmIncompleted, // 이메일 인증 안됌
-            409: $text.UnusualSignupRequest,
+            401: $Text.EmailConfirmIncompleted, // 이메일 인증 안됌
+            409: $Text.UnusualSignupRequest,
         };
-        return statusMessages[error.response?.status] || $text.UnexpectedError;
+        return statusMessages[error.response?.status] || $Text.UnexpectedError;
     };
 
     const cancelProcess = async () => {
@@ -68,7 +67,7 @@
     const focusOnExitBtnAlert = async (event: Event) => {
         if (animationEnd && event.target !== sucessBtn) {
             Swal.fire({
-                title: $text.ClickLogin_for_SignupComplete,
+                title: $Text.ClickLogin_for_SignupComplete,
                 toast: true,
                 position: "top",
                 showConfirmButton: false,
@@ -88,19 +87,19 @@
         {:then data}
             <section class="sucess">
                 <div class="sucess__wellcome"><WellcomeAnimation /></div>
-                <div class="sucess__title">{$text.SignupComplete}</div>
+                <div class="sucess__title">{$Text.SignupComplete}</div>
                 <div class="sucess__message">{sucessMessage(data)}</div>
-                <div class="sucess_login-timer">{format($text.AutoLoginTimer, { time: timeout })}</div>
+                <div class="sucess_login-timer">{format($Text.AutoLoginTimer, { time: timeout })}</div>
                 {#await loginPromise then}
                     {#if animationEnd}
-                        <button bind:this={sucessBtn} on:click={sucessRedirect}>{$text.Login}</button>
+                        <button bind:this={sucessBtn} on:click={sucessRedirect}>{$Text.Login}</button>
                     {/if}
                 {/await}
             </section>
         {:catch error}
             <section class="failure">
                 <div class="failure__message">{failureMessage(error)}</div>
-                <button on:click={cancelProcess}>{$text.Ok}</button>
+                <button on:click={cancelProcess}>{$Text.Ok}</button>
             </section>
         {/await}
     {/if}

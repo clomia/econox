@@ -1,5 +1,3 @@
-import Swal from "sweetalert2"
-
 import { api } from "./request"
 import { settingObjectStore } from "./_storage"
 
@@ -20,16 +18,7 @@ export const login = async (email: string, password: string, redirect = true) =>
     if (redirect) { window.location.replace(window.location.origin + "/console") }
 }
 
-const logoutWithAlert = async (message: string) => {
-    await Swal.fire({
-        icon: 'error',
-        text: message,
-        // confirmButtonText: (await loadUiText()).text.ok,
-    })
-    await logout()
-}
-
-export function format(template: string, { ...kwargs }) {
+export const format = (template: string, { ...kwargs }) => {
     return template.replace(/{(\w+)}/g, function (match, key) {
         return kwargs.hasOwnProperty(key) ? kwargs[key] : match;
     });
@@ -41,3 +30,11 @@ export const timeToString = (time: number) => {
     const seconds = (time % 60).toString().padStart(2, "0");
     return `${minutes}:${seconds}`;
 };
+
+export const isLoggedIn = async (): Promise<boolean> => {
+    const [cognitoToken, cognitoRefreshToken] = await Promise.all([
+        settingObjectStore.get("cognitoToken"),
+        settingObjectStore.get("cognitoRefreshToken"),
+    ])
+    return cognitoToken && cognitoRefreshToken
+}

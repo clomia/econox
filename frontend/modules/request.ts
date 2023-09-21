@@ -9,7 +9,7 @@ import type { InternalAxiosRequestConfig } from "axios";
 export const apiHostPath = window.location.origin + "/api"
 export const api = {
     public: axios.create({ baseURL: apiHostPath }),
-    private: axios.create({ baseURL: apiHostPath }) // 인증 실패 시 강제 로그아웃!
+    private: axios.create({ baseURL: apiHostPath })
 }
 
 const isJwtExpired = (token: string): boolean => {

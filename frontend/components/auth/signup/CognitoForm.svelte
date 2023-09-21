@@ -1,14 +1,11 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
-
-    import * as state from "../../../modules/state";
     import { api } from "../../../modules/request";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
-
+    import { Text, auth } from "../../../modules/state";
     import type { AxiosResponse } from "axios";
 
-    const text = state.uiText.text;
-    const inputResult = state.auth.signup.inputResult;
+    const InputResult = auth.signup.InputResult;
 
     const dispatch = createEventDispatcher();
 
@@ -22,36 +19,36 @@
         const password = form.password.value as string;
         const retypePassword = form.retypePassword.value as string;
         if (!email || !password) {
-            message = $text.InsufficientInput;
+            message = $Text.InsufficientInput;
             return;
         }
 
         if (password !== retypePassword) {
-            message = $text.RetypePasswordMismatch;
+            message = $Text.RetypePasswordMismatch;
             return;
         }
 
         if (password.length < 6) {
-            message = $text.IncorrectPasswordLength;
+            message = $Text.IncorrectPasswordLength;
             return;
         }
 
         if (!email.includes("@") || !email.includes(".")) {
-            message = $text.EmailFormatIncorrect;
+            message = $Text.EmailFormatIncorrect;
             return;
         }
         try {
             response = api.public.post("/user/cognito", { email, password });
             const cognitoId = (await response).data.cognito_id;
-            $inputResult = { ...$inputResult, cognitoId, email, password };
+            $InputResult = { ...$InputResult, cognitoId, email, password };
             dispatch("complete");
         } catch (error) {
             response = null;
             const statusMessages = {
-                409: $text.UserAlreadyExists,
-                400: $text.EmailInputIncorrect,
+                409: $Text.UserAlreadyExists,
+                400: $Text.EmailInputIncorrect,
             };
-            message = statusMessages[error.response?.status] || $text.UnexpectedError;
+            message = statusMessages[error.response?.status] || $Text.UnexpectedError;
         }
     };
 </script>
@@ -59,19 +56,19 @@
 <form on:submit|preventDefault={signup}>
     <section>
         <label>
-            <span>{$text.Email}</span>
+            <span>{$Text.Email}</span>
             <input type="text" name="email" autocomplete="off" />
         </label>
     </section>
     <section>
         <label>
-            <span>{$text.Password}</span>
+            <span>{$Text.Password}</span>
             <input class="password-input" type="password" name="password" autocomplete="off" />
         </label>
     </section>
     <section>
         <label>
-            <span>{$text.RetypePassword}</span>
+            <span>{$Text.RetypePassword}</span>
             <input class="password-input" type="password" name="retypePassword" autocomplete="off" />
         </label>
     </section>
@@ -80,7 +77,7 @@
     {/await}
     <div>{message}</div>
     {#if !(response instanceof Promise)}
-        <button type="submit">{$text.Next}</button>
+        <button type="submit">{$Text.Next}</button>
     {/if}
 </form>
 

@@ -2,26 +2,24 @@
     import { onMount, createEventDispatcher } from "svelte";
     import Paypal from "./Paypal.svelte";
     import Tosspayments from "./Tosspayments.svelte";
+    import { Text, auth } from "../../../../modules/state";
 
-    import * as state from "../../../../modules/state";
+    const InputResult = auth.signup.InputResult;
+    const PaymentError = auth.signup.PaymentError;
 
     const dispatch = createEventDispatcher();
-    const inputResult = state.auth.signup.inputResult;
-    const paymentError = state.auth.signup.paymentError;
-    const text = state.uiText.text;
-
     onMount(() => {
-        if (!$inputResult.reregistration) {
+        if (!$InputResult.reregistration) {
             dispatch("complete"); // 최초 회원가입인 경우 결제정보 입력할 필요 없음
         }
     });
 </script>
 
-<div>{$paymentError ? $text.PaymentInfoIncorrect : $text.NoBenefitPleasePayment}</div>
+<div>{$PaymentError ? $Text.PaymentInfoIncorrect : $Text.NoBenefitPleasePayment}</div>
 
-{#if $inputResult.reregistration && $inputResult.currency === "KRW"}
+{#if $InputResult.reregistration && $InputResult.currency === "KRW"}
     <Tosspayments on:complete={() => dispatch("complete")} />
-{:else if $inputResult.reregistration && $inputResult.currency === "USD"}
+{:else if $InputResult.reregistration && $InputResult.currency === "USD"}
     <Paypal on:complete={() => dispatch("complete")} />
 {/if}
 

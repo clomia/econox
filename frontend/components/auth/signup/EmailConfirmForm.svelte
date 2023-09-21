@@ -1,41 +1,39 @@
 <script lang="ts">
     import { createEventDispatcher, onMount } from "svelte";
-    import * as state from "../../../modules/state";
     import { api } from "../../../modules/request";
     import { timeToString } from "../../../modules/functions";
     import LoadingAnimation from "../../../assets/LoadingAnimation.svelte";
-
+    import { Text, auth } from "../../../modules/state";
     import type { AxiosResponse } from "axios";
-
-    const text = state.uiText.text;
-    const inputResult = state.auth.signup.inputResult;
-    const emailConfirmTimeLimit = state.auth.signup.emailConfirmTimeLimit;
 
     const dispatch = createEventDispatcher();
 
-    let response: null | Promise<AxiosResponse> = null; // 요청 전
-    let message = $text.PleaseEnterEmailConfirmCode;
+    const InputResult = auth.signup.InputResult;
+    const EmailConfirmTimeLimit = auth.signup.EmailConfirmTimeLimit;
 
-    if ($emailConfirmTimeLimit === -1) {
-        $emailConfirmTimeLimit = 180;
+    let response: null | Promise<AxiosResponse> = null; // 요청 전
+    let message = $Text.PleaseEnterEmailConfirmCode;
+
+    if ($EmailConfirmTimeLimit === -1) {
+        $EmailConfirmTimeLimit = 180;
     }
 
-    onMount(() => setInterval(() => $emailConfirmTimeLimit > 0 && $emailConfirmTimeLimit--, 1000));
+    onMount(() => setInterval(() => $EmailConfirmTimeLimit > 0 && $EmailConfirmTimeLimit--, 1000));
 
     $: placeHolder =
-        $emailConfirmTimeLimit > 0 ? timeToString($emailConfirmTimeLimit) : $text.ConfirmCodeExpired;
+        $EmailConfirmTimeLimit > 0 ? timeToString($EmailConfirmTimeLimit) : $Text.ConfirmCodeExpired;
 
     const codeConfirmation = async (event: SubmitEvent) => {
         message = "";
         const form = event.target as HTMLFormElement;
         const code = form.code.value;
         if (!code) {
-            message = $text.InsufficientInput;
+            message = $Text.InsufficientInput;
             return;
         }
         try {
             response = api.public.post("/auth/email/confirm", {
-                email: $inputResult.email,
+                email: $InputResult.email,
                 confirm_code: code,
             });
             await response;
@@ -43,22 +41,22 @@
         } catch (error) {
             response = null;
             const statusMessage = {
-                409: $text.ConfirmCodeMismatch,
-                401: $text.ConfirmCodeAlreadyExpired,
-                429: $text.TooManyRequests,
+                409: $Text.ConfirmCodeMismatch,
+                401: $Text.ConfirmCodeAlreadyExpired,
+                429: $Text.TooManyRequests,
             };
-            message = statusMessage[error.response?.status] || $text.UnexpectedError;
+            message = statusMessage[error.response?.status] || $Text.UnexpectedError;
         }
     };
 
     const resendCode = async () => {
         try {
-            response = api.public.post("/auth/email", { email: $inputResult.email });
+            response = api.public.post("/auth/email", { email: $InputResult.email });
             await response;
-            message = $text.ConfirmCodeSended;
-            $emailConfirmTimeLimit = 180;
+            message = $Text.ConfirmCodeSended;
+            $EmailConfirmTimeLimit = 180;
         } catch (error) {
-            message = error.response?.status === 429 ? $text.TooManyRequests : $text.UnexpectedError;
+            message = error.response?.status === 429 ? $Text.TooManyRequests : $Text.UnexpectedError;
         }
         response = null;
     };
@@ -67,7 +65,7 @@
 <form on:submit|preventDefault={codeConfirmation}>
     <section>
         <label>
-            <span>{$inputResult.email}</span>
+            <span>{$InputResult.email}</span>
             <input type="text" name="code" placeholder={placeHolder} autocomplete="off" />
         </label>
     </section>
@@ -77,8 +75,8 @@
     {#if !(response instanceof Promise)}
         <div>{message}</div>
         <div class="buttons">
-            <button type="button" on:click={resendCode}>{$text.ResendConfirmCode}</button>
-            <button type="submit">{$text.Next}</button>
+            <button type="button" on:click={resendCode}>{$Text.ResendConfirmCode}</button>
+            <button type="submit">{$Text.Next}</button>
         </div>
     {/if}
 </form>

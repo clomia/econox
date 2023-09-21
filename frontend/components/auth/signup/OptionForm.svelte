@@ -1,11 +1,9 @@
 <script lang="ts">
     import { onMount, createEventDispatcher } from "svelte";
     import { api } from "../../../modules/request";
+    import { Text, auth } from "../../../modules/state";
 
-    import * as state from "../../../modules/state";
-
-    const text = state.uiText.text;
-    const inputResult = state.auth.signup.inputResult;
+    const InputResult = auth.signup.InputResult;
 
     let currency = "USD";
 
@@ -13,7 +11,7 @@
 
     const submit = (membership: string) => {
         return () => {
-            inputResult.set({ ...$inputResult, currency, membership });
+            $InputResult = { ...$InputResult, currency, membership };
             dispatch("complete");
         };
     };
@@ -25,31 +23,31 @@
 </script>
 
 <main>
-    <div class="title">{$text.SelectMembership}</div>
-    <div class="subtitle">{$text.SelectMembershipSubtitle}</div>
+    <div class="title">{$Text.SelectMembership}</div>
+    <div class="subtitle">{$Text.SelectMembershipSubtitle}</div>
 
     <button class="basic" on:click={submit("basic")}>
-        <div class="basic__title">{$text.BasicPlan}</div>
+        <div class="basic__title">{$Text.BasicPlan}</div>
         <div class="basic__price">
             {#if currency === "KRW"}
-                {$text.BasicPlanWonPrice}
+                {$Text.BasicPlanWonPrice}
             {:else}
-                {$text.BasicPlanDollerPrice}
+                {$Text.BasicPlanDollerPrice}
             {/if}
         </div>
-        <p>{$text.BasicPlanDescription}</p>
+        <p>{$Text.BasicPlanDescription}</p>
     </button>
 
     <button class="professional" on:click={submit("professional")}>
-        <div class="professional__title">{$text.ProfessionalPlan}</div>
+        <div class="professional__title">{$Text.ProfessionalPlan}</div>
         <div class="professional__price">
             {#if currency === "KRW"}
-                {$text.ProfessionalPlanWonPrice}
+                {$Text.ProfessionalPlanWonPrice}
             {:else}
-                {$text.ProfessionalPlanDollerPrice}
+                {$Text.ProfessionalPlanDollerPrice}
             {/if}
         </div>
-        <p>{$text.ProfessionalPlanDescription}</p>
+        <p>{$Text.ProfessionalPlanDescription}</p>
     </button>
 </main>
 

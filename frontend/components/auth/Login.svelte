@@ -18,7 +18,7 @@
         }
         try {
             response = api.public.post("/auth/user", { email, password });
-            const result = await response;
+            const result = (await response).data;
             await login(result["cognito_token"], result["cognito_refresh_token"]);
         } catch (error) {
             response = null;

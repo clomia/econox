@@ -1,6 +1,6 @@
 """ /api/user """
 import asyncio
-from typing import Literal
+from typing import Literal, List
 from datetime import datetime
 from functools import partial
 
@@ -20,6 +20,7 @@ from backend.http import (
     pooling,
 )
 from backend.math import (
+    utcstr_type,
     utcstr2datetime,
     datetime2utcstr,
     calc_next_billing_date,
@@ -187,7 +188,29 @@ async def signup(item: SignupInfo):
     return {"first_signup_benefit": not signup_history}  # 첫 회원가입 혜택 여부
 
 
-@router.private.get()
+class BillingTransaction(BaseModel):
+    time: utcstr_type
+    name: constr(min_length=1)
+    amount: float
+    method: constr(min_length=1)
+
+
+class UserBillingDetail(BaseModel):
+    currency: Literal["USD", "KRW"]
+    transactions: List[BillingTransaction]
+
+
+class UserDetail(BaseModel):
+    id: constr(min_length=1)
+    name: constr(min_length=1)
+    email: constr(min_length=1)
+    membership: Literal["basic", "professional"]
+    signup_date: utcstr_type
+    next_billing_date: utcstr_type
+    billing: UserBillingDetail
+
+
+@router.private.get(response_model=UserDetail)
 async def get_user_detail(user=router.private.auth):
     """
     - 유저 상세 정보를 가져옵니다.

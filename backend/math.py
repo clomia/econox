@@ -1,12 +1,13 @@
 """ 고성능 수학 연산 모듈 """
 import math
 from typing import Callable
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta
 
 import pytz
 import numpy as np
 import xarray as xr
 from scipy.interpolate import PchipInterpolator
+from pydantic import constr
 
 from backend.system import MEMBERSHIP
 
@@ -107,6 +108,9 @@ def utcstr2datetime(timestring: str) -> datetime:
         timestring.replace("Z", "+00:00"),
     ).astimezone(pytz.utc)
     return utc_time.astimezone(pytz.timezone("Asia/Seoul"))
+
+
+utcstr_type = constr(regex=r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.000Z$")
 
 
 def datetime2utcstr(dt: datetime) -> str:

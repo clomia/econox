@@ -5,6 +5,7 @@
 
     const dispatch = createEventDispatcher();
     const InputResult = auth.signup.InputResult;
+    const PaymentError = auth.signup.PaymentError;
 
     let cardNumber = "";
     let expiryDate = "";
@@ -40,17 +41,21 @@
     let response = null;
     const billing = async () => {
         const [expir_month, expir_year] = expiryDate.replace(/\s/g, "").split("/");
-        $InputResult = {
-            ...$InputResult,
-            tosspayments: {
-                user_id: $InputResult.cognitoId,
-                card_number: cardNumber.replace(/\s/g, ""),
-                expiration_year: expir_year,
-                expiration_month: expir_month,
-                owner_id: ownerId,
-            },
-        };
-        dispatch("complete");
+        if (cardNumber && expir_year && expir_month && ownerId) {
+            $InputResult = {
+                ...$InputResult,
+                tosspayments: {
+                    user_id: $InputResult.cognitoId,
+                    card_number: cardNumber.replace(/\s/g, ""),
+                    expiration_year: expir_year,
+                    expiration_month: expir_month,
+                    owner_id: ownerId,
+                },
+            };
+            dispatch("complete");
+        } else {
+            $PaymentError = true;
+        }
     };
 </script>
 
@@ -115,7 +120,7 @@
         align-items: center;
         width: 100%;
         height: 23rem;
-        color: white;
+        color: var(--white);
         position: relative;
     }
     span {
@@ -127,11 +132,11 @@
     .card-number input {
         width: 100%;
         height: 2.5rem;
-        border: thin solid white;
+        border: thin solid var(--white);
         border-radius: 2rem;
         text-align: center;
         letter-spacing: 0.3rem;
-        color: rgba(255, 255, 255, 0.8);
+        color: var(--white);
         margin-top: 0.4rem;
     }
     .card-number span {
@@ -163,8 +168,8 @@
     }
     .card-detail__expiry input {
         height: 2.5rem;
-        color: rgba(255, 255, 255, 0.8);
-        border: thin solid white;
+        color: var(--white);
+        border: thin solid var(--white);
         border-radius: 1rem;
         text-align: center;
         letter-spacing: 0.2rem;
@@ -190,7 +195,7 @@
         position: relative;
         height: 2.5rem;
         width: 100%;
-        border: thin solid white;
+        border: thin solid var(--white);
         border-radius: 1rem;
         display: flex;
         justify-content: space-around;
@@ -202,7 +207,7 @@
         top: 0;
         width: 50%;
         height: 2.4rem;
-        border: thin solid white;
+        border: thin solid var(--white);
         border-radius: 1rem;
         transition: left 200ms;
     }
@@ -223,12 +228,12 @@
         justify-content: space-between;
     }
     .owner-id input {
-        border: thin solid white;
+        border: thin solid var(--white);
         border-radius: 1rem;
         width: 100%;
         height: 2.5rem;
         text-align: center;
-        color: rgba(255, 255, 255, 0.8);
+        color: var(--white);
         letter-spacing: 0.5rem;
         margin-top: 0.4rem;
     }
@@ -239,10 +244,10 @@
         opacity: 1;
     }
     .submit-button {
-        color: rgba(255, 255, 255, 0.8);
+        color: var(--white);
         width: 10rem;
         height: 2.5rem;
-        border: thin solid white;
+        border: thin solid var(--white);
         border-radius: 1rem;
         position: absolute;
         bottom: 0;

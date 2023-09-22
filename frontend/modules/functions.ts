@@ -11,12 +11,14 @@ export const logout = async () => {
     window.location.replace(window.location.origin) // 홈으로 리로딩
 }
 
-export const login = async (cognitoToken: string, cognitoRefreshToken: string) => {
+export const login = async (cognitoToken: string, cognitoRefreshToken: string, reload: boolean = true) => {
     await Promise.all([
         settingObjectStore.put("cognitoToken", cognitoToken),
         settingObjectStore.put("cognitoRefreshToken", cognitoRefreshToken)
     ])
-    window.location.replace(window.location.origin + "/console") // 콘솔로 리로딩
+    if (reload) {
+        window.location.replace(window.location.origin + "/console") // 콘솔로 리로딩
+    }
 }
 
 export const format = (template: string, { ...kwargs }) => {

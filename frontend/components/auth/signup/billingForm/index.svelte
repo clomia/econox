@@ -28,7 +28,7 @@
         width: 100%;
         display: flex;
         justify-content: center;
-        color: rgba(255, 255, 255, 0.7);
+        color: var(--white);
         padding: 2rem 0;
         text-align: center;
     }

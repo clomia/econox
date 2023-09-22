@@ -65,15 +65,15 @@
         padding-bottom: 1.3rem;
     }
     .subtitle {
-        color: rgba(255, 255, 255, 0.8);
+        color: var(--white);
         text-align: center;
         padding: 0 1rem;
         margin-bottom: 2rem;
     }
     .basic,
     .professional {
-        color: white;
-        border: thin solid white;
+        color: var(--white);
+        border: thin solid var(--white);
         border-radius: 1rem;
         padding: 1.2rem;
         width: 100%;
@@ -95,9 +95,9 @@
     .basic__price,
     .professional__price {
         padding-bottom: 0.5rem;
-        color: rgba(255, 255, 255, 0.7);
+        color: var(--white);
     }
     p {
-        color: rgba(255, 255, 255, 0.8);
+        color: var(--white);
     }
 </style>

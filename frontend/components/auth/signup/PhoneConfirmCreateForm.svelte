@@ -65,7 +65,7 @@
 
 <style>
     .description {
-        color: rgba(255, 255, 255, 0.8);
+        color: var(--white);
         text-align: center;
         margin-top: 2rem;
         padding: 0 3rem;
@@ -77,7 +77,7 @@
         width: 100%;
         height: 21rem;
         margin-top: 1.5rem;
-        color: white;
+        color: var(--white);
     }
     label {
         margin-bottom: 3rem;
@@ -85,15 +85,15 @@
     label span {
         display: block;
         width: 100%;
-        color: rgba(255, 255, 255, 0.7);
+        color: var(--white);
         margin-bottom: 0.5rem;
         text-align: center;
     }
     select {
         width: 25rem;
         border-radius: 1rem;
-        border: solid thin white;
-        color: white;
+        border: solid thin var(--white);
+        color: var(--white);
         margin: 0 0.5rem;
         padding: 0 1rem;
         height: 3rem;
@@ -108,8 +108,8 @@
     label input {
         width: 25rem;
         border-radius: 1rem;
-        border: solid thin white;
-        color: white;
+        border: solid thin var(--white);
+        color: var(--white);
         padding: 0 1rem;
         height: 3rem;
         text-align: center;
@@ -123,12 +123,12 @@
     }
     .phone-number:hover span,
     .phone-number:focus-within span {
-        color: white;
+        color: var(--white);
     }
     .message {
         margin: 1.5rem 0;
         padding: 0 2rem;
-        color: rgba(255, 255, 255, 0.8);
+        color: var(--white);
         text-align: center;
         line-height: 1.1;
     }
@@ -137,10 +137,10 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        color: white;
+        color: var(--white);
         padding: 1rem 2rem;
         border-radius: 0.5rem;
-        border: solid thin white;
+        border: solid thin var(--white);
         opacity: 0.8;
     }
     button:hover {

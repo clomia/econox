@@ -35,7 +35,7 @@
         align-items: center;
         width: 15rem;
         height: 2.2rem;
-        color: white;
+        color: var(--white);
         border-bottom: 4px solid rgba(255, 255, 255, 0.3);
         transition: border-bottom-color 0.1s ease-in-out;
     }

@@ -87,7 +87,7 @@
         width: 100%;
         height: 10rem;
         margin-top: 2.5rem;
-        color: white;
+        color: var(--white);
     }
     section {
         width: 24.5rem;
@@ -103,15 +103,15 @@
     input {
         width: 100%;
         height: 2.5rem;
-        border: solid thin white;
+        border: solid thin var(--white);
         border-radius: 0.7rem;
-        color: white;
+        color: var(--white);
         padding: 0 1rem;
         text-align: center;
         letter-spacing: 0.3rem;
     }
     section:focus-within label span {
-        color: rgba(255, 255, 255, 1);
+        color: white;
     }
     .buttons {
         width: 100%;
@@ -126,9 +126,9 @@
         align-items: center;
         width: 10rem;
         height: 2.5rem;
-        border: solid thin white;
+        border: solid thin var(--white);
         border-radius: 0.7rem;
-        color: white;
+        color: var(--white);
     }
     button:hover {
         cursor: pointer;

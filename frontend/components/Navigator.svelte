@@ -49,8 +49,8 @@
         margin: 0 0.7rem;
         width: 10rem;
         height: 2.4rem;
-        color: white;
-        border: solid white thin;
+        color: var(--white);
+        border: solid var(--white) thin;
         border-radius: 2rem;
         position: relative;
     }

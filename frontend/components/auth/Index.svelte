@@ -36,6 +36,6 @@
         padding: 3rem 4rem;
         border-radius: 1rem;
         border: thin solid rgba(255, 255, 255, 0.2);
-        background: linear-gradient(to bottom, #2e2f32, rgb(32, 49, 55));
+        background: var(--widget-background);
     }
 </style>

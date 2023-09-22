@@ -14,7 +14,7 @@
     const PaymentError = auth.signup.PaymentError;
 
     let response: null | Promise<any> = null;
-    let loginPromise: null | Promise<void> = null;
+    let loginPromise: null | Promise<AxiosResponse> = null;
     let timeout = 30;
     let animationEnd = false;
     let sucessBtn: HTMLButtonElement;
@@ -32,7 +32,12 @@
         });
         await response;
         setTimeout(() => (animationEnd = true), 4300);
-        loginPromise = login($InputResult.email, $InputResult.password, false);
+        loginPromise = api.public.post("/auth/user", {
+            email: $InputResult.email,
+            password: $InputResult.password,
+        });
+        const authResult = (await loginPromise).data;
+        login(authResult["cognito_token"], authResult["cognito_refresh_token"], false);
         setInterval(() => {
             timeout -= 1;
             if (timeout <= 0) {
@@ -112,7 +117,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        color: white;
+        color: var(--white);
     }
     .loading {
         margin-top: 3.5rem;
@@ -127,9 +132,10 @@
     }
     .failure__message {
         margin-top: 5rem;
+        font-size: 1.2rem;
     }
-    .failure__message,
     .sucess__title {
+        margin-top: 2.5rem;
         font-size: 1.2rem;
     }
     .sucess {
@@ -158,7 +164,7 @@
     .sucess__message {
         width: 88%;
         text-align: center;
-        color: rgba(255, 255, 255, 0.9);
+        color: var(--white);
         opacity: 0;
         animation: fadeIn ease-in 1;
         animation-fill-mode: forwards;
@@ -168,12 +174,9 @@
     .sucess__title {
         padding-bottom: 1rem;
     }
-    .sucess__message {
-        padding-bottom: 1rem;
-    }
     .sucess_login-timer {
         padding-bottom: 2rem;
-        color: rgba(255, 255, 255, 0.7);
+        color: var(--white);
         opacity: 0;
         animation: fadeIn ease-in 1;
         animation-fill-mode: forwards;
@@ -189,9 +192,9 @@
     }
     button {
         padding: 0.5rem 2rem;
-        border: thin solid white;
+        border: thin solid var(--white);
         border-radius: 1rem;
-        color: white;
+        color: var(--white);
     }
     button:hover {
         cursor: pointer;

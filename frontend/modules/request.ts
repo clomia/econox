@@ -35,7 +35,7 @@ const tokenInsert = async (config: InternalAxiosRequestConfig) => {
         const [idToken, accessToken] = cognitoToken.split("|")
         if (isJwtExpired(idToken) || isJwtExpired(accessToken)) {
             const response = await api.public.post("/auth/refresh-cognito-token", { cognito_refresh_token: cognitoRefreshToken })
-            const cognitoToken = response.data["cognito_token"]
+            cognitoToken = response.data["cognito_token"]
             settingObjectStore.put("cognitoToken", cognitoToken)
         }
         config.headers["Authorization"] = `Bearer ${cognitoToken}`

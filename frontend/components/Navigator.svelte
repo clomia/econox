@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { navigate } from "svelte-routing";
     import { UserInfo, Text } from "../modules/state";
     import Auth from "./auth/Index.svelte";
 
@@ -10,7 +11,7 @@
     <button>{$Text.Console}</button>
     <button>{$Text.FeatureHub}</button>
     {#if $UserInfo}
-        <button>
+        <button on:click={() => navigate("/account")}>
             <img src="static/img/profile.png" alt="profile" />
             <div class="profile-padding" />
             {$UserInfo["name"]}

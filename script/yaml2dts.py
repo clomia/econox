@@ -1,0 +1,19 @@
+"""UiText.yaml에 대한 Type 정의를 생성합니다."""
+import yaml
+
+target = "frontend/static/UiText.yaml"
+output = "frontend/static/UiText.d.ts"
+
+with open(target, "r") as file:
+    yaml_data = yaml.safe_load(file)
+
+type_definitions = []
+for key, value in yaml_data.items():
+    literal_values = " | ".join(
+        ['"' + v.replace("\n", "") + '"' for v in list(value.values())]
+    )
+    type_definitions.append(f"{key}: {literal_values};")
+
+with open(output, "w") as output_file:
+    code = "export interface UiText {\n    " + "\n    ".join(type_definitions) + "\n}"
+    output_file.write(code)

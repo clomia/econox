@@ -9,6 +9,7 @@ import json from '@rollup/plugin-json';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import replace from '@rollup/plugin-replace';
+import execute from 'rollup-plugin-execute';
 import polyfillNode from 'rollup-plugin-polyfill-node';
 
 const production = !process.env.ROLLUP_WATCH;
@@ -59,6 +60,7 @@ export default {
 		css({ output: 'bundle.css' }),
 		json(),
 
+		execute('python script/yaml2dts.py', { once: false }), // UiText.yaml에 대한 Type 정의 자동 생성
 		typescript({
 			sourceMap: !production,
 			inlineSources: !production

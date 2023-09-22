@@ -16,14 +16,12 @@ export const api = {
 const isJwtExpired = (token: string): boolean => {
     try {
         const decoded = jwt.decode(token) as JwtPayload | null;
-        if (decoded) {
-            return decoded.exp < Math.floor(Date.now() / 1000);
-        }
+        return decoded?.exp ? decoded.exp < Math.floor(Date.now() / 1000) : true;
     } catch (error) {
         return true;
     }
-    return true
 }
+
 
 const tokenInsert = async (config: InternalAxiosRequestConfig) => {
     let [cognitoToken, cognitoRefreshToken] = await Promise.all([

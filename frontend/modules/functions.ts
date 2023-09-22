@@ -3,6 +3,8 @@ import { Text, UserInfo } from "./state"
 import { loadUiText } from "./uiText"
 import { settingObjectStore } from "./_storage"
 
+import type { UiText } from "../static/UiText"
+
 export const logout = async () => {
     await Promise.all([
         settingObjectStore.delete("cognitoToken"),
@@ -63,8 +65,8 @@ export const init = async () => {
     ])
     if (cognitoToken && cognitoRefreshToken) {
         const [uiText, userInfo] = await Promise.all([loadUiText(), api.private.get("/user")])
-        Text.set(uiText.text)
+        Text.set(uiText.text as UiText)
         UserInfo.set(userInfo.data)
     }
-    Text.set((await loadUiText()).text);
+    Text.set((await loadUiText()).text as UiText);
 }

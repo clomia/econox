@@ -18,25 +18,25 @@
     <div class="loading">
         <div><CircleLoader /></div>
     </div>
+{:then}
+    <header>
+        <Navigator />
+    </header>
+
+    <main>
+        <Router>
+            {#each routes as route}
+                <Route path={route.path}>
+                    <svelte:component this={route.page} />
+                </Route>
+            {/each}
+        </Router>
+    </main>
+
+    <aside>
+        <LangBtn />
+    </aside>
 {/await}
-
-<header>
-    <Navigator />
-</header>
-
-<main>
-    <Router>
-        {#each routes as route}
-            <Route path={route.path}>
-                <svelte:component this={route.page} />
-            </Route>
-        {/each}
-    </Router>
-</main>
-
-<aside>
-    <LangBtn />
-</aside>
 
 <style>
     .loading {

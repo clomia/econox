@@ -12,11 +12,24 @@
     const EmailConfirmTimeLimit = auth.signup.EmailConfirmTimeLimit;
 
     let response: null | Promise<AxiosResponse> = null; // 요청 전
-    let message = $Text.PleaseEnterEmailConfirmCode;
+    let message: string = $Text.PleaseEnterEmailConfirmCode;
 
     if ($EmailConfirmTimeLimit === -1) {
         $EmailConfirmTimeLimit = 180;
     }
+
+    const statusMessages = (statusCode: number | undefined) => {
+        switch (statusCode) {
+            case 401:
+                return $Text.ConfirmCodeAlreadyExpired;
+            case 409:
+                return $Text.ConfirmCodeMismatch;
+            case 429:
+                return $Text.TooManyRequests;
+            default:
+                return $Text.UnexpectedError;
+        }
+    };
 
     onMount(() => setInterval(() => $EmailConfirmTimeLimit > 0 && $EmailConfirmTimeLimit--, 1000));
 
@@ -38,14 +51,9 @@
             });
             await response;
             dispatch("complete");
-        } catch (error) {
+        } catch (error: any) {
             response = null;
-            const statusMessage = {
-                409: $Text.ConfirmCodeMismatch,
-                401: $Text.ConfirmCodeAlreadyExpired,
-                429: $Text.TooManyRequests,
-            };
-            message = statusMessage[error.response?.status] || $Text.UnexpectedError;
+            message = statusMessages(error?.response?.status);
         }
     };
 
@@ -55,8 +63,8 @@
             await response;
             message = $Text.ConfirmCodeSended;
             $EmailConfirmTimeLimit = 180;
-        } catch (error) {
-            message = error.response?.status === 429 ? $Text.TooManyRequests : $Text.UnexpectedError;
+        } catch (error: any) {
+            message = statusMessages(error?.response?.status);
         }
         response = null;
     };

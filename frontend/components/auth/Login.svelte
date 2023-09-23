@@ -5,6 +5,16 @@
     import DefaultLoader from "../../assets/animation/DefaultLoader.svelte";
     import type { AxiosResponse } from "axios";
 
+    const statusMessages = (statusCode: number | undefined) => {
+        switch (statusCode) {
+            case 401:
+            case 404:
+                return $Text.LoginInfoIncorrect;
+            default:
+                return $Text.UnexpectedError;
+        }
+    };
+
     let message = "";
     let response: null | Promise<AxiosResponse> = null; // 요청 전
     const loginProcess = async (event: SubmitEvent) => {
@@ -20,13 +30,9 @@
             response = api.public.post("/auth/user", { email, password });
             const result = (await response).data;
             await login(result["cognito_token"], result["cognito_refresh_token"]);
-        } catch (error) {
+        } catch (error: any) {
             response = null;
-            const statusMessages = {
-                404: $Text.LoginInfoIncorrect,
-                401: $Text.LoginInfoIncorrect,
-            };
-            message = statusMessages[error.response?.status] || $Text.UnexpectedError;
+            message = statusMessages(error?.response?.status);
         }
     };
 </script>

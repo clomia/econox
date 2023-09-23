@@ -24,6 +24,29 @@ export interface UserDetail {
         }[];
     };
 }
+
+type PayPalType = {
+    order: string;
+    subscription: string;
+} | null;
+
+type TossPaymentsType = {
+    card_number: string;
+    expiration_year: string;
+    expiration_month: string;
+    owner_id: string;
+} | null;
+
+interface InputResultType {
+    email: string;
+    password: string;
+    membership: string;
+    currency: string;
+    tosspayments: TossPaymentsType;
+    paypal: PayPalType;
+    phone: string;
+}
+
 // ============= 전역적으로 사용되는 상태들 =============
 
 export const Lang = writable("en")
@@ -41,17 +64,16 @@ export const auth = { // 로그인,회원가입 컴포넌트 상태관리용
         PhoneConfirmTimeLimit: writable(-1),
         InputPhoneNumber: writable(""),
         PaymentError: writable(false),
-        InputResult: writable({
-            cognitoId: "",
+        Reregistration: writable(false),
+        InputResult: writable<InputResultType>({
             email: "",
             password: "",
             membership: "",
             currency: "",
-            tosspayments: null, // or { card_number, expiration_year, expiration_month, owner_id }
-            paypal: null, // or { orderID, facilitatorAccessToken, subscriptionId }
+            tosspayments: null,
+            paypal: null,
             phone: "",
-            reregistration: false,
-        }) // DB 유저 생성시 필요한 정보들
+        })
     }
 }
 

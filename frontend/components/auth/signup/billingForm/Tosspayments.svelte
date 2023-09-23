@@ -38,14 +38,13 @@
             .slice(0, cardType === "personal" ? 6 : 10);
     };
 
-    let response = null;
+    let response: null | Promise<any> = null;
     const billing = async () => {
         const [expir_month, expir_year] = expiryDate.replace(/\s/g, "").split("/");
         if (cardNumber && expir_year && expir_month && ownerId) {
             $InputResult = {
                 ...$InputResult,
                 tosspayments: {
-                    user_id: $InputResult.cognitoId,
                     card_number: cardNumber.replace(/\s/g, ""),
                     expiration_year: expir_year,
                     expiration_month: expir_month,

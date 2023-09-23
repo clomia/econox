@@ -6,10 +6,11 @@
 
     const InputResult = auth.signup.InputResult;
     const PaymentError = auth.signup.PaymentError;
+    const Reregistration = auth.signup.Reregistration;
 
     const dispatch = createEventDispatcher();
     onMount(() => {
-        if (!$InputResult.reregistration) {
+        if (!$Reregistration) {
             dispatch("complete"); // 최초 회원가입인 경우 결제정보 입력할 필요 없음
         }
     });
@@ -17,9 +18,9 @@
 
 <div>{$PaymentError ? $Text.PaymentInfoIncorrect : $Text.NoBenefitPleasePayment}</div>
 
-{#if $InputResult.reregistration && $InputResult.currency === "KRW"}
+{#if $Reregistration && $InputResult.currency === "KRW"}
     <Tosspayments on:complete={() => dispatch("complete")} />
-{:else if $InputResult.reregistration && $InputResult.currency === "USD"}
+{:else if $Reregistration && $InputResult.currency === "USD"}
     <Paypal on:complete={() => dispatch("complete")} />
 {/if}
 

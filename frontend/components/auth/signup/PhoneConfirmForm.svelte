@@ -8,16 +8,30 @@
     const InputResult = auth.signup.InputResult;
     const PhoneConfirmTimeLimit = auth.signup.PhoneConfirmTimeLimit;
     const InputPhoneNumber = auth.signup.InputPhoneNumber;
+    const Reregistration = auth.signup.Reregistration;
 
     const dispatch = createEventDispatcher();
 
     let response: null | Promise<any> = null; // 요청 전
-    let message = $Text.PleaseEnterPhoneConfirmCode;
+    let message: string = $Text.PleaseEnterPhoneConfirmCode;
 
     if ($PhoneConfirmTimeLimit === -1) {
         $PhoneConfirmTimeLimit = 180;
     }
     onMount(() => setInterval(() => $PhoneConfirmTimeLimit > 0 && $PhoneConfirmTimeLimit--, 1000));
+
+    const statusMessages = (statusCode: number | undefined) => {
+        switch (statusCode) {
+            case 401:
+                return $Text.ConfirmCodeAlreadyExpired;
+            case 409:
+                return $Text.ConfirmCodeMismatch;
+            case 429:
+                return $Text.TooManyRequests;
+            default:
+                return $Text.UnexpectedError;
+        }
+    };
 
     $: placeHolder =
         $PhoneConfirmTimeLimit > 0 ? timeToString($PhoneConfirmTimeLimit) : $Text.ConfirmCodeExpired;
@@ -37,15 +51,11 @@
             response = Promise.all([phoneConfirm, reregistrationConfirm]);
             const [, reregistrationConfirmResponse] = await response;
             const reregistration: boolean = reregistrationConfirmResponse.data.reregistration; // 재등록 여부
-            $InputResult = { ...$InputResult, reregistration };
+            $Reregistration = reregistration;
             dispatch("complete");
-        } catch (error) {
+        } catch (error: any) {
             response = null;
-            const statusMessage = {
-                409: $Text.ConfirmCodeMismatch, // 인증 코드가 올바르지 않음
-                401: $Text.ConfirmCodeAlreadyExpired, // 인증 코드가 만료됌
-            };
-            message = statusMessage[error.response?.status] || $Text.UnexpectedError;
+            message = statusMessages(error?.response?.status);
         }
     };
 
@@ -55,8 +65,8 @@
             await response;
             message = $Text.ConfirmCodeSended;
             $PhoneConfirmTimeLimit = 180;
-        } catch (error) {
-            message = error.response?.status === 429 ? $Text.TooManyRequests : $Text.UnexpectedError;
+        } catch (error: any) {
+            message = statusMessages(error?.response?.status);
         }
         response = null;
     };

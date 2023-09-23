@@ -2,7 +2,9 @@
     import { navigate } from "svelte-routing";
     import { UserInfo, Text } from "../modules/state";
     import Auth from "./auth/Index.svelte";
+    import type { UserDetail } from "../modules/state";
 
+    const userDetail = $UserInfo as UserDetail;
     let authToggle = false;
 </script>
 
@@ -14,7 +16,7 @@
         <button on:click={() => navigate("/account")}>
             <img src="static/img/profile.png" alt="profile" />
             <div class="profile-padding" />
-            {$UserInfo["name"]}
+            {userDetail.name}
         </button>
     {:else}
         <button on:click={() => (authToggle = !authToggle)}>{$Text.SignInOut}</button>

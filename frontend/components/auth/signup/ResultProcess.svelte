@@ -22,7 +22,6 @@
     const sucessRedirect = () => window.location.replace(window.location.origin + "/console");
     onMount(async () => {
         response = api.public.post("/user", {
-            cognito_id: $InputResult.cognitoId,
             email: $InputResult.email,
             phone: $InputResult.phone,
             membership: $InputResult.membership,
@@ -50,6 +49,17 @@
         return response.data.first_signup_benefit ? $Text.BenefitExplanation : "";
     };
 
+    const statusMessages = (statusCode: number | undefined) => {
+        switch (statusCode) {
+            case 401:
+                return $Text.EmailConfirmIncompleted;
+            case 409:
+                return $Text.UnusualSignupRequest;
+            default:
+                return $Text.UnexpectedError;
+        }
+    };
+
     const failureMessage = (error: AxiosError): string => {
         if (error.response?.status === 402) {
             // 결제 실패인 경우 결제정보 입력 단계로 롤백
@@ -58,11 +68,7 @@
             $InputResult.paypal = null;
             $Step = 5;
         }
-        const statusMessages = {
-            401: $Text.EmailConfirmIncompleted, // 이메일 인증 안됌
-            409: $Text.UnusualSignupRequest,
-        };
-        return statusMessages[error.response?.status] || $Text.UnexpectedError;
+        return statusMessages(error.response?.status);
     };
 
     const cancelProcess = async () => {

@@ -12,7 +12,7 @@
 
     const dispatch = createEventDispatcher();
 
-    let response = null;
+    let response: null | Promise<any> = null;
     let message = "";
     let phoneNumber = "";
     $: phoneNumber = phoneNumber.replace(/\D/g, "");

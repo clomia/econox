@@ -3,7 +3,7 @@
     import { api } from "../../../modules/request";
     import { Text, auth } from "../../../modules/state";
     import DefaultLoader from "../../../assets/animation/DefaultLoader.svelte";
-    import type { AxiosResponse } from "axios";
+    import { AxiosError, type AxiosResponse } from "axios";
 
     const InputResult = auth.signup.InputResult;
 
@@ -11,6 +11,17 @@
 
     let response: null | Promise<AxiosResponse> = null; // 요청 전
     let message = "";
+
+    const statusMessages = (statusCode: number | undefined) => {
+        switch (statusCode) {
+            case 400:
+                return $Text.EmailInputIncorrect;
+            case 409:
+                return $Text.UserAlreadyExists;
+            default:
+                return $Text.UnexpectedError;
+        }
+    };
 
     const signup = async (event: SubmitEvent) => {
         message = "";
@@ -39,16 +50,11 @@
         }
         try {
             response = api.public.post("/user/cognito", { email, password });
-            const cognitoId = (await response).data.cognito_id;
-            $InputResult = { ...$InputResult, cognitoId, email, password };
+            $InputResult = { ...$InputResult, email, password };
             dispatch("complete");
-        } catch (error) {
+        } catch (error: any) {
             response = null;
-            const statusMessages = {
-                409: $Text.UserAlreadyExists,
-                400: $Text.EmailInputIncorrect,
-            };
-            message = statusMessages[error.response?.status] || $Text.UnexpectedError;
+            message = statusMessages(error?.response?.status);
         }
     };
 </script>

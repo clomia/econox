@@ -1,8 +1,9 @@
 <img src="./frontend/static/img/logo.png" alt="logo" width="200"/>  
 
-[![builder deploy](https://github.com/clomia-group/econox/actions/workflows/deploy.yaml/badge.svg)](https://github.com/clomia-group/econox/actions/workflows/deploy.yaml)  
-[![wakatime](https://wakatime.com/badge/user/eaedfb05-2b60-4cd6-8436-6a673d9bd06f/project/c7596db5-6e65-494d-80d7-462ce4dc9aa4.svg)](https://wakatime.com/badge/user/eaedfb05-2b60-4cd6-8436-6a673d9bd06f/project/c7596db5-6e65-494d-80d7-462ce4dc9aa4)
 # [econox.io](https://www.econox.io/)  
+
+[![builder deploy](https://github.com/clomia-group/econox/actions/workflows/deploy.yaml/badge.svg)](https://github.com/clomia-group/econox/actions/workflows/deploy.yaml)[![wakatime](https://wakatime.com/badge/user/eaedfb05-2b60-4cd6-8436-6a673d9bd06f/project/c7596db5-6e65-494d-80d7-462ce4dc9aa4.svg)](https://wakatime.com/badge/user/eaedfb05-2b60-4cd6-8436-6a673d9bd06f/project/c7596db5-6e65-494d-80d7-462ce4dc9aa4)
+
 [**UI 디자인 스케치**](https://assets.adobe.com/id/urn:aaid:sc:AP:01ecd7d2-71fb-4581-ba0f-c692b42eeba5?view=published)
 ## 프로젝트 구조
 ### 어플리케이션 코드

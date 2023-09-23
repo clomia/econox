@@ -7,11 +7,7 @@
     import LangBtn from "./components/LangBtn.svelte";
     import { init } from "./modules/functions";
 
-    let initPromise;
-    onMount(async () => {
-        initPromise = init();
-        await initPromise;
-    });
+    let initPromise = init();
 </script>
 
 {#await initPromise}

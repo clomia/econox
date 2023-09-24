@@ -13,11 +13,11 @@
         case "professional":
             membership = $Text.ProfessionalPlan;
     }
-    const nextBillingDate = new Date(userDetail["next_billing_date"]);
+    const f_NextBillingDate = new Date(userDetail["next_billing_date"]);
     const nextBilling = {
-        y: nextBillingDate.getFullYear(),
-        m: nextBillingDate.getMonth() + 1,
-        d: nextBillingDate.getDate(),
+        y: f_NextBillingDate.getFullYear(),
+        m: f_NextBillingDate.getMonth() + 1,
+        d: f_NextBillingDate.getDate(),
     };
     console.log(nextBilling);
 </script>
@@ -48,7 +48,7 @@
         </div>
     </section>
     <section class="billing">
-        <div class="billing__next">{format($Text.NextBillingDate, nextBilling)}</div>
+        <div class="billing__next">{format($Text.f_NextBillingDate, nextBilling)}</div>
     </section>
 </main>
 

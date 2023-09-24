@@ -1,4 +1,4 @@
-// Automatically generated in 2023-09-24 20:51:24.
+// Automatically generated in 2023-09-24 20:54:03.
 // Refer to rollup.config.js and script/yaml2dts.py for the relevant logic.
 
 export interface UiText {
@@ -51,7 +51,6 @@ export interface UiText {
     UnusualSignupRequest: "This is not a valid signup request" | "정상적인 회원가입 요청이 아닙니다";
     EmailFormatIncorrect: "The email format is not valid" | "이메일 형식이 올바르지 않습니다";
     ResendConfirmCode: "Resend Code" | "코드 재전송";
-    AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     NoBenefitPleasePayment: "You are not eligible for the new member benefits. Please enter your payment information" | "첫 회원가입 혜택 대상자가 아닙니다. 결제 정보를 입력해주세요";
     PaymentInfoIncorrect: "The payment information is not valid. Please re-enter" | "결제 정보가 올바르지 않습니다 다시 입력해주세요";
     CreditCardNumber: "Credit Card Number" | "결제 카드 번호";
@@ -66,5 +65,6 @@ export interface UiText {
     PaymentMethod: "Payment Method" | "결제 수단";
     AccountInfo: "Account Dashboard" | "계정 정보";
     ChangePassword: "Change Password" | "비밀번호 변경";
-    NextBillingDate: "The next payment date is {m}/{d}/{y}." | "다음 결제일은 {y}년 {m}월 {d}일 입니다.";
+    f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
+    f_NextBillingDate: "The next payment date is {m}/{d}/{y}." | "다음 결제일은 {y}년 {m}월 {d}일 입니다.";
 }

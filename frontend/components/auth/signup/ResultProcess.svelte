@@ -100,7 +100,7 @@
             <div class="sucess__message">{sucessMessage(data)}</div>
             <section class="sucess">
                 <div class="sucess__wellcome"><Wellcome /></div>
-                <div class="sucess_login-timer">{format($Text.AutoLoginTimer, { time: timeout })}</div>
+                <div class="sucess_login-timer">{format($Text.f_AutoLoginTimer, { time: timeout })}</div>
                 {#await loginPromise then}
                     {#if animationEnd}
                         <button bind:this={sucessBtn} on:click={sucessRedirect}>{$Text.Login}</button>

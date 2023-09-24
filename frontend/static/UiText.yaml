@@ -154,9 +154,6 @@ EmailFormatIncorrect:
 ResendConfirmCode:
   en: "Resend Code"
   ko: "코드 재전송"
-AutoLoginTimer:
-  en: "You will be automatically logged in after {time} seconds"
-  ko: "{time}초 후 자동으로 로그인됩니다"
 NoBenefitPleasePayment: 
   en: "You are not eligible for the new member benefits. Please enter your payment information"
   ko: "첫 회원가입 혜택 대상자가 아닙니다. 결제 정보를 입력해주세요"
@@ -199,6 +196,9 @@ AccountInfo:
 ChangePassword:
   en: "Change Password"
   ko: "비밀번호 변경"
-NextBillingDate:
+f_AutoLoginTimer:
+  en: "You will be automatically logged in after {time} seconds"
+  ko: "{time}초 후 자동으로 로그인됩니다"
+f_NextBillingDate:
   en: "The next payment date is {m}/{d}/{y}."
   ko: "다음 결제일은 {y}년 {m}월 {d}일 입니다."

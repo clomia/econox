@@ -1,22 +1,30 @@
 <script lang="ts">
+    import { format } from "../modules/functions";
     import { Text, UserInfo } from "../modules/state";
     import type { UserDetail } from "../modules/state";
 
     const userDetail = $UserInfo as UserDetail;
-    const currentBillingMethod = userDetail.billing.transactions?.[0].method;
+    const currentBillingMethod = userDetail["billing"]["transactions"]?.[0]["method"];
 
     let membership: string;
-    switch (userDetail.membership) {
+    switch (userDetail["membership"]) {
         case "basic":
             membership = $Text.BasicPlan;
         case "professional":
             membership = $Text.ProfessionalPlan;
     }
+    const nextBillingDate = new Date(userDetail["next_billing_date"]);
+    const nextBilling = {
+        y: nextBillingDate.getFullYear(),
+        m: nextBillingDate.getMonth() + 1,
+        d: nextBillingDate.getDate(),
+    };
+    console.log(nextBilling);
 </script>
 
 <main>
     <section class="title">{$Text.AccountInfo}</section>
-    <section class="email">{userDetail.email}</section>
+    <section class="email">{userDetail["email"]}</section>
     <section class="setting">
         <div class="setting__info">
             <div class="label-text">{$Text.Membership}</div>
@@ -24,7 +32,7 @@
         </div>
         <div class="setting__info">
             <div class="label-text">{$Text.Name}</div>
-            <button>{userDetail.name}</button>
+            <button>{userDetail["name"]}</button>
         </div>
         <div class="setting__btn">
             <button>{$Text.ChangePassword}</button>
@@ -38,6 +46,9 @@
         <div class="setting__btn">
             <button>{$Text.Logout}</button>
         </div>
+    </section>
+    <section class="billing">
+        <div class="billing__next">{format($Text.NextBillingDate, nextBilling)}</div>
     </section>
 </main>
 

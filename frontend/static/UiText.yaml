@@ -199,3 +199,6 @@ AccountInfo:
 ChangePassword:
   en: "Change Password"
   ko: "비밀번호 변경"
+NextBillingDate:
+  en: "The next payment date is {m}/{d}/{y}."
+  ko: "다음 결제일은 {y}년 {m}월 {d}일 입니다."

@@ -63,4 +63,5 @@ export interface UiText {
     PaymentMethod: "Payment Method" | "결제 수단";
     AccountInfo: "Account Dashboard" | "계정 정보";
     ChangePassword: "Change Password" | "비밀번호 변경";
+    NextBillingDate: "The next payment date is {m}/{d}/{y}." | "다음 결제일은 {y}년 {m}월 {d}일 입니다.";
 }

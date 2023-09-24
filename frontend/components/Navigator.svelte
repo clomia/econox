@@ -16,7 +16,7 @@
         <button on:click={() => navigate("/account")}>
             <img src="static/img/profile.png" alt="profile" />
             <div class="profile-padding" />
-            {userDetail.name}
+            {userDetail["name"]}
         </button>
     {:else}
         <button on:click={() => (authToggle = !authToggle)}>{$Text.SignInOut}</button>

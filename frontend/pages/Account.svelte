@@ -19,7 +19,6 @@
         m: f_NextBillingDate.getMonth() + 1,
         d: f_NextBillingDate.getDate(),
     };
-    console.log(nextBilling);
 </script>
 
 <main>

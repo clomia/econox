@@ -1,4 +1,5 @@
-// Automatically generated in 2023-09-24 20:42:47. Refer to rollup.config.js and script/yaml2dts.py for the relevant logic.
+// Automatically generated in 2023-09-24 20:51:24.
+// Refer to rollup.config.js and script/yaml2dts.py for the relevant logic.
 
 export interface UiText {
     Econox: "Econox" | "에코녹스";

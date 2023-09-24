@@ -16,6 +16,9 @@ for key, value in yaml_data.items():
     type_definitions.append(f"{key}: {literal_values};")
 timestring = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 with open(output, "w") as output_file:
-    comment = f"// Automatically generated in {timestring}. Refer to rollup.config.js and script/yaml2dts.py for the relevant logic.\n\n"
+    comment = (
+        f"// Automatically generated in {timestring}.\n"
+        f"// Refer to rollup.config.js and script/yaml2dts.py for the relevant logic.\n\n"
+    )
     code = "export interface UiText {\n    " + "\n    ".join(type_definitions) + "\n}"
     output_file.write(comment + code)

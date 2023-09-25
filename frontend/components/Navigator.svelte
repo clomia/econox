@@ -4,7 +4,7 @@
     import Auth from "./auth/Index.svelte";
     import type { UserDetail } from "../modules/state";
 
-    const userDetail = $UserInfo as UserDetail;
+    let userDetail = $UserInfo as UserDetail;
     let authToggle = false;
 </script>
 
@@ -15,8 +15,7 @@
     {#if $UserInfo}
         <button on:click={() => navigate("/account")}>
             <img src="static/img/profile.png" alt="profile" />
-            <div class="profile-padding" />
-            {userDetail["name"]}
+            <div class="username">{userDetail["name"]}</div>
         </button>
     {:else}
         <button on:click={() => (authToggle = !authToggle)}>{$Text.SignInOut}</button>
@@ -34,8 +33,12 @@
         position: absolute;
         left: 0.4rem;
     }
-    .profile-padding {
-        width: 1rem;
+    .username {
+        margin-left: 1rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 6rem;
     }
     section {
         display: flex;

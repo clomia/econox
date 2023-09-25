@@ -17,9 +17,24 @@ body {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 16px;
 	line-height: 1.2;
-	background: var(--background)
+	background: var(--background);
 }
 
 main {
 	position: relative;
+}
+
+.swal2-title {
+	font-size: 1.3rem;
+	font-weight: normal;
+}
+
+.swal2-input {
+	border-color: var(--white);
+	font-size: 1rem;
+}
+
+.swal2-input:focus {
+	outline: none;
+	box-shadow: none;
 }

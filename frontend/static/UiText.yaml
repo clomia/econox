@@ -38,6 +38,9 @@ UnexpectedError:
 Ok:
   en: "OK"
   ko: "확인"
+Submit:
+  en: "Submit"
+  ko: "확인"
 RetypePasswordMismatch: 
   en: "Passwords do not match"
   ko: "비밀번호가 일치하지 않습니다"
@@ -202,6 +205,12 @@ PaymentHistory:
 Change:
   en: "Update"
   ko: "변경하기"
+Cancel:
+  en: "Cancel"
+  ko: "취소"
+ChangeName:
+  en: "Change Name"
+  ko: "이름 변경"
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"
   ko: "{time}초 후 자동으로 로그인됩니다"
@@ -213,3 +222,6 @@ f_KRW:
   ko: "{v}원"
 f_USD:
   en: "${v}"
+f_LengthLimit:
+  en: "You cannot enter more than {v} characters"
+  ko: "{v}글자 이상 입력할 수 없습니다"

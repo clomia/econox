@@ -162,7 +162,7 @@ async def signup(item: SignupInfo):
         template=db.Template(table="users").insert_query(
             id=user_id,
             email=item.email,
-            name=item.email.split("@")[0],
+            name=item.email.split("@")[0][:10],
             phone=item.phone,
             membership=item.membership,
             currency=item.currency,
@@ -334,7 +334,7 @@ async def create_cognito_user(
 
 @router.private.patch("/name")
 async def change_user_name(
-    new_name: str = Body(..., min_length=1, embed=True),
+    new_name: str = Body(..., min_length=1, max_length=10, embed=True),
     user=router.private.auth,
 ):
     """

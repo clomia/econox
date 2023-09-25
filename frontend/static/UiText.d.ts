@@ -15,6 +15,7 @@ export interface UiText {
     LoginInfoIncorrect: "Email or password is incorrect" | "이메일 또는 비밀번호가 올바르지 않습니다";
     UnexpectedError: "An unexpected error has occurred" | "예기치 못한 오류가 발생했습니다";
     Ok: "OK" | "확인";
+    Submit: "Submit" | "확인";
     RetypePasswordMismatch: "Passwords do not match" | "비밀번호가 일치하지 않습니다";
     UserAlreadyExists: "This email is already registered" | "이미 가입되어있는 이메일입니다";
     IncorrectPasswordLength: "Password must be at least 6 characters long" | "비밀번호는 6글자 이상이어야 합니다";
@@ -67,8 +68,11 @@ export interface UiText {
     ChangePassword: "Change Password" | "비밀번호 변경";
     PaymentHistory: "Payment History" | "결제 내역";
     Change: "Update" | "변경하기";
+    Cancel: "Cancel" | "취소";
+    ChangeName: "Change Name" | "이름 변경";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일 입니다";
     f_KRW: "₩{v}" | "{v}원";
     f_USD: "${v}";
+    f_LengthLimit: "You cannot enter more than {v} characters" | "{v}글자 이상 입력할 수 없습니다";
 }

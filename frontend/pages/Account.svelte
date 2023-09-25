@@ -2,7 +2,9 @@
     import { format, logout } from "../modules/functions";
     import { Text, UserInfo } from "../modules/state";
     import ToggleArrow from "../assets/icon/ToggleArrow.svelte";
+    import Swal from "sweetalert2";
     import type { UserDetail } from "../modules/state";
+    import { api } from "../modules/request";
 
     const userDetail = $UserInfo as UserDetail;
     const currentBillingMethod = userDetail["billing"]["transactions"]?.[0]["method"];
@@ -43,6 +45,40 @@
     const membershipNameString = (str: string) => {
         return str.split(" ").slice(1).join(" ");
     };
+    const changeName = () => {
+        Swal.fire({
+            title: $Text.ChangeName,
+            input: "text",
+            inputAttributes: {
+                autocapitalize: "off",
+            },
+            width: "15rem",
+            showCancelButton: true,
+            confirmButtonText: $Text.Submit,
+            cancelButtonText: $Text.Cancel,
+            showLoaderOnConfirm: true,
+            confirmButtonColor: "rgba(255,255,255,0.05)",
+            cancelButtonColor: "rgba(255,255,255,0.05)",
+            reverseButtons: true,
+            color: "var(--white)",
+            background: "var(--widget-background)",
+            preConfirm: async (newName: string) => {
+                if (!newName) {
+                    Swal.showValidationMessage($Text.InsufficientInput);
+                    return;
+                } else if (newName.length > 10) {
+                    Swal.showValidationMessage(format($Text.f_LengthLimit, { v: 10 }));
+                    return;
+                }
+                const resp = await api.private.patch("/user/name", { new_name: newName });
+                if (resp?.status === 200) {
+                    location.reload();
+                } else {
+                    Swal.showValidationMessage($Text.InsufficientInput);
+                }
+            },
+        });
+    };
 </script>
 
 <main>
@@ -58,7 +94,7 @@
         </div>
         <div class="setting__info">
             <div class="label-text">{$Text.Name}</div>
-            <button class="btn">
+            <button class="btn" on:click={changeName}>
                 <div class="btn-text">{userDetail["name"]}</div>
                 <div class="btn-wrap">{$Text.Change}</div>
             </button>

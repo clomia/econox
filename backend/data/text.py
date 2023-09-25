@@ -1,24 +1,27 @@
 """ 텍스트 데이터 처리 모듈: Google Translate API 를 사용하는 다국어 객체 구현"""
 import os
 import html
+import json
 import logging
 from functools import partial
 
+import boto3
 from aiocache import cached
 from google.cloud import translate_v2
+from google.oauth2.service_account import Credentials
 
-from backend.system import EFS_VOLUME_PATH, SECRETS, run_async
+from backend.system import SECRETS, run_async
 
 # 빠른 병렬 처리로 인해 아래와 같은 경고가 뜨므로 해당 경고 로그가 뜨지 않도록 합니다.
 # WARNING:urllib3.connectionpool:Connection pool is full, discarding connection: translation.googleapis.com. Connection pool size: 10
 logging.getLogger("urllib3.connectionpool").setLevel(logging.ERROR)
 
 # GCP Credential 등록
-gcp_credential_path = EFS_VOLUME_PATH / "gcp_credential.json"
-gcp_credential_path.write_text(SECRETS["GCP_CREDENTIAL_JSON"])
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(gcp_credential_path)
-
-google_translator = translate_v2.Client()
+gcp_credential: str = SECRETS["GCP_CREDENTIAL_JSON"].strip()
+credentials_dict = json.loads(gcp_credential)
+google_translator = translate_v2.Client(
+    credentials=Credentials.from_service_account_info(credentials_dict)
+)
 
 
 @cached(ttl=12 * 360)
@@ -55,6 +58,11 @@ class Multilingual:
             - 영어 -> 다국어가 표현력이 가장 좋기 때문에 base는 무조건 영어로 합니다.
         """
         self.text = text
+        # Multilingual 클래스에 번역 가능한 모든 iso 코드로 property를 생성합니다
+        for lang in self.__class__.supported_langs:
+            iso_code = lang["language"]
+            func = partial(self.trans, to=iso_code)
+            setattr(Multilingual, iso_code, func)
 
     def __repr__(self) -> str:
         text_repr = self.text if len(self.text) <= 30 else self.text[:30] + "..."
@@ -64,10 +72,3 @@ class Multilingual:
         if to == "en":
             return self.text
         return await translator(self.text, from_lang="en", to_lang=to)
-
-
-# Multilingual 클래스에 번역 가능한 모든 iso 코드로 property를 생성합니다
-for lang in Multilingual.supported_langs:
-    iso_code = lang["language"]
-    obj = partial(Multilingual.trans, to=iso_code)
-    setattr(Multilingual, iso_code, obj)

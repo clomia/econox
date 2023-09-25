@@ -62,7 +62,7 @@ class Multilingual:
         for lang in self.__class__.supported_langs:
             iso_code = lang["language"]
             func = partial(self.trans, to=iso_code)
-            setattr(Multilingual, iso_code, func)
+            setattr(self, iso_code, func)
 
     def __repr__(self) -> str:
         text_repr = self.text if len(self.text) <= 30 else self.text[:30] + "..."

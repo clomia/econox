@@ -32,6 +32,9 @@ main {
 .swal2-input {
 	border-color: var(--white);
 	font-size: 1rem;
+	text-align: center;
+	color: var(--white);
+	letter-spacing: 0.2rem;
 }
 
 .swal2-input:focus {

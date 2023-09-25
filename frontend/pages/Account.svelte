@@ -148,6 +148,7 @@
             allowOutsideClick: false,
             showLoaderOnConfirm: false,
         });
+        await logout();
     };
 </script>
 

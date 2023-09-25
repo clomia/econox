@@ -189,7 +189,8 @@ async def cognito_token_refresh(
     except (
         cognito.exceptions.NotAuthorizedException,
         cognito.exceptions.UserNotFoundException,
-    ):
+    ) as e:
+        print(e)
         raise HTTPException(status_code=401, detail="Invalid token")
     id_token = result["AuthenticationResult"]["IdToken"]
     access_token = result["AuthenticationResult"]["AccessToken"]

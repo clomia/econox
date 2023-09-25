@@ -1,4 +1,4 @@
-// Automatically generated in 2023-09-24 20:54:03.
+// Automatically generated.
 // Refer to rollup.config.js and script/yaml2dts.py for the relevant logic.
 
 export interface UiText {
@@ -65,6 +65,10 @@ export interface UiText {
     PaymentMethod: "Payment Method" | "결제 수단";
     AccountInfo: "Account Dashboard" | "계정 정보";
     ChangePassword: "Change Password" | "비밀번호 변경";
+    PaymentHistory: "Payment History" | "결제 내역";
+    Change: "Update" | "변경하기";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
-    f_NextBillingDate: "The next payment date is {m}/{d}/{y}." | "다음 결제일은 {y}년 {m}월 {d}일 입니다.";
+    f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일 입니다";
+    f_KRW: "₩{v}" | "{v}원";
+    f_USD: "${v}";
 }

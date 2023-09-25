@@ -1,6 +1,7 @@
 <script lang="ts">
-    import { format } from "../modules/functions";
+    import { format, logout } from "../modules/functions";
     import { Text, UserInfo } from "../modules/state";
+    import ToggleArrow from "../assets/icon/ToggleArrow.svelte";
     import type { UserDetail } from "../modules/state";
 
     const userDetail = $UserInfo as UserDetail;
@@ -19,6 +20,29 @@
         m: f_NextBillingDate.getMonth() + 1,
         d: f_NextBillingDate.getDate(),
     };
+    let toggle: boolean = false;
+    const transactions = userDetail.billing.transactions;
+
+    const timeString = (str: string) => {
+        const date = new Date(str);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const day = date.getDate().toString().padStart(2, "0");
+        return `${year}.${month}.${day}`;
+    };
+    const amountString = (amount: number) => {
+        const str = userDetail["billing"]["currency"] === "KRW" ? $Text.f_KRW : $Text.f_USD;
+        return format(str, { v: amount });
+    };
+    const paymentMethodString = (str: string) => {
+        if (/^[0-9*]+$/.test(str)) {
+            return str.match(/.{1,4}/g)?.join(" ");
+        }
+        return str;
+    };
+    const membershipNameString = (str: string) => {
+        return str.split(" ").slice(1).join(" ");
+    };
 </script>
 
 <main>
@@ -27,27 +51,58 @@
     <section class="setting">
         <div class="setting__info">
             <div class="label-text">{$Text.Membership}</div>
-            <button>{membership}</button>
+            <button class="btn">
+                <div class="btn-text">{membership}</div>
+                <div class="btn-wrap">{$Text.Change}</div>
+            </button>
         </div>
         <div class="setting__info">
             <div class="label-text">{$Text.Name}</div>
-            <button>{userDetail["name"]}</button>
+            <button class="btn">
+                <div class="btn-text">{userDetail["name"]}</div>
+                <div class="btn-wrap">{$Text.Change}</div>
+            </button>
         </div>
         <div class="setting__btn">
-            <button>{$Text.ChangePassword}</button>
+            <button class="btn">{$Text.ChangePassword}</button>
         </div>
     </section>
     <section class="setting">
         <div class="setting__info card">
             <div class="label-text">{$Text.PaymentMethod}</div>
-            <button>{currentBillingMethod}</button>
+            <button class="btn payment-method">
+                <div class="btn-text">{paymentMethodString(currentBillingMethod)}</div>
+                <div class="btn-wrap">{$Text.Change}</div>
+            </button>
         </div>
         <div class="setting__btn">
-            <button>{$Text.Logout}</button>
+            <button class="btn" on:click={logout}>{$Text.Logout}</button>
         </div>
     </section>
     <section class="billing">
         <div class="billing__next">{format($Text.f_NextBillingDate, nextBilling)}</div>
+        {#if toggle}
+            <ol class="billing__list">
+                <li style="justify-content: center;">{$Text.PaymentHistory}</li>
+                {#each transactions as transaction}
+                    <li>
+                        <div>{timeString(transaction.time)}</div>
+                        <div>{amountString(transaction.amount)}</div>
+                        <div class="payment-method">{paymentMethodString(transaction.method)}</div>
+                        <div>{membershipNameString(transaction.name)}</div>
+                    </li>
+                {/each}
+            </ol>
+        {/if}
+        {#if transactions}
+            <button
+                class="billing__toggle"
+                style={toggle ? "transform: rotate(180deg)" : ""}
+                on:click={() => {
+                    toggle = toggle ? false : true;
+                }}><ToggleArrow /></button
+            >
+        {/if}
     </section>
 </main>
 
@@ -57,14 +112,13 @@
     }
     main {
         width: 44rem;
-        height: 30rem;
         border-radius: 1rem;
         border: thin solid rgba(255, 255, 255, 0.75);
     }
     section {
         text-align: center;
     }
-    button {
+    .btn {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -73,11 +127,27 @@
         border: solid thin var(--white);
         border-radius: 0.5rem;
         color: var(--white);
+        position: relative;
     }
-    button:hover {
+    .btn-wrap {
+        position: absolute;
+        display: none;
+        width: 100%;
+        height: 100%;
+    }
+    .btn:hover {
         cursor: pointer;
         background-color: rgba(255, 255, 255, 0.2);
     }
+    .btn:hover .btn-text {
+        display: none;
+    }
+    .btn:hover .btn-wrap {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
     .setting__info:hover .label-text {
         opacity: 1;
     }
@@ -112,5 +182,31 @@
     }
     .setting__btn {
         margin-top: 2.3rem;
+    }
+    .billing__next {
+        margin-top: 4rem;
+    }
+    .billing__toggle {
+        padding-top: 2rem;
+        padding-bottom: 1rem;
+        opacity: 0.3;
+        transition: transform 100ms;
+    }
+    .billing__toggle:hover {
+        opacity: 1;
+        cursor: pointer;
+    }
+    .billing__list {
+        margin-top: 2rem;
+    }
+    .billing__list li {
+        margin: 0 5rem;
+        padding: 0.7rem 1rem;
+        border-bottom: thin solid rgba(255, 255, 255, 0.3);
+        display: flex;
+        justify-content: space-between;
+    }
+    .payment-method {
+        letter-spacing: 0.07rem;
     }
 </style>

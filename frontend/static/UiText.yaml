@@ -196,9 +196,20 @@ AccountInfo:
 ChangePassword:
   en: "Change Password"
   ko: "비밀번호 변경"
+PaymentHistory:
+  en: "Payment History"
+  ko: "결제 내역"
+Change:
+  en: "Update"
+  ko: "변경하기"
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"
   ko: "{time}초 후 자동으로 로그인됩니다"
 f_NextBillingDate:
-  en: "The next payment date is {m}/{d}/{y}."
-  ko: "다음 결제일은 {y}년 {m}월 {d}일 입니다."
+  en: "The next payment date is {m}/{d}/{y}"
+  ko: "다음 결제일은 {y}년 {m}월 {d}일 입니다"
+f_KRW:
+  en: "₩{v}"
+  ko: "{v}원"
+f_USD:
+  en: "${v}"

@@ -71,10 +71,17 @@ export interface UiText {
     Cancel: "Cancel" | "취소";
     EnterNewName: "Enter the new name" | "새로운 이름을 입력하세요";
     EnterNewPassword: "Enter the new password" | "새로운 비밀번호를 입력하세요";
-    PasswordChangeSuccessful: "Password updated. Please log in with the new password" | "비밀번호가 변경되었습니다. 새 비밀번호로 로그인해주세요";
+    PasswordChangeSuccessful: "Password updated. Please log in with the new password" | "비밀번호가 변경되었습니다. 변경된 비밀번호로 로그인하세요";
+    ForgotPassword: "Forgot Password?" | "비밀번호를 잊으셨나요?";
+    ForgotPassword_EnterEmail: "Enter the email address of the account you wish to retrieve" | "찾고자 하는 계정의 이메일 주소를 입력하세요";
+    ConfirmCode: "Verification Code" | "인증 코드";
+    NewPassword: "New Password" | "새로운 비밀번호";
+    UserDoesNotExist: "No user exists with the provided email" | "해당 이메일로 등록된 사용자가 존재하지 않습니다";
+    InvalidInput: "Invalid input" | "입력값이 잘못되었습니다";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일 입니다";
     f_KRW: "₩{v}" | "{v}원";
     f_USD: "${v}";
     f_LengthLimit: "You cannot enter more than {v} characters" | "{v}글자 이상 입력할 수 없습니다";
+    f_ForgotPassword_EnterNewPassword: "We've sent a code to {email}. Please enter it along with your new password" | "인증코드가 {email}에 전송되었습니다. 해당 코드와 함께 새로운 비밀번호를 입력해주세요";
 }

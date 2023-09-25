@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { format, logout } from "../modules/functions";
+    import { format, logout, defaultSwalStyle } from "../modules/functions";
     import { Text, UserInfo } from "../modules/state";
     import ToggleArrow from "../assets/icon/ToggleArrow.svelte";
     import Swal from "sweetalert2";
-    import type { UserDetail } from "../modules/state";
     import { api } from "../modules/request";
-    import { Axios, type AxiosError } from "axios";
+    import type { UserDetail } from "../modules/state";
+    import type { AxiosError } from "axios";
 
     const userDetail = $UserInfo as UserDetail;
     const currentBillingMethod = userDetail["billing"]["transactions"]?.[0]["method"];
@@ -47,16 +47,9 @@
         return str.split(" ").slice(1).join(" ");
     };
     const SwalStyle = {
-        width: "23rem",
-        color: "var(--white)",
-        background: "var(--widget-background)",
-        inputAttributes: {
-            autocapitalize: "off",
-        },
-        showLoaderOnConfirm: true,
+        ...defaultSwalStyle,
         confirmButtonText: $Text.Submit,
-        confirmButtonColor: "rgba(255,255,255,0.05)",
-        showCloseButton: true,
+        denyButtonText: $Text.Cancel,
     };
     const changeName = () => {
         Swal.fire({
@@ -83,7 +76,7 @@
 
     const changePassword = async () => {
         let newPassword: string = "";
-        let changed: boolean = false;
+        let complete: boolean = false;
         await Swal.fire({
             ...SwalStyle,
             input: "password",
@@ -94,7 +87,7 @@
                     return;
                 }
                 try {
-                    await api.private.post("/user/password/reset");
+                    await api.public.post("/auth/send-password-reset-code", { email: userDetail["email"] });
                     newPassword = input;
                 } catch (error: any) {
                     const e = error as AxiosError;
@@ -113,18 +106,18 @@
             ...SwalStyle,
             input: "text",
             text: $Text.PleaseEnterEmailConfirmCode,
-            allowOutsideClick: false,
             preConfirm: async (input: string) => {
                 if (!input) {
                     Swal.showValidationMessage($Text.InsufficientInput);
                     return;
                 }
                 try {
-                    await api.private.patch("/user/password", {
+                    await api.public.patch("/user/password", {
                         new_password: newPassword,
                         confirm_code: input,
+                        email: userDetail["email"],
                     });
-                    changed = true;
+                    complete = true;
                 } catch (error: any) {
                     const e = error as AxiosError;
                     if (e.response?.status === 429) {
@@ -137,7 +130,7 @@
                 }
             },
         });
-        if (!changed) {
+        if (!complete) {
             return;
         }
         await Swal.fire({
@@ -145,7 +138,6 @@
             text: $Text.PasswordChangeSuccessful,
             icon: "success",
             confirmButtonText: $Text.Ok,
-            allowOutsideClick: false,
             showLoaderOnConfirm: false,
         });
         await logout();

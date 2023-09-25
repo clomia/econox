@@ -24,20 +24,18 @@ main {
 	position: relative;
 }
 
-.swal2-title {
-	font-size: 1.3rem;
-	font-weight: normal;
-}
-
 .swal2-input {
 	border-color: var(--white);
 	font-size: 1rem;
 	text-align: center;
 	color: var(--white);
-	letter-spacing: 0.2rem;
 }
 
 .swal2-input:focus {
 	outline: none;
 	box-shadow: none;
+}
+
+.swal2-input::placeholder {
+	opacity: 0.5;
 }

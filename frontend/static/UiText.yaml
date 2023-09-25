@@ -216,7 +216,25 @@ EnterNewPassword:
   ko: "새로운 비밀번호를 입력하세요"
 PasswordChangeSuccessful:
   en: "Password updated. Please log in with the new password"
-  ko: "비밀번호가 변경되었습니다. 새 비밀번호로 로그인해주세요"
+  ko: "비밀번호가 변경되었습니다. 변경된 비밀번호로 로그인하세요"
+ForgotPassword:
+  en: "Forgot Password?"
+  ko: "비밀번호를 잊으셨나요?"
+ForgotPassword_EnterEmail:
+  en: "Enter the email address of the account you wish to retrieve"
+  ko: "찾고자 하는 계정의 이메일 주소를 입력하세요"
+ConfirmCode:
+  en: "Verification Code"
+  ko: "인증 코드"
+NewPassword:
+  en: "New Password"
+  ko: "새로운 비밀번호"
+UserDoesNotExist:
+  en: "No user exists with the provided email"
+  ko: "해당 이메일로 등록된 사용자가 존재하지 않습니다"
+InvalidInput:
+  en: "Invalid input"
+  ko: "입력값이 잘못되었습니다"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"
@@ -232,3 +250,6 @@ f_USD:
 f_LengthLimit:
   en: "You cannot enter more than {v} characters"
   ko: "{v}글자 이상 입력할 수 없습니다"
+f_ForgotPassword_EnterNewPassword:
+  en: "We've sent a code to {email}. Please enter it along with your new password"
+  ko: "인증코드가 {email}에 전송되었습니다. 해당 코드와 함께 새로운 비밀번호를 입력해주세요"

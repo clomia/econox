@@ -170,6 +170,29 @@ async def cognito_confirm_sign_up(
     return {"message": "Confirmed"}
 
 
+@router.public.post("/send-password-reset-code")
+async def send_password_reset_confirmation_code(
+    email: str = Body(..., min_length=1, embed=True)
+):
+    """
+    - 비밀번호 재설정에 필요한 인증코드를 이메일로 전송합니다.
+    - email: 비밀번호를 재설정할 계정의 이메일
+    - PATCH /api/user/password API 사용시 필요합니다.
+    """
+    if not await db.user_exists(email):
+        raise HTTPException(status_code=404, detail="User does not exist")
+    try:
+        await run_async(
+            cognito.forgot_password,
+            ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
+            Username=email,
+        )
+    except cognito.exceptions.LimitExceededException:
+        raise HTTPException(status_code=429, detail="Too many requests")
+    else:
+        return {"message": "Code transfer requested"}
+
+
 @router.public.post("/refresh-cognito-token")
 async def cognito_token_refresh(
     cognito_refresh_token: str = Body(..., min_length=1, embed=True)
@@ -189,8 +212,7 @@ async def cognito_token_refresh(
     except (
         cognito.exceptions.NotAuthorizedException,
         cognito.exceptions.UserNotFoundException,
-    ) as e:
-        print(e)
+    ):
         raise HTTPException(status_code=401, detail="Invalid token")
     id_token = result["AuthenticationResult"]["IdToken"]
     access_token = result["AuthenticationResult"]["AccessToken"]

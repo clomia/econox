@@ -1,9 +1,10 @@
 <script lang="ts">
-    import { login } from "../../modules/functions";
+    import { login, defaultSwalStyle, format } from "../../modules/functions";
     import { Text } from "../../modules/state";
     import { api } from "../../modules/request";
+    import Swal from "sweetalert2";
     import DefaultLoader from "../../assets/animation/DefaultLoader.svelte";
-    import type { AxiosResponse } from "axios";
+    import type { AxiosResponse, AxiosError } from "axios";
 
     const statusMessages = (statusCode: number | undefined) => {
         switch (statusCode) {
@@ -35,25 +36,119 @@
             message = statusMessages(error?.response?.status);
         }
     };
+    let emailInput: HTMLInputElement;
+    let passwordInput: HTMLInputElement;
+    const SwalStyle = {
+        ...defaultSwalStyle,
+        width: "27rem",
+        confirmButtonText: $Text.Submit,
+        denyButtonText: $Text.Cancel,
+    };
+    const resetPassword = async () => {
+        let enteredEmail = "";
+        let complete = false;
+        await Swal.fire({
+            ...SwalStyle,
+            input: "text",
+            text: $Text.ForgotPassword_EnterEmail,
+            preConfirm: async (email: string) => {
+                if (!email || email.split("@").length !== 2 || email.split(".").length < 2) {
+                    Swal.showValidationMessage($Text.InvalidInput);
+                    return;
+                }
+                try {
+                    await api.private.post("/auth/send-password-reset-code", { email });
+                    enteredEmail = email;
+                } catch (error: any) {
+                    const e = error as AxiosError;
+                    if (e.response?.status === 429) {
+                        Swal.showValidationMessage($Text.TooManyRequests);
+                    } else if (e.response?.status === 404) {
+                        Swal.showValidationMessage($Text.UserDoesNotExist);
+                    } else {
+                        Swal.showValidationMessage($Text.UnexpectedError);
+                    }
+                }
+            },
+        });
+        if (!enteredEmail) {
+            return;
+        }
+        const manual = format($Text.f_ForgotPassword_EnterNewPassword, { email: enteredEmail });
+        await Swal.fire({
+            ...SwalStyle,
+            html: `
+                <div style="font-size: 1rem;">${manual}</div>
+                <input type="text" id="swal-input1" class="swal2-input" placeholder="${$Text.ConfirmCode}">
+                <input type="password" id="swal-input2" class="swal2-input" placeholder="${$Text.NewPassword}">`,
+            focusConfirm: false,
+            preConfirm: async () => {
+                const confirmCode = (document.getElementById("swal-input1") as HTMLInputElement).value;
+                const newPassword = (document.getElementById("swal-input2") as HTMLInputElement).value;
+                if (newPassword.length < 6) {
+                    Swal.showValidationMessage($Text.IncorrectPasswordLength);
+                    return;
+                }
+                try {
+                    await api.public.patch("/user/password", {
+                        new_password: newPassword,
+                        confirm_code: confirmCode,
+                        email: enteredEmail,
+                    });
+                    complete = true;
+                } catch (error: any) {
+                    const e = error as AxiosError;
+                    if (e.response?.status === 429) {
+                        Swal.showValidationMessage($Text.TooManyRequests);
+                    } else if (e.response?.status === 409) {
+                        Swal.showValidationMessage($Text.ConfirmCodeMismatch);
+                    } else {
+                        Swal.showValidationMessage($Text.UnexpectedError);
+                    }
+                }
+            },
+        });
+        if (!complete) {
+            return;
+        }
+        await Swal.fire({
+            ...SwalStyle,
+            text: $Text.PasswordChangeSuccessful,
+            icon: "success",
+            confirmButtonText: $Text.Ok,
+            showLoaderOnConfirm: false,
+        });
+        emailInput.value = enteredEmail;
+        passwordInput.focus();
+    };
 </script>
 
 <form on:submit|preventDefault={loginProcess}>
     <section>
         <label>
             <span>{$Text.Email}</span>
-            <input type="text" name="email" autocomplete="email" />
+            <input bind:this={emailInput} type="text" name="email" autocomplete="email" />
         </label>
     </section>
     <section>
         <label>
             <span>{$Text.Password}</span>
-            <input class="password-input" type="password" name="password" autocomplete="current-password" />
+            <input
+                bind:this={passwordInput}
+                class="password-input"
+                type="password"
+                name="password"
+                autocomplete="current-password"
+            />
+            <button on:click={resetPassword} type="button" class="reset-password-btn"
+                >{$Text.ForgotPassword}</button
+            >
         </label>
     </section>
     {#await response}<DefaultLoader />{/await}
     <div>{message}</div>
     {#if !(response instanceof Promise)}
-        <button type="submit">{$Text.Login}</button>
+        <button type="submit" class="submit-btn">{$Text.Login}</button>
     {/if}
 </form>
 
@@ -93,7 +188,7 @@
     section:focus-within label span {
         color: white;
     }
-    button {
+    .submit-btn {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -104,8 +199,24 @@
         color: var(--white);
         margin-top: 1.4rem;
     }
-    button:hover {
+    .submit-btn:hover {
         cursor: pointer;
         background-color: rgba(255, 255, 255, 0.2);
+    }
+    label {
+        width: 100%;
+        position: relative;
+    }
+    .reset-password-btn {
+        position: absolute;
+        right: 1rem;
+        top: 0;
+        opacity: 0.5;
+        color: var(--white);
+    }
+    .reset-password-btn:hover {
+        opacity: 1;
+        color: aqua;
+        cursor: pointer;
     }
 </style>

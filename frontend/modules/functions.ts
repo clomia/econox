@@ -71,3 +71,17 @@ export const init = async () => {
     }
     Text.set((await loadUiText()).text as UiText);
 }
+
+export const defaultSwalStyle = {
+    width: "23rem",
+    color: "var(--white)",
+    background: "var(--widget-background)",
+    inputAttributes: {
+        autocapitalize: "off",
+    },
+    showLoaderOnConfirm: true,
+    showDenyButton: true,
+    allowOutsideClick: false,
+    confirmButtonColor: "rgba(255,255,255,0.05)",
+    denyButtonColor: "rgba(255,255,255,0.05)",
+};

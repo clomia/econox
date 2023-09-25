@@ -212,9 +212,7 @@ class UserDetail(BaseModel):
 
 @router.private.get(response_model=UserDetail)
 async def get_user_detail(user=router.private.auth):
-    """
-    - 유저 상세 정보를 가져옵니다.
-    """
+    """유저 상세 정보를 가져옵니다."""
     name, membership, currency, next_billing, created = await db.exec(
         template=db.Template(table="users").select_query(
             "name",
@@ -275,9 +273,7 @@ async def get_user_detail(user=router.private.auth):
 
 @router.private.delete()
 async def delete_user(user=router.private.auth):
-    """
-    - DB와 Cognito에서 유저 삭제 (회원탈퇴)
-    """
+    """DB와 Cognito에서 유저 삭제 (회원탈퇴)"""
     await db.exec(
         "DELETE FROM users WHERE id={user_id};",
         """
@@ -297,7 +293,7 @@ async def delete_user(user=router.private.auth):
 @router.public.post("/cognito")
 async def create_cognito_user(
     email: str = Body(..., min_length=1),
-    password: str = Body(..., min_length=1),
+    password: str = Body(..., min_length=6),
 ):
     """
     - AWS Cognito에 유저 생성 & 이메일로 인증코드 전송
@@ -337,9 +333,7 @@ async def change_user_name(
     new_name: str = Body(..., min_length=1, max_length=10, embed=True),
     user=router.private.auth,
 ):
-    """
-    - 유저 이름 변경
-    """
+    """유저 이름 변경"""
     await db.exec(
         "UPDATE users SET name={user_name} WHERE id={user_id}",
         params={"user_name": new_name, "user_id": user["id"]},
@@ -347,41 +341,26 @@ async def change_user_name(
     return {"message": "Changed successfully"}
 
 
-@router.private.post("/password/reset")
-async def password_reset_and_send_confirmation_code(user=router.private.auth):
-    """
-    - 비밀번호를 리셋하고 비밀번호 재설정을 위해 이메일로 인증코드를 전송합니다.
-    - PATCH /api/user/password API에 인증코드를 사용하여 비밀번호를 재설정해야 합니다.
-    """
-    try:
-        await run_async(
-            cognito.forgot_password,
-            ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
-            Username=user["email"],
-        )
-    except cognito.exceptions.LimitExceededException:
-        raise HTTPException(status_code=429, detail="Too many requests")
-    else:
-        return {"message": "Code transfer requested"}
-
-
-@router.private.patch("/password")
+@router.public.patch("/password")
 async def change_password(
-    new_password: str = Body(..., min_length=1),
+    new_password: str = Body(..., min_length=6),
     confirm_code: str = Body(..., min_length=1),
-    user=router.private.auth,
+    email: str = Body(..., min_length=1),
 ):
     """
-    - 비밀번호를 변경합니다.
-    - POST /api/user/password/reset API로 비밀번호를 리셋 한 뒤에 호출해야 합니다.
-    - password: 변경 후 비밀번호
-    - confirm_code: POST /api/user/password/reset API를 통해 유저에게 발송된 인증코드
+    - 비밀번호를 변경합니다. (POST /api/auth/send-password-reset-code API를 통해 받은 인증코드가 필요합니다.)
+    - send-password-reset-code API로 비밀번호를 재설정 코드를 전송한 뒤에 호출해야 합니다.
+    - new_password: 변경 후 비밀번호
+    - confirm_code: send-password-reset-code API를 통해 유저에게 발송된 인증코드
+    - email: send-password-reset-code API에 사용한 이메일과 동일한 이메일
     """
+    if not await db.user_exists(email):
+        raise HTTPException(status_code=404, detail="User does not exist")
     try:
         await run_async(
             cognito.confirm_forgot_password,
             ClientId=SECRETS["COGNITO_APP_CLIENT_ID"],
-            Username=user["email"],
+            Username=email,
             ConfirmationCode=confirm_code,
             Password=new_password,
         )
@@ -530,9 +509,7 @@ class PaymentMethodInfo(BaseModel):
 
 @router.private.patch("/payment-method")
 async def change_payment_method(item: PaymentMethodInfo, user=router.private.auth):
-    """
-    - 결제수단을 변경합니다. PG사 변경은 불가능합니다.
-    """
+    """결제수단을 변경합니다. PG사 변경은 불가능합니다."""
     currency, *_ = await db.exec(
         "SELECT currency FROM users WHERE id={user_id}",
         params={"user_id": user["id"]},

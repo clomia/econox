@@ -37,7 +37,6 @@
         }
     };
     let emailInput: HTMLInputElement;
-    let passwordInput: HTMLInputElement;
     const SwalStyle = {
         ...defaultSwalStyle,
         width: "27rem",
@@ -119,7 +118,6 @@
             showLoaderOnConfirm: false,
         });
         emailInput.value = enteredEmail;
-        passwordInput.focus();
     };
 </script>
 
@@ -133,13 +131,7 @@
     <section>
         <label>
             <span>{$Text.Password}</span>
-            <input
-                bind:this={passwordInput}
-                class="password-input"
-                type="password"
-                name="password"
-                autocomplete="current-password"
-            />
+            <input class="password-input" type="password" name="password" autocomplete="current-password" />
             <button on:click={resetPassword} type="button" class="reset-password-btn"
                 >{$Text.ForgotPassword}</button
             >

@@ -5,6 +5,7 @@
     import Swal from "sweetalert2";
     import type { UserDetail } from "../modules/state";
     import { api } from "../modules/request";
+    import { Axios, type AxiosError } from "axios";
 
     const userDetail = $UserInfo as UserDetail;
     const currentBillingMethod = userDetail["billing"]["transactions"]?.[0]["method"];
@@ -45,23 +46,23 @@
     const membershipNameString = (str: string) => {
         return str.split(" ").slice(1).join(" ");
     };
+    const SwalStyle = {
+        width: "23rem",
+        color: "var(--white)",
+        background: "var(--widget-background)",
+        inputAttributes: {
+            autocapitalize: "off",
+        },
+        showLoaderOnConfirm: true,
+        confirmButtonText: $Text.Submit,
+        confirmButtonColor: "rgba(255,255,255,0.05)",
+        showCloseButton: true,
+    };
     const changeName = () => {
         Swal.fire({
-            title: $Text.ChangeName,
+            ...SwalStyle,
             input: "text",
-            inputAttributes: {
-                autocapitalize: "off",
-            },
-            width: "15rem",
-            showCancelButton: true,
-            confirmButtonText: $Text.Submit,
-            cancelButtonText: $Text.Cancel,
-            showLoaderOnConfirm: true,
-            confirmButtonColor: "rgba(255,255,255,0.05)",
-            cancelButtonColor: "rgba(255,255,255,0.05)",
-            reverseButtons: true,
-            color: "var(--white)",
-            background: "var(--widget-background)",
+            text: $Text.EnterNewName,
             preConfirm: async (newName: string) => {
                 if (!newName) {
                     Swal.showValidationMessage($Text.InsufficientInput);
@@ -70,13 +71,82 @@
                     Swal.showValidationMessage(format($Text.f_LengthLimit, { v: 10 }));
                     return;
                 }
-                const resp = await api.private.patch("/user/name", { new_name: newName });
-                if (resp?.status === 200) {
+                try {
+                    await api.private.patch("/user/name", { new_name: newName });
                     location.reload();
-                } else {
-                    Swal.showValidationMessage($Text.InsufficientInput);
+                } catch {
+                    Swal.showValidationMessage($Text.UnexpectedError);
                 }
             },
+        });
+    };
+
+    const changePassword = async () => {
+        let newPassword: string = "";
+        let changed: boolean = false;
+        await Swal.fire({
+            ...SwalStyle,
+            input: "password",
+            text: $Text.EnterNewPassword,
+            preConfirm: async (input: string) => {
+                if (input.length < 6) {
+                    Swal.showValidationMessage($Text.IncorrectPasswordLength);
+                    return;
+                }
+                try {
+                    await api.private.post("/user/password/reset");
+                    newPassword = input;
+                } catch (error: any) {
+                    const e = error as AxiosError;
+                    if (e.response?.status === 429) {
+                        Swal.showValidationMessage($Text.TooManyRequests);
+                    } else {
+                        Swal.showValidationMessage($Text.UnexpectedError);
+                    }
+                }
+            },
+        });
+        if (!newPassword) {
+            return;
+        }
+        await Swal.fire({
+            ...SwalStyle,
+            input: "text",
+            text: $Text.PleaseEnterEmailConfirmCode,
+            allowOutsideClick: false,
+            preConfirm: async (input: string) => {
+                if (!input) {
+                    Swal.showValidationMessage($Text.InsufficientInput);
+                    return;
+                }
+                try {
+                    await api.private.patch("/user/password", {
+                        new_password: newPassword,
+                        confirm_code: input,
+                    });
+                    changed = true;
+                } catch (error: any) {
+                    const e = error as AxiosError;
+                    if (e.response?.status === 429) {
+                        Swal.showValidationMessage($Text.TooManyRequests);
+                    } else if (e.response?.status === 409) {
+                        Swal.showValidationMessage($Text.ConfirmCodeMismatch);
+                    } else {
+                        Swal.showValidationMessage($Text.UnexpectedError);
+                    }
+                }
+            },
+        });
+        if (!changed) {
+            return;
+        }
+        await Swal.fire({
+            ...SwalStyle,
+            text: $Text.PasswordChangeSuccessful,
+            icon: "success",
+            confirmButtonText: $Text.Ok,
+            allowOutsideClick: false,
+            showLoaderOnConfirm: false,
         });
     };
 </script>
@@ -100,7 +170,7 @@
             </button>
         </div>
         <div class="setting__btn">
-            <button class="btn">{$Text.ChangePassword}</button>
+            <button class="btn" on:click={changePassword}>{$Text.ChangePassword}</button>
         </div>
     </section>
     <section class="setting">

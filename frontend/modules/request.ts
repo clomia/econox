@@ -45,6 +45,7 @@ const authenticationFailureHandler = async (error: AxiosError) => {
     if (error.response && error.response.status === 401) {
         await logout() // 401 응답 시 토큰들 삭제 후 홈으로 이동
     }
+    throw error;
 }
 
 api.private.interceptors.request.use(tokenInsert)

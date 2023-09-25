@@ -385,8 +385,10 @@ async def change_password(
             ConfirmationCode=confirm_code,
             Password=new_password,
         )
-    except cognito.exceptions.LimitExceedException:
+    except cognito.exceptions.LimitExceededException:
         raise HTTPException(status_code=429, detail="Too many requests")
+    except cognito.exceptions.CodeMismatchException:
+        raise HTTPException(status_code=409, detail="Invalid code")
     else:
         return {"message": "Password change successful"}
 

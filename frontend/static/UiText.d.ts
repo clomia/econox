@@ -19,7 +19,7 @@ export interface UiText {
     RetypePasswordMismatch: "Passwords do not match" | "비밀번호가 일치하지 않습니다";
     UserAlreadyExists: "This email is already registered" | "이미 가입되어있는 이메일입니다";
     IncorrectPasswordLength: "Password must be at least 6 characters long" | "비밀번호는 6글자 이상이어야 합니다";
-    PleaseEnterEmailConfirmCode: "Please enter the code sent to your email" | "이메일로 전송된 코드를 입력해주세요";
+    PleaseEnterEmailConfirmCode: "Please enter the verification code sent to your email" | "이메일로 전송된 인증 코드를 입력해주세요";
     ConfirmCodeAlreadyExpired: "The code you received has already expired" | "전송된 인증 코드는 이미 만료되었습니다";
     ConfirmCodeExpired: "Verification code has expired" | "인증 코드가 만료되었습니다";
     ConfirmCodeMismatch: "Verification code is incorrect" | "인증 코드가 올바르지 않습니다";
@@ -69,7 +69,9 @@ export interface UiText {
     PaymentHistory: "Payment History" | "결제 내역";
     Change: "Update" | "변경하기";
     Cancel: "Cancel" | "취소";
-    ChangeName: "Change Name" | "이름 변경";
+    EnterNewName: "Enter the new name" | "새로운 이름을 입력하세요";
+    EnterNewPassword: "Enter the new password" | "새로운 비밀번호를 입력하세요";
+    PasswordChangeSuccessful: "Password updated. Please log in with the new password" | "비밀번호가 변경되었습니다. 새 비밀번호로 로그인해주세요";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일 입니다";
     f_KRW: "₩{v}" | "{v}원";

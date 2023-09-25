@@ -51,8 +51,8 @@ IncorrectPasswordLength:
   en: "Password must be at least 6 characters long"
   ko: "비밀번호는 6글자 이상이어야 합니다"
 PleaseEnterEmailConfirmCode:
-  en: "Please enter the code sent to your email"
-  ko: "이메일로 전송된 코드를 입력해주세요"
+  en: "Please enter the verification code sent to your email"
+  ko: "이메일로 전송된 인증 코드를 입력해주세요"
 ConfirmCodeAlreadyExpired:
   en: "The code you received has already expired"
   ko: "전송된 인증 코드는 이미 만료되었습니다"
@@ -208,9 +208,16 @@ Change:
 Cancel:
   en: "Cancel"
   ko: "취소"
-ChangeName:
-  en: "Change Name"
-  ko: "이름 변경"
+EnterNewName:
+  en: "Enter the new name"
+  ko: "새로운 이름을 입력하세요"
+EnterNewPassword:
+  en: "Enter the new password"
+  ko: "새로운 비밀번호를 입력하세요"
+PasswordChangeSuccessful:
+  en: "Password updated. Please log in with the new password"
+  ko: "비밀번호가 변경되었습니다. 새 비밀번호로 로그인해주세요"
+# ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"
   ko: "{time}초 후 자동으로 로그인됩니다"

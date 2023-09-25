@@ -110,7 +110,7 @@ def utcstr2datetime(timestring: str) -> datetime:
     return utc_time.astimezone(pytz.timezone("Asia/Seoul"))
 
 
-utcstr_type = constr(regex=r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.000Z$")
+utcstr_type = constr(pattern=r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.000Z$")
 
 
 def datetime2utcstr(dt: datetime) -> str:

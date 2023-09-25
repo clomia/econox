@@ -1,31 +1,31 @@
 # data client
-httpx==0.24.1 
+httpx==0.25.0
 aiocache==0.12.2
 wbdata==0.3.0
 requests==2.31.0 # wbdata dependency
-google-cloud-translate==3.11.1
+google-cloud-translate==3.12.0
 pycountry==22.3.5
 
 # compute
-numpy==1.25.0
-xarray==2023.5.0
-zarr==2.15.0
-dask==2023.6.0
-scipy==1.10.1
-matplotlib==3.7.1
+numpy==1.26.0
+xarray==2023.8.0
+zarr==2.16.1
+dask==2023.9.2
+scipy==1.11.2
+matplotlib==3.8.0
 
 # Web
-fastapi==0.97.0
-uvicorn==0.22.0
-gunicorn==20.1.0
+fastapi==0.103.1
+uvicorn==0.23.2
+gunicorn==21.2.0
 PyJWT==2.8.0
 jwcrypto==1.5.0
 PyYAML==6.0.1
-ipinfo==4.4.2
+ipinfo==4.4.3
 pytz==2023.3.post1
 
 # Infra
-boto3==1.26.158
-botocore==1.29.158
-psycopg==3.1.10
-psycopg-binary==3.1.10 # psycopg dependency
+boto3==1.28.53
+botocore==1.31.53
+psycopg==3.1.11
+psycopg-binary==3.1.11 # psycopg dependency

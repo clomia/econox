@@ -203,6 +203,30 @@
         return false;
     };
 
+    const initializePaypalButton = (planId: string, startTime: string) => {
+        (window as any).paypal
+            .Buttons({
+                style: {
+                    shape: "rect",
+                    color: "black",
+                    layout: "vertical",
+                    label: "paypal",
+                },
+                createSubscription: (data: any, actions: any) => {
+                    return actions.subscription.create({
+                        plan_id: planId,
+                        start_time: startTime,
+                        // https://developer.paypal.com/docs/api/subscriptions/v1/#subscriptions_create!path=start_time&t=request
+                    });
+                },
+                onApprove: (data: any, actions: any) => {
+                    // 결제수단 등록 후 동작
+                    data.subscriptionID;
+                },
+            })
+            .render("#paypal-button");
+    };
+
     let membershipChangeLoader: boolean = false;
     const membershipChange = (to: "basic" | "professional") => {
         return async () => {
@@ -223,9 +247,9 @@
             }
             const available = await billingInfoChangeAvailableCheck();
             if (available && userDetail["billing"]["currency"] === "USD") {
-                // PayPal!
+                // -> PayPal!
             } else if (available && userDetail["billing"]["currency"] === "KRW") {
-                // Toss!
+                // -> Toss!
                 try {
                     membershipChangeLoader = true;
                     const resp = await api.private.patch("/user/membership", { new_membership: to });

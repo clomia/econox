@@ -16,6 +16,7 @@ export interface UserDetail {
     next_billing_date: string;
     billing: {
         currency: "USD" | "KRW";
+        registered: boolean;
         transactions: {
             time: string;
             name: string;

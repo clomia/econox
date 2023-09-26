@@ -59,7 +59,7 @@
         padding: 0 1rem;
     }
     .title {
-        color: aqua;
+        color: var(--white);
         font-size: 1.2rem;
         padding-top: 2.1rem;
         padding-bottom: 1.3rem;
@@ -90,7 +90,7 @@
     .basic__title,
     .professional__title {
         padding-bottom: 0.7rem;
-        color: aqua;
+        color: var(--white);
     }
     .basic__price,
     .professional__price {

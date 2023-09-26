@@ -197,6 +197,7 @@ class BillingTransaction(BaseModel):
 
 class UserBillingDetail(BaseModel):
     currency: Literal["USD", "KRW"]
+    registered: bool
     transactions: List[BillingTransaction]
 
 
@@ -213,18 +214,31 @@ class UserDetail(BaseModel):
 @router.private.get(response_model=UserDetail)
 async def get_user_detail(user=router.private.auth):
     """유저 상세 정보를 가져옵니다."""
-    name, membership, currency, next_billing, created = await db.exec(
+    (
+        name,
+        membership,
+        currency,
+        next_billing,
+        tosspayments_billing_key,
+        paypal_subscription_id,
+        created,
+    ) = await db.exec(
         template=db.Template(table="users").select_query(
             "name",
             "membership",
             "currency",  # NULL:첫회원가입 혜택, USD:paypal, KRW:tosspayments
             "next_billing_date",
+            "tosspayments_billing_key",
+            "paypal_subscription_id",
             "created",
             where={"id": user["id"]},
         ),
         embed=True,
     )
-
+    registered = bool(
+        (currency == "KRW" and tosspayments_billing_key)
+        or (currency == "USD" and paypal_subscription_id)
+    )
     detail = {
         "id": user["id"],
         "name": name,
@@ -232,7 +246,7 @@ async def get_user_detail(user=router.private.auth):
         "membership": membership,
         "signup_date": datetime2utcstr(created),
         "next_billing_date": datetime2utcstr(next_billing),
-        "billing": {"currency": currency, "transactions": []},
+        "billing": {"currency": currency, "registered": registered, "transactions": []},
     }
     transaction_fields = ["time", "name", "amount", "method"]
 

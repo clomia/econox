@@ -208,7 +208,7 @@
     }
     .reset-password-btn:hover {
         opacity: 1;
-        color: aqua;
+        color: white;
         cursor: pointer;
     }
 </style>

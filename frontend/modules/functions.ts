@@ -84,4 +84,5 @@ export const defaultSwalStyle = {
     allowOutsideClick: false,
     confirmButtonColor: "rgba(255,255,255,0.05)",
     denyButtonColor: "rgba(255,255,255,0.05)",
+    reverseButtons: true,
 };

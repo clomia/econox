@@ -41,7 +41,7 @@ async def get_request_country(request: Request):
         }
     except AttributeError:  # if host is localhost
         default = {"country": "KR", "timezone": "Asia/Seoul"}
-        default = {"country": "US", "timezone": "America/Chicago"}
+        # default = {"country": "US", "timezone": "America/Chicago"}
         log.warning(
             "GET /country"
             f"\n국가 정보 취득에 실패했습니다. 기본값을 응답합니다."

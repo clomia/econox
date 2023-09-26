@@ -51,6 +51,7 @@
         try {
             response = api.public.post("/user/cognito", { email, password });
             $InputResult = { ...$InputResult, email, password };
+            await response;
             dispatch("complete");
         } catch (error: any) {
             response = null;

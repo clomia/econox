@@ -92,6 +92,11 @@ class CognitoTokenBearer(HTTPBearer):
         token = CognitoToken(id_token, access_token)
         try:
             user_info = await token.authentication()
+            if not await db.user_exists(user_info["email"]):
+                raise HTTPException(
+                    status_code=401,
+                    detail=f"Authorization failed, user does not exists",
+                )
             return user_info
         except jwt.PyJWTError as e:
             e_str = str(e)

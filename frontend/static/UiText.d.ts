@@ -78,10 +78,17 @@ export interface UiText {
     NewPassword: "New Password" | "새로운 비밀번호";
     UserDoesNotExist: "No user exists with the provided email" | "해당 이메일로 등록된 사용자가 존재하지 않습니다";
     InvalidInput: "Invalid input" | "입력값이 잘못되었습니다";
+    PaymentMethod_Waiting: "Waiting... May take up to 30 minutes" | "결제수단 확인중... 최대 30분 소요됨";
+    PaymentMethod_Benefit: "New Member Benefit Applied" | "첫 회원가입 혜택 적용중";
+    PaymentMethod_ChangeNotAllow_DueDate: "No changes allowed on due date" | "결제 예정일에는 변경할 수 없습니다";
+    PaymentMethod_ChangeNotAllow_Waiting: "No changes allowed while payment method is being verified. Please try again in a moment" | "결제수단 확인 중에는 변경할 수 없습니다 잠시 후 다시 시도해주세요";
+    AlreadyProgressPleaseWait: "Your request is already in progress. Please wait a moment" | "요청이 이미 처리 중입니다. 잠시만 기다려주세요";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일 입니다";
     f_KRW: "₩{v}" | "{v}원";
     f_USD: "${v}";
     f_LengthLimit: "You cannot enter more than {v} characters" | "{v}글자 이상 입력할 수 없습니다";
     f_ForgotPassword_EnterNewPassword: "We've sent a code to {email}. Please enter it along with your new password" | "인증코드가 {email}에 전송되었습니다. 해당 코드와 함께 새로운 비밀번호를 입력해주세요";
+    f_AlreadyAppliedMembership: "You are already enrolled in the {membership} membership" | "{membership} 맴버십은 이미 적용되어있습니다.";
+    f_MembershipChangeComplete: "Your membership has been changed from {oldMembership} to {newMembership}. Due to the price difference, your next billing date has been adjusted from {oldBillingDate} to {newBillingDate}." | "맴버십이 {oldMembership}에서 {newMembership}(으)로 변경되었으며, 차액이 적용되어 다음 결제 날짜가 {oldBillingDate} 에서 {newBillingDate} 로 조정되었습니다.";
 }

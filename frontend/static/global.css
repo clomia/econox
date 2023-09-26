@@ -24,6 +24,12 @@ main {
 	position: relative;
 }
 
+.swal2-title {
+	text-align: center !important;
+	font-size: 1rem;
+	font-weight: normal;
+}
+
 .swal2-input {
 	border-color: var(--white);
 	font-size: 1rem;

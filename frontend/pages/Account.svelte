@@ -2,21 +2,21 @@
     import { format, logout, defaultSwalStyle } from "../modules/functions";
     import { Text, UserInfo } from "../modules/state";
     import ToggleArrow from "../assets/icon/ToggleArrow.svelte";
+    import DefaultLoader from "../assets/animation/DefaultLoader.svelte";
     import Swal from "sweetalert2";
     import { api } from "../modules/request";
     import type { UserDetail } from "../modules/state";
     import type { AxiosError } from "axios";
 
     const userDetail = $UserInfo as UserDetail;
-    const currentBillingMethod = userDetail["billing"]["transactions"]?.[0]["method"];
+    // 아래 변수는 트랜젝션 내역 여부 확인에도 사용함 currentBilling이 없으면 undefined이니까
+    const currentBillingMethod: string | undefined = userDetail["billing"]["transactions"][0]?.["method"];
 
-    let membership: string;
-    switch (userDetail["membership"]) {
-        case "basic":
-            membership = $Text.BasicPlan;
-        case "professional":
-            membership = $Text.ProfessionalPlan;
-    }
+    const membershipMapping = {
+        basic: $Text.BasicPlan,
+        professional: $Text.ProfessionalPlan,
+    };
+    const membership = membershipMapping[userDetail["membership"]];
     const f_NextBillingDate = new Date(userDetail["next_billing_date"]);
     const nextBilling = {
         y: f_NextBillingDate.getFullYear(),
@@ -43,6 +43,20 @@
         }
         return str;
     };
+    const billingMethodString = (str: string) => {
+        if (str) {
+            if (/^[0-9*]+$/.test(str)) {
+                return str.match(/.{1,4}/g)?.join(" ");
+            }
+            return str;
+        } else {
+            if (userDetail["billing"]["registered"]) {
+                return $Text.PaymentMethod_Waiting;
+            } else {
+                return $Text.PaymentMethod_Benefit;
+            }
+        }
+    };
     const membershipNameString = (str: string) => {
         return str.split(" ").slice(1).join(" ");
     };
@@ -50,6 +64,13 @@
         ...defaultSwalStyle,
         confirmButtonText: $Text.Submit,
         denyButtonText: $Text.Cancel,
+    };
+    const ToastStyle = {
+        width: "30rem",
+        toast: true,
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
     };
     const changeName = () => {
         Swal.fire({
@@ -142,6 +163,111 @@
         });
         await logout();
     };
+
+    let membershipWidgetOn = false;
+
+    const nextBillingDate = new Date(userDetail["next_billing_date"]);
+    const currentDate = new Date();
+
+    const todayIsNextBillingDate = // 사용자의 시간대를 기반으로 년, 월, 일 정보를 추출
+        nextBillingDate.getDate() === currentDate.getDate() &&
+        nextBillingDate.getMonth() === currentDate.getMonth() &&
+        nextBillingDate.getFullYear() === currentDate.getFullYear();
+
+    /**
+     * 사용자의 결제정보 수정 가능 여부를 알려줍니다.
+     * 결제 정보 수정 불가 시, 관련 알람을 띄우고 false를 반환합니다.
+     * @returns 결제정보 수정 가능 여부
+     */
+    const billingInfoChangeAvailableCheck = async (): Promise<boolean> => {
+        if (userDetail["billing"]["currency"] === "USD" && userDetail["billing"]["registered"]) {
+            // PayPal 결제수단이 성공적으로 등록된 유저
+            if (todayIsNextBillingDate) {
+                // 오늘이 결제 예정일인 경우 변경 불가함 (웹훅 딜레이 길어서 위험함)
+                await Swal.fire({
+                    ...ToastStyle,
+                    position: "top",
+                    title: $Text.PaymentMethod_ChangeNotAllow_DueDate,
+                });
+            } else if (!currentBillingMethod) {
+                // 결제 내역이 아직 없음
+                await Swal.fire({
+                    ...ToastStyle,
+                    position: "top",
+                    title: $Text.PaymentMethod_ChangeNotAllow_Waiting,
+                });
+            }
+        } else {
+            return true;
+        }
+        return false;
+    };
+
+    let membershipChangeLoader: boolean = false;
+    const membershipChange = (to: "basic" | "professional") => {
+        return async () => {
+            if (membershipChangeLoader) {
+                // 이미 전송된 동일한 요청을 계속 보내지 못하도록
+                return await Swal.fire({
+                    ...ToastStyle,
+                    position: "top",
+                    title: $Text.AlreadyProgressPleaseWait,
+                });
+            } else if (to === userDetail["membership"]) {
+                // 이미 적용된 맴버십인 경우 알림창
+                return await Swal.fire({
+                    ...ToastStyle,
+                    position: "top",
+                    title: format($Text.f_AlreadyAppliedMembership, { membership }),
+                });
+            }
+            const available = await billingInfoChangeAvailableCheck();
+            if (available && userDetail["billing"]["currency"] === "USD") {
+                // PayPal!
+            } else if (available && userDetail["billing"]["currency"] === "KRW") {
+                // Toss!
+                try {
+                    membershipChangeLoader = true;
+                    const resp = await api.private.patch("/user/membership", { new_membership: to });
+                    membershipChangeLoader = false;
+                    membershipWidgetOn = false;
+                    await Swal.fire({
+                        ...SwalStyle,
+                        width: "35rem",
+                        showDenyButton: false,
+                        text: format($Text.f_MembershipChangeComplete, {
+                            oldMembership: membershipMapping[userDetail["membership"]],
+                            newMembership: membershipMapping[to],
+                            oldBillingDate: timeString(userDetail["next_billing_date"]),
+                            newBillingDate: timeString(resp.data["adjusted_next_billing"]),
+                        }),
+                        icon: "success",
+                        confirmButtonText: $Text.Ok,
+                        showLoaderOnConfirm: false,
+                    });
+                    location.reload();
+                } catch {
+                    await Swal.fire({
+                        ...ToastStyle,
+                        position: "top",
+                        title: $Text.UnexpectedError,
+                    });
+                }
+            }
+        };
+    };
+
+    const paymentMethodChange = () => {
+        if (!userDetail["billing"]["registered"]) {
+            // 무료 체험중
+            console.log("이거 왜 안대");
+            Swal.fire({
+                ...ToastStyle,
+                position: "top",
+                title: "아직 결제수단 없어서 수정할게 없다고",
+            });
+        }
+    };
 </script>
 
 <main>
@@ -150,7 +276,7 @@
     <section class="setting">
         <div class="setting__info">
             <div class="label-text">{$Text.Membership}</div>
-            <button class="btn">
+            <button class="btn" on:click={() => (membershipWidgetOn = true)}>
                 <div class="btn-text">{membership}</div>
                 <div class="btn-wrap">{$Text.Change}</div>
             </button>
@@ -170,7 +296,7 @@
         <div class="setting__info card">
             <div class="label-text">{$Text.PaymentMethod}</div>
             <button class="btn payment-method">
-                <div class="btn-text">{paymentMethodString(currentBillingMethod)}</div>
+                <div class="btn-text">{billingMethodString(currentBillingMethod)}</div>
                 <div class="btn-wrap">{$Text.Change}</div>
             </button>
         </div>
@@ -193,7 +319,7 @@
                 {/each}
             </ol>
         {/if}
-        {#if transactions}
+        {#if transactions.length}
             <button
                 class="billing__toggle"
                 style={toggle ? "transform: rotate(180deg)" : ""}
@@ -201,9 +327,58 @@
                     toggle = toggle ? false : true;
                 }}><ToggleArrow /></button
             >
+        {:else}
+            <div style="height: 3rem;" />
         {/if}
     </section>
 </main>
+
+{#if membershipWidgetOn}
+    <div class="membership-options">
+        <div class="membership-options__membrane" />
+        <main>
+            <div class="membership-options__title">{$Text.SelectMembership}</div>
+            <button
+                class="membership-options__basic"
+                class:membership-options__current={userDetail["membership"] === "basic"}
+                on:click={membershipChange("basic")}
+            >
+                <div class="membership-options__basic__title">{$Text.BasicPlan}</div>
+                <div class="membership-options__basic__price">
+                    {#if userDetail["billing"]["currency"] === "KRW"}
+                        {$Text.BasicPlanWonPrice}
+                    {:else}
+                        {$Text.BasicPlanDollerPrice}
+                    {/if}
+                </div>
+                <p>{$Text.BasicPlanDescription}</p>
+            </button>
+
+            <button
+                class="membership-options__professional"
+                class:membership-options__current={userDetail["membership"] === "professional"}
+                on:click={membershipChange("professional")}
+            >
+                <div class="membership-options__professional__title">{$Text.ProfessionalPlan}</div>
+                <div class="membership-options__professional__price">
+                    {#if userDetail["billing"]["currency"] === "KRW"}
+                        {$Text.ProfessionalPlanWonPrice}
+                    {:else}
+                        {$Text.ProfessionalPlanDollerPrice}
+                    {/if}
+                </div>
+                <p>{$Text.ProfessionalPlanDescription}</p>
+            </button>
+            {#if membershipChangeLoader}
+                <div style="position: absolute; bottom: -1.1rem;"><DefaultLoader /></div>
+            {:else}
+                <button class="membership-options__cancel" on:click={() => (membershipWidgetOn = false)}
+                    >{$Text.Cancel}</button
+                >
+            {/if}
+        </main>
+    </div>
+{/if}
 
 <style>
     * {
@@ -213,6 +388,7 @@
         width: 44rem;
         border-radius: 1rem;
         border: thin solid rgba(255, 255, 255, 0.75);
+        position: relative;
     }
     section {
         text-align: center;
@@ -287,9 +463,9 @@
     }
     .billing__toggle {
         padding-top: 2rem;
-        padding-bottom: 1rem;
         opacity: 0.3;
         transition: transform 100ms;
+        padding-bottom: 1rem;
     }
     .billing__toggle:hover {
         opacity: 1;
@@ -307,5 +483,89 @@
     }
     .payment-method {
         letter-spacing: 0.07rem;
+    }
+
+    /* Membership option change styles */
+    .membership-options {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .membership-options__membrane {
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+    .membership-options main {
+        z-index: 2;
+        width: 30rem;
+        height: 31rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0 2rem;
+        padding-bottom: 2rem;
+        background: var(--widget-background);
+        border-radius: 0.3rem;
+        border: none;
+    }
+    .membership-options__title {
+        color: var(--white);
+        font-size: 1.2rem;
+        padding-bottom: 1rem;
+        padding-top: 1.5rem;
+    }
+    .membership-options__basic,
+    .membership-options__professional {
+        color: var(--white);
+        border-radius: 0.3rem;
+        padding: 1.2rem;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.05);
+        transition: background-color 50ms ease-out;
+    }
+    .membership-options__basic {
+        margin-bottom: 2rem;
+    }
+    .membership-options__cancel:hover,
+    .membership-options__basic:hover,
+    .membership-options__professional:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+        cursor: pointer;
+    }
+    .membership-options__basic__title,
+    .membership-options__professional__title {
+        padding-bottom: 0.7rem;
+        color: var(--white);
+    }
+    .membership-options__basic__price,
+    .membership-options__professional__price {
+        padding-bottom: 0.5rem;
+        color: var(--white);
+    }
+    .membership-options p {
+        color: var(--white);
+    }
+    .membership-options__current {
+        background-color: rgba(0, 0, 0, 0.08);
+    }
+    .membership-options__current:hover {
+        background-color: rgba(0, 0, 0, 0.08);
+    }
+    .membership-options__cancel {
+        color: var(--white);
+        border-radius: 0.3rem;
+        padding: 0.6rem 1rem;
+        margin-top: 2rem;
+        background-color: rgba(255, 255, 255, 0.05);
     }
 </style>

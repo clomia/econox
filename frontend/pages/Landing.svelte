@@ -1,1 +1,1 @@
-<h1 style="color:aqua">This is landing page</h1>
+<h1 style="color: var(--white);">This is landing page</h1>

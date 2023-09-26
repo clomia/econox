@@ -169,7 +169,7 @@
     const nextBillingDate = new Date(userDetail["next_billing_date"]);
     const currentDate = new Date();
 
-    const todayIsNextBillingDate = // 사용자의 시간대를 기반으로 년, 월, 일 정보를 추출
+    const todayIsNextBillingDate =
         nextBillingDate.getDate() === currentDate.getDate() &&
         nextBillingDate.getMonth() === currentDate.getMonth() &&
         nextBillingDate.getFullYear() === currentDate.getFullYear();

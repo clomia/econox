@@ -39,7 +39,6 @@
     let emailInput: HTMLInputElement;
     const SwalStyle = {
         ...defaultSwalStyle,
-        width: "27rem",
         confirmButtonText: $Text.Submit,
         denyButtonText: $Text.Cancel,
     };
@@ -116,6 +115,7 @@
             icon: "success",
             confirmButtonText: $Text.Ok,
             showLoaderOnConfirm: false,
+            showDenyButton: false,
         });
         emailInput.value = enteredEmail;
     };

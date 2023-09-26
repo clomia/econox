@@ -73,7 +73,7 @@ export const init = async () => {
 }
 
 export const defaultSwalStyle = {
-    width: "23rem",
+    width: "25rem",
     color: "var(--white)",
     background: "var(--widget-background)",
     inputAttributes: {

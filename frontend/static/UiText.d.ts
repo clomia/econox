@@ -71,7 +71,7 @@ export interface UiText {
     Cancel: "Cancel" | "취소";
     EnterNewName: "Enter the new name" | "새로운 이름을 입력하세요";
     EnterNewPassword: "Enter the new password" | "새로운 비밀번호를 입력하세요";
-    PasswordChangeSuccessful: "Password updated. Please log in with the new password" | "비밀번호가 변경되었습니다. 변경된 비밀번호로 로그인하세요";
+    PasswordChangeSuccessful: "Your password has been updated. Please log in with your new password" | "비밀번호가 재설정되었습니다. 새로운 비밀번호로 로그인하세요";
     ForgotPassword: "Forgot Password?" | "비밀번호를 잊으셨나요?";
     ForgotPassword_EnterEmail: "Enter the email address of the account you wish to retrieve" | "찾고자 하는 계정의 이메일 주소를 입력하세요";
     ConfirmCode: "Verification Code" | "인증 코드";

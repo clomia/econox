@@ -226,7 +226,7 @@ async def get_user_detail(user=router.private.auth):
         template=db.Template(table="users").select_query(
             "name",
             "membership",
-            "currency",  # NULL:첫회원가입 혜택, USD:paypal, KRW:tosspayments
+            "currency",
             "next_billing_date",
             "tosspayments_billing_key",
             "paypal_subscription_id",

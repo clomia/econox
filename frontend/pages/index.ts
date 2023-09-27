@@ -1,4 +1,4 @@
-import Account from "./Account.svelte";
+import Account from "./account/index.svelte";
 import Landing from "./Landing.svelte";
 import PageNotFound from "./NotFound404.svelte";
 

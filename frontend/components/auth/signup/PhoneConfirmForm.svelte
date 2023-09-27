@@ -1,7 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher, onMount } from "svelte";
     import { api } from "../../../modules/request";
-    import { timeToString } from "../../../modules/functions";
+    import { secondToString } from "../../../modules/functions";
     import { Text, auth } from "../../../modules/state";
     import DefaultLoader from "../../../assets/animation/DefaultLoader.svelte";
 
@@ -34,7 +34,7 @@
     };
 
     $: placeHolder =
-        $PhoneConfirmTimeLimit > 0 ? timeToString($PhoneConfirmTimeLimit) : $Text.ConfirmCodeExpired;
+        $PhoneConfirmTimeLimit > 0 ? secondToString($PhoneConfirmTimeLimit) : $Text.ConfirmCodeExpired;
 
     const codeConfirmation = async (event: SubmitEvent) => {
         message = "";

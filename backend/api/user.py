@@ -18,6 +18,7 @@ from backend.http import (
     TosspaymentsBilling,
     PayPalAPI,
     pooling,
+    get_paypal_next_billing_date,
 )
 from backend.math import (
     utcstr_type,
@@ -386,14 +387,9 @@ async def change_password(
         return {"message": "Password change successful"}
 
 
-class PayPalSubscription(BaseModel):
-    subscription: constr(min_length=1)
-    next_billing: constr(min_length=1)  # UTC 시간대 ISO 8601: "%Y-%m-%dT%H:%M:%S.000Z"
-
-
 class MembershipChangeRequest(BaseModel):
     new_membership: constr(min_length=1)
-    paypal: PayPalSubscription | None = None
+    paypal_subscription_id: constr(min_length=1) | None = None
 
 
 @router.private.patch("/membership")
@@ -454,9 +450,11 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
         )
         adjusted_next_billing = next_billing_date
     elif origin_billing_date == base_billing_date:  # 이전에 결제된 맴버십을 다른것으로 변경하는 경우
-        if currency == "USD" and item.paypal:
-            # PayPal -> 다음 청구 날짜는 PayPal이 통지한 날짜로 해야 함
-            adjusted_next_billing = utcstr2datetime(item.paypal.next_billing)
+        if currency == "USD" and item.paypal_subscription_id:
+            # PayPal -> 다음 청구 날짜는 PayPal로부터 확인
+            adjusted_next_billing = await get_paypal_next_billing_date(
+                item.paypal_subscription_id
+            )
             await db.exec(
                 update_query_paypal,
                 params={
@@ -487,8 +485,10 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
                 },
             )
     else:  # 결제가 이루어지기 전에, 기존 맴버십으로 롤백하는 경우
-        if currency == "USD" and item.paypal:
-            adjusted_next_billing = utcstr2datetime(item.paypal.next_billing)
+        if currency == "USD" and item.paypal_subscription_id:
+            adjusted_next_billing = await get_paypal_next_billing_date(
+                item.paypal_subscription_id
+            )
             await db.exec(
                 update_query_paypal,
                 params={

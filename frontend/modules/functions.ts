@@ -5,6 +5,9 @@ import { settingObjectStore } from "./_storage"
 
 import type { UiText } from "../static/UiText"
 
+/**
+ * 토큰 삭제 후 홈으로 리로딩
+ */
 export const logout = async () => {
     await Promise.all([
         settingObjectStore.delete("cognitoToken"),
@@ -13,6 +16,9 @@ export const logout = async () => {
     window.location.replace(window.location.origin) // 홈으로 리로딩
 }
 
+/**
+ * 토큰 저장 후 콘솔로 리로팅
+ */
 export const login = async (cognitoToken: string, cognitoRefreshToken: string, reload: boolean = true) => {
     await Promise.all([
         settingObjectStore.put("cognitoToken", cognitoToken),
@@ -23,14 +29,19 @@ export const login = async (cognitoToken: string, cognitoRefreshToken: string, r
     }
 }
 
+/**
+ * 문자열 내부 중괄호를 매개변수로 채움, f_ 로 시작하는 UiText에 주로 사용
+ */
 export const format = (template: string, { ...kwargs }) => {
     return template.replace(/{(\w+)}/g, function (match, key) {
         return kwargs.hasOwnProperty(key) ? kwargs[key] : match;
     })
 }
 
-
-export const timeToString = (time: number) => {
+/**
+ * 초단위 정수를 분:초 문자열로 반환
+ */
+export const secondToString = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = (time % 60).toString().padStart(2, "0");
     return `${minutes}:${seconds}`;

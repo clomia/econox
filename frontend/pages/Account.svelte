@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     import { format, logout, defaultSwalStyle } from "../modules/functions";
     import { Text, UserInfo } from "../modules/state";
     import ToggleArrow from "../assets/icon/ToggleArrow.svelte";
@@ -6,7 +7,7 @@
     import Swal from "sweetalert2";
     import { api } from "../modules/request";
     import type { UserDetail } from "../modules/state";
-    import type { AxiosError } from "axios";
+    import type { AxiosError, AxiosResponse } from "axios";
 
     const userDetail = $UserInfo as UserDetail;
     // 아래 변수는 트랜젝션 내역 여부 확인에도 사용함 currentBilling이 없으면 undefined이니까
@@ -165,6 +166,8 @@
     };
 
     let membershipWidgetOn = false;
+    let paypalWidgetOn = false;
+    let payPalSdkLoaded = false;
 
     const nextBillingDate = new Date(userDetail["next_billing_date"]);
     const currentDate = new Date();
@@ -179,7 +182,7 @@
      * 결제 정보 수정 불가 시, 관련 알람을 띄우고 false를 반환합니다.
      * @returns 결제정보 수정 가능 여부
      */
-    const billingInfoChangeAvailableCheck = async (): Promise<boolean> => {
+    const billingChangeAvailableCheck = async (): Promise<boolean> => {
         if (userDetail["billing"]["currency"] === "USD" && userDetail["billing"]["registered"]) {
             // PayPal 결제수단이 성공적으로 등록된 유저
             if (todayIsNextBillingDate) {
@@ -196,6 +199,8 @@
                     position: "top",
                     title: $Text.PaymentMethod_ChangeNotAllow_Waiting,
                 });
+            } else {
+                return true;
             }
         } else {
             return true;
@@ -203,7 +208,13 @@
         return false;
     };
 
-    const initializePaypalButton = (planId: string, startTime: string) => {
+    const initializePaypalButton = (
+        planId: string,
+        startTime: string,
+        callback: (subscriptionID: string) => Promise<any>
+    ) => {
+        paypalWidgetOn = true;
+
         (window as any).paypal
             .Buttons({
                 style: {
@@ -219,16 +230,72 @@
                         // https://developer.paypal.com/docs/api/subscriptions/v1/#subscriptions_create!path=start_time&t=request
                     });
                 },
-                onApprove: (data: any, actions: any) => {
+                onApprove: async (data: any, actions: any) => {
                     // 결제수단 등록 후 동작
-                    data.subscriptionID;
+                    paypalWidgetOn = false;
+                    await callback(data.subscriptionID);
                 },
             })
             .render("#paypal-button");
     };
+    onMount(async () => {
+        const paypalPlans = await api.public.get("/paypal/plans");
+        const clientId = paypalPlans.data["client_id"];
+
+        if ((window as any).paypal) {
+            payPalSdkLoaded = true;
+            return;
+        }
+        const script = document.createElement("script");
+        script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&vault=true&intent=subscription`;
+        script.onload = () => {
+            payPalSdkLoaded = true;
+        };
+        document.head.appendChild(script);
+    });
 
     let membershipChangeLoader: boolean = false;
     const membershipChange = (to: "basic" | "professional") => {
+        const alertText = (resp: AxiosResponse) => {
+            if (userDetail["billing"]["registered"]) {
+                return format($Text.f_MembershipChangeComplete, {
+                    oldMembership: membershipMapping[userDetail["membership"]],
+                    newMembership: membershipMapping[to],
+                    oldBillingDate: timeString(userDetail["next_billing_date"]),
+                    newBillingDate: timeString(resp.data["adjusted_next_billing"]),
+                });
+            } else {
+                return format($Text.f_MembershipChangeComplete_Benefit, {
+                    oldMembership: membershipMapping[userDetail["membership"]],
+                    newMembership: membershipMapping[to],
+                });
+            }
+        };
+        const requestProcess = async (body: object) => {
+            try {
+                membershipChangeLoader = true;
+                const resp = await api.private.patch("/user/membership", body);
+                membershipChangeLoader = false;
+                membershipWidgetOn = false;
+                await Swal.fire({
+                    ...SwalStyle,
+                    width: "35rem",
+                    showDenyButton: false,
+                    text: alertText(resp),
+                    icon: "success",
+                    confirmButtonText: $Text.Ok,
+                    showLoaderOnConfirm: false,
+                });
+                location.reload();
+            } catch {
+                await Swal.fire({
+                    ...ToastStyle,
+                    position: "top",
+                    title: $Text.UnexpectedError,
+                });
+            }
+        };
+
         return async () => {
             if (membershipChangeLoader) {
                 // 이미 전송된 동일한 요청을 계속 보내지 못하도록
@@ -245,38 +312,22 @@
                     title: format($Text.f_AlreadyAppliedMembership, { membership }),
                 });
             }
-            const available = await billingInfoChangeAvailableCheck();
-            if (available && userDetail["billing"]["currency"] === "USD") {
+            const available = await billingChangeAvailableCheck();
+            if (!available) {
+                return;
+            } else if (userDetail["billing"]["currency"] === "USD" && userDetail["billing"]["registered"]) {
                 // -> PayPal!
-            } else if (available && userDetail["billing"]["currency"] === "KRW") {
-                // -> Toss!
-                try {
-                    membershipChangeLoader = true;
-                    const resp = await api.private.patch("/user/membership", { new_membership: to });
-                    membershipChangeLoader = false;
-                    membershipWidgetOn = false;
-                    await Swal.fire({
-                        ...SwalStyle,
-                        width: "35rem",
-                        showDenyButton: false,
-                        text: format($Text.f_MembershipChangeComplete, {
-                            oldMembership: membershipMapping[userDetail["membership"]],
-                            newMembership: membershipMapping[to],
-                            oldBillingDate: timeString(userDetail["next_billing_date"]),
-                            newBillingDate: timeString(resp.data["adjusted_next_billing"]),
-                        }),
-                        icon: "success",
-                        confirmButtonText: $Text.Ok,
-                        showLoaderOnConfirm: false,
-                    });
-                    location.reload();
-                } catch {
-                    await Swal.fire({
-                        ...ToastStyle,
-                        position: "top",
-                        title: $Text.UnexpectedError,
-                    });
-                }
+                const plans = (await api.public.get("/paypal/plans")).data;
+                initializePaypalButton(
+                    plans[userDetail["membership"]],
+                    userDetail["next_billing_date"],
+                    async (subscriptionId) => {
+                        await requestProcess({ new_membership: to, paypal_subscription_id: subscriptionId });
+                    }
+                );
+            } else {
+                // -> Toss! or 무료체험
+                await requestProcess({ new_membership: to });
             }
         };
     };
@@ -401,6 +452,14 @@
                 >
             {/if}
         </main>
+    </div>
+{/if}
+
+{#if paypalWidgetOn}
+    <div class="paypal">
+        <section class="paypal-sdk">
+            <div id="paypal-button" style={!payPalSdkLoaded ? "display: none;" : ""} />
+        </section>
     </div>
 {/if}
 
@@ -591,5 +650,26 @@
         padding: 0.6rem 1rem;
         margin-top: 2rem;
         background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Paypal sdk widget styles */
+    .paypal {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .paypal-sdk {
+        width: 100%;
+        height: 10rem;
+        border-radius: 0.5rem;
+        border: thin solid rgba(255, 255, 255, 0.2);
+        background-color: rgba(255, 255, 255, 0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    #paypal-button {
+        margin-top: 1.5rem;
     }
 </style>

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher, onMount } from "svelte";
     import { api } from "../../../modules/request";
-    import { timeToString } from "../../../modules/functions";
+    import { secondToString } from "../../../modules/functions";
     import { Text, auth } from "../../../modules/state";
     import DefaultLoader from "../../../assets/animation/DefaultLoader.svelte";
     import type { AxiosResponse } from "axios";
@@ -34,7 +34,7 @@
     onMount(() => setInterval(() => $EmailConfirmTimeLimit > 0 && $EmailConfirmTimeLimit--, 1000));
 
     $: placeHolder =
-        $EmailConfirmTimeLimit > 0 ? timeToString($EmailConfirmTimeLimit) : $Text.ConfirmCodeExpired;
+        $EmailConfirmTimeLimit > 0 ? secondToString($EmailConfirmTimeLimit) : $Text.ConfirmCodeExpired;
 
     const codeConfirmation = async (event: SubmitEvent) => {
         message = "";

@@ -91,4 +91,5 @@ export interface UiText {
     f_ForgotPassword_EnterNewPassword: "We've sent a code to {email}. Please enter it along with your new password" | "인증코드가 {email}에 전송되었습니다. 해당 코드와 함께 새로운 비밀번호를 입력해주세요";
     f_AlreadyAppliedMembership: "You are already enrolled in the {membership} membership" | "{membership} 맴버십은 이미 적용되어있습니다.";
     f_MembershipChangeComplete: "Your membership has been changed from {oldMembership} to {newMembership}. Due to the price difference, your next billing date has been adjusted from {oldBillingDate} to {newBillingDate}." | "맴버십이 {oldMembership}에서 {newMembership}(으)로 변경되었으며, 차액이 적용되어 다음 결제 날짜가 {oldBillingDate} 에서 {newBillingDate} 로 조정되었습니다.";
+    f_MembershipChangeComplete_Benefit: "Your membership has been updated from {oldMembership} to {newMembership}" | "맴버십이 {oldMembership}에서 {newMembership}(으)로 변경되었습니다";
 }

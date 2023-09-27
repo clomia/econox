@@ -4,6 +4,7 @@ import time
 import base64
 import asyncio
 from uuid import uuid4
+from datetime import datetime
 from typing import List, Awaitable, Callable, TypeVar
 from functools import partial
 
@@ -15,9 +16,36 @@ from fastapi import routing, HTTPException, Request, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from backend import db
+from backend.math import utcstr2datetime
 from backend.system import SECRETS, log, run_async
 
 T = TypeVar("T")
+
+
+async def pooling(
+    target: Awaitable[T],
+    inspecter: Callable[[T], bool] = lambda _: True,
+    exceptions: tuple | Exception = tuple(),
+    timeout: int = 15,
+):
+    """
+    - 조건을 만족하는 반환값이 나올때까지 함수를 재실행합니다.
+    - target: 무결성이 보장되어야 하는 대상 함수 (Async I/O Bound Function)
+    - inspecter: target함수의 반환값을 검사하는 함수 - bool을 반환해야 함
+    - exceptions: target 함수에서 발생될 예외중 무시할 예외들
+    - timeout: 재시도 시간제한(초)
+        - timeout 초과시 AssertionError가 발생합니다.
+    - 비동기 함수를 대상으로 하는 비동기 함수이므로 await 빼먹지 않도록 주의
+    """
+    start = time.time()
+    while time.time() < start + timeout:
+        try:
+            if inspecter(result := await target()):
+                return result
+        except exceptions:
+            continue
+    assert inspecter(result := await target())
+    return result
 
 
 class CognitoToken:
@@ -361,6 +389,16 @@ class PayPalAPI:
             return await self._execute_request(request, retry=partial(self.get, params))
 
 
+async def get_paypal_next_billing_date(subscription_id: str) -> datetime:
+    target_api = f"/v1/billing/subscriptions/{subscription_id}"
+    subscription = await pooling(
+        target=PayPalAPI(target_api).get,
+        inspecter=lambda results: results["status"] == "ACTIVE",
+        timeout=30,
+    )
+    return utcstr2datetime(subscription["billing_info"]["next_billing_time"])
+
+
 class PayPalWebhookAuth:
     def __init__(self, event_type: str):
         self.event_type = event_type
@@ -391,29 +429,3 @@ class PayPalWebhookAuth:
                 f"\n[Header]:{dict(event.headers)}\n[Body]: {body}\n[Error] {type(e).__name__}: {e}"
             )
             raise HTTPException(status_code=401, detail="Event verification failed")
-
-
-async def pooling(
-    target: Awaitable[T],
-    inspecter: Callable[[T], bool] = lambda _: True,
-    exceptions: tuple | Exception = tuple(),
-    timeout: int = 15,
-):
-    """
-    - 조건을 만족하는 반환값이 나올때까지 함수를 재실행합니다.
-    - target: 무결성이 보장되어야 하는 대상 함수 (Async I/O Bound Function)
-    - inspecter: target함수의 반환값을 검사하는 함수 - bool을 반환해야 함
-    - exceptions: target 함수에서 발생될 예외중 무시할 예외들
-    - timeout: 재시도 시간제한(초)
-        - timeout 초과시 AssertionError가 발생합니다.
-    - 비동기 함수를 대상으로 하는 비동기 함수이므로 await 빼먹지 않도록 주의
-    """
-    start = time.time()
-    while time.time() < start + timeout:
-        try:
-            if inspecter(result := await target()):
-                return result
-        except exceptions:
-            continue
-    assert inspecter(result := await target())
-    return result

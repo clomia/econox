@@ -2,16 +2,12 @@
     import { format, logout } from "../../modules/functions";
     import { Text, UserInfo } from "../../modules/state";
     import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
+    import NameButton from "./NameButton.svelte";
+    import PasswordButton from "./PasswordButton.svelte";
+    import MembershipButton from "./MembershipButton.svelte";
     import type { UserDetail } from "../../modules/state";
 
     const userDetail = $UserInfo as UserDetail;
-
-    const widgets = {
-        changeName: false,
-        changePassword: false,
-        changeMembership: false,
-        changePaymentMethod: false,
-    };
 
     const membershipString = {
         basic: $Text.BasicPlan,
@@ -30,7 +26,7 @@
     };
 
     /**
-     * 금액을 표현하는 문자열을 언어에 맞게 변환
+     *  언어에 맞게 금액을 표현하는 문자열을 변환
      */
     const amountString = (amount: number): string => {
         const str = userDetail["billing"]["currency"] === "KRW" ? $Text.f_KRW : $Text.f_USD;
@@ -49,7 +45,7 @@
 
     /**
      * 맴버십 이름을 간결하게 표현
-     * 다 Econox Basic Membership 이런식이라 앞에 Econox를 뺌
+     * API 사용되는 네이밍이 Econox Basic Membership 이런식이라 앞에 Econox를 뺌
      */
     const membershipNameString = (str: string): string => {
         return str.split(" ").slice(1).join(" ");
@@ -81,28 +77,20 @@
     <section class="setting">
         <div class="setting__info">
             <div class="label-text">{$Text.Membership}</div>
-            <button class="btn" on:click={() => (widgets.changeMembership = true)}>
-                <div class="btn-text">{currentMembership}</div>
-                <div class="btn-wrap">{$Text.Change}</div>
-            </button>
+            <MembershipButton />
         </div>
         <div class="setting__info">
             <div class="label-text">{$Text.Name}</div>
-            <button class="btn" on:click={() => (widgets.changeName = true)}>
-                <div class="btn-text">{userDetail["name"]}</div>
-                <div class="btn-wrap">{$Text.Change}</div>
-            </button>
+            <NameButton />
         </div>
         <div class="setting__btn">
-            <button class="btn" on:click={() => (widgets.changePassword = true)}
-                >{$Text.ChangePassword}</button
-            >
+            <PasswordButton />
         </div>
     </section>
     <section class="setting">
         <div class="setting__info card">
             <div class="label-text">{$Text.PaymentMethod}</div>
-            <button class="btn payment-method" on:click={() => (widgets.changePaymentMethod = true)}>
+            <button class="btn payment-method">
                 <div class="btn-text">{currentBillingMethod}</div>
                 <div class="btn-wrap">{$Text.Change}</div>
             </button>
@@ -143,8 +131,6 @@
         {/if}
     </section>
 </main>
-
-{#if widgets.changeMembership}이런식으로 위젯들 렌더링{/if}
 
 <style>
     * {

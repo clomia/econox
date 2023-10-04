@@ -1,5 +1,8 @@
 <script lang="ts">
+    import Swal from "sweetalert2";
     import DefaultLoader from "../../assets/animation/DefaultLoader.svelte";
+    import { format, defaultSwalStyle, timeString } from "../../modules/functions";
+    import { api } from "../../modules/request";
     import { Text, UserInfo } from "../../modules/state";
     import type { UserDetail } from "../../modules/state";
 
@@ -8,20 +11,139 @@
         basic: $Text.BasicPlan,
         professional: $Text.ProfessionalPlan,
     };
-    const membership = membershipMapping[userDetail["membership"]];
 
     let membershipWidgetOn = false;
     let membershipChangeLoader = false;
 
-    const membershipChange = (to: "basic" | "professional") => {
-        return () => {
-            console.log("맴버십 체인지!");
+    const SwalStyle = {
+        ...defaultSwalStyle,
+        confirmButtonText: $Text.Submit,
+        denyButtonText: $Text.Cancel,
+    };
+
+    const ToastStyle = {
+        width: "30rem",
+        toast: true,
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+    };
+
+    // 아래 변수는 트랜젝션 내역 여부 확인에도 사용함 currentBilling이 없으면 undefined이니까
+    const currentBillingMethod: string | undefined = userDetail["billing"]["transactions"][0]?.["method"];
+    const nextBillingDate = new Date(userDetail["next_billing_date"]);
+    const currentDate = new Date();
+    const todayIsNextBillingDate =
+        nextBillingDate.getDate() === currentDate.getDate() &&
+        nextBillingDate.getMonth() === currentDate.getMonth() &&
+        nextBillingDate.getFullYear() === currentDate.getFullYear();
+
+    /**
+     * 사용자의 결제정보 수정 가능 여부를 알려줍니다.
+     * 결제 정보 수정 불가 시, 관련 알람을 띄우고 false를 반환합니다.
+     * @returns 결제정보 수정 가능 여부
+     */
+    const billingChangeAvailableCheck = async (): Promise<boolean> => {
+        if (userDetail["billing"]["currency"] === "USD" && userDetail["billing"]["registered"]) {
+            // PayPal 결제수단이 성공적으로 등록된 유저
+            if (todayIsNextBillingDate) {
+                // 오늘이 결제 예정일인 경우 변경 불가함 (웹훅 딜레이 길어서 위험함)
+                await Swal.fire({
+                    ...ToastStyle,
+                    position: "top",
+                    title: $Text.PaymentMethod_ChangeNotAllow_DueDate,
+                });
+            } else if (!currentBillingMethod) {
+                // 결제 내역이 아직 없음
+                await Swal.fire({
+                    ...ToastStyle,
+                    position: "top",
+                    title: $Text.PaymentMethod_ChangeNotAllow_Waiting,
+                });
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
+        return false;
+    };
+
+    const requestProcess = async (target: "basic" | "professional", body: object) => {
+        try {
+            membershipChangeLoader = true;
+            const resp = await api.private.patch("/user/membership", body);
+            membershipChangeLoader = false;
+            membershipWidgetOn = false;
+            let alertText: string;
+            if (userDetail["billing"]["registered"]) {
+                alertText = format($Text.f_MembershipChangeComplete, {
+                    oldMembership: membershipMapping[userDetail["membership"]],
+                    newMembership: membershipMapping[target],
+                    oldBillingDate: timeString(userDetail["next_billing_date"]),
+                    newBillingDate: timeString(resp.data["adjusted_next_billing"]),
+                });
+            } else {
+                alertText = format($Text.f_MembershipChangeComplete_Benefit, {
+                    oldMembership: membershipMapping[userDetail["membership"]],
+                    newMembership: membershipMapping[target],
+                });
+            }
+            await Swal.fire({
+                ...SwalStyle,
+                width: "35rem",
+                showDenyButton: false,
+                text: alertText,
+                icon: "success",
+                confirmButtonText: $Text.Ok,
+                showLoaderOnConfirm: false,
+            });
+            location.reload();
+        } catch {
+            await Swal.fire({
+                ...ToastStyle,
+                position: "top",
+                title: $Text.UnexpectedError,
+            });
+        }
+    };
+
+    const membershipChange = (target: "basic" | "professional") => {
+        return async () => {
+            if (membershipChangeLoader) {
+                // 이미 전송된 동일한 요청을 계속 보내지 못하도록
+                return await Swal.fire({
+                    ...ToastStyle,
+                    position: "top",
+                    title: $Text.AlreadyProgressPleaseWait,
+                });
+            } else if (target === userDetail["membership"]) {
+                // 이미 적용된 맴버십인 경우 알림창
+                return await Swal.fire({
+                    ...ToastStyle,
+                    position: "top",
+                    title: format($Text.f_AlreadyAppliedMembership, {
+                        membership: membershipMapping[userDetail["membership"]],
+                    }),
+                });
+            }
+            const available = await billingChangeAvailableCheck();
+            if (!available) {
+                return;
+            } else if (userDetail["billing"]["currency"] === "USD" && userDetail["billing"]["registered"]) {
+                // -> PayPal!
+                const plans = (await api.public.get("/paypal/plans")).data;
+                console.log("initializePaypalButton 어쩌고");
+            } else {
+                // -> Toss! or 무료체험
+                await requestProcess(target, { new_membership: target });
+            }
         };
     };
 </script>
 
 <button class="btn" on:click={() => (membershipWidgetOn = true)}>
-    <div class="btn-text">{membership}</div>
+    <div class="btn-text">{membershipMapping[userDetail["membership"]]}</div>
     <div class="btn-wrap">{$Text.Change}</div>
 </button>
 

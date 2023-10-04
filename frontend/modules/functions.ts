@@ -47,6 +47,7 @@ export const secondToString = (time: number) => {
     return `${minutes}:${seconds}`;
 };
 
+
 export const isLoggedIn = async (): Promise<boolean> => {
     const [cognitoToken, cognitoRefreshToken] = await Promise.all([
         settingObjectStore.get("cognitoToken"),
@@ -54,6 +55,17 @@ export const isLoggedIn = async (): Promise<boolean> => {
     ])
     return cognitoToken && cognitoRefreshToken
 }
+
+/**
+ * 2023-09-26T07:04:20.000Z 형식의 문자열을 받아 브라우저 시간대에 맞는 연.월.일 문자열 반환
+ */
+export const timeString = (str: string) => {
+    const date = new Date(str);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    return `${year}.${month}.${day}`;
+};
 
 /**
  * 페이지가 처음 로드될 때 한번 작동되는 함수입니다.

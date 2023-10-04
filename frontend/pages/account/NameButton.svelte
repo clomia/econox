@@ -48,7 +48,7 @@
         align-items: center;
         width: 100%;
         height: 2.5rem;
-        border: solid thin var(--white);
+        border: thin solid var(--border-white);
         border-radius: 0.5rem;
         color: var(--white);
         position: relative;

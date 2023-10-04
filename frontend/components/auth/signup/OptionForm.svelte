@@ -73,7 +73,7 @@
     .basic,
     .professional {
         color: var(--white);
-        border: thin solid var(--white);
+        border: thin solid var(--border-white);
         border-radius: 1rem;
         padding: 1.2rem;
         width: 100%;

@@ -2,6 +2,7 @@
 
 :root {
 	--white: rgba(255, 255, 255, 0.75);
+	--border-white: rgba(255, 255, 255, 0.4);
 	--background: linear-gradient(to bottom, #202123, #1f3036);
 	--widget-background: linear-gradient(to bottom, #2e2f32, rgb(32, 49, 55));
 }

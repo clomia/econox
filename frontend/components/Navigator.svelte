@@ -55,7 +55,7 @@
         width: 10rem;
         height: 2.4rem;
         color: var(--white);
-        border: solid var(--white) thin;
+        border: thin solid var(--border-white);
         border-radius: 2rem;
         position: relative;
     }

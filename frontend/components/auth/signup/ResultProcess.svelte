@@ -195,7 +195,7 @@
     }
     button {
         padding: 0.5rem 2rem;
-        border: thin solid var(--white);
+        border: thin solid var(--border-white);
         border-radius: 1rem;
         color: var(--white);
     }

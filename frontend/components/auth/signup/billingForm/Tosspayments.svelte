@@ -131,7 +131,7 @@
     .card-number input {
         width: 100%;
         height: 2.5rem;
-        border: thin solid var(--white);
+        border: thin solid var(--border-white);
         border-radius: 2rem;
         text-align: center;
         letter-spacing: 0.3rem;
@@ -168,7 +168,7 @@
     .card-detail__expiry input {
         height: 2.5rem;
         color: var(--white);
-        border: thin solid var(--white);
+        border: thin solid var(--border-white);
         border-radius: 1rem;
         text-align: center;
         letter-spacing: 0.2rem;
@@ -194,7 +194,7 @@
         position: relative;
         height: 2.5rem;
         width: 100%;
-        border: thin solid var(--white);
+        border: thin solid var(--border-white);
         border-radius: 1rem;
         display: flex;
         justify-content: space-around;
@@ -206,7 +206,7 @@
         top: 0;
         width: 50%;
         height: 2.4rem;
-        border: thin solid var(--white);
+        border: thin solid var(--border-white);
         border-radius: 1rem;
         transition: left 200ms;
     }
@@ -227,7 +227,7 @@
         justify-content: space-between;
     }
     .owner-id input {
-        border: thin solid var(--white);
+        border: thin solid var(--border-white);
         border-radius: 1rem;
         width: 100%;
         height: 2.5rem;
@@ -246,7 +246,7 @@
         color: var(--white);
         width: 10rem;
         height: 2.5rem;
-        border: thin solid var(--white);
+        border: thin solid var(--border-white);
         border-radius: 1rem;
         position: absolute;
         bottom: 0;

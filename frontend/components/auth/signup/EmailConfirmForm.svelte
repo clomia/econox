@@ -111,7 +111,7 @@
     input {
         width: 100%;
         height: 2.5rem;
-        border: solid thin var(--white);
+        border: thin solid var(--border-white);
         border-radius: 0.7rem;
         color: var(--white);
         padding: 0 1rem;
@@ -134,7 +134,7 @@
         align-items: center;
         width: 10rem;
         height: 2.5rem;
-        border: solid thin var(--white);
+        border: thin solid var(--border-white);
         border-radius: 0.7rem;
         color: var(--white);
     }

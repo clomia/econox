@@ -92,7 +92,7 @@
     select {
         width: 25rem;
         border-radius: 1rem;
-        border: solid thin var(--white);
+        border: thin solid var(--border-white);
         color: var(--white);
         margin: 0 0.5rem;
         padding: 0 1rem;
@@ -108,7 +108,7 @@
     label input {
         width: 25rem;
         border-radius: 1rem;
-        border: solid thin var(--white);
+        border: thin solid var(--border-white);
         color: var(--white);
         padding: 0 1rem;
         height: 3rem;
@@ -140,7 +140,7 @@
         color: var(--white);
         padding: 1rem 2rem;
         border-radius: 0.5rem;
-        border: solid thin var(--white);
+        border: thin solid var(--border-white);
         opacity: 0.8;
     }
     button:hover {

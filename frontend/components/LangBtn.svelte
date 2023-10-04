@@ -47,7 +47,7 @@
         width: 3rem;
         height: 3rem;
         border-radius: 0.5rem;
-        border: solid thin white;
+        border: thin solid var(--white);
         opacity: 0.6;
     }
     section button:hover {
@@ -58,7 +58,7 @@
         background: none;
         opacity: 0.6;
         border-radius: 0.5rem;
-        border: solid thin white;
+        border: thin solid var(--white);
         color: white;
         margin: 0 0.5rem;
         padding: 0 1rem;

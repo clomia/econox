@@ -168,7 +168,7 @@
     input {
         width: 100%;
         height: 2.5rem;
-        border: solid thin var(--white);
+        border: thin solid var(--border-white);
         border-radius: 0.7rem;
         color: var(--white);
         text-align: center;
@@ -186,7 +186,7 @@
         align-items: center;
         width: 15rem;
         height: 2.5rem;
-        border: solid thin var(--white);
+        border: thin solid var(--border-white);
         border-radius: 1rem;
         color: var(--white);
         margin-top: 1.4rem;

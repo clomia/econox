@@ -28,6 +28,7 @@ export interface UiText {
     Membership: "Membership" | "맴버십";
     SelectMembership: "Select Membership" | "맴버십 선택";
     SelectMembershipSubtitle: "New members receive their chosen membership free for the first month with no charge!" | "첫 회원가입 고객을 대상으로 선택한 맴버십이 첫 한달간 결제 없이 무료로 제공됩니다!";
+    ChangeMembership: "Change Membership" | "맴버십 변경";
     BasicPlan: "Basic" | "일반";
     BasicPlanDollerPrice: "$9.99/month" | "$9.99/월";
     BasicPlanWonPrice: "₩11,900/month" | "11,900원/월";

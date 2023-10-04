@@ -160,7 +160,7 @@
     <div class="membership-options">
         <div class="membership-options__membrane" />
         <main>
-            <div class="membership-options__title">{$Text.SelectMembership}</div>
+            <div class="membership-options__title">{$Text.ChangeMembership}</div>
             <button
                 class="membership-options__basic"
                 class:membership-options__current={userDetail["membership"] === "basic"}

@@ -77,6 +77,9 @@ SelectMembership:
 SelectMembershipSubtitle:
   en: "New members receive their chosen membership free for the first month with no charge!"
   ko: "첫 회원가입 고객을 대상으로 선택한 맴버십이 첫 한달간 결제 없이 무료로 제공됩니다!"
+ChangeMembership:
+  en: "Change Membership"
+  ko: "맴버십 변경"
 BasicPlan:
   en: "Basic"
   ko: "일반"

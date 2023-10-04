@@ -1,10 +1,11 @@
 <script lang="ts">
-    import { format, logout, timeString } from "../../modules/functions";
+    import { format, logout, timeString, paymentMethodString } from "../../modules/functions";
     import { Text, UserInfo } from "../../modules/state";
     import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
     import NameButton from "./NameButton.svelte";
     import PasswordButton from "./PasswordButton.svelte";
     import MembershipButton from "./MembershipButton.svelte";
+    import PaymentMethodButton from "./PaymentMethodButton.svelte";
     import type { UserDetail } from "../../modules/state";
 
     const userDetail = $UserInfo as UserDetail;
@@ -18,16 +19,6 @@
     };
 
     /**
-     * 결제수단을 표현하는 문자열 반환
-     */
-    const paymentMethodString = (str: string): string => {
-        if (/^[0-9*]+$/.test(str)) {
-            return str.match(/.{1,4}/g)?.join(" ") || "";
-        }
-        return str;
-    };
-
-    /**
      * 맴버십 이름을 간결하게 표현
      * Econox Basic Membership 앞에 Econox를 제거
      */
@@ -35,19 +26,6 @@
         return str.split(" ").slice(1).join(" ");
     };
 
-    /**
-     * 현재 결제수단을 표현하는 문자열, 웹훅 대기중 또는 무료 혜택 적용중인 경우도 설명함
-     */
-    let currentBillingMethod: string;
-    if (userDetail["billing"]["transactions"][0]) {
-        currentBillingMethod = paymentMethodString(userDetail["billing"]["transactions"][0]["method"]);
-    } else {
-        if (userDetail["billing"]["registered"]) {
-            currentBillingMethod = $Text.PaymentMethod_Waiting;
-        } else {
-            currentBillingMethod = $Text.PaymentMethod_Benefit;
-        }
-    }
     const transactions = userDetail.billing.transactions;
     const nextBillingDate = new Date(userDetail["next_billing_date"]);
 
@@ -73,10 +51,7 @@
     <section class="setting">
         <div class="setting__info card">
             <div class="label-text">{$Text.PaymentMethod}</div>
-            <button class="btn payment-method">
-                <div class="btn-text">{currentBillingMethod}</div>
-                <div class="btn-wrap">{$Text.Change}</div>
-            </button>
+            <PaymentMethodButton />
         </div>
         <div class="setting__btn">
             <button class="btn" on:click={logout}>{$Text.Logout}</button>
@@ -141,25 +116,10 @@
         color: var(--white);
         position: relative;
     }
-    .btn-wrap {
-        position: absolute;
-        display: none;
-        width: 100%;
-        height: 100%;
-    }
     .btn:hover {
         cursor: pointer;
         background-color: rgba(255, 255, 255, 0.2);
     }
-    .btn:hover .btn-text {
-        display: none;
-    }
-    .btn:hover .btn-wrap {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
     .setting__info:hover .label-text {
         opacity: 1;
     }

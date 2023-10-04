@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
     import Swal from "sweetalert2";
     import { api } from "../../../modules/request";
-    import { login, format } from "../../../modules/functions";
+    import { login, format, defaultToastStyle } from "../../../modules/functions";
     import { Text, auth } from "../../../modules/state";
     import TextLoader from "../../../assets/animation/TextLoader.svelte";
     import Wellcome from "../../../assets/animation/Wellcome.svelte";
@@ -78,12 +78,9 @@
     const focusOnExitBtnAlert = async (event: Event) => {
         if (animationEnd && event.target !== sucessBtn) {
             Swal.fire({
-                title: $Text.ClickLogin_for_SignupComplete,
-                toast: true,
+                ...defaultToastStyle,
                 position: "top",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
+                title: $Text.ClickLogin_for_SignupComplete,
             });
         }
     };

@@ -109,3 +109,11 @@ export const defaultSwalStyle = {
     denyButtonColor: "rgba(255,255,255,0.05)",
     reverseButtons: true,
 };
+
+export const defaultToastStyle = {
+    width: "31rem",
+    toast: true,
+    showConfirmButton: false,
+    timer: 2000,
+    timerProgressBar: true,
+};

@@ -15,11 +15,25 @@ async function loadPaypalScript(clientId: string): Promise<void> {
     });
 }
 
-export const paypalWidget = async (
-    planName: string,
-    startTime: string,
-    callback: (subscriptionID: string) => Promise<any>
-) => {
+interface PaypalWidgetOptions {
+    planName: "basic" | "professional";
+    startTime?: string | null;
+    onApprove?: (subscriptionID: string) => Promise<any>;
+    onLoad?: () => void;
+}
+
+/**
+ * 
+ * @param startTime 청구 시작일시(ISO-8601), 기본값: 즉시
+ * @param onApprove 작업 완료 후 호출될 함수, 구독 id를 인자로 받아야 함
+ * @param onLoad 위젯 로딩 후 호출될 함수
+ */
+export const paypalWidget = async ({
+    planName,
+    startTime = null,
+    onApprove = async () => { },
+    onLoad = () => { }
+}: PaypalWidgetOptions) => {
     const resp = await api.public.get('/paypal/plans');
     const clientId = resp.data['client_id'];
     const planId = resp.data['plan_id'][planName];
@@ -87,7 +101,7 @@ export const paypalWidget = async (
     (window as any).paypal.Buttons({
         style: {
             shape: 'rect',
-            color: 'silver',
+            color: 'black',
             layout: 'vertical',
             label: 'paypal',
         },
@@ -99,7 +113,8 @@ export const paypalWidget = async (
         },
         onApprove: async (data: any, actions: any) => {
             document.body.removeChild(paypalGround);
-            await callback(data.subscriptionID);
+            await onApprove(data.subscriptionID);
         },
     }).render(`#${paypalButton.id}`);
+    onLoad();
 }

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { format, logout } from "../../modules/functions";
+    import { format, logout, timeString } from "../../modules/functions";
     import { Text, UserInfo } from "../../modules/state";
     import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
     import NameButton from "./NameButton.svelte";
@@ -8,22 +8,6 @@
     import type { UserDetail } from "../../modules/state";
 
     const userDetail = $UserInfo as UserDetail;
-
-    const membershipString = {
-        basic: $Text.BasicPlan,
-        professional: $Text.ProfessionalPlan,
-    };
-
-    /**
-     * 서버가 전송한 ISO 8601 문자열을 사용자 시간대에 맞는 연.월.일 문자열로 변환
-     */
-    const timeString = (str: string): string => {
-        const date = new Date(str);
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, "0");
-        const day = date.getDate().toString().padStart(2, "0");
-        return `${year}.${month}.${day}`;
-    };
 
     /**
      *  언어에 맞게 금액을 표현하는 문자열을 변환
@@ -45,14 +29,14 @@
 
     /**
      * 맴버십 이름을 간결하게 표현
-     * API 사용되는 네이밍이 Econox Basic Membership 이런식이라 앞에 Econox를 뺌
+     * Econox Basic Membership 앞에 Econox를 제거
      */
     const membershipNameString = (str: string): string => {
         return str.split(" ").slice(1).join(" ");
     };
 
     /**
-     * 현재 결제수단을 표현하는 문자열, 확인중 또는 혜택중인 경우도 설명함
+     * 현재 결제수단을 표현하는 문자열, 웹훅 대기중 또는 무료 혜택 적용중인 경우도 설명함
      */
     let currentBillingMethod: string;
     if (userDetail["billing"]["transactions"][0]) {
@@ -64,7 +48,6 @@
             currentBillingMethod = $Text.PaymentMethod_Benefit;
         }
     }
-    const currentMembership = membershipString[userDetail["membership"]];
     const transactions = userDetail.billing.transactions;
     const nextBillingDate = new Date(userDetail["next_billing_date"]);
 

@@ -2,7 +2,7 @@
     import Swal from "sweetalert2";
     import DefaultLoader from "../../assets/animation/DefaultLoader.svelte";
     import { paypalWidget } from "../../modules/paypal";
-    import { format, defaultSwalStyle, timeString } from "../../modules/functions";
+    import { format, defaultSwalStyle, defaultToastStyle, timeString } from "../../modules/functions";
     import { api } from "../../modules/request";
     import { Text, UserInfo } from "../../modules/state";
     import type { UserDetail } from "../../modules/state";
@@ -20,14 +20,6 @@
         ...defaultSwalStyle,
         confirmButtonText: $Text.Submit,
         denyButtonText: $Text.Cancel,
-    };
-
-    const ToastStyle = {
-        width: "30rem",
-        toast: true,
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
     };
 
     // 아래 변수는 트랜젝션 내역 여부 확인에도 사용함 currentBilling이 없으면 undefined이니까
@@ -50,14 +42,14 @@
             if (todayIsNextBillingDate) {
                 // 오늘이 결제 예정일인 경우 변경 불가함 (웹훅 딜레이 길어서 위험함)
                 await Swal.fire({
-                    ...ToastStyle,
+                    ...defaultToastStyle,
                     position: "top",
                     title: $Text.PaymentMethod_ChangeNotAllow_DueDate,
                 });
             } else if (!currentBillingMethod) {
                 // 결제 내역이 아직 없음
                 await Swal.fire({
-                    ...ToastStyle,
+                    ...defaultToastStyle,
                     position: "top",
                     title: $Text.PaymentMethod_ChangeNotAllow_Waiting,
                 });
@@ -102,7 +94,7 @@
             location.reload();
         } catch {
             await Swal.fire({
-                ...ToastStyle,
+                ...defaultToastStyle,
                 position: "top",
                 title: $Text.UnexpectedError,
             });
@@ -114,14 +106,14 @@
             if (membershipChangeLoader) {
                 // 이미 전송된 동일한 요청을 계속 보내지 못하도록
                 return await Swal.fire({
-                    ...ToastStyle,
+                    ...defaultToastStyle,
                     position: "top",
                     title: $Text.AlreadyProgressPleaseWait,
                 });
             } else if (target === userDetail["membership"]) {
                 // 이미 적용된 맴버십인 경우 알림창
                 return await Swal.fire({
-                    ...ToastStyle,
+                    ...defaultToastStyle,
                     position: "top",
                     title: format($Text.f_AlreadyAppliedMembership, {
                         membership: membershipMapping[userDetail["membership"]],
@@ -138,12 +130,18 @@
                     params: { new_membership: target },
                 });
                 const startTime: string = resp.data["next_billing_date"];
-                membershipChangeLoader = false;
-                await paypalWidget(target, startTime, async (subscriptionId) => {
-                    await requestProcess(target, {
-                        new_membership: target,
-                        paypal_subscription_id: subscriptionId,
-                    });
+                await paypalWidget({
+                    planName: target,
+                    startTime: startTime,
+                    onApprove: async (subscriptionId: string) => {
+                        await requestProcess(target, {
+                            new_membership: target,
+                            paypal_subscription_id: subscriptionId,
+                        });
+                    },
+                    onLoad: () => {
+                        membershipChangeLoader = false;
+                    },
                 });
             } else {
                 // -> Toss! or 무료체험

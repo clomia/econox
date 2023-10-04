@@ -253,6 +253,9 @@ PaymentMethod_ChangeNotAllow_DueDate:
 PaymentMethod_ChangeNotAllow_Waiting:
   en: "No changes allowed while payment method is being verified. Please try again in a moment"
   ko: "결제수단 확인 중에는 변경할 수 없습니다 잠시 후 다시 시도해주세요"
+PaymentMethod_ChangeCompleted:
+  en: "Done! We've successfully changed your payment method"
+  ko: "결제수단이 변경되었습니다"
 AlreadyProgressPleaseWait:
   en: "Your request is already in progress. Please wait a moment"
   ko: "요청이 이미 처리 중입니다. 잠시만 기다려주세요"

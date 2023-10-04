@@ -74,7 +74,7 @@ async def calculation_of_next_billing_date_according_to_membership_change(
     - PayPal 유저의 맴버십 변경 시 PATCH /api/user/membership 호출 이전에 이 API로 구독 시작일을 계산한 뒤
         브라우저에서 SDK를 통해 구독을 생성해야 함
     - Response: PayPal Create subscription API의 start_time 매개변수로 넣어줘야 하는 날짜 조정값
-        - next_billing_date:
+        - adjusted_next_billing:
             - PATCH /api/user/membership 호출 시 사용
             - PayPal SDK 생성 시 start_time 매개변수로 사용
     """
@@ -116,7 +116,7 @@ async def calculation_of_next_billing_date_according_to_membership_change(
         adjusted_next_billing = calc_next_billing_date(
             base=origin_billing_date, current=current_billing_date
         )
-    return {"next_billing_date": datetime2utcstr(adjusted_next_billing)}
+    return {"adjusted_next_billing": datetime2utcstr(adjusted_next_billing)}
 
 
 @webhook.public.post(

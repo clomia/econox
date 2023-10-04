@@ -408,7 +408,7 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
         base_billing_date,
         current_billing_date,
         next_billing_date,
-        paypal_subscription_id,
+        current_paypal_subscription_id,
     ) = await db.exec(
         template=db.Template(table="users").select_query(
             "membership",
@@ -459,7 +459,7 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
 
             cancel_reason = "A new subscription has been created to apply the difference due to the change in the plan."
             await PayPalAPI(  # 기존 구독 비활성화
-                f"/v1/billing/subscriptions/{paypal_subscription_id}/cancel"
+                f"/v1/billing/subscriptions/{current_paypal_subscription_id}/cancel"
             ).post({"reason": cancel_reason})
 
             await db.exec(
@@ -499,7 +499,7 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
 
             cancel_reason = "A new subscription has been created to apply the difference due to the change in the plan."
             await PayPalAPI(  # 기존 구독 비활성화
-                f"/v1/billing/subscriptions/{paypal_subscription_id}/cancel"
+                f"/v1/billing/subscriptions/{current_paypal_subscription_id}/cancel"
             ).post({"reason": cancel_reason})
 
             await db.exec(
@@ -531,7 +531,7 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
 
 class PaymentMethodInfo(BaseModel):
     tosspayments: TosspaymentsBillingInfo | None = None
-    paypal: PaypalBillingInfo | None = None
+    paypal_subscription_id: str = None
 
 
 @router.private.patch("/payment-method")
@@ -568,18 +568,20 @@ async def change_payment_method(item: PaymentMethodInfo, user=router.private.aut
             "UPDATE users SET tosspayments_billing_key={billing_key} WHERE id={user_id}",
             params={"billing_key": billing_key, "user_id": user["id"]},
         )
-    elif currency == "USD" and item.paypal:  # 페이팔 빌링
+    elif currency == "USD" and item.paypal_subscription_id:  # 페이팔 빌링
         try:
-            subscription = await pooling(
-                target=PayPalAPI(  # subscription 유효성 확인
-                    f"/v1/billing/subscriptions/{item.paypal.subscription}"
-                ).get,
-                inspecter=lambda subscription: subscription["status"] == "ACTIVE",
-                timeout=30,  # 조건이 만족될때까지 최대 30초 재시도합니다.
-            )  # timeout이 초과되어도 조건이 만족되지 않으면 AssertionError
-            next_billing = utcstr2datetime(
-                subscription["billing_info"]["next_billing_time"]
+            next_billing = await get_paypal_next_billing_date(
+                item.paypal_subscription_id
             )
+            current_paypal_subscription_id, *_ = await db.exec(
+                template=db.Template("users").select_query(
+                    "paypal_subscription_id", where={"id": user["id"]}
+                ),
+                embed=True,
+            )
+            await PayPalAPI(  # 기존 구독 비활성화
+                f"/v1/billing/subscriptions/{current_paypal_subscription_id}/cancel"
+            ).post({"reason": "Change payment method"})
         except (AssertionError, httpx.HTTPStatusError):
             raise HTTPException(
                 status_code=402,
@@ -592,7 +594,7 @@ async def change_payment_method(item: PaymentMethodInfo, user=router.private.aut
             WHERE id={user_id}
             """,
             params={
-                "subscription": item.paypal.subscription,
+                "subscription": item.paypal_subscription_id,
                 "next_billing": next_billing,
                 "user_id": user["id"],
             },

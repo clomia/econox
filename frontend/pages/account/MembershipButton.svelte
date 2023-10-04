@@ -129,7 +129,7 @@
                 const resp = await api.private.get("/paypal/membership-change-subscription-start-time", {
                     params: { new_membership: target },
                 });
-                const startTime: string = resp.data["next_billing_date"];
+                const startTime: string = resp.data["adjusted_next_billing"];
                 await paypalWidget({
                     planName: target,
                     startTime: startTime,
@@ -149,6 +149,9 @@
             }
         };
     };
+
+    // 위젯 떳을 때 스크롤 잠구기
+    $: document.body.style.overflow = membershipWidgetOn ? "hidden" : "";
 </script>
 
 <button class="btn" on:click={() => (membershipWidgetOn = true)}>

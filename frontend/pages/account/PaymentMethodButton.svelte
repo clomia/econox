@@ -1,12 +1,13 @@
 <script lang="ts">
     import Swal from "sweetalert2";
-    import { paymentMethodString, defaultToastStyle } from "../../modules/functions";
+    import CircleLoader from "../../assets/animation/CircleLoader.svelte";
+    import { api } from "../../modules/request";
+    import { paymentMethodString, defaultToastStyle, defaultSwalStyle } from "../../modules/functions";
     import { paypalWidget } from "../../modules/paypal";
     import { UserInfo, Text } from "../../modules/state";
     import type { UserDetail } from "../../modules/state";
 
     const userDetail = $UserInfo as UserDetail;
-    let paymentWidgetOn = false;
 
     // 아래 변수는 트랜젝션 내역 여부 확인에도 사용함 currentBilling이 없으면 undefined이니까
     const currentBillingMethod: string | undefined = userDetail["billing"]["transactions"][0]?.["method"];
@@ -48,6 +49,58 @@
         return false;
     };
 
+    let tosspaymentsWidgetOn = false;
+    let loading = false;
+
+    const SwalStyle = {
+        ...defaultSwalStyle,
+        confirmButtonText: $Text.Submit,
+        denyButtonText: $Text.Cancel,
+    };
+
+    const widget = async () => {
+        const available = await billingChangeAvailableCheck();
+        if (!available) {
+            return;
+        } else if (!userDetail["billing"]["registered"]) {
+            await Swal.fire({
+                ...defaultToastStyle,
+                position: "top",
+                title: "결제수단이 없음",
+            });
+        } else if (userDetail["billing"]["currency"] === "USD") {
+            // -> PayPal!
+            loading = true;
+            await paypalWidget({
+                planName: userDetail["membership"],
+                startTime: userDetail["next_billing_date"],
+                onApprove: async (subscriptionId: string) => {
+                    loading = true;
+                    await api.private.patch("/user/payment-method", {
+                        paypal_subscription_id: subscriptionId,
+                    });
+                    loading = false;
+                    await Swal.fire({
+                        ...SwalStyle,
+                        width: "35rem",
+                        showDenyButton: false,
+                        text: $Text.PaymentMethod_ChangeCompleted,
+                        icon: "success",
+                        confirmButtonText: $Text.Ok,
+                        showLoaderOnConfirm: false,
+                    });
+                    location.reload();
+                },
+                onLoad: () => {
+                    loading = false;
+                },
+            });
+        } else if (userDetail["billing"]["currency"] === "KRW") {
+            // -> Tosspayments
+            tosspaymentsWidgetOn = true;
+        }
+    };
+
     let currentBillingMethodString: string;
     if (userDetail["billing"]["transactions"][0]) {
         currentBillingMethodString = paymentMethodString(userDetail["billing"]["transactions"][0]["method"]);
@@ -58,15 +111,24 @@
             currentBillingMethodString = $Text.PaymentMethod_Benefit;
         }
     }
+
+    // 위젯이 떠있거나 로딩중일 때 스크롤 잠구기
+    $: document.body.style.overflow = loading || tosspaymentsWidgetOn ? "hidden" : "";
 </script>
 
-<button class="btn payment-method" on:click={() => (paymentWidgetOn = true)}>
+<button class="btn payment-method" on:click={widget}>
     <div class="btn-text">{currentBillingMethodString}</div>
     <div class="btn-wrap">{$Text.Change}</div>
 </button>
 
-{#if paymentWidgetOn}
+{#if tosspaymentsWidgetOn}
     <div>새로운 결제수단을 입력해주세요</div>
+{/if}
+
+{#if loading}
+    <div class="loader">
+        <CircleLoader />
+    </div>
 {/if}
 
 <style>
@@ -101,5 +163,18 @@
     }
     .payment-method {
         letter-spacing: 0.07rem;
+    }
+
+    .loader {
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        background-color: rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 </style>

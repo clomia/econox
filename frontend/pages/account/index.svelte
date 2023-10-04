@@ -136,6 +136,7 @@
     }
     .email {
         margin-top: 2rem;
+        opacity: 0.4;
     }
     .setting {
         display: flex;

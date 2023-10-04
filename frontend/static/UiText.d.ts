@@ -84,6 +84,7 @@ export interface UiText {
     PaymentMethod_Benefit: "New Member Benefit Applied" | "첫 회원가입 혜택 적용중";
     PaymentMethod_ChangeNotAllow_DueDate: "No changes allowed on due date" | "결제 예정일에는 변경할 수 없습니다";
     PaymentMethod_ChangeNotAllow_Waiting: "No changes allowed while payment method is being verified. Please try again in a moment" | "결제수단 확인 중에는 변경할 수 없습니다 잠시 후 다시 시도해주세요";
+    PaymentMethod_ChangeCompleted: "Done! We've successfully changed your payment method" | "결제수단이 변경되었습니다";
     AlreadyProgressPleaseWait: "Your request is already in progress. Please wait a moment" | "요청이 이미 처리 중입니다. 잠시만 기다려주세요";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일 입니다";

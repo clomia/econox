@@ -408,6 +408,7 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
         base_billing_date,
         current_billing_date,
         next_billing_date,
+        paypal_subscription_id,
     ) = await db.exec(
         template=db.Template(table="users").select_query(
             "membership",
@@ -416,6 +417,7 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
             "base_billing_date",
             "current_billing_date",
             "next_billing_date",
+            "paypal_subscription_id",
             where={"id": user["id"]},
             limit=1,
         ),
@@ -451,10 +453,15 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
         adjusted_next_billing = next_billing_date
     elif origin_billing_date == base_billing_date:  # 이전에 결제된 맴버십을 다른것으로 변경하는 경우
         if currency == "USD" and item.paypal_subscription_id:
-            # PayPal -> 다음 청구 날짜는 PayPal로부터 확인
             adjusted_next_billing = await get_paypal_next_billing_date(
-                item.paypal_subscription_id
+                item.paypal_subscription_id  # 다음 청구 날짜는 이미 새로운 구독에 반영되어있음
             )
+
+            cancel_reason = "A new subscription has been created to apply the difference due to the change in the plan."
+            await PayPalAPI(  # 기존 구독 비활성화
+                f"/v1/billing/subscriptions/{paypal_subscription_id}/cancel"
+            ).post({"reason": cancel_reason})
+
             await db.exec(
                 update_query_paypal,
                 params={
@@ -462,7 +469,7 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
                     "base_billing_date": adjusted_next_billing,
                     "next_billing": adjusted_next_billing,
                     "user_id": user["id"],
-                    "subscription_id": item.paypal.subscription,
+                    "subscription_id": item.paypal_subscription_id,
                 },
             )
         elif currency == "KRW":
@@ -487,16 +494,22 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
     else:  # 결제가 이루어지기 전에, 기존 맴버십으로 롤백하는 경우
         if currency == "USD" and item.paypal_subscription_id:
             adjusted_next_billing = await get_paypal_next_billing_date(
-                item.paypal_subscription_id
+                item.paypal_subscription_id  # 다음 청구 날짜는 이미 새로운 구독에 반영되어있음
             )
+
+            cancel_reason = "A new subscription has been created to apply the difference due to the change in the plan."
+            await PayPalAPI(  # 기존 구독 비활성화
+                f"/v1/billing/subscriptions/{paypal_subscription_id}/cancel"
+            ).post({"reason": cancel_reason})
+
             await db.exec(
                 update_query_paypal,
                 params={
                     "new_membership": new_membership,
-                    "base_billing_date": origin_billing_date,
+                    "base_billing_date": origin_billing_date,  # 롤백
                     "next_billing": adjusted_next_billing,
                     "user_id": user["id"],
-                    "subscription_id": item.paypal.subscription,
+                    "subscription_id": item.paypal_subscription_id,
                 },
             )
         elif currency == "KRW":

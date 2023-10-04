@@ -193,7 +193,7 @@ class FmpAPI:
         ) as fmp_client:
             resp = await fmp_client.get(path, params=params)
             resp.raise_for_status()
-        return resp.json()
+        return resp.json() if resp.content else {}
 
     @classmethod
     @cached(ttl=12 * 360)
@@ -274,7 +274,7 @@ class TosspaymentsAPI:
                 json=payload,
             )
         resp.raise_for_status()
-        return resp.json()
+        return resp.json() if resp.content else {}
 
 
 class TosspaymentsBilling:
@@ -344,7 +344,7 @@ class PayPalAPI:
                 },
                 data={"grant_type": "client_credentials"},
             )
-        if resp.status_code != 200:
+        if resp.status_code != 200 and resp.content:
             log.error(f"PayPal Access Token 발급에 실패했습니다.\n응답:{resp.json()}")
         resp.raise_for_status()
         cls.access_token = resp.json()["access_token"]
@@ -360,7 +360,7 @@ class PayPalAPI:
             await self._refresh_access_token()
             return await retry()
         resp.raise_for_status()
-        return resp.json()
+        return resp.json() if resp.content else {}
 
     async def post(self, payload: dict = {}) -> dict | list:
         async with httpx.AsyncClient(timeout=self.timeout) as client:

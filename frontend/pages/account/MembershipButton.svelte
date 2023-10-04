@@ -1,6 +1,7 @@
 <script lang="ts">
     import Swal from "sweetalert2";
     import DefaultLoader from "../../assets/animation/DefaultLoader.svelte";
+    import { paypalWidget } from "../../modules/paypal";
     import { format, defaultSwalStyle, timeString } from "../../modules/functions";
     import { api } from "../../modules/request";
     import { Text, UserInfo } from "../../modules/state";
@@ -132,8 +133,18 @@
                 return;
             } else if (userDetail["billing"]["currency"] === "USD" && userDetail["billing"]["registered"]) {
                 // -> PayPal!
-                const plans = (await api.public.get("/paypal/plans")).data;
-                console.log("initializePaypalButton 어쩌고");
+                membershipChangeLoader = true;
+                const resp = await api.private.get("/paypal/membership-change-subscription-start-time", {
+                    params: { new_membership: target },
+                });
+                const startTime: string = resp.data["next_billing_date"];
+                membershipChangeLoader = false;
+                await paypalWidget(target, startTime, async (subscriptionId) => {
+                    await requestProcess(target, {
+                        new_membership: target,
+                        paypal_subscription_id: subscriptionId,
+                    });
+                });
             } else {
                 // -> Toss! or 무료체험
                 await requestProcess(target, { new_membership: target });

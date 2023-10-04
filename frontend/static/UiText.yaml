@@ -38,6 +38,9 @@ UnexpectedError:
 Ok:
   en: "OK"
   ko: "확인"
+Close:
+  en: "Close"
+  ko: "닫기"
 Submit:
   en: "Submit"
   ko: "확인"

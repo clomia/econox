@@ -62,7 +62,10 @@ async def exec(
             for query, params in zip(safe_queries, safe_params):
                 cur.execute(query, params)
             conn.commit()
-            return cur.fetchall()
+            result = cur.fetchall()
+            conn.close()
+            cur.close()
+            return result
         except psycopg.ProgrammingError as e:
             # write 쿼리이기 때문에 읽을 결과가 없는 경우는 제외
             if str(e) != "the last operation didn't produce a result":
@@ -84,9 +87,6 @@ async def exec(
             if not silent:
                 log.critical(f"\n{e}\nDB 쿼리 실행 오류가 발생하여 롤백하였습니다.\nQuery: {query}")
             raise e
-        finally:
-            cur.close()
-            conn.close()
 
     result = await run_async(sync_exec)
     return result if not embed else (result[0] if result else tuple())

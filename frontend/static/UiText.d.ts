@@ -15,6 +15,7 @@ export interface UiText {
     LoginInfoIncorrect: "Email or password is incorrect" | "이메일 또는 비밀번호가 올바르지 않습니다";
     UnexpectedError: "An unexpected error has occurred" | "예기치 못한 오류가 발생했습니다";
     Ok: "OK" | "확인";
+    Close: "Close" | "닫기";
     Submit: "Submit" | "확인";
     RetypePasswordMismatch: "Passwords do not match" | "비밀번호가 일치하지 않습니다";
     UserAlreadyExists: "This email is already registered" | "이미 가입되어있는 이메일입니다";

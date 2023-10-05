@@ -88,9 +88,13 @@ export interface UiText {
     PaymentMethod_Change: "Update Payment Method" | "결제수단 변경";
     PaymentMethod_EnterNewCard: "Please enter your new card details to update your payment information." | "새롭게 등록할 카드 정보를 입력해주세요";
     PaymentMethod_Benefit_ChangeAlert: "Since the New Member Benefit is active, there is no need to register a payment method" | "첫 회원가입 혜택이 적용중이므로 결제수단 등록이 필요하지 않습니다";
+    PaymentHistoryLimit: "Only the last 15 payment transactions will be displayed" | "결제 내역은 최근 15건까지만 표시됩니다";
     AlreadyProgressPleaseWait: "Your request is already in progress. Please wait a moment" | "요청이 이미 처리 중입니다. 잠시만 기다려주세요";
+    MembershipDeactivation: "Deactivate" | "맴버십 해지";
+    DeleteAccount: "Delete Account" | "즉시 탈퇴";
+    AccountStatusNormal: "Account status: Active" | "계정 상태가 정상입니다.";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
-    f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일 입니다";
+    f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";
     f_USD: "${v}";
     f_LengthLimit: "You cannot enter more than {v} characters" | "{v}글자 이상 입력할 수 없습니다";

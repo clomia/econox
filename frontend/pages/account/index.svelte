@@ -6,6 +6,7 @@
     import PasswordButton from "./PasswordButton.svelte";
     import MembershipButton from "./MembershipButton.svelte";
     import PaymentMethodButton from "./PaymentMethodButton.svelte";
+    import DangerZone from "./DangerZone.svelte";
     import type { UserDetail } from "../../modules/state";
 
     const userDetail = $UserInfo as UserDetail;
@@ -77,6 +78,7 @@
                     </li>
                 {/each}
             </ol>
+            <div class="billing__limit">{$Text.PaymentHistoryLimit}</div>
         {/if}
         {#if transactions.length}
             <button
@@ -90,13 +92,15 @@
     </section>
 </main>
 
+<DangerZone />
+
 <style>
     * {
         color: rgba(255, 255, 255, 0.75);
     }
     main {
         width: 44rem;
-        border-radius: 1rem;
+        border-radius: 0.65rem;
         border: thin solid rgba(255, 255, 255, 0.2);
         background-color: rgb(32, 40, 44);
         box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.5);
@@ -112,7 +116,7 @@
         width: 100%;
         height: 2.5rem;
         border: thin solid var(--border-white);
-        border-radius: 0.5rem;
+        border-radius: 0.4rem;
         color: var(--white);
         position: relative;
     }
@@ -136,7 +140,7 @@
     }
     .email {
         margin-top: 2rem;
-        opacity: 0.4;
+        opacity: 0.6;
     }
     .setting {
         display: flex;
@@ -178,5 +182,9 @@
         border-bottom: thin solid rgba(255, 255, 255, 0.3);
         display: flex;
         justify-content: space-between;
+    }
+    .billing__limit {
+        opacity: 0.5;
+        margin-top: 1rem;
     }
 </style>

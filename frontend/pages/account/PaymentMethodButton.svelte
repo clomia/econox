@@ -282,7 +282,7 @@
         width: 100%;
         height: 2.5rem;
         border: thin solid var(--border-white);
-        border-radius: 0.5rem;
+        border-radius: 0.4rem;
         color: var(--white);
         position: relative;
     }

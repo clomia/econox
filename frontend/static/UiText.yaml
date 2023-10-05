@@ -265,16 +265,28 @@ PaymentMethod_EnterNewCard:
 PaymentMethod_Benefit_ChangeAlert:
   en: "Since the New Member Benefit is active, there is no need to register a payment method"
   ko: "첫 회원가입 혜택이 적용중이므로 결제수단 등록이 필요하지 않습니다"
+PaymentHistoryLimit:
+  en: "Only the last 15 payment transactions will be displayed"
+  ko: "결제 내역은 최근 15건까지만 표시됩니다"
 AlreadyProgressPleaseWait:
   en: "Your request is already in progress. Please wait a moment"
   ko: "요청이 이미 처리 중입니다. 잠시만 기다려주세요"
+MembershipDeactivation:
+  en: "Deactivate"
+  ko: "맴버십 해지"
+DeleteAccount:
+  en: "Delete Account"
+  ko: "즉시 탈퇴"
+AccountStatusNormal:
+  en: "Account status: Active"
+  ko: "계정 상태가 정상입니다."
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"
   ko: "{time}초 후 자동으로 로그인됩니다"
 f_NextBillingDate:
   en: "The next payment date is {m}/{d}/{y}"
-  ko: "다음 결제일은 {y}년 {m}월 {d}일 입니다"
+  ko: "다음 결제일은 {y}년 {m}월 {d}일입니다"
 f_KRW:
   en: "₩{v}"
   ko: "{v}원"

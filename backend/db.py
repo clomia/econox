@@ -63,8 +63,6 @@ async def exec(
                 cur.execute(query, params)
             conn.commit()
             result = cur.fetchall()
-            conn.close()
-            cur.close()
             return result
         except psycopg.ProgrammingError as e:
             # write 쿼리이기 때문에 읽을 결과가 없는 경우는 제외
@@ -87,6 +85,12 @@ async def exec(
             if not silent:
                 log.critical(f"\n{e}\nDB 쿼리 실행 오류가 발생하여 롤백하였습니다.\nQuery: {query}")
             raise e
+        finally:
+            try:
+                cur.close()
+                conn.close()
+            except:  # cur 혹은 conn이 정의되지 않은 경우를 무시한다.
+                pass
 
     result = await run_async(sync_exec)
     return result if not embed else (result[0] if result else tuple())

@@ -34,7 +34,7 @@
     .ground__window {
         width: 34rem;
         padding: 3rem 4rem;
-        border-radius: 1rem;
+        border-radius: 0.6rem;
         border: thin solid rgba(255, 255, 255, 0.2);
         background: var(--widget-background);
     }

@@ -3,7 +3,8 @@
     import { api } from "../../../modules/request";
     import { Text, auth } from "../../../modules/state";
     import DefaultLoader from "../../../assets/animation/DefaultLoader.svelte";
-    import { AxiosError, type AxiosResponse } from "axios";
+    import CircleLoader from "../../../assets/animation/CircleLoader.svelte";
+    import type { AxiosResponse } from "axios";
 
     const InputResult = auth.signup.InputResult;
 
@@ -86,7 +87,26 @@
     {/if}
 </form>
 
+{#await response}
+    <div class="loader">
+        <CircleLoader />
+    </div>
+{/await}
+
 <style>
+    .loader {
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        background-color: rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     form {
         display: flex;
         flex-direction: column;

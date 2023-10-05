@@ -47,25 +47,24 @@
         width: 3rem;
         height: 3rem;
         border-radius: 0.5rem;
-        border: thin solid var(--white);
-        opacity: 0.6;
+        border: thin solid var(--border-white);
+        background-color: rgb(32, 49, 55);
     }
     section button:hover {
         cursor: pointer;
-        background-color: rgba(255, 255, 255, 0.16);
+        background-color: rgb(54, 63, 80);
     }
     select {
-        background: none;
-        opacity: 0.6;
         border-radius: 0.5rem;
-        border: thin solid var(--white);
-        color: white;
+        border: thin solid var(--border-white);
+        color: var(--white);
         margin: 0 0.5rem;
         padding: 0 1rem;
         width: 11rem;
+        background-color: rgb(32, 49, 55);
     }
     select:hover {
         cursor: pointer;
-        background-color: rgba(255, 255, 255, 0.16);
+        background-color: rgb(54, 63, 80);
     }
 </style>

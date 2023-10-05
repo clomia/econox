@@ -39,6 +39,11 @@
     const codeConfirmation = async (event: SubmitEvent) => {
         message = "";
         const form = event.target as HTMLFormElement;
+        if (!form.code.value) {
+            response = null;
+            message = $Text.InsufficientInput;
+            return;
+        }
         try {
             const phoneConfirm = api.public.post("/auth/phone/confirm", {
                 phone: $InputResult.phone,

@@ -72,7 +72,7 @@
                     <li>
                         <div>{timeString(transaction.time)}</div>
                         <div>{amountString(transaction.amount)}</div>
-                        <div class="payment-method">{paymentMethodString(transaction.method)}</div>
+                        <div>{paymentMethodString(transaction.method)}</div>
                         <div>{membershipNameString(transaction.name)}</div>
                     </li>
                 {/each}
@@ -178,8 +178,5 @@
         border-bottom: thin solid rgba(255, 255, 255, 0.3);
         display: flex;
         justify-content: space-between;
-    }
-    .payment-method {
-        letter-spacing: 0.07rem;
     }
 </style>

@@ -256,6 +256,15 @@ PaymentMethod_ChangeNotAllow_Waiting:
 PaymentMethod_ChangeCompleted:
   en: "Done! We've successfully changed your payment method"
   ko: "결제수단이 변경되었습니다"
+PaymentMethod_Change:
+  en: "Update Payment Method"
+  ko: "결제수단 변경"
+PaymentMethod_EnterNewCard:
+  en: "Please enter your new card details to update your payment information."
+  ko: "새롭게 등록할 카드 정보를 입력해주세요"
+PaymentMethod_Benefit_ChangeAlert:
+  en: "Since the New Member Benefit is active, there is no need to register a payment method"
+  ko: "첫 회원가입 혜택이 적용중이므로 결제수단 등록이 필요하지 않습니다"
 AlreadyProgressPleaseWait:
   en: "Your request is already in progress. Please wait a moment"
   ko: "요청이 이미 처리 중입니다. 잠시만 기다려주세요"

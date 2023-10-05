@@ -1,7 +1,6 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
     import { Text, auth } from "../../../../modules/state";
-    import DefaultLoader from "../../../../assets/animation/DefaultLoader.svelte";
 
     const dispatch = createEventDispatcher();
     const InputResult = auth.signup.InputResult;
@@ -38,16 +37,15 @@
             .slice(0, cardType === "personal" ? 6 : 10);
     };
 
-    let response: null | Promise<any> = null;
     const billing = async () => {
-        const [expir_month, expir_year] = expiryDate.replace(/\s/g, "").split("/");
-        if (cardNumber && expir_year && expir_month && ownerId) {
+        const [expirMonth, expirYear] = expiryDate.replace(/\s/g, "").split("/");
+        if (cardNumber && expirYear && expirMonth && ownerId) {
             $InputResult = {
                 ...$InputResult,
                 tosspayments: {
                     card_number: cardNumber.replace(/\s/g, ""),
-                    expiration_year: expir_year,
-                    expiration_month: expir_month,
+                    expiration_year: expirYear,
+                    expiration_month: expirMonth,
                     owner_id: ownerId,
                 },
             };
@@ -106,10 +104,7 @@
             />
         </label>
     </section>
-    {#await response}<DefaultLoader />{/await}
-    {#if !(response instanceof Promise)}
-        <button class="submit-button" type="submit">{$Text.Next}</button>
-    {/if}
+    <button class="submit-button" type="submit">{$Text.Next}</button>
 </form>
 
 <style>

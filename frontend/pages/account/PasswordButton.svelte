@@ -3,10 +3,7 @@
     import { Text, UserInfo } from "../../modules/state";
     import { api } from "../../modules/request";
     import { defaultSwalStyle, logout } from "../../modules/functions";
-    import type { UserDetail } from "../../modules/state";
     import type { AxiosError } from "axios";
-
-    const userDetail = $UserInfo as UserDetail;
 
     const SwalStyle = {
         ...defaultSwalStyle,
@@ -27,7 +24,7 @@
                     return;
                 }
                 try {
-                    await api.public.post("/auth/send-password-reset-code", { email: userDetail["email"] });
+                    await api.public.post("/auth/send-password-reset-code", { email: $UserInfo["email"] });
                     newPassword = input;
                 } catch (error: any) {
                     const e = error as AxiosError;
@@ -55,7 +52,7 @@
                     await api.public.patch("/user/password", {
                         new_password: newPassword,
                         confirm_code: input,
-                        email: userDetail["email"],
+                        email: $UserInfo["email"],
                     });
                     complete = true;
                 } catch (error: any) {

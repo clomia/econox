@@ -1,19 +1,15 @@
 <script lang="ts">
     import Swal from "sweetalert2";
     import CircleLoader from "../../assets/animation/CircleLoader.svelte";
-    import DefaultLoader from "../../assets/animation/DefaultLoader.svelte";
     import { paymentMethodString, defaultToastStyle, defaultSwalStyle } from "../../modules/functions";
     import { api } from "../../modules/request";
     import { paypalWidget } from "../../modules/paypal";
     import { UserInfo, Text } from "../../modules/state";
-    import type { UserDetail } from "../../modules/state";
     import type { AxiosError } from "axios";
 
-    const userDetail = $UserInfo as UserDetail;
-
     // 아래 변수는 트랜젝션 내역 여부 확인에도 사용함 currentBilling이 없으면 undefined이니까
-    const currentBillingMethod: string | undefined = userDetail["billing"]["transactions"][0]?.["method"];
-    const nextBillingDate = new Date(userDetail["next_billing_date"]);
+    const currentBillingMethod: string | undefined = $UserInfo["billing"]["transactions"][0]?.["method"];
+    const nextBillingDate = new Date($UserInfo["next_billing_date"]);
     const currentDate = new Date();
     const todayIsNextBillingDate =
         nextBillingDate.getDate() === currentDate.getDate() &&
@@ -26,7 +22,7 @@
      * @returns 결제정보 수정 가능 여부
      */
     const billingChangeAvailableCheck = async (): Promise<boolean> => {
-        if (userDetail["billing"]["currency"] === "USD" && userDetail["billing"]["registered"]) {
+        if ($UserInfo["billing"]["currency"] === "USD" && $UserInfo["billing"]["registered"]) {
             // PayPal 결제수단이 성공적으로 등록된 유저
             if (todayIsNextBillingDate) {
                 // 오늘이 결제 예정일인 경우 변경 불가함 (웹훅 딜레이 길어서 위험함)
@@ -64,19 +60,19 @@
         const available = await billingChangeAvailableCheck();
         if (!available) {
             return;
-        } else if (!userDetail["billing"]["registered"]) {
+        } else if (!$UserInfo["billing"]["registered"]) {
             // -> Benefit~
             await Swal.fire({
                 ...defaultToastStyle,
                 position: "top",
                 title: $Text.PaymentMethod_Benefit_ChangeAlert,
             });
-        } else if (userDetail["billing"]["currency"] === "USD") {
+        } else if ($UserInfo["billing"]["currency"] === "USD") {
             // -> PayPal!
             loading = true;
             await paypalWidget({
-                planName: userDetail["membership"],
-                startTime: userDetail["next_billing_date"],
+                planName: $UserInfo["membership"],
+                startTime: $UserInfo["next_billing_date"],
                 onApprove: async (subscriptionId: string) => {
                     loading = true;
                     await api.private.patch("/user/payment-method", {
@@ -97,17 +93,17 @@
                     loading = false;
                 },
             });
-        } else if (userDetail["billing"]["currency"] === "KRW") {
+        } else if ($UserInfo["billing"]["currency"] === "KRW") {
             // -> Tosspayments
             tosspaymentsWidgetOn = true;
         }
     };
 
     let currentBillingMethodString: string;
-    if (userDetail["billing"]["transactions"][0]) {
-        currentBillingMethodString = paymentMethodString(userDetail["billing"]["transactions"][0]["method"]);
+    if ($UserInfo["billing"]["transactions"][0]) {
+        currentBillingMethodString = paymentMethodString($UserInfo["billing"]["transactions"][0]["method"]);
     } else {
-        if (userDetail["billing"]["registered"]) {
+        if ($UserInfo["billing"]["registered"]) {
             currentBillingMethodString = $Text.PaymentMethod_Waiting;
         } else {
             currentBillingMethodString = $Text.PaymentMethod_Benefit;

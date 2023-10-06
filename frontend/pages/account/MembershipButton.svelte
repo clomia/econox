@@ -5,9 +5,7 @@
     import { format, defaultSwalStyle, defaultToastStyle, timeString } from "../../modules/functions";
     import { api } from "../../modules/request";
     import { Text, UserInfo } from "../../modules/state";
-    import type { UserDetail } from "../../modules/state";
 
-    const userDetail = $UserInfo as UserDetail;
     const membershipMapping = {
         basic: $Text.BasicPlan,
         professional: $Text.ProfessionalPlan,
@@ -23,8 +21,8 @@
     };
 
     // 아래 변수는 트랜젝션 내역 여부 확인에도 사용함 currentBilling이 없으면 undefined이니까
-    const currentBillingMethod: string | undefined = userDetail["billing"]["transactions"][0]?.["method"];
-    const nextBillingDate = new Date(userDetail["next_billing_date"]);
+    const currentBillingMethod: string | undefined = $UserInfo["billing"]["transactions"][0]?.["method"];
+    const nextBillingDate = new Date($UserInfo["next_billing_date"]);
     const currentDate = new Date();
     const todayIsNextBillingDate =
         nextBillingDate.getDate() === currentDate.getDate() &&
@@ -37,7 +35,7 @@
      * @returns 결제정보 수정 가능 여부
      */
     const billingChangeAvailableCheck = async (): Promise<boolean> => {
-        if (userDetail["billing"]["currency"] === "USD" && userDetail["billing"]["registered"]) {
+        if ($UserInfo["billing"]["currency"] === "USD" && $UserInfo["billing"]["registered"]) {
             // PayPal 결제수단이 성공적으로 등록된 유저
             if (todayIsNextBillingDate) {
                 // 오늘이 결제 예정일인 경우 변경 불가함 (웹훅 딜레이 길어서 위험함)
@@ -69,16 +67,16 @@
             membershipChangeLoader = false;
             membershipWidgetOn = false;
             let alertText: string;
-            if (userDetail["billing"]["registered"]) {
+            if ($UserInfo["billing"]["registered"]) {
                 alertText = format($Text.f_MembershipChangeComplete, {
-                    oldMembership: membershipMapping[userDetail["membership"]],
+                    oldMembership: membershipMapping[$UserInfo["membership"]],
                     newMembership: membershipMapping[target],
-                    oldBillingDate: timeString(userDetail["next_billing_date"]),
+                    oldBillingDate: timeString($UserInfo["next_billing_date"]),
                     newBillingDate: timeString(resp.data["adjusted_next_billing"]),
                 });
             } else {
                 alertText = format($Text.f_MembershipChangeComplete_Benefit, {
-                    oldMembership: membershipMapping[userDetail["membership"]],
+                    oldMembership: membershipMapping[$UserInfo["membership"]],
                     newMembership: membershipMapping[target],
                 });
             }
@@ -110,20 +108,20 @@
                     position: "top",
                     title: $Text.AlreadyProgressPleaseWait,
                 });
-            } else if (target === userDetail["membership"]) {
+            } else if (target === $UserInfo["membership"]) {
                 // 이미 적용된 맴버십인 경우 알림창
                 return await Swal.fire({
                     ...defaultToastStyle,
                     position: "top",
                     title: format($Text.f_AlreadyAppliedMembership, {
-                        membership: membershipMapping[userDetail["membership"]],
+                        membership: membershipMapping[$UserInfo["membership"]],
                     }),
                 });
             }
             const available = await billingChangeAvailableCheck();
             if (!available) {
                 return;
-            } else if (userDetail["billing"]["currency"] === "USD" && userDetail["billing"]["registered"]) {
+            } else if ($UserInfo["billing"]["currency"] === "USD" && $UserInfo["billing"]["registered"]) {
                 // -> PayPal!
                 membershipChangeLoader = true;
                 const resp = await api.private.get("/paypal/membership-change-subscription-start-time", {
@@ -155,7 +153,7 @@
 </script>
 
 <button class="btn" on:click={() => (membershipWidgetOn = true)}>
-    <div class="btn-text">{membershipMapping[userDetail["membership"]]}</div>
+    <div class="btn-text">{membershipMapping[$UserInfo["membership"]]}</div>
     <div class="btn-wrap">{$Text.Change}</div>
 </button>
 
@@ -166,12 +164,12 @@
             <div class="membership-options__title">{$Text.ChangeMembership}</div>
             <button
                 class="membership-options__basic"
-                class:membership-options__current={userDetail["membership"] === "basic"}
+                class:membership-options__current={$UserInfo["membership"] === "basic"}
                 on:click={membershipChange("basic")}
             >
                 <div class="membership-options__basic__title">{$Text.BasicPlan}</div>
                 <div class="membership-options__basic__price">
-                    {#if userDetail["billing"]["currency"] === "KRW"}
+                    {#if $UserInfo["billing"]["currency"] === "KRW"}
                         {$Text.BasicPlanWonPrice}
                     {:else}
                         {$Text.BasicPlanDollerPrice}
@@ -182,12 +180,12 @@
 
             <button
                 class="membership-options__professional"
-                class:membership-options__current={userDetail["membership"] === "professional"}
+                class:membership-options__current={$UserInfo["membership"] === "professional"}
                 on:click={membershipChange("professional")}
             >
                 <div class="membership-options__professional__title">{$Text.ProfessionalPlan}</div>
                 <div class="membership-options__professional__price">
-                    {#if userDetail["billing"]["currency"] === "KRW"}
+                    {#if $UserInfo["billing"]["currency"] === "KRW"}
                         {$Text.ProfessionalPlanWonPrice}
                     {:else}
                         {$Text.ProfessionalPlanDollerPrice}

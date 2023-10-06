@@ -198,7 +198,7 @@ class BillingTransaction(BaseModel):
 
 class UserBillingDetail(BaseModel):
     currency: Literal["USD", "KRW"]
-    registered: bool
+    registered: bool  # 결제수단 등록 여부
     transactions: List[BillingTransaction]
 
 
@@ -207,6 +207,7 @@ class UserDetail(BaseModel):
     name: constr(min_length=1)
     email: constr(min_length=1)
     membership: Literal["basic", "professional"]
+    is_deactivated: bool
     signup_date: utcstr_type
     next_billing_date: utcstr_type
     billing: UserBillingDetail
@@ -218,6 +219,7 @@ async def get_user_detail(user=router.private.auth):
     (
         name,
         membership,
+        is_deactivated,
         currency,
         next_billing,
         tosspayments_billing_key,
@@ -227,6 +229,7 @@ async def get_user_detail(user=router.private.auth):
         template=db.Template(table="users").select_query(
             "name",
             "membership",
+            "is_deactivated",
             "currency",
             "next_billing_date",
             "tosspayments_billing_key",
@@ -245,6 +248,7 @@ async def get_user_detail(user=router.private.auth):
         "name": name,
         "email": user["email"],
         "membership": membership,
+        "is_deactivated": is_deactivated,
         "signup_date": datetime2utcstr(created),
         "next_billing_date": datetime2utcstr(next_billing),
         "billing": {"currency": currency, "registered": registered, "transactions": []},

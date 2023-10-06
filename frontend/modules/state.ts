@@ -12,6 +12,7 @@ export interface UserDetail {
     name: string;
     email: string;
     membership: "basic" | "professional";
+    is_deactivated: boolean;
     signup_date: string;
     next_billing_date: string;
     billing: {
@@ -52,7 +53,25 @@ interface InputResultType {
 
 export const Lang = writable("en")
 export const Text: Writable<UiText> = writable(defaultObject(""))
-export const UserInfo: Writable<boolean | UserDetail> = writable(false) // 로그인 되었다면 GET /api/user 응답 객체가 있음
+export const UserInfo: Writable<UserDetail> = writable({  // 로그인 되었다면 GET /api/user 응답 데이터가 들어옴
+    id: "",
+    name: "",
+    email: "",
+    membership: "basic",
+    is_deactivated: true,
+    signup_date: "",
+    next_billing_date: "",
+    billing: {
+        currency: "USD",
+        registered: false,
+        transactions: [{
+            time: "",
+            name: "",
+            amount: 0,
+            method: "",
+        }]
+    }
+})
 
 
 // ============= 기능적으로 사용되는 상태들 =============

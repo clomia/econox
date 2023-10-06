@@ -7,15 +7,12 @@
     import MembershipButton from "./MembershipButton.svelte";
     import PaymentMethodButton from "./PaymentMethodButton.svelte";
     import DangerZone from "./DangerZone.svelte";
-    import type { UserDetail } from "../../modules/state";
-
-    const userDetail = $UserInfo as UserDetail;
 
     /**
      *  언어에 맞게 금액을 표현하는 문자열을 변환
      */
     const amountString = (amount: number): string => {
-        const str = userDetail["billing"]["currency"] === "KRW" ? $Text.f_KRW : $Text.f_USD;
+        const str = $UserInfo["billing"]["currency"] === "KRW" ? $Text.f_KRW : $Text.f_USD;
         return format(str, { v: amount });
     };
 
@@ -27,15 +24,15 @@
         return str.split(" ").slice(1).join(" ");
     };
 
-    const transactions = userDetail.billing.transactions;
-    const nextBillingDate = new Date(userDetail["next_billing_date"]);
+    const transactions = $UserInfo["billing"]["transactions"];
+    const nextBillingDate = new Date($UserInfo["next_billing_date"]);
 
     let paymentListToggle = false;
 </script>
 
 <main>
     <section class="title">{$Text.AccountInfo}</section>
-    <section class="email">{userDetail["email"]}</section>
+    <section class="email">{$UserInfo["email"]}</section>
     <section class="setting">
         <div class="setting__info">
             <div class="label-text">{$Text.Membership}</div>

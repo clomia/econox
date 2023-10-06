@@ -3,9 +3,6 @@
     import { Text, UserInfo } from "../../modules/state";
     import { api } from "../../modules/request";
     import { defaultSwalStyle, format } from "../../modules/functions";
-    import type { UserDetail } from "../../modules/state";
-
-    const userDetail = $UserInfo as UserDetail;
 
     const SwalStyle = {
         ...defaultSwalStyle,
@@ -37,7 +34,7 @@
 </script>
 
 <button on:click={widget}>
-    <p class="btn-text">{userDetail["name"]}</p>
+    <p class="btn-text">{$UserInfo["name"]}</p>
     <div>{$Text.Change}</div>
 </button>
 

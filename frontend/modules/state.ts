@@ -12,12 +12,12 @@ export interface UserDetail {
     name: string;
     email: string;
     membership: "basic" | "professional";
-    is_deactivated: boolean;
     signup_date: string;
     next_billing_date: string;
     billing: {
         currency: "USD" | "KRW";
         registered: boolean;
+        status: "active" | "require" | "deactive"
         transactions: {
             time: string;
             name: string;
@@ -58,12 +58,12 @@ export const UserInfo: Writable<UserDetail> = writable({  // 로그인 되었다
     name: "",
     email: "",
     membership: "basic",
-    is_deactivated: true,
     signup_date: "",
     next_billing_date: "",
     billing: {
         currency: "USD",
         registered: false,
+        status: "active",
         transactions: [{
             time: "",
             name: "",

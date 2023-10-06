@@ -271,15 +271,36 @@ PaymentHistoryLimit:
 AlreadyProgressPleaseWait:
   en: "Your request is already in progress. Please wait a moment"
   ko: "요청이 이미 처리 중입니다. 잠시만 기다려주세요"
-MembershipDeactivation:
-  en: "Deactivate"
-  ko: "맴버십 해지"
+StopBilling:
+  en: "Stop Billing"
+  ko: "결제 중단"
+StopBillingComplete: # 이건 알람
+  en: "Billing has been halted. Due to a failed charge on the next billing date, your account will be deactivated"
+  ko: "결제가 중단되었습니다. 다음 결제일에 결제가 실패하며 계정이 비활성화됩니다"
+BillingActivationComplete:
+  en: "Billing has been halted. Due to a failed charge on the next billing date, your account will be deactivated"
+  ko: "결제가 활성화되었습니다"
+AccountDeactiveScheduled:  # 이건 상태글
+  en: "Billing has been paused. Your account will be deactivated on the next billing date"
+  ko: "결제가 정지되었습니다. 다음 결제일에 계정이 비활성화됩니다"
+BillingActivation:
+  en: "Billing Activate"
+  ko: "결제 활성화"
+AccountActivation:
+  en: "Account Activate"
+  ko: "계정 활성화"
 DeleteAccount:
   en: "Delete Account"
   ko: "즉시 탈퇴"
-AccountStatusNormal:
+AccountStatusActive:
   en: "Account status: Active"
-  ko: "계정 상태가 정상입니다."
+  ko: "계정 상태가 정상입니다"
+AccountStatusDeactive: 
+  en: "Account status: Deactive"
+  ko: "계정이 비활성 상태입니다"
+ConnotStopPayment:
+  en: "You have no registered payment method"
+  ko: "등록된 결제수단이 존재하지 않습니다"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

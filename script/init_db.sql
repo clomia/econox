@@ -1,4 +1,4 @@
---- Last commit: 2023-10-05 21:02:50 ---
+--- Last commit: 2023-10-06 16:03:21 ---
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ------------------------------------------------
@@ -6,14 +6,14 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 ------------------------------------------------
 CREATE TYPE membership AS ENUM('basic', 'professional');
 CREATE TYPE currency AS ENUM('KRW', 'USD');
+CREATE TYPE billing_status AS ENUM('active', 'require', 'deactive'); -- 정상/미결제/정지
 
 CREATE TABLE users (
     "id" UUID PRIMARY KEY, -- Cognito id
     "email" VARCHAR(255) NOT NULL UNIQUE,
     "name" VARCHAR(255) NOT NULL, -- 회원가입시 자동생성, 이후 수정
     "phone" VARCHAR(255) NOT NULL, -- AWS SNS 전송에 사용 가능한 문자열
-    "membership" membership NOT NULL, 
-    "is_deactivated" BOOLEAN DEFAULT FALSE, -- 맴버십 해지 여부(유저 클릭에 대해 즉시 반영)
+    "membership" membership NOT NULL,  
     "currency" currency NOT NULL,  
     "origin_billing_date" TIMESTAMP, -- 확정된 기준날짜 (실제로 결제가 발생하여 확정되면 반영됨)
     "base_billing_date" TIMESTAMP, -- 계산된 기준날짜 (결제 시작 혹은 결제일 변경 시 계산 결과가 바로 반영됨)
@@ -21,6 +21,7 @@ CREATE TABLE users (
     "next_billing_date" TIMESTAMP NOT NULL, -- 다음 청구 날짜
     "tosspayments_billing_key" VARCHAR(255), 
     "paypal_subscription_id" VARCHAR(255), 
+    "billing_status" billing_status DEFAULT 'active',
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 ); 
 CREATE INDEX idx_paypal_subscription_id ON users (paypal_subscription_id);

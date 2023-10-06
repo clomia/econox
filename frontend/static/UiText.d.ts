@@ -90,9 +90,16 @@ export interface UiText {
     PaymentMethod_Benefit_ChangeAlert: "Since the New Member Benefit is active, there is no need to register a payment method" | "첫 회원가입 혜택이 적용중이므로 결제수단 등록이 필요하지 않습니다";
     PaymentHistoryLimit: "Only the last 15 payment transactions will be displayed" | "결제 내역은 최근 15건까지만 표시됩니다";
     AlreadyProgressPleaseWait: "Your request is already in progress. Please wait a moment" | "요청이 이미 처리 중입니다. 잠시만 기다려주세요";
-    MembershipDeactivation: "Deactivate" | "맴버십 해지";
+    StopBilling: "Stop Billing" | "결제 중단";
+    StopBillingComplete: "Billing has been halted. Due to a failed charge on the next billing date, your account will be deactivated" | "결제가 중단되었습니다. 다음 결제일에 결제가 실패하며 계정이 비활성화됩니다";
+    BillingActivationComplete: "Billing has been halted. Due to a failed charge on the next billing date, your account will be deactivated" | "결제가 활성화되었습니다";
+    AccountDeactiveScheduled: "Billing has been paused. Your account will be deactivated on the next billing date" | "결제가 정지되었습니다. 다음 결제일에 계정이 비활성화됩니다";
+    BillingActivation: "Billing Activate" | "결제 활성화";
+    AccountActivation: "Account Activate" | "계정 활성화";
     DeleteAccount: "Delete Account" | "즉시 탈퇴";
-    AccountStatusNormal: "Account status: Active" | "계정 상태가 정상입니다.";
+    AccountStatusActive: "Account status: Active" | "계정 상태가 정상입니다";
+    AccountStatusDeactive: "Account status: Deactive" | "계정이 비활성 상태입니다";
+    ConnotStopPayment: "You have no registered payment method" | "등록된 결제수단이 존재하지 않습니다";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

@@ -161,7 +161,7 @@ class Transaction:
 
 
 async def user_exists(email: str) -> bool:
-    query = "SELECT 1 FROM users WHERE email={email} LIMIT 1;"
+    query = "SELECT 1 FROM users WHERE email={email};"
     return bool(await exec(query, params={"email": email}))
 
 
@@ -172,3 +172,15 @@ async def signup_history_exists(email: str, phone: str) -> bool:
         LIMIT 1;
     """
     return bool(await exec(query, params={"email": email, "phone": phone}))
+
+
+async def payment_method_exists(email: str) -> bool:
+    """결제수단 등록 여부"""
+    query = "SELECT currency, tosspayments_billing_key, paypal_subscription_id FROM users WHERE email={email};"
+    currency, tosspayments_billing_key, paypal_subscription_id = await exec(
+        query, params={"email": email}, embed=True
+    )
+    return bool(
+        (currency == "KRW" and tosspayments_billing_key)
+        or (currency == "USD" and paypal_subscription_id)
+    )

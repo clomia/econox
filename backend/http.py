@@ -390,6 +390,7 @@ class PayPalAPI:
 
 
 async def get_paypal_next_billing_date(subscription_id: str) -> datetime:
+    """구독의 유효성을 검증하고 다음 결제 날짜를 반환합니다."""
     target_api = f"/v1/billing/subscriptions/{subscription_id}"
     subscription = await pooling(
         target=PayPalAPI(target_api).get,

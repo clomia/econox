@@ -2,7 +2,7 @@
     import Swal from "sweetalert2";
     import DefaultLoader from "../../assets/animation/DefaultLoader.svelte";
     import { paypalWidget } from "../../modules/paypal";
-    import { format, defaultSwalStyle, defaultToastStyle, timeString } from "../../modules/functions";
+    import { format, defaultSwalStyle, timeString, defaultToastStyle } from "../../modules/functions";
     import { api } from "../../modules/request";
     import { Text, UserInfo } from "../../modules/state";
 
@@ -40,15 +40,17 @@
             if (todayIsNextBillingDate) {
                 // 오늘이 결제 예정일인 경우 변경 불가함 (웹훅 딜레이 길어서 위험함)
                 await Swal.fire({
-                    ...defaultToastStyle,
-                    position: "top",
+                    ...defaultSwalStyle,
+                    icon: "info",
+                    showDenyButton: false,
                     title: $Text.PaymentMethod_ChangeNotAllow_DueDate,
                 });
             } else if (!currentBillingMethod) {
                 // 결제 내역이 아직 없음
                 await Swal.fire({
-                    ...defaultToastStyle,
-                    position: "top",
+                    ...defaultSwalStyle,
+                    icon: "info",
+                    showDenyButton: false,
                     title: $Text.PaymentMethod_ChangeNotAllow_Waiting,
                 });
             } else {
@@ -111,8 +113,9 @@
             } else if (target === $UserInfo["membership"]) {
                 // 이미 적용된 맴버십인 경우 알림창
                 return await Swal.fire({
-                    ...defaultToastStyle,
-                    position: "top",
+                    ...defaultSwalStyle,
+                    icon: "info",
+                    showDenyButton: false,
                     title: format($Text.f_AlreadyAppliedMembership, {
                         membership: membershipMapping[$UserInfo["membership"]],
                     }),

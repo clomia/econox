@@ -18,14 +18,14 @@ async function loadPaypalScript(clientId: string): Promise<void> {
 interface PaypalWidgetOptions {
     planName: "basic" | "professional";
     startTime?: string | null;
-    onApprove?: (subscriptionID: string) => Promise<any>;
+    onApprove?: (subscriptionId: string, orderId: string) => Promise<any>;
     onLoad?: () => void;
 }
 
 /**
  * 
  * @param startTime 청구 시작일시(ISO-8601), 기본값: 즉시
- * @param onApprove 작업 완료 후 호출될 함수, 구독 id를 인자로 받아야 함
+ * @param onApprove 작업 완료 후 호출될 함수, 구독 id, order id를 인자로 받아야 함
  * @param onLoad 위젯 로딩 후 호출될 함수
  */
 export const paypalWidget = async ({
@@ -113,7 +113,7 @@ export const paypalWidget = async ({
         },
         onApprove: async (data: any, actions: any) => {
             document.body.removeChild(paypalGround);
-            await onApprove(data.subscriptionID);
+            await onApprove(data.subscriptionID, data.orderID);
         },
     }).render(`#${paypalButton.id}`);
     onLoad();

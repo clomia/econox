@@ -1,6 +1,6 @@
 """ /api/user """
 import asyncio
-from typing import Literal, List, Optional
+from typing import Literal, List
 from datetime import datetime, timedelta
 from functools import partial
 
@@ -639,92 +639,110 @@ async def deactivated_billing(user=router.private.auth):
     return {"message": "User billing deactivated"}
 
 
+class BillingRestore(BaseModel):
+    tosspayments: TosspaymentsBillingInfo | None = None
+    paypal: PaypalBillingInfo | None = None
+
+
 @router.private.post("/billing/activate")
-async def activate_billing(
-    paypal_subscription_id: Optional[str] = Body(None), user=router.private.auth
-):
+async def activate_billing(item: BillingRestore, user=router.private.auth):
     """
     - 계정의 결제를 활성화합니다.
-    - PayPal을 사용하며 현재 시간이 예정된 다음 결제일의 하루 전 시간을 지난 경우
-        새로운 구독을 생성하여 paypal_subscription_id 필드에 구독 id를 입력해주어야 합니다.
-        - 직접 계산하기보다 406 에러를 응답받으면 SDK를 통해 PayPal 구독을 생성하기를 추천함
+    - 먼저 토큰만 넣어서 호출해보고 402 응답을 수신하면 결제 정보를 넣어서 다시 호출하세요.
+        - 결제 주기를 벗어나 비활성화된 계정에 대해서는 결제정보를 받아 다시 청구를 재개해야 하므로 402을 응답합니다.
+        - 결제정보가 올바르지 않은 경우에도 402 에러가 응답됩니다.
     """
     if not await db.payment_method_exists(user["email"]):
-        raise HTTPException(
-            status_code=402, detail="There is no registered payment method"
+        raise HTTPException(  # 첫 회원가입 혜택 대상자는 청구 비활성/활성 동작이 유효하지 않습니다.
+            status_code=409, detail="There is no registered payment method"
         )
-    (
-        membership,
-        billing_status,
-        currency,
-        current_next_billing_date,
-        tosspayments_billing_key,
-        current_paypal_subscription_id,
-    ) = await db.exec(
-        template=db.Template(table="users").select_query(
+    row = await db.select_row(
+        "users",
+        fields=[
             "membership",
             "billing_status",
             "currency",
             "next_billing_date",
             "tosspayments_billing_key",
             "paypal_subscription_id",
-            where={"id": user["id"]},
-            limit=1,
-        ),
-        embed=True,
+        ],
+        where={"id": user["id"]},
     )
-    if billing_status == "active":
+    if row["billing_status"] == "active":
         raise HTTPException(status_code=409, detail="You are already activated")
 
     now = datetime.now()
     db_transaction = db.Transaction()
-    if current_next_billing_date - timedelta(days=1) < now:  # 결제 주기를 벗어남 (계정 정지 상태)
-        # 결제가 정확한 시간에 이루어지는게 아니라서 결제 예정일 하루 전을 기준으로 함
-        # paypal 웹훅 딜레이 있어서 billing_status로 구분하면 안됌
-        if currency == "USD" and current_paypal_subscription_id:  # Paypal
-            # 새로운 구독의 유효성 확인 & 다음 결제일 가져오기
-            if not paypal_subscription_id:
+    if row["next_billing_date"] - timedelta(days=1) < now:  # 결제 주기를 벗어남 (계정 정지 상태)
+        # 결제가 정확한 시간에 이루어지는게 아니라서 결제 예정일 하루 전을 기준으로 함, paypal 웹훅 딜레이 있어서 billing_status로 구분하면 안됌
+        if row["currency"] == "USD" and row["paypal_subscription_id"]:  # Paypal
+            if not item.paypal:
                 raise HTTPException(
-                    status_code=406,
-                    detail="paypal_subscription_id is missing, you need a new paypal subscription",
+                    status_code=402,
+                    detail="Paypal billing information is missing, you need a new paypal subscription",
                 )
             next_billing_date = await get_paypal_next_billing_date(
-                paypal_subscription_id
+                item.paypal.subscription  # 새로운 구독의 유효성 확인 & 다음 결제일 가져오기
             )
             await PayPalAPI(  # 기존 paypal 구독 취소
-                f"/v1/billing/subscriptions/{current_paypal_subscription_id}/cancel"
+                f"/v1/billing/subscriptions/{row['paypal_subscription_id']}/cancel"
             ).post({"reason": "Reactivate Billing"})
             db_transaction.append(
                 "UPDATE users SET paypal_subscription_id={subscription_id} WHERE id={user_id};",
-                subscription_id=paypal_subscription_id,
+                subscription_id=item.paypal.subscription,
                 user_id=user["id"],
             )
-        if currency == "KRW" and tosspayments_billing_key:  # Tosspayments
-            payment = await TosspaymentsBilling(user_id=user["id"]).billing(
-                tosspayments_billing_key,  # 구독료 즉시 결제
-                order_name=f"Econox {membership.capitalize()} Membership",
-                amount=MEMBERSHIP[membership][currency],
-                email=user["email"],
-            )
-            db_transaction.append(
-                template=db.Template(table="tosspayments_billings").insert_query(
-                    user_id=user["id"],
-                    order_id=payment["orderId"],
-                    transaction_time=datetime.fromisoformat(payment["approvedAt"]),
-                    payment_key=payment["paymentKey"],
-                    order_name=payment["orderName"],
-                    total_amount=payment["totalAmount"],
-                    supply_price=payment["suppliedAmount"],
-                    vat=payment["vat"],
-                    card_issuer=payment["card"]["issuerCode"],
-                    card_acquirer=payment["card"]["acquirerCode"],
-                    card_number_masked=payment["card"]["number"],
-                    card_approve_number=payment["card"]["approveNo"],
-                    card_type=payment["card"]["cardType"],
-                    card_owner_type=payment["card"]["ownerType"],
-                    receipt_url=payment["receipt"]["url"],
+        if row["currency"] == "KRW" and row["tosspayments_billing_key"]:  # Tosspayments
+            if not item.tosspayments:
+                raise HTTPException(
+                    status_code=402,
+                    detail="Tosspayments billing information is missing",
                 )
-            )
+            try:
+                new_billing_key = await TosspaymentsBilling(
+                    user_id=user["id"]
+                ).get_billing_key(
+                    card_number=item.tosspayments.card_number,
+                    expiration_year=item.tosspayments.expiration_year,
+                    expiration_month=item.tosspayments.expiration_month,
+                    owner_id=item.tosspayments.owner_id,
+                )
+                payment = await TosspaymentsBilling(user_id=user["id"]).billing(
+                    new_billing_key,  # 구독료 즉시 결제
+                    order_name=f"Econox {row['membership'].capitalize()} Membership",
+                    amount=MEMBERSHIP[row["membership"]][row["currency"]],
+                    email=user["email"],
+                )
+            except httpx.HTTPStatusError:
+                raise HTTPException(
+                    status_code=402,
+                    detail=f"[Tosspayments] Your payment information is incorrect.",
+                )
+            else:
+                db_transaction.append(
+                    "UPDATE users SET tosspayments_billing_key={new_billing_key} WHERE id={user_id};",
+                    new_billing_key=new_billing_key,
+                    user_id=user["id"],
+                )
+                db_transaction.append(
+                    template=db.Template(table="tosspayments_billings").insert_query(
+                        user_id=user["id"],
+                        order_id=payment["orderId"],
+                        transaction_time=datetime.fromisoformat(payment["approvedAt"]),
+                        payment_key=payment["paymentKey"],
+                        order_name=payment["orderName"],
+                        total_amount=payment["totalAmount"],
+                        supply_price=payment["suppliedAmount"],
+                        vat=payment["vat"],
+                        card_issuer=payment["card"]["issuerCode"],
+                        card_acquirer=payment["card"]["acquirerCode"],
+                        card_number_masked=payment["card"]["number"],
+                        card_approve_number=payment["card"]["approveNo"],
+                        card_type=payment["card"]["cardType"],
+                        card_owner_type=payment["card"]["ownerType"],
+                        receipt_url=payment["receipt"]["url"],
+                    )
+                )
             next_billing_date = calc_next_billing_date(base=now, current=now)
 
         db_transaction.append(
@@ -734,18 +752,22 @@ async def activate_billing(
                 current_billing_date={now}, next_billing_date={next_billing_date}
             WHERE id={user_id};
             """,
-            params={
-                "now": now,
-                "next_billing_date": next_billing_date,
-                "user_id": user["id"],
-            },
+            now=now,
+            next_billing_date=next_billing_date,
+            user_id=user["id"],
         )
 
     else:  # 아직 결제 주기 안에 있음 (계정 정지 예정인 상태)
-        if currency == "USD" and current_paypal_subscription_id:  # PayPal
-            await PayPalAPI(  # paypal 구독 재활성화
-                f"/v1/billing/subscriptions/{current_paypal_subscription_id}/activate"
-            ).post()
+        if row["currency"] == "USD" and row["paypal_subscription_id"]:  # PayPal
+            try:
+                await PayPalAPI(  # paypal 구독 재활성화
+                    f"/v1/billing/subscriptions/{row['paypal_subscription_id']}/activate"
+                ).post()
+            except httpx.HTTPStatusError:
+                raise HTTPException(
+                    status_code=402,
+                    detail=f"[PayPal] Your paypal status is incorrect. can't activate subscription",
+                )
     db_transaction.append(
         "UPDATE users SET billing_status={value} WHERE id={user_id}",
         value="active",
@@ -753,4 +775,4 @@ async def activate_billing(
     )
 
     await db_transaction.exec()
-    return {"message": "User billing deactivated"}
+    return {"message": "User billing activated"}

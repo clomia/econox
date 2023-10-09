@@ -184,3 +184,12 @@ async def payment_method_exists(email: str) -> bool:
         (currency == "KRW" and tosspayments_billing_key)
         or (currency == "USD" and paypal_subscription_id)
     )
+
+
+async def select_row(table: str, fields: list, where: dict):
+    """limit 1 로 하나의 레코드만 선택하여 dict 형태로 반환합니다."""
+    values = await exec(
+        template=Template(table=table).select_query(*fields, where=where, limit=1),
+        embed=True,
+    )
+    return {k: v for k, v in zip(fields, values)}

@@ -1,7 +1,8 @@
 """ 모듈로 분류하기 어려운 앤드포인트들 """
 from functools import partial
-from datetime import datetime
+from datetime import datetime, timedelta
 
+import httpx
 import ipinfo
 import psycopg
 from fastapi import Request, Body, Depends, HTTPException
@@ -13,8 +14,14 @@ from backend.math import (
     calc_next_billing_date,
     calc_next_billing_date_adjust_membership_change,
 )
-from backend.http import APIRouter, PayPalAPI, PayPalWebhookAuth, pooling
-from backend.system import SECRETS, MEMBERSHIP, log
+from backend.http import (
+    APIRouter,
+    PayPalAPI,
+    PayPalWebhookAuth,
+    pooling,
+    TosspaymentsBilling,
+)
+from backend.system import SECRETS, MEMBERSHIP, log, EFS_VOLUME_PATH
 
 router = [
     country := APIRouter("country"),
@@ -159,11 +166,14 @@ async def paypal_payment_webhook(event: dict = Body(...)):
         await db.exec(
             """
             UPDATE users  
-            SET next_billing_date={next_billing_date}, origin_billing_date=base_billing_date
-            WHERE paypal_subscription_id={subscription_id};
-            """,
+            SET next_billing_date={next_billing_date}, 
+                current_billing_date={current_billing_date}, 
+                origin_billing_date=base_billing_date, 
+                billing_status='active'
+            WHERE paypal_subscription_id={subscription_id};""",
             params={
                 "next_billing_date": next_billing,
+                "current_billing_date": transaction_time,
                 "subscription_id": subscription_id,
             },
         )
@@ -187,3 +197,87 @@ async def paypal_payment_webhook(event: dict = Body(...)):
         )
 
     return {"message": "Apply success"}
+
+
+@webhook.public.get("/billing")
+async def billing():
+    idempotent_mark = EFS_VOLUME_PATH / "processing_on_billing"
+    if idempotent_mark.exists():
+        return {"message": "There are processors that already do this"}
+    idempotent_mark.write_text("")
+
+    target_users = await db.exec(
+        """
+        SELECT id, email, currency, membership, base_billing_date, next_billing_date, tosspayments_billing_key
+        FROM users WHERE next_billing_date < now();
+        """
+    )
+    now = datetime.now()
+    db_transaction = db.Transaction()
+    for user in target_users:
+        (
+            user_id,
+            email,
+            currency,
+            membership,
+            base_billing_date,
+            next_billing_date,
+            tosspayments_billing_key,
+        ) = user
+        if next_billing_date < now - timedelta(days=3):
+            db_transaction.append(
+                "UPDATE users SET billing_status='require' WHERE id={user_id}",
+                user_id=user_id,
+            )
+            log.info(
+                f"[{e}] GET /webhook/billing: 대금 미지급으로 인한 계정 비활성화 - "
+                f"User(Email: {email}, membership: {membership}, next_billing_date: {next_billing_date})"
+            )
+        elif currency == "KRW" and tosspayments_billing_key:  # Tosspayments 결제
+            try:
+                payment = await TosspaymentsBilling(user_id=str(user_id)).billing(
+                    tosspayments_billing_key,
+                    order_name=f"Econox {membership.capitalize()} Membership",
+                    amount=MEMBERSHIP[membership][currency],
+                    email=email,
+                )
+            except httpx.HTTPStatusError as e:
+                log.info(
+                    f"[{e}] GET /webhook/billing: Tosspayments 구독료 청구 실패 - "
+                    f"User(Email: {email}, membership: {membership}, next_billing_date: {next_billing_date})"
+                )
+                continue
+            db_transaction.append(
+                template=db.Template(table="tosspayments_billings").insert_query(
+                    user_id=user_id,
+                    order_id=payment["orderId"],
+                    transaction_time=datetime.fromisoformat(payment["approvedAt"]),
+                    payment_key=payment["paymentKey"],
+                    order_name=payment["orderName"],
+                    total_amount=payment["totalAmount"],
+                    supply_price=payment["suppliedAmount"],
+                    vat=payment["vat"],
+                    card_issuer=payment["card"]["issuerCode"],
+                    card_acquirer=payment["card"]["acquirerCode"],
+                    card_number_masked=payment["card"]["number"],
+                    card_approve_number=payment["card"]["approveNo"],
+                    card_type=payment["card"]["cardType"],
+                    card_owner_type=payment["card"]["ownerType"],
+                    receipt_url=payment["receipt"]["url"],
+                )
+            )
+            db_transaction.append(
+                """ 
+                UPDATE users 
+                SET next_billing_date={next_billing_date}, 
+                    origin_billing_date=base_billing_date,
+                    current_billing_date={current_billing_date},
+                    billing_status='active'
+                WHERE id={user_id};""",
+                next_billing_date=calc_next_billing_date(base_billing_date, now),
+                current_billing_date=now,
+                user_id=user_id,
+            )
+    await db_transaction.exec()
+    idempotent_mark.unlink(missing_ok=True)
+    return {"message": "Process complete"}

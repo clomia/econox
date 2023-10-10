@@ -59,6 +59,7 @@
                 icon: "info",
                 showDenyButton: false,
                 title: $Text.ConnotStopPayment,
+                confirmButtonText: $Text.Ok,
             });
         }
         loading = true;
@@ -69,6 +70,7 @@
             icon: "info",
             showDenyButton: false,
             title: $Text.StopBillingComplete,
+            confirmButtonText: $Text.Ok,
         });
         location.reload();
     };
@@ -143,7 +145,6 @@
     };
 
     const deleteAccount = async () => {
-        let deny = false;
         await Swal.fire({
             ...defaultSwalStyle,
             icon: "warning",
@@ -153,7 +154,7 @@
             focusDeny: true,
             input: "text",
             width: "31rem",
-            padding: "1.5rem",
+            padding: "1rem",
             inputPlaceholder: $Text.DeleteAccountConfirmCheck,
             preConfirm: async (input: string) => {
                 if (input === $Text.DeleteAccountConfirmCheck) {
@@ -294,7 +295,7 @@
     }
 
     .danger:hover {
-        background-color: rgba(255, 140, 124, 0.2);
+        background-color: rgba(255, 140, 124, 0.2) !important;
     }
 
     .loader {

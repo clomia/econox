@@ -66,7 +66,10 @@ async def exec(
             return result
         except psycopg.ProgrammingError as e:
             # write 쿼리이기 때문에 읽을 결과가 없는 경우는 제외
-            if str(e) != "the last operation didn't produce a result":
+            if str(e) not in [
+                "the last operation didn't produce a result",
+                "no result available",
+            ]:
                 raise e
         except psycopg.OperationalError as e:  # password authentication failed
             # Secrets Manager에서 암호 교체가 이루어졌다고 간주하고 암호 업데이트 후 재시도

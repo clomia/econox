@@ -275,13 +275,13 @@ AlreadyProgressPleaseWait:
   en: "Your request is already in progress. Please wait a moment"
   ko: "요청이 이미 처리 중입니다. 잠시만 기다려주세요"
 StopBilling:
-  en: "Stop Billing"
+  en: "Suspend Billing"
   ko: "결제 중단"
 StopBillingComplete: # 이건 알람
-  en: "Billing has been halted. Due to a failed charge on the next billing date, your account will be deactivated"
+  en: "Billing has been Suspended. Due to a failed charge on the next billing date, your account will be deactivated"
   ko: "결제가 중단되었습니다. 다음 결제일에 결제가 실패하며 계정이 비활성화됩니다"
 BillingActivationComplete:
-  en: "Billing has been halted. Due to a failed charge on the next billing date, your account will be deactivated"
+  en: "Billing is activated"
   ko: "결제가 활성화되었습니다"
 AccountDeactiveScheduled:  # 이건 상태글
   en: "Billing has been paused. Your account will be deactivated on the next billing date"
@@ -307,6 +307,20 @@ ConnotStopPayment:
 WillMembershipBilling:
   en: "Membership fee will be charged"
   ko: "맴버십 비용이 결제됩니다"
+DeleteAccountMessage:
+  en: >
+    Your account will be immediately deleted. 
+    Any payments made will not be refunded. This action is irreversible. 
+    All personal data will be destroyed after a certain period of time. 
+    If your intention is to stop payments, please use the 'Suspend Billing' feature. 
+    To delete your account, please enter 'Confirmed'
+  ko: >
+    계정이 즉시 삭제됩니다. 결제된 금액은 환불되지 않습니다. 이 작업은 되돌릴 수 없습니다. 
+    모든 개인정보는 일정 기간이 지난 후 파기됩니다. 비용 결제 중단이 목적이라면 결제 중단 기능을 사용하세요. 
+    계정을 삭제하려면 '확인하였습니다' 를 입력해주세요
+DeleteAccountConfirmCheck:
+  en: "Confirmed"
+  ko: "확인하였습니다"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

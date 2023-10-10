@@ -91,9 +91,9 @@ export interface UiText {
     PaymentMethod_Benefit_ChangeAlert: "Since the New Member Benefit is active, there is no need to register a payment method" | "첫 회원가입 혜택이 적용중이므로 결제수단 등록이 필요하지 않습니다";
     PaymentHistoryLimit: "Only the last 15 payment transactions will be displayed" | "결제 내역은 최근 15건까지만 표시됩니다";
     AlreadyProgressPleaseWait: "Your request is already in progress. Please wait a moment" | "요청이 이미 처리 중입니다. 잠시만 기다려주세요";
-    StopBilling: "Stop Billing" | "결제 중단";
-    StopBillingComplete: "Billing has been halted. Due to a failed charge on the next billing date, your account will be deactivated" | "결제가 중단되었습니다. 다음 결제일에 결제가 실패하며 계정이 비활성화됩니다";
-    BillingActivationComplete: "Billing has been halted. Due to a failed charge on the next billing date, your account will be deactivated" | "결제가 활성화되었습니다";
+    StopBilling: "Suspend Billing" | "결제 중단";
+    StopBillingComplete: "Billing has been Suspended. Due to a failed charge on the next billing date, your account will be deactivated" | "결제가 중단되었습니다. 다음 결제일에 결제가 실패하며 계정이 비활성화됩니다";
+    BillingActivationComplete: "Billing is activated" | "결제가 활성화되었습니다";
     AccountDeactiveScheduled: "Billing has been paused. Your account will be deactivated on the next billing date" | "결제가 정지되었습니다. 다음 결제일에 계정이 비활성화됩니다";
     BillingActivation: "Billing Activate" | "결제 활성화";
     AccountActivation: "Account Activate" | "계정 활성화";
@@ -102,6 +102,8 @@ export interface UiText {
     AccountStatusDeactive: "Account status: Deactive" | "계정이 비활성 상태입니다";
     ConnotStopPayment: "You have no registered payment method" | "등록된 결제수단이 존재하지 않습니다";
     WillMembershipBilling: "Membership fee will be charged" | "맴버십 비용이 결제됩니다";
+    DeleteAccountMessage: "Your account will be immediately deleted.  Any payments made will not be refunded. This action is irreversible.  All personal data will be destroyed after a certain period of time.  If your intention is to stop payments, please use the 'Suspend Billing' feature.  To delete your account, please enter 'Confirmed'" | "계정이 즉시 삭제됩니다. 결제된 금액은 환불되지 않습니다. 이 작업은 되돌릴 수 없습니다.  모든 개인정보는 일정 기간이 지난 후 파기됩니다. 비용 결제 중단이 목적이라면 결제 중단 기능을 사용하세요.  계정을 삭제하려면 '확인하였습니다' 를 입력해주세요";
+    DeleteAccountConfirmCheck: "Confirmed" | "확인하였습니다";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

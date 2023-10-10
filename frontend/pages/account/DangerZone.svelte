@@ -141,6 +141,30 @@
         }
         loading = false;
     };
+
+    const deleteAccount = async () => {
+        let deny = false;
+        await Swal.fire({
+            ...defaultSwalStyle,
+            icon: "warning",
+            title: $Text.DeleteAccountMessage,
+            denyButtonText: $Text.Cancel,
+            confirmButtonText: $Text.Ok,
+            focusDeny: true,
+            input: "text",
+            width: "31rem",
+            padding: "1.5rem",
+            inputPlaceholder: $Text.DeleteAccountConfirmCheck,
+            preConfirm: async (input: string) => {
+                if (input === $Text.DeleteAccountConfirmCheck) {
+                    await api.private.delete("/user");
+                    location.reload();
+                } else {
+                    Swal.showValidationMessage($Text.InvalidInput);
+                }
+            },
+        });
+    };
 </script>
 
 <section class="section">
@@ -152,7 +176,7 @@
     {:else if $UserInfo["billing"]["status"] === "require"}
         <button on:click={billingActivate}>{$Text.AccountActivation}</button>
     {/if}
-    <button class="danger">{$Text.DeleteAccount}</button>
+    <button class="danger" on:click={deleteAccount}>{$Text.DeleteAccount}</button>
 </section>
 
 {#if tosspaymentsWidgetOn}

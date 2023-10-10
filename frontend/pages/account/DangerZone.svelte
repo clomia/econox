@@ -17,6 +17,13 @@
         status = $Text.AccountStatusDeactive;
     }
 
+    const nextBillingDate = new Date($UserInfo["next_billing_date"]);
+    const currentDate = new Date();
+    const todayIsNextBillingDate =
+        nextBillingDate.getDate() === currentDate.getDate() &&
+        nextBillingDate.getMonth() === currentDate.getMonth() &&
+        nextBillingDate.getFullYear() === currentDate.getFullYear();
+
     let tosspaymentsWidgetOn = false;
     let loading = false; // 로딩중일 때 스크롤 잠구기
     // 위젯이 떠있거나 로딩중일 때 스크롤 잠구기
@@ -53,6 +60,16 @@
     };
 
     const billingDeactivate = async () => {
+        if ($UserInfo["billing"]["currency"] === "USD" && todayIsNextBillingDate) {
+            // 오늘이 결제 예정일인 경우 변경 불가함 (웹훅 딜레이 길어서 위험함)
+            // Paypal이 결제 수행 -> 비활성화 -> PayPal로부터 웹훅을 수신 (이렇게 되면 안됌)
+            return await Swal.fire({
+                ...defaultSwalStyle,
+                icon: "info",
+                showDenyButton: false,
+                title: $Text.PaymentMethod_ChangeNotAllow_DueDate,
+            });
+        }
         if (!$UserInfo["billing"]["registered"]) {
             return await Swal.fire({
                 ...defaultSwalStyle,

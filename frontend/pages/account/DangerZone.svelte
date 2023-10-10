@@ -6,15 +6,14 @@
     import { api } from "../../modules/request";
     import { defaultSwalStyle } from "../../modules/functions";
     import type { AxiosError } from "axios";
+    import PasswordButton from "./PasswordButton.svelte";
 
-    const today = new Date();
-    const nexy_billing = new Date($UserInfo.next_billing_date);
     let status: string;
     if ($UserInfo["billing"]["status"] === "active") {
         status = $Text.AccountStatusActive;
-    } else if (today < nexy_billing) {
+    } else if ($UserInfo["billing"]["status"] === "deactive") {
         status = $Text.AccountDeactiveScheduled;
-    } else {
+    } else if ($UserInfo["billing"]["status"] === "require") {
         status = $Text.AccountStatusDeactive;
     }
 
@@ -28,7 +27,7 @@
     let expiryDate = "";
     let cardType = "personal";
     let ownerId = "";
-    let message: string = $Text.PaymentMethod_EnterNewCard;
+    let message: string = "";
     const cardNumberHandler = (event: Event) => {
         let value = (event.target as HTMLInputElement).value.replace(/\D/g, "");
         if (value.length > 16) {
@@ -77,14 +76,24 @@
     const billingActivateWithTosspayments = async () => {
         loading = true;
         const [expirMonth, expirYear] = expiryDate.replace(/\s/g, "").split("/");
-        await api.private.post("/user/billing/activate", {
-            tosspayments: {
-                card_number: cardNumber.replace(/\s/g, ""),
-                expiration_year: expirYear,
-                expiration_month: expirMonth,
-                owner_id: ownerId,
-            },
-        });
+        try {
+            await api.private.post("/user/billing/activate", {
+                tosspayments: {
+                    card_number: cardNumber.replace(/\s/g, ""),
+                    expiration_year: expirYear,
+                    expiration_month: expirMonth,
+                    owner_id: ownerId,
+                },
+            });
+            location.reload();
+        } catch (error: any) {
+            const e = error as AxiosError;
+            if (e.response?.status === 402) {
+                message = $Text.PaymentInfoIncorrect;
+            } else {
+                message = $Text.UnexpectedError;
+            }
+        }
         loading = false;
     };
 
@@ -96,13 +105,30 @@
         } catch (error: any) {
             const e = error as AxiosError;
             if (e.response?.status === 402) {
+                let deny = false;
+                await Swal.fire({
+                    ...defaultSwalStyle,
+                    icon: "info",
+                    title: $Text.WillMembershipBilling,
+                    denyButtonText: $Text.Cancel,
+                    confirmButtonText: $Text.Ok,
+                    preDeny: () => {
+                        deny = true;
+                    },
+                });
+                if (deny) {
+                    loading = false;
+                    return;
+                }
                 if ($UserInfo["billing"]["currency"] === "USD") {
                     await paypalWidget({
                         planName: $UserInfo["membership"],
                         onApprove: async (subscriptionId: string, orderId: string) => {
+                            loading = true;
                             await api.private.post("/user/billing/activate", {
                                 paypal: { order: orderId, subscription: subscriptionId },
                             });
+                            location.reload();
                         },
                         onLoad: () => {
                             loading = false;
@@ -124,7 +150,7 @@
     {:else if $UserInfo["billing"]["status"] === "deactive"}
         <button on:click={billingActivate}>{$Text.BillingActivation}</button>
     {:else if $UserInfo["billing"]["status"] === "require"}
-        <button>{$Text.AccountActivation}</button>
+        <button on:click={billingActivate}>{$Text.AccountActivation}</button>
     {/if}
     <button class="danger">{$Text.DeleteAccount}</button>
 </section>
@@ -132,7 +158,7 @@
 {#if tosspaymentsWidgetOn}
     <div class="tosspayments-background">
         <form on:submit|preventDefault={billingActivateWithTosspayments}>
-            <div class="title">{$Text.PaymentMethod_Change}</div>
+            <div class="title">{$Text.PaymentMethod_Enter}</div>
             <section class="card-number">
                 <label>
                     <span>{$Text.CreditCardNumber}</span>

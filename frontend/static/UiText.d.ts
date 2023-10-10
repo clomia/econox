@@ -86,6 +86,7 @@ export interface UiText {
     PaymentMethod_ChangeNotAllow_Waiting: "No changes allowed while payment method is being verified. Please try again in a moment" | "결제수단 확인 중에는 변경할 수 없습니다 잠시 후 다시 시도해주세요";
     PaymentMethod_ChangeCompleted: "Done! We've successfully changed your payment method" | "결제수단이 변경되었습니다";
     PaymentMethod_Change: "Update Payment Method" | "결제수단 변경";
+    PaymentMethod_Enter: "Enter Payment Method" | "결제수단 입력";
     PaymentMethod_EnterNewCard: "Please enter your new card details to update your payment information." | "새롭게 등록할 카드 정보를 입력해주세요";
     PaymentMethod_Benefit_ChangeAlert: "Since the New Member Benefit is active, there is no need to register a payment method" | "첫 회원가입 혜택이 적용중이므로 결제수단 등록이 필요하지 않습니다";
     PaymentHistoryLimit: "Only the last 15 payment transactions will be displayed" | "결제 내역은 최근 15건까지만 표시됩니다";
@@ -100,6 +101,7 @@ export interface UiText {
     AccountStatusActive: "Account status: Active" | "계정 상태가 정상입니다";
     AccountStatusDeactive: "Account status: Deactive" | "계정이 비활성 상태입니다";
     ConnotStopPayment: "You have no registered payment method" | "등록된 결제수단이 존재하지 않습니다";
+    WillMembershipBilling: "Membership fee will be charged" | "맴버십 비용이 결제됩니다";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

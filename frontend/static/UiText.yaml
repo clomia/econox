@@ -259,6 +259,9 @@ PaymentMethod_ChangeCompleted:
 PaymentMethod_Change:
   en: "Update Payment Method"
   ko: "결제수단 변경"
+PaymentMethod_Enter:
+  en: "Enter Payment Method"
+  ko: "결제수단 입력"
 PaymentMethod_EnterNewCard:
   en: "Please enter your new card details to update your payment information."
   ko: "새롭게 등록할 카드 정보를 입력해주세요"
@@ -301,6 +304,9 @@ AccountStatusDeactive:
 ConnotStopPayment:
   en: "You have no registered payment method"
   ko: "등록된 결제수단이 존재하지 않습니다"
+WillMembershipBilling:
+  en: "Membership fee will be charged"
+  ko: "맴버십 비용이 결제됩니다"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

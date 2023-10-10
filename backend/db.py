@@ -160,6 +160,15 @@ class Transaction:
         return await exec(*self.query_list, params=self.param_dict)
 
 
+async def select_row(table: str, fields: list, where: dict):
+    """limit 1 로 하나의 레코드만 선택하여 dict 형태로 반환합니다."""
+    values = await exec(
+        template=Template(table=table).select_query(*fields, where=where, limit=1),
+        embed=True,
+    )
+    return {k: v for k, v in zip(fields, values)}
+
+
 async def user_exists(email: str) -> bool:
     query = "SELECT 1 FROM users WHERE email={email};"
     return bool(await exec(query, params={"email": email}))
@@ -176,20 +185,12 @@ async def signup_history_exists(email: str, phone: str) -> bool:
 
 async def payment_method_exists(email: str) -> bool:
     """결제수단 등록 여부"""
-    query = "SELECT currency, tosspayments_billing_key, paypal_subscription_id FROM users WHERE email={email};"
-    currency, tosspayments_billing_key, paypal_subscription_id = await exec(
-        query, params={"email": email}, embed=True
+    db_user = await select_row(
+        "users",
+        fields=["currency", "tosspayments_billing_key", "paypal_subscription_id"],
+        where={"email": email},
     )
     return bool(
-        (currency == "KRW" and tosspayments_billing_key)
-        or (currency == "USD" and paypal_subscription_id)
+        (db_user["currency"] == "KRW" and db_user["tosspayments_billing_key"])
+        or (db_user["currency"] == "USD" and db_user["paypal_subscription_id"])
     )
-
-
-async def select_row(table: str, fields: list, where: dict):
-    """limit 1 로 하나의 레코드만 선택하여 dict 형태로 반환합니다."""
-    values = await exec(
-        template=Template(table=table).select_query(*fields, where=where, limit=1),
-        embed=True,
-    )
-    return {k: v for k, v in zip(fields, values)}

@@ -278,6 +278,10 @@ async def billing():
                 current_billing_date=now,
                 user_id=user_id,
             )
+            log.info(
+                f"GET /webhook/billing: Tosspayments 구독료 청구 완료 - "
+                f"User(Email: {email}, membership: {membership})"
+            )
     await db_transaction.exec()
     idempotent_mark.unlink(missing_ok=True)
     return {"message": "Process complete"}

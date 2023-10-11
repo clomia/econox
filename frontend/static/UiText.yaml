@@ -321,6 +321,16 @@ DeleteAccountMessage:
 DeleteAccountConfirmCheck:
   en: "Confirmed"
   ko: "확인하였습니다"
+DeactivatedAccountBillingRequire:
+  en: "Your account is deactivate because the membership fee has not been billed. Please activate your account"
+  ko: "맴버십 비용이 청구되지 않아 계정이 비활성화된 상태입니다. 계정을 활성화 해주세요"
+ProfessionalMembershipRequire:
+  en: "Your request requires Professional Membership. Please upgrade your account membership"
+  ko: "해당 요청은 전문가 맴버십이 필요합니다. 계정의 맴버십을 변경해주세요"
+ProfessionalMembershipRequire_ConfirmText:
+  en: "Update Account Settings"
+  ko: "계정 설정 변경하기"
+
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

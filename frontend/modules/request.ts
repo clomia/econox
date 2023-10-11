@@ -1,8 +1,10 @@
 import axios from "axios";
 import * as jwt from "jsonwebtoken";
+import Swal from "sweetalert2";
 
 import { settingObjectStore } from "./_storage";
-import { logout } from "./functions";
+import { logout, defaultSwalStyle } from "./functions";
+import { loadUiText } from "./uiText"
 
 import type { JwtPayload } from "jsonwebtoken";
 import type { AxiosError, InternalAxiosRequestConfig } from "axios";
@@ -10,7 +12,8 @@ import type { AxiosError, InternalAxiosRequestConfig } from "axios";
 export const apiHostPath = window.location.origin + "/api"
 export const api = {
     public: axios.create({ baseURL: apiHostPath }),
-    private: axios.create({ baseURL: apiHostPath })
+    private: axios.create({ baseURL: apiHostPath }), // 인증
+    member: axios.create({ baseURL: apiHostPath }), // 인증 + 권한 
 }
 
 const isJwtExpired = (token: string): boolean => {
@@ -48,5 +51,36 @@ const authenticationFailureHandler = async (error: AxiosError) => {
     throw error;
 }
 
+const PermissionFailureHandler = async (error: AxiosError) => {
+    const { text } = await loadUiText()
+    switch (error.response?.status) {
+        case 401:
+            await logout() // 401 응답 시 토큰들 삭제 후 홈으로 이동
+        case 402:
+            await Swal.fire({
+                ...defaultSwalStyle,
+                icon: "info",
+                showDenyButton: false,
+                title: text.DeactivatedAccountBillingRequire,
+                confirmButtonText: text.Ok,
+            });
+            window.location.replace(window.location.origin + "/account")
+        case 403:
+            return await Swal.fire({
+                ...defaultSwalStyle,
+                icon: "info",
+                title: text.ProfessionalMembershipRequire,
+                confirmButtonText: text.ProfessionalMembershipRequire_ConfirmText,
+                denyButtonText: text.Ok,
+                preConfirm: async () => window.location.replace(window.location.origin + "/account"),
+            });
+        default:
+            throw error
+    }
+}
+
 api.private.interceptors.request.use(tokenInsert)
 api.private.interceptors.response.use(undefined, authenticationFailureHandler)
+
+api.member.interceptors.request.use(tokenInsert)
+api.member.interceptors.response.use(undefined, PermissionFailureHandler)

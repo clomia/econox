@@ -141,7 +141,7 @@ class MembershipPermissionInspector(CognitoTokenBearer):
     """
     - 맴버십 API 권한 의존성
     - 대금이 밀려 청구 상태가 "require"인 경우 402 응답.
-    - 맴버십 범위와 맞지 않는 유저인 경우 403 응답.
+    - 요구되는 맴버십과 맞지 않는 유저인 경우 403 응답.
     """
 
     def __init__(self, membership: Literal["basic", "professional"]):
@@ -155,15 +155,15 @@ class MembershipPermissionInspector(CognitoTokenBearer):
             fields=["membership", "billing_status"],
             where={"id": user_info["id"]},
         )
-        if self.membership == "professional" and user["membership"] == "basic":
-            raise HTTPException(
-                status_code=403,
-                detail="Professional membership is required. Your membership is basic",
-            )
         if user["billing_status"] == "require":
             raise HTTPException(
                 status_code=402,
                 detail="This account has unpaid membership fees. Payment is required",
+            )
+        elif self.membership == "professional" and user["membership"] == "basic":
+            raise HTTPException(
+                status_code=403,
+                detail="Professional membership is required. Your membership is basic",
             )
         return user_info | {
             "membership": user["membership"],
@@ -174,10 +174,10 @@ class MembershipPermissionInspector(CognitoTokenBearer):
 class APIRouter:
     """
     - 권한 계층별로 라우터 객체를 제공함
-    - public: 아무나 접근 가능
-    - private: 로그인된 유저만 접근 가능
-    - basic: private + 구독 비용을 지불한 유저만 접근 가능
-    - professional: basic + professional맴버십 유저만 접근 가능
+    - public: 아무나 요청 가능
+    - private: 로그인된 유저만 요청 가능
+    - basic: private + 구독 비용을 지불한 유저만 요청 가능
+    - professional: basic + professional맴버십 유저만 요청 가능
     """
 
     auth = Depends(CognitoTokenBearer())

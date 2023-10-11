@@ -7,6 +7,12 @@
     import { UserInfo, Text } from "../../modules/state";
     import type { AxiosError } from "axios";
 
+    const SwalStyle = {
+        ...defaultSwalStyle,
+        confirmButtonText: $Text.Ok,
+        denyButtonText: $Text.Cancel,
+    };
+
     // 아래 변수는 트랜젝션 내역 여부 확인에도 사용함 currentBilling이 없으면 undefined이니까
     const currentBillingMethod: string | undefined = $UserInfo["billing"]["transactions"][0]?.["method"];
     const nextBillingDate = new Date($UserInfo["next_billing_date"]);
@@ -27,7 +33,7 @@
             if (todayIsNextBillingDate) {
                 // 오늘이 결제 예정일인 경우 변경 불가함 (웹훅 딜레이 길어서 위험함)
                 await Swal.fire({
-                    ...defaultSwalStyle,
+                    ...SwalStyle,
                     icon: "info",
                     showDenyButton: false,
                     title: $Text.PaymentMethod_ChangeNotAllow_DueDate,
@@ -35,7 +41,7 @@
             } else if (!currentBillingMethod) {
                 // 결제 내역이 아직 없음
                 await Swal.fire({
-                    ...defaultSwalStyle,
+                    ...SwalStyle,
                     icon: "info",
                     showDenyButton: false,
                     title: $Text.PaymentMethod_ChangeNotAllow_Waiting,
@@ -52,12 +58,6 @@
     let tosspaymentsWidgetOn = false;
     let loading = false;
 
-    const SwalStyle = {
-        ...defaultSwalStyle,
-        confirmButtonText: $Text.Submit,
-        denyButtonText: $Text.Cancel,
-    };
-
     const widget = async () => {
         const available = await billingChangeAvailableCheck();
         if (!available) {
@@ -65,7 +65,7 @@
         } else if (!$UserInfo["billing"]["registered"]) {
             // -> Benefit~
             await Swal.fire({
-                ...defaultSwalStyle,
+                ...SwalStyle,
                 icon: "info",
                 showDenyButton: false,
                 title: $Text.PaymentMethod_Benefit_ChangeAlert,
@@ -87,7 +87,6 @@
                         showDenyButton: false,
                         text: $Text.PaymentMethod_ChangeCompleted,
                         icon: "success",
-                        confirmButtonText: $Text.Ok,
                         showLoaderOnConfirm: false,
                     });
                     location.reload();
@@ -171,7 +170,6 @@
                 showDenyButton: false,
                 text: $Text.PaymentMethod_ChangeCompleted,
                 icon: "success",
-                confirmButtonText: $Text.Ok,
                 showLoaderOnConfirm: false,
             });
             location.reload();

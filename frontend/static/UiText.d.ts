@@ -104,6 +104,9 @@ export interface UiText {
     WillMembershipBilling: "Membership fee will be charged" | "맴버십 비용이 결제됩니다";
     DeleteAccountMessage: "Your account will be immediately deleted.  Any payments made will not be refunded. This action is irreversible.  All personal data will be destroyed after a certain period of time.  If your intention is to stop payments, please use the 'Suspend Billing' feature.  To delete your account, please enter 'Confirmed'" | "계정이 즉시 삭제됩니다. 결제된 금액은 환불되지 않습니다. 이 작업은 되돌릴 수 없습니다.  모든 개인정보는 일정 기간이 지난 후 파기됩니다. 비용 결제 중단이 목적이라면 결제 중단 기능을 사용하세요.  계정을 삭제하려면 '확인하였습니다' 를 입력해주세요";
     DeleteAccountConfirmCheck: "Confirmed" | "확인하였습니다";
+    DeactivatedAccountBillingRequire: "Your account is inactive because the membership fee has not been billed. Please activate your account" | "맴버십 비용이 청구되지 않아 계정이 비활성화된 상태입니다. 계정을 활성화 해주세요";
+    ProfessionalMembershipRequire: "Your request requires Professional Membership. Please upgrade your account membership" | "해당 요청은 전문가 맴버십이 필요합니다. 계정의 맴버십을 변경해주세요";
+    ProfessionalMembershipRequire_ConfirmText: "Change account settings" | "계정 설정 변경하기";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

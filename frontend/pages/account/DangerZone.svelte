@@ -6,7 +6,6 @@
     import { api } from "../../modules/request";
     import { defaultSwalStyle } from "../../modules/functions";
     import type { AxiosError } from "axios";
-    import PasswordButton from "./PasswordButton.svelte";
 
     let status: string;
     if ($UserInfo["billing"]["status"] === "active") {

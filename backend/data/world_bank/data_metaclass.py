@@ -4,7 +4,6 @@ from datetime import datetime, date
 
 import numpy as np
 import xarray as xr
-from aiocache import cached
 
 from backend.math import standardization
 from backend.http import WorldBankAPI

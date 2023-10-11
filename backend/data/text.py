@@ -1,11 +1,9 @@
 """ 텍스트 데이터 처리 모듈: Google Translate API 를 사용하는 다국어 객체 구현"""
-import os
 import html
 import json
 import logging
 from functools import partial
 
-import boto3
 from aiocache import cached
 from google.cloud import translate_v2
 from google.oauth2.service_account import Credentials

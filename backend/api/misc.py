@@ -230,7 +230,7 @@ async def billing():
                 user_id=user_id,
             )
             log.info(
-                f"[{e}] GET /webhook/billing: 대금 미지급으로 인한 계정 비활성화 - "
+                f"GET /webhook/billing: 대금 미지급으로 인한 계정 비활성화 - "
                 f"User(Email: {email}, membership: {membership}, next_billing_date: {next_billing_date})"
             )
         elif currency == "KRW" and tosspayments_billing_key:  # Tosspayments 결제

@@ -357,7 +357,7 @@ class PayPalAPI:
                 raise httpx.LocalProtocolError  # 토큰이 없는 경우는 LocalProtocolError가 바로 raise 됨
         except httpx.LocalProtocolError as e:
             log.warning(  # resp는 undifined임, 토큰 없으면 요청 자체가 실행되지 않음
-                f"POST {self.path} -> {e}\nPayPal 토큰 인증에 실패하였습니다. 토큰 갱신 후 재시도합니다."
+                f"POST {self.path}: PayPal 토큰 인증에 실패하였습니다. 토큰 갱신 후 재시도합니다."
             )
             await self._refresh_access_token()
             return await retry()

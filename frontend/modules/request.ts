@@ -51,7 +51,7 @@ const authenticationFailureHandler = async (error: AxiosError) => {
     throw error;
 }
 
-const PermissionFailureHandler = async (error: AxiosError) => {
+const permissionFailureHandler = async (error: AxiosError) => {
     const { text } = await loadUiText()
     switch (error.response?.status) {
         case 401:
@@ -83,4 +83,4 @@ api.private.interceptors.request.use(tokenInsert)
 api.private.interceptors.response.use(undefined, authenticationFailureHandler)
 
 api.member.interceptors.request.use(tokenInsert)
-api.member.interceptors.response.use(undefined, PermissionFailureHandler)
+api.member.interceptors.response.use(undefined, permissionFailureHandler)

@@ -208,7 +208,7 @@ async def billing():
 
     target_users = await db.exec(
         """
-        SELECT id, email, currency, membership, base_billing_date, next_billing_date, tosspayments_billing_key
+        SELECT id, email, currency, membership, base_billing_date, next_billing_date, tosspayments_billing_key, billing_status
         FROM users WHERE next_billing_date < now();
         """
     )
@@ -223,8 +223,11 @@ async def billing():
             base_billing_date,
             next_billing_date,
             tosspayments_billing_key,
+            billing_status,
         ) = user
-        if next_billing_date < now - timedelta(days=3):
+        if next_billing_date < now - timedelta(days=3) or (
+            next_billing_date < now and billing_status == "deactive"
+        ):  # 결제가 누락된 경우 3일 버퍼를 주고, 사용자가 비활성화를 선택한 경우 즉시 계정을 비활성화
             db_transaction.append(
                 "UPDATE users SET billing_status='require' WHERE id={user_id}",
                 user_id=user_id,

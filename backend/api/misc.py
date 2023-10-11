@@ -201,6 +201,12 @@ async def paypal_payment_webhook(event: dict = Body(...)):
 
 @webhook.public.get("/billing")
 async def billing():
+    """
+    - 스케쥴링된 람다가 주기적으로 호출해야 하는 웹훅 API
+    - Tosspayments 유저의 반복 결제를 수행한다.
+    - 대금이 지불되지 않았거나 비활성화된 계정의 맴버십 유효기간이 지난 경우 계정을 비활성화한다.
+    """
+
     idempotent_mark = EFS_VOLUME_PATH / "processing_on_billing"
     if idempotent_mark.exists():
         return {"message": "There are processors that already do this"}

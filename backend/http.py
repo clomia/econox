@@ -5,7 +5,7 @@ import base64
 import asyncio
 from uuid import uuid4
 from datetime import datetime
-from typing import List, Awaitable, Callable, TypeVar
+from typing import List, Awaitable, Callable, TypeVar, Literal
 from functools import partial
 
 import jwt
@@ -108,7 +108,11 @@ class CognitoTokenBearer(HTTPBearer):
     """
 
     async def __call__(self, request: Request) -> dict:
-        credentials: HTTPAuthorizationCredentials = await super().__call__(request)
+        try:
+            credentials: HTTPAuthorizationCredentials = await super().__call__(request)
+        except HTTPException:
+            # HTTPBearer는 Not authenticated에 대해 403을 응답하지만 우리는 그것에 401을 쓸거임
+            raise HTTPException(status_code=401, detail="Not authenticated")
 
         if "|" not in credentials.credentials:
             raise HTTPException(status_code=401, detail="Invalid token format")
@@ -125,23 +129,83 @@ class CognitoTokenBearer(HTTPBearer):
                     status_code=401,
                     detail=f"Authorization failed, user does not exists",
                 )
-            return user_info
         except jwt.PyJWTError as e:
             e_str = str(e)
             error_detail = e_str[0].lower() + e_str[1:]
             raise HTTPException(status_code=401, detail=f"Authorization {error_detail}")
+        else:
+            return user_info
+
+
+class MembershipPermissionInspector(CognitoTokenBearer):
+    """
+    - 맴버십 API 권한 의존성
+    - 대금이 밀려 청구 상태가 "require"인 경우 402 응답.
+    - 맴버십 범위와 맞지 않는 유저인 경우 403 응답.
+    """
+
+    def __init__(self, membership: Literal["basic", "professional"]):
+        super().__init__()
+        self.membership = membership
+
+    async def __call__(self, request: Request) -> dict:
+        user_info = await super().__call__(request)
+        user = await db.select_row(
+            "users",
+            fields=["membership", "billing_status"],
+            where={"id": user_info["id"]},
+        )
+        if self.membership == "professional" and user["membership"] == "basic":
+            raise HTTPException(
+                status_code=403,
+                detail="Professional membership is required. Your membership is basic",
+            )
+        if user["billing_status"] == "require":
+            raise HTTPException(
+                status_code=402,
+                detail="This account has unpaid membership fees. Payment is required",
+            )
+        return user_info | {
+            "membership": user["membership"],
+            "billing_status": user["billing_status"],
+        }
 
 
 class APIRouter:
-    auth = CognitoTokenBearer()
+    """
+    - 권한 계층별로 라우터 객체를 제공함
+    - public: 아무나 접근 가능
+    - private: 로그인된 유저만 접근 가능
+    - basic: private + 구독 비용을 지불한 유저만 접근 가능
+    - professional: basic + professional맴버십 유저만 접근 가능
+    """
+
+    auth = Depends(CognitoTokenBearer())
+    permission = {
+        "basic": Depends(MembershipPermissionInspector("basic")),
+        "professional": Depends(MembershipPermissionInspector("professional")),
+    }
 
     def __init__(self, prefix: str):
         self.path = f"/api/{prefix}"
         self.public = routing.APIRouter(prefix=self.path, tags=[prefix])
         self.private = routing.APIRouter(
-            prefix=self.path, tags=[prefix], dependencies=[Depends(self.auth)]
+            prefix=self.path, tags=[prefix], dependencies=[self.auth]
         )
-        self.private.auth = Depends(self.auth)
+        self.basic = routing.APIRouter(
+            prefix=self.path,
+            tags=[prefix],
+            dependencies=[self.permission["basic"]],
+        )
+        self.professional = routing.APIRouter(
+            prefix=self.path,
+            tags=[prefix],
+            dependencies=[self.permission["professional"]],
+        )
+
+        self.private.auth = self.auth
+        self.basic.auth = self.permission["basic"]
+        self.professional.auth = self.permission["professional"]
 
         # fastapi.APIRouter의 메서드가 path 인자를 입력받지 않은 경우 기본값 "" 를 사용하도록 변경
         methods = ["get", "post", "put", "patch", "delete", "options", "head", "trace"]

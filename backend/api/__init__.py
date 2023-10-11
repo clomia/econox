@@ -23,6 +23,10 @@ for p in Path(__file__).parent.glob("*.py"):
             for router in module.router:
                 routers.append(router.public)
                 routers.append(router.private)
+                routers.append(router.basic)
+                routers.append(router.professional)
         elif isinstance(module.router, APIRouter):
             routers.append(module.router.public)
             routers.append(module.router.private)
+            routers.append(module.router.basic)
+            routers.append(module.router.professional)

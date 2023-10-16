@@ -61,7 +61,7 @@ class CognitoToken:
     async def get_jwk(self, key_id: str):
         matching = [item for item in self.jwks["keys"] if item["kid"] == key_id]
         if not matching:  # Cognito에서 키 jwks가 변경(롤오버)되었다고 간주하고 업데이트 후 재시도
-            log.warning(f"매칭되는 JWK가 없습니다. Cognito로부터 jwks를 업데이트합니다.")
+            log.info(f"매칭되는 JWK가 없습니다. Cognito로부터 jwks를 업데이트합니다.")
             async with httpx.AsyncClient(
                 base_url="https://cognito-idp.us-east-1.amazonaws.com/",
                 timeout=self.timeout,
@@ -418,10 +418,10 @@ class PayPalAPI:
         try:
             resp = await request
             if resp.status_code == 401:  # 토큰이 만료됨 (만약 다른곳에서 토큰 발급시 이전 토큰이 만료됨)
-                raise httpx.LocalProtocolError(message="Received 401")
+                raise httpx.LocalProtocolError(message=f"Received 401: {resp.content}")
         except httpx.LocalProtocolError as e:
             # 토큰이 없는 경우는 LocalProtocolError가 바로 raise 됨
-            log.warning(  # resp는 undifined임, 토큰 없으면 요청 자체가 실행되지 않음
+            log.info(  # resp는 undifined임, 토큰 없으면 요청 자체가 실행되지 않음
                 f"POST {self.path}: PayPal 토큰 인증에 실패하였습니다. 토큰 갱신 후 재시도합니다. (error message: {e})"
             )
             await self._refresh_access_token()
@@ -492,7 +492,7 @@ class PayPalWebhookAuth:
             )
             assert result["verification_status"] == "SUCCESS"
         except (httpx.HTTPStatusError, AssertionError, KeyError) as e:
-            log.warning(
+            log.info(
                 f"PayPal 웹훅 페이로드 인증 실패, 요청을 무시합니다."
                 f"\n[Header]:{dict(event.headers)}\n[Body]: {body}\n[Error] {type(e).__name__}: {e}"
             )

@@ -10,33 +10,36 @@
     let loading = false;
     const search = async () => {
         loading = true;
-        const results = await api.member.get("/data/elements", { params: { query: inputText, lang: $Lang } });
+        const resp = await api.member.get("/data/elements", { params: { query: inputText, lang: $Lang } });
         loading = false;
-        console.log(results);
+        console.log(resp.data);
     };
 </script>
 
-<form class:shadow-pulse={loading} on:submit|preventDefault={search}>
-    <div class="magnifier"><Magnifier /></div>
-    <input
-        type="text"
-        name="search"
-        autocomplete="off"
-        spellcheck="false"
-        disabled={loading}
-        placeholder={$Text.SearchBar_Placeholder}
-        bind:value={inputText}
-    />
+<main>
+    <form class="search-form" class:shadow-pulse={loading} on:submit|preventDefault={search}>
+        <div class="magnifier"><Magnifier /></div>
+        <input
+            class="search"
+            type="text"
+            name="search"
+            autocomplete="off"
+            spellcheck="false"
+            disabled={loading}
+            placeholder={$Text.SearchBar_Placeholder}
+            bind:value={inputText}
+        />
 
-    {#if loading}
-        <div in:fade class="search-loader"><DotLoader /></div>
-    {:else}
-        <button in:fade class="search-btn"><SearchArrow /></button>
-    {/if}
-</form>
+        {#if loading}
+            <div in:fade class="search-loader"><DotLoader /></div>
+        {:else}
+            <button in:fade class="search-btn"><SearchArrow /></button>
+        {/if}
+    </form>
+</main>
 
 <style>
-    form {
+    .search-form {
         display: flex;
         align-items: center;
         width: 44rem;
@@ -44,15 +47,12 @@
         border-radius: 1.5rem;
         border: thin solid var(--border-white);
         box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.2);
-        transition: border-color 150ms ease-in;
+        transition: border-color 150ms ease-out;
     }
-    form > input {
+    .search {
         width: 100%;
         height: 100%;
         color: var(--white);
-    }
-    form:hover {
-        border-color: rgba(255, 255, 255, 0.6);
     }
     .magnifier {
         margin-left: 1.4rem;
@@ -80,7 +80,7 @@
         align-items: center;
     }
     .search-loader:hover,
-    form > input:disabled:hover {
+    .search:disabled:hover {
         cursor: wait;
     }
     @keyframes shadowPulse {

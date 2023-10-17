@@ -225,6 +225,7 @@
         top: 0;
         opacity: 0.5;
         color: var(--white);
+        transition: opacity 150ms ease-out;
     }
     .reset-password-btn:hover {
         opacity: 1;

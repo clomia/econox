@@ -10,8 +10,8 @@ from backend.data import fmp, world_bank
 router = APIRouter("data")
 
 
-@router.basic.get("/search")
-async def search_for_symbols_and_countries(query: str, lang: str):
+@router.basic.get("/elements")
+async def search_symbols_and_countries(query: str, lang: str):
     async def parsing(obj):
         name, note = await asyncio.gather(obj.name.en(), obj.note.trans(to=lang))
         return {
@@ -27,7 +27,6 @@ async def search_for_symbols_and_countries(query: str, lang: str):
         asyncio.gather(*[parsing(sym) for sym in symbol_objects]),
         asyncio.gather(*[parsing(ctry) for ctry in country_objects]),
     )
-
     return {
         "symbols": symbols,
         "countries": countries,
@@ -35,7 +34,7 @@ async def search_for_symbols_and_countries(query: str, lang: str):
 
 
 @router.basic.get("/news")
-async def search_for_news_related_to_symbols(symbol: str, lang: str):
+async def search_news_related_to_symbols(symbol: str, lang: str):
     async def parsing(obj):
         title, content = await asyncio.gather(
             obj.title.trans(to=lang), obj.content.trans(to=lang)

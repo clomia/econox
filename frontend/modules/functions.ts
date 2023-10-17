@@ -1,5 +1,5 @@
 import { api } from "./request"
-import { Text, UserInfo } from "./state"
+import { Text, UserInfo, Lang } from "./state"
 import { loadUiText } from "./uiText"
 import { settingObjectStore } from "./_storage"
 
@@ -51,10 +51,14 @@ export const init = async () => {
     ])
     if (cognitoToken && cognitoRefreshToken) {
         const [uiText, userInfo] = await Promise.all([loadUiText(), api.private.get("/user")])
-        Text.set(uiText.text as UiText)
+        Text.set(uiText.text)
+        Lang.set(uiText.lang)
         UserInfo.set(userInfo.data)
+    } else {
+        const uiText = await loadUiText()
+        Text.set(uiText.text)
+        Lang.set(uiText.lang)
     }
-    Text.set((await loadUiText()).text as UiText);
 }
 
 /**

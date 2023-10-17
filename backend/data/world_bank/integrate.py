@@ -65,7 +65,7 @@ class Country:
         # ======= 수집된 데이터 정제 =======
         note = None
         if name and region and capital and income:  # 이 4가지 정보는 필수
-            note = f"{name}({self.code}) is located in {region} and its capital is {capital} The income level is {income}"
+            note = f"{name}({self.code}) is located in {region} and its capital is {capital} The income level is {income}."
         info = {"name": name, "note": note}
         info |= {  # 경위도 정보 추가
             "longitude": float(longitude) if longitude else None,

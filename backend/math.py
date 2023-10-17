@@ -78,25 +78,32 @@ def destandardize(standardized: xr.Dataset) -> xr.DataArray:
 
 def marge_lists(*lists: list, limit: int) -> list:
     """
-    - 리스트들을 받아서 값이 균등하게 포함된 하나의 리스트로 합칩니다.
-    - limit[필수]: 결과 리스트 갯수를 제한합니다.
+    여러 리스트들을 받아 limit에 지정된 수만큼의 요소를 포함하도록
+    각 리스트에서 균등하게 아이템을 선택하여 하나의 리스트로 합칩니다.
     """
+    # 각 리스트의 길이를 계산
     lengths = [len(lst) for lst in lists]
 
-    base_num = limit // len(lists)  # 각 리스트에서 가져와야 할 기본 요소의 수 계산
-    sorted_lists = sorted(  # 남은 요소들을 가져올 리스트를 결정하기 위해 리스트와 그 길이를 함께 정렬
-        [(lst, length) for lst, length in zip(lists, lengths)], key=lambda x: -x[1]
-    )
-    num_from_lists = [base_num for _ in lists]  # 각 리스트에서 가져올 요소의 수를 저장할 변수 초기화
+    # 리스트와 그 길이를 쌍으로 묶어서 길이에 따라 내림차순으로 정렬
+    paired_lists = sorted(zip(lists, lengths), key=lambda x: x[1], reverse=True)
 
-    remaining = limit - sum(num_from_lists)
-    for i in range(remaining):  # 남은 요소들을 길이가 큰 리스트부터 차례대로 할당
-        while num_from_lists[i % len(lists)] >= sorted_lists[i % len(lists)][1]:
-            i += 1
-        num_from_lists[i % len(lists)] += 1
+    # 각 리스트에서 선택할 아이템의 수를 저장할 변수 초기화
+    num_from_lists = [0 for _ in lists]
 
-    result = []  # 결과 리스트 생성
-    for (lst, _), num in zip(sorted_lists, num_from_lists):
+    # 선택된 아이템의 총 수
+    count = 0
+    # 아직 선택할 아이템이 남아있고, limit에 도달하지 않았다면 계속 선택
+    while count < limit and any(
+        x[1] > num_from_lists[i] for i, x in enumerate(paired_lists)
+    ):
+        for i, (lst, length) in enumerate(paired_lists):
+            if count < limit and length > num_from_lists[i]:
+                num_from_lists[i] += 1
+                count += 1
+
+    # 결과 리스트 생성
+    result = []
+    for (lst, _), num in zip(paired_lists, num_from_lists):
         result.extend(lst[:num])
 
     return result

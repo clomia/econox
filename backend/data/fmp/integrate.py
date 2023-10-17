@@ -144,7 +144,7 @@ class Symbol:
         # ======= 수집된 데이터 정제 =======
         currency_obj = pycountry.currencies.get(alpha_3=currency) if currency else None
         if name and exchange and currency_obj:  # 이 3가지 정보는 필수
-            note_basic = f"{name}({self.code}) is traded at {exchange} and the currency uses {currency_obj.name}"
+            note_basic = f"{name}({self.code}) is traded at {exchange} and the currency uses {currency_obj.name}. "
             note = f"{note_basic} {description}" if description else note_basic
             info = {"name": name, "note": note}
         else:
@@ -178,25 +178,37 @@ class Symbol:
         return self._from_list(resp[0]["peersList"]) if resp else []
 
     @property
-    async def current_price(self) -> float | None:
+    async def current_price(self) -> int | float | None:
         """
         - api/v3/quote
-        - 현재가격
+        - 현재 가격
         """
         resp = await FmpAPI(cache=False).get(f"api/v3/quote-short/{self.code}")
-        return float(resp[0]["price"]) if resp else None
+        if resp and isinstance(value := resp[0].get("price"), (int, float)):
+            return value
 
     @property
-    async def current_change(self) -> float | None:
+    async def current_volume(self) -> int | float | None:
+        """
+        - api/v3/quote
+        - 현재 거래량
+        """
+        resp = await FmpAPI(cache=False).get(f"api/v3/quote-short/{self.code}")
+        if resp and isinstance(value := resp[0].get("volume"), (int, float)):
+            return value
+
+    @property
+    async def current_change(self) -> int | float | None:
         """
         - api/v3/quote
         - 현재 가격 변화율 (%)
         """
         resp = await FmpAPI(cache=False).get(f"api/v3/quote/{self.code}")
-        return float(resp[0]["changesPercentage"]) if resp else None
+        if resp and isinstance(value := resp[0].get("changesPercentage"), (int, float)):
+            return value
 
 
-async def search(text: str, limit: int = 15) -> List[Symbol]:
+async def search(text: str, limit: int = 8) -> List[Symbol]:
     """
     - api/v3/search
     - text: 검색 문자열
@@ -210,12 +222,28 @@ async def search(text: str, limit: int = 15) -> List[Symbol]:
         FmpAPI(cache=True).get("api/v3/search", limit=limit, query=text),
     )
     resp_set = {ele["symbol"] for ele in resp_en + resp_origin}  # 중복 제거
+
     codes = (  # limit으로 짜르되, 심볼 코드로 검색한 경우라면 해당 심볼은 살리기
-        [text.upper()] + list(resp_set)[: limit - 1]
-        if text.upper() in resp_set
+        list(resp_set)[: limit - 1] + [target]
+        if (target := text.upper()) in resp_set
         else list(resp_set)[:limit]
     )
-    return await asyncio.gather(*(Symbol(code).load() for code in codes))
+
+    symbols = await asyncio.gather(*[Symbol(code).load() for code in codes])
+
+    async def current_volume(symbol):
+        return await symbol.current_volume or 0
+
+    # 거래량 기준으로 정렬합니다.
+    volume_list = await asyncio.gather(*map(current_volume, symbols))
+    volume_map = dict(zip(symbols, volume_list))
+    sorted_list = sorted(symbols, key=lambda sym: volume_map[sym], reverse=True)
+    for i, sym in enumerate(sorted_list[:]):
+        if sym.code == target:
+            sorted_list.pop(i)
+            sorted_list.insert(0, sym)  # symbol 코드로 검색한 경우 해당 symbol을 맨 앞으로
+            break
+    return sorted_list
 
 
 async def cond_search(

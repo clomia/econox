@@ -56,6 +56,7 @@
         border: thin solid var(--border-white);
         border-radius: 2rem;
         position: relative;
+        box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.2);
     }
 
     section button:hover {

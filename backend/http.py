@@ -240,7 +240,8 @@ class FmpAPI:
             except Exception as error:
                 log.warning(
                     "FMP API 서버와 통신에 실패했습니다."
-                    f"{interval}초 후 다시 시도합니다... (path: {path})"
+                    f"{interval}초 후 다시 시도합니다... (path: {path}) "
+                    f"Error: {error}"
                 )
                 if interval is None:
                     log.error(f"FMP API 서버와 통신에 실패하여 데이터를 수신하지 못했습니다. (path: {path})")
@@ -249,6 +250,7 @@ class FmpAPI:
                     await asyncio.sleep(interval)  # retry 대기
                     continue
 
+    @classmethod
     async def _request(cls, path, **params):
         async with httpx.AsyncClient(
             base_url="https://financialmodelingprep.com",

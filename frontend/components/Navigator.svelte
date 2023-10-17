@@ -8,7 +8,7 @@
 
 <section>
     <button>{$Text.Econox}</button>
-    <button>{$Text.Console}</button>
+    <button on:click={() => navigate("/console")}>{$Text.Console}</button>
     <button>{$Text.FeatureHub}</button>
     {#if $UserInfo.id}
         <button on:click={() => navigate("/account")}>

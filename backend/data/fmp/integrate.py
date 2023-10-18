@@ -214,6 +214,7 @@ async def search(text: str, limit: int = 8) -> List[Symbol]:
     - text: 검색 문자열
         - 다국어 가능!
     - limit: 검색 결과 갯수 제한
+    - 검색어와 일치하는 symbol이 가장 앞으로 오고 나머지는 거래량이 큰게 앞으로 오도록 정렬되어 반환됩니다.
     - 검색 결과가 없으면 빈 리스트를 반환합니다.
     """
     en_text = await translator(text, to_lang="en")
@@ -222,13 +223,12 @@ async def search(text: str, limit: int = 8) -> List[Symbol]:
         FmpAPI(cache=True).get("api/v3/search", limit=limit, query=text),
     )
     resp_set = {ele["symbol"] for ele in resp_en + resp_origin}  # 중복 제거
-
     codes = (  # limit으로 짜르되, 심볼 코드로 검색한 경우라면 해당 심볼은 살리기
-        list(resp_set)[: limit - 1] + [target]
-        if (target := text.upper()) in resp_set
+        # 해당 심볼이 포함되도록 하면서 중복 방지
+        eligible + list(resp_set - set(eligible))[: limit - len(eligible)]
+        if (eligible := [s for s in resp_set if (target := text.upper()) in s])
         else list(resp_set)[:limit]
     )
-
     symbols = await asyncio.gather(*[Symbol(code).load() for code in codes])
 
     async def current_volume(symbol):
@@ -238,12 +238,11 @@ async def search(text: str, limit: int = 8) -> List[Symbol]:
     volume_list = await asyncio.gather(*map(current_volume, symbols))
     volume_map = dict(zip(symbols, volume_list))
     sorted_list = sorted(symbols, key=lambda sym: volume_map[sym], reverse=True)
-    for i, sym in enumerate(sorted_list[:]):
-        if sym.code == target:
-            sorted_list.pop(i)
-            sorted_list.insert(0, sym)  # symbol 코드로 검색한 경우 해당 symbol을 맨 앞으로
-            break
-    return sorted_list
+
+    return sorted(  # 검색어와 매칭되는 symbol들을 앞으로 옮깁니다
+        sorted_list,  # (False, False)가 (0,0)이니까 가장 앞으로간다. 그 뒤는 (False, True), (True,True)순으로 정렬됨
+        key=lambda sym: (sym.code != target, sym.code.split(".")[0] != target),
+    )
 
 
 async def cond_search(

@@ -61,7 +61,6 @@ async def news(symbol: str, limit=10) -> List[News]:
     page = 0
     forex_news: List[News] = []  # 외환 뉴스 수집
     while len(forex_news) < limit:
-        params = {"symbol": symbol, "page": page}
         for news in forex_resp:
             forex_news.append(
                 News(
@@ -83,7 +82,6 @@ async def news(symbol: str, limit=10) -> List[News]:
     page = 0
     crypto_news: List[News] = []  # 암호화페 뉴스 수집
     while len(crypto_news) < limit:
-        params = {"symbol": symbol, "page": page}
         for news in crypto_resp:
             crypto_news.append(
                 News(

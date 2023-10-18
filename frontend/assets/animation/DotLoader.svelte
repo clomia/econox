@@ -1,5 +1,5 @@
 <script>
-    let n = 5;
+    let n = 6;
 </script>
 
 <main>
@@ -26,12 +26,13 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+        align-items: center;
     }
 
     .dot {
         background: rgba(255, 255, 255, 0.4);
         box-shadow: 0 0 0.5rem 0.1rem rgba(255, 255, 255, 0.1);
-        margin: 0.2rem;
+        margin: 0 0.25rem;
     }
 
     .dot,

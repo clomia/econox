@@ -4,12 +4,16 @@
     import Swal from "sweetalert2";
     import Magnifier from "../../assets/icon/Magnifier.svelte";
     import DotLoader from "../../assets/animation/DotLoader.svelte";
+    import LineArrow from "../../assets/icon/LineArrow.svelte";
     import { api } from "../../modules/request";
     import { Text, Lang } from "../../modules/state";
     import { defaultSwalStyle } from "../../modules/functions";
 
     let inputText = "";
-    const packets = writable<{ query: string; loading: boolean; resp: any }[]>([]);
+    type Packet = { query: string; loading: boolean; resp: any };
+    const packets = writable<Packet[]>([]);
+    const displayedPackets = writable<Packet[]>([]);
+    const displayLimit = 4; // 실제 보여질 패킷 갯수, 나머지는 pagenation 처리
     const createPacket = async () => {
         const query = inputText.trim();
         inputText = "";
@@ -27,26 +31,27 @@
             });
         }
         const initialPacket = { query, loading: true, resp: null };
-        $packets = [initialPacket, ...$packets];
+        $packets = [...$packets, initialPacket];
+        $displayedPackets = $packets.slice(-4);
         const resp = await api.member.get("/data/elements", { params: { query, lang: $Lang } });
         const updatedPacket = { ...initialPacket, loading: false, resp: resp.data };
         const index = $packets.findIndex((p) => p.query === query && p.loading);
         $packets[index] = updatedPacket;
     };
-
     let packetBox: HTMLElement;
     const scrollLeft = () => {
-        packetBox.scrollBy({ left: -400, behavior: "smooth" });
+        const baseIndex = $packets.findIndex((p) => p.query === $displayedPackets[0].query);
+        $displayedPackets = $packets.slice(baseIndex - 1, baseIndex + displayLimit - 1);
     };
     const scrollRight = () => {
-        packetBox.scrollBy({ left: 400, behavior: "smooth" });
+        const baseIndex = $packets.findIndex((p) => p.query === $displayedPackets[0].query);
+        $displayedPackets = $packets.slice(baseIndex + 1, baseIndex + displayLimit + 1);
     };
-    let buffer = 10; // 여유 값 설정
-    let packetBoxIsOverflowing = false;
-    $: if (packetBox && $packets.length) {
-        packetBoxIsOverflowing =
-            packetBox.scrollWidth > 0 && packetBox.scrollWidth > packetBox.clientWidth - buffer;
-    }
+    $: scrollLeftAvailable =
+        $packets.length > displayLimit && $packets[0].query !== $displayedPackets[0].query;
+    $: scrollRightAvailable =
+        $packets.length > displayLimit &&
+        $packets[$packets.length - 1].query !== $displayedPackets[$displayedPackets.length - 1].query;
 </script>
 
 <main>
@@ -65,17 +70,28 @@
             ><img src="static/img/right-arrow.png" alt="search" height="25px" /></button
         >
     </form>
-    <section>
-        {#if packetBoxIsOverflowing} <button class="scroll-btn" on:click={scrollLeft}>←</button> {/if}
-        <div class="packets" bind:this={packetBox}>
-            {#each $packets as { query, resp }}
-                <div class="packet">
-                    <div class="packet__query"><span>{query}</span></div>
-                    <div class="packet__loader"><DotLoader /></div>
-                </div>
-            {/each}
-        </div>
-        {#if packetBoxIsOverflowing} <button class="scroll-btn" on:click={scrollRight}>→</button> {/if}
+    <section class="packets" bind:this={packetBox}>
+        {#each $displayedPackets as { query, resp }}
+            <div class="packet">
+                <div class="packet__query"><span>{query}</span></div>
+                <div class="packet__loader"><DotLoader /></div>
+            </div>
+        {/each}
+    </section>
+    <section class="packet-scroll">
+        {#if scrollLeftAvailable}
+            <button class="packet-scroll__btn left" on:click={scrollLeft}><LineArrow /></button>
+        {:else}
+            <div class="packet-scroll__null" />
+        {/if}
+        {#if scrollLeftAvailable || scrollRightAvailable}
+            <button class="packet-scroll__clear">clear</button>
+        {/if}
+        {#if scrollRightAvailable}
+            <button class="packet-scroll__btn" on:click={scrollRight}><LineArrow /></button>
+        {:else}
+            <div class="packet-scroll__null" />
+        {/if}
     </section>
 </main>
 
@@ -83,27 +99,45 @@
     main {
         width: 44rem;
     }
-    section {
+    .packet-scroll {
         width: 100%;
         display: flex;
         justify-content: space-between;
+        margin-top: 0.7rem;
     }
-    .scroll-btn {
-        width: 3rem;
-        background-color: blanchedalmond;
+    .packet-scroll__btn {
+        width: 2rem;
+        opacity: 0.2;
+        transition: opacity 100ms ease-in;
+    }
+    .packet-scroll__null {
+        width: 2rem;
+    }
+    .packet-scroll__clear {
+        color: white;
+        opacity: 0.2;
+        transition: opacity 100ms ease-in;
+    }
+    .packet-scroll__clear:hover {
+        opacity: 0.7;
+    }
+    .packet-scroll__btn.left {
+        transform: rotateZ(180deg);
+    }
+    .packet-scroll__btn:hover {
+        cursor: pointer;
+        opacity: 0.7;
     }
     .packets {
         display: flex;
-        flex-direction: row-reverse;
-        width: 100%;
+        justify-content: flex-end;
         height: 4.3rem;
-        overflow: auto;
         white-space: nowrap;
     }
     .packet {
-        width: 8rem;
+        width: 9.95rem;
         height: 100%;
-        margin: 0 0.7rem;
+        margin-left: 1.4rem;
         flex-shrink: 0;
     }
     .packet__query {
@@ -123,10 +157,10 @@
     @keyframes shadowPulse {
         0%,
         100% {
-            box-shadow: 0 0 0.5rem 0.1rem rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 0.6rem 0.1rem rgba(255, 255, 255, 0.05);
         }
         50% {
-            box-shadow: 0 0 0.5rem 0.1rem rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 0.6rem 0.1rem rgba(255, 255, 255, 0.2);
         }
     }
     .packet__loader {

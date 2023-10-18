@@ -1,6 +1,5 @@
 <script lang="ts">
     import { fade } from "svelte/transition";
-    import SearchArrow from "../../assets/icon/SearchArrow.svelte";
     import Magnifier from "../../assets/icon/Magnifier.svelte";
     import DotLoader from "../../assets/animation/DotLoader.svelte";
     import { api } from "../../modules/request";
@@ -33,7 +32,9 @@
         {#if loading}
             <div in:fade class="search-loader"><DotLoader /></div>
         {:else}
-            <button in:fade class="search-btn"><SearchArrow /></button>
+            <button in:fade class="search-btn"
+                ><img src="static/img/right-arrow.png" alt="search" height="25px" /></button
+            >
         {/if}
     </form>
 </main>
@@ -60,11 +61,10 @@
         margin-right: 0.8rem;
     }
     .search-btn {
-        width: 5rem;
+        width: 2.5rem;
         height: 100%;
         display: flex;
         align-items: center;
-        margin-right: 0.5rem;
         opacity: 0.3;
         transition: opacity 100ms ease-out;
     }

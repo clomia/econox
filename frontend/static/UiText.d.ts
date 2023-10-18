@@ -108,6 +108,7 @@ export interface UiText {
     ProfessionalMembershipRequire: "Your request requires Professional Membership. Please upgrade your account membership" | "해당 요청은 전문가 맴버십이 필요합니다. 계정의 맴버십을 변경해주세요";
     ProfessionalMembershipRequire_ConfirmText: "Update Account Settings" | "계정 설정 변경하기";
     SearchBar_Placeholder: "Enter country, company, stock, commodity, forex, or crypto name/code" | "국가, 기업, 주식, 원자제, 외환, 암호화폐 이름 또는 코드 입력";
+    SearchRequestAlreadyExist: "Results for this search term already exist or are being processed" | "검색 결과가 이미 존재하거나 처리중인 검색어입니다";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

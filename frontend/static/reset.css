@@ -145,9 +145,6 @@ table {
     font-family: inherit;
     vertical-align: baseline;
     box-sizing: border-box;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
     outline: none;
     background: transparent;
 }

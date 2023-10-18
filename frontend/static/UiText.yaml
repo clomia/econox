@@ -333,6 +333,9 @@ ProfessionalMembershipRequire_ConfirmText:
 SearchBar_Placeholder:
   en: "Enter country, company, stock, commodity, forex, or crypto name/code"
   ko: "국가, 기업, 주식, 원자제, 외환, 암호화폐 이름 또는 코드 입력"
+SearchRequestAlreadyExist:
+  en: "Results for this search term already exist or are being processed"
+  ko: "검색 결과가 이미 존재하거나 처리중인 검색어입니다"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

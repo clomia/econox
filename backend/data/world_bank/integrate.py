@@ -112,4 +112,7 @@ async def search(text: str) -> List[Country]:
     )  # 여러 방법으로 검색하므로 합치면 중복 있음, set을 통해 중복 제거
     iso_codes = {country["id"] for country in list(l1) + l2 + l3 if country}
     countires = await asyncio.gather(*(Country(code).load() for code in iso_codes))
-    return [country for country in countires if country.is_valid]
+    return sorted(
+        [country for country in countires if country.is_valid],
+        key=lambda country: len(country.name.text),  # 국가명이 짧은게 위로 오도록
+    )

@@ -13,7 +13,7 @@
 <style>
     :root {
         --d: 1rem; /* 크기를 2배 작게 만듭니다 */
-        --t: 1.5s;
+        --t: 1s;
     }
 
     main {
@@ -22,6 +22,7 @@
     }
 
     .a {
+        width: 100%;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;

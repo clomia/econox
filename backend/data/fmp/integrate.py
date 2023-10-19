@@ -7,10 +7,10 @@ from typing import List
 
 import pycountry
 
-from backend.http import FmpAPI
+from backend.http import FmpAPI, deepl_translate
 from backend.system import EFS_VOLUME_PATH
 from backend.data.fmp import data_metaclass
-from backend.data.text import Multilingual, translator
+from backend.data.text import Multilingual
 
 # ========= data_class.json에 정의된대로 클래스들을 생성합니다. =========
 classes = dict(json.load(data_metaclass.CLASS_PATH.open("r")))
@@ -217,7 +217,7 @@ async def search(text: str, limit: int = 8) -> List[Symbol]:
     - 검색어와 일치하는 symbol이 가장 앞으로 오고 나머지는 거래량이 큰게 앞으로 오도록 정렬되어 반환됩니다.
     - 검색 결과가 없으면 빈 리스트를 반환합니다.
     """
-    en_text = await translator(text, to_lang="en")
+    en_text = await deepl_translate(text, to_lang="en")
     resp_en, resp_origin = await asyncio.gather(
         FmpAPI(cache=True).get("api/v3/search", limit=limit, query=en_text),
         FmpAPI(cache=True).get("api/v3/search", limit=limit, query=text),

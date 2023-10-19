@@ -1,4 +1,4 @@
-""" API 통신에 반복적으로 필요한 로직 모듈화 """
+""" 외부 리소스 (클라우드 서비스, 데이터 API 등)에 대한 비동기 통신 클라이언트 객체들 """
 import json
 import time
 import base64
@@ -397,7 +397,7 @@ class PayPalAPI:
     """PayPal에 HTTP 요청을 보냅니다."""
 
     timeout = 30
-    host = "https://api.sandbox.paypal.com"
+    host = "https://api.sandbox.paypal.com"  # * 샌드박스랑 프로덕션 host 주소가 다르다
     token = base64.b64encode(
         f"{SECRETS['PAYPAL_CLIENT_ID']}:{SECRETS['PAYPAL_SECRET_KEY']}".encode("utf-8")
     ).decode("utf-8")
@@ -507,3 +507,38 @@ class PayPalWebhookAuth:
                 f"\n[Header]:{dict(event.headers)}\n[Body]: {body}\n[Error] {type(e).__name__}: {e}"
             )
             raise HTTPException(status_code=401, detail="Event verification failed")
+
+
+@cached(ttl=10 * 24 * 360)  # 1주, 번역 비용 비싸서 오래 캐싱
+async def deepl_translate(text: str, to_lang: str, *, from_lang: str = None) -> str:
+    """deepl 공식 SDK쓰면 urllib 풀 사이즈 10개 제한 떠서 httpx 비동기 클라이언트로 별도의 함수 작성"""
+
+    host = "https://api-free.deepl.com/v2/translate"  # * 유로버전이랑 무료버전 host 주소가 다르다
+    variant_hendler = {
+        "en": "EN-US",
+        "pt": "PT-PT",
+    }  # https://www.deepl.com/docs-api/translate-text/?utm_source=github&utm_medium=github-python-readme (Request Parameters부분의 source_lang, target_lang 섹션 참조)
+
+    target_language = to_lang.upper()
+    if to_lang in variant_hendler:
+        target_language = variant_hendler[to_lang]
+    source_language = from_lang.upper() if from_lang else None
+    async with httpx.AsyncClient() as client:
+        resp = await client.post(
+            host,
+            headers={
+                "Authorization": f"DeepL-Auth-Key {SECRETS['DEEPL_API_KEY']}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "text": [text],
+                "target_lang": target_language,
+                "source_lang": source_language,
+            },
+        )
+    if resp.status_code == 200:
+        return resp.json()["translations"][0]["text"]
+    else:
+        raise httpx.HTTPError(
+            f"DeepL 통신 오류 (HTTPStatus:{resp.status_code}) {resp.text}"
+        )

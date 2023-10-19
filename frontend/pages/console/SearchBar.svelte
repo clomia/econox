@@ -46,8 +46,7 @@
                 $packets[index] = updatedPacket;
             }
         } catch {
-            const index = $packets.findIndex((p) => p.query === query && p.loading);
-            $packets.splice(index, 1);
+            $packets = $packets.filter((p) => p.query === query);
             return await Swal.fire({
                 ...defaultSwalStyle,
                 confirmButtonText: $Text.Ok,
@@ -56,6 +55,13 @@
                 title: format($Text.f_DataSearchError, { query }),
             });
         }
+    };
+
+    const packetInfo = writable<any>({});
+    let packetInfoOn = false;
+    const onPacketInfo = (query: string, resp: any) => {
+        console.log(resp);
+        packetInfoOn = true;
     };
 </script>
 
@@ -82,7 +88,7 @@
                 {#if loading}
                     <div class="packet__loader"><DotLoader /></div>
                 {:else}
-                    <button class="packet__result">
+                    <button class="packet__result" on:click={() => onPacketInfo(query, resp)}>
                         <img in:fade src="static/img/file.png" alt="result" height="25px" />
                     </button>
                 {/if}
@@ -91,10 +97,81 @@
     </section>
 </main>
 
+{#if packetInfoOn}
+    <div id="window">
+        <div id="membrane" />
+        <section class="packet-info">wow</section>
+    </div>
+{/if}
+
 <style>
     main {
         width: 44rem;
     }
+    #window {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 2;
+        display: flex;
+        justify-content: center;
+    }
+    #membrane {
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+    .packet-info {
+        z-index: 2;
+        width: 44rem;
+        height: 31rem;
+        margin-top: 18.5rem;
+        background: var(--widget-background);
+        border-radius: 0.3rem;
+        border: thin solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 0 10rem 0.2rem rgba(0, 0, 0, 0.5);
+        display: flex;
+    }
+
+    .search-form {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 2.6rem;
+        border-radius: 1.3rem;
+        border: thin solid var(--border-white);
+        box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.2);
+        transition: border-color 150ms ease-out;
+    }
+    .search {
+        width: 100%;
+        height: 100%;
+        color: var(--white);
+    }
+    .magnifier {
+        margin-left: 1.4rem;
+        margin-top: 0.2rem;
+        margin-right: 0.8rem;
+    }
+    .search-btn {
+        width: 2.5rem;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        opacity: 0.3;
+        transition: opacity 100ms ease-out;
+    }
+    .search-btn:hover {
+        opacity: 0.8;
+        cursor: pointer;
+    }
+    /* pakcets */
     .packets {
         display: flex;
         justify-content: flex-end;
@@ -149,38 +226,6 @@
     }
     .packet__result:hover {
         background-color: rgba(255, 255, 255, 0.2);
-        cursor: pointer;
-    }
-    .search-form {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        height: 2.6rem;
-        border-radius: 1.3rem;
-        border: thin solid var(--border-white);
-        box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.2);
-        transition: border-color 150ms ease-out;
-    }
-    .search {
-        width: 100%;
-        height: 100%;
-        color: var(--white);
-    }
-    .magnifier {
-        margin-left: 1.4rem;
-        margin-top: 0.2rem;
-        margin-right: 0.8rem;
-    }
-    .search-btn {
-        width: 2.5rem;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        opacity: 0.3;
-        transition: opacity 100ms ease-out;
-    }
-    .search-btn:hover {
-        opacity: 0.8;
         cursor: pointer;
     }
 </style>

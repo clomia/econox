@@ -215,7 +215,10 @@ class UserDetail(BaseModel):
 
 @router.private.get(response_model=UserDetail)
 async def get_user_detail(user=router.private.auth):
-    """유저 상세 정보를 가져옵니다."""
+    """
+    - 유저 상세 정보를 가져옵니다.
+    - Response: UserDetail 스키마를 참조
+    """
     db_user = await db.select_row(
         "users",
         fields=[

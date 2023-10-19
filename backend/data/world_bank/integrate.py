@@ -3,9 +3,9 @@ import json
 import asyncio
 from typing import List
 
-from backend.http import WorldBankAPI
+from backend.http import WorldBankAPI, deepl_translate
 from backend.system import EFS_VOLUME_PATH
-from backend.data.text import Multilingual, translator
+from backend.data.text import Multilingual
 from backend.data.world_bank.data_class import *
 
 INFO_PATH = EFS_VOLUME_PATH / "info"
@@ -103,7 +103,7 @@ async def search(text: str) -> List[Country]:
     """is_valid가 False인 Country는 리스트에서 제외됩니다."""
     api = WorldBankAPI()
 
-    en_text = await translator(text, to_lang="en")
+    en_text = await deepl_translate(text, to_lang="en")
     *l1, l2, l3 = await asyncio.gather(  # 번역 한거, 안한거 전부 사용해서 검색
         api.get_country(text),  # -> dict - in l1
         api.get_country(en_text),  # -> dict - in l1

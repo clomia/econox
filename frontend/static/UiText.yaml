@@ -366,3 +366,6 @@ f_MembershipChangeComplete:
 f_MembershipChangeComplete_Benefit:
   en: "Your membership has been updated from {oldMembership} to {newMembership}"
   ko: "맴버십이 {oldMembership}에서 {newMembership}(으)로 변경되었습니다"
+f_DataSearchError:
+  en: "An unexpected issue occurred while searching for the search term '{query}'. Please try again"
+  ko: "검색어 '{query}'를 검색하는 과정에서 예기치 못한 문제가 발생하였습니다. 다시 시도해주세요"

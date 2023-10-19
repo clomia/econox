@@ -6,7 +6,7 @@
     import DotLoader from "../../assets/animation/DotLoader.svelte";
     import { api } from "../../modules/request";
     import { Text, Lang } from "../../modules/state";
-    import { defaultSwalStyle } from "../../modules/functions";
+    import { defaultSwalStyle, format } from "../../modules/functions";
 
     let inputText = "";
     const packets = writable<{ query: string; loading: boolean; resp: any }[]>([]);
@@ -38,11 +38,23 @@
         inputText = "";
         const initialPacket = { query, loading: true, resp: null };
         $packets = [initialPacket, ...$packets.slice(0, 3)];
-        const resp = await api.member.get("/data/elements", { params: { query, lang: $Lang } });
-        const updatedPacket = { ...initialPacket, loading: false, resp: resp.data };
-        const index = $packets.findIndex((p) => p.query === query && p.loading);
-        if (index !== -1) {
-            $packets[index] = updatedPacket;
+        try {
+            const resp = await api.member.get("/data/elements", { params: { query, lang: $Lang } });
+            const updatedPacket = { ...initialPacket, loading: false, resp: resp.data };
+            const index = $packets.findIndex((p) => p.query === query && p.loading);
+            if (index !== -1) {
+                $packets[index] = updatedPacket;
+            }
+        } catch {
+            const index = $packets.findIndex((p) => p.query === query && p.loading);
+            $packets.splice(index, 1);
+            return await Swal.fire({
+                ...defaultSwalStyle,
+                confirmButtonText: $Text.Ok,
+                icon: "info",
+                showDenyButton: false,
+                title: format($Text.f_DataSearchError, { query }),
+            });
         }
     };
 </script>

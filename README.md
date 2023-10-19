@@ -18,7 +18,7 @@
 		- 파일 시스템: 연산용 데이터 (금융 데이터, 캐싱 등)
 		- Postgresql: 비즈니스용 데이터 (고객관리, 커텐츠 등)
 	- 국제화를 위한 다국어 제공 도구:
-		- Google Translate API (from GCP)
+		- DeepL API (Google에서 DeepL로 변경 2023.10.19)
 - Frontend
 	- 어플리케이션 작성: Svelte + TypeScript
 		- 번들러: rollup

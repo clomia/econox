@@ -22,7 +22,7 @@ google_translator = translate_v2.Client(
 )
 
 
-@cached(ttl=12 * 360)
+@cached(ttl=10 * 24 * 360)  # 1주, 번역 비용 비싸서 오래 캐싱
 async def translator(text: str, to_lang: str, *, from_lang: str = None) -> str:
     """
     - 자연어를 번역합니다.

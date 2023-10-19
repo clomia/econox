@@ -83,7 +83,11 @@ class CognitoToken:
             ),
             algorithms=["RS256"],
             audience=SECRETS["COGNITO_APP_CLIENT_ID"],
-            options={"verify_signature": True, "verify_aud": True},
+            options={
+                "verify_signature": True,
+                "verify_aud": True,
+                "verify_iat": False,  # 토큰 발행 시간 검증 비활성화 (개발환경, 인증서버간 시차때문에)
+            },
         )
         access_info = jwt.decode(
             self.access_token,
@@ -91,7 +95,11 @@ class CognitoToken:
                 await self.get_jwk(jwt.get_unverified_header(self.access_token)["kid"])
             ),
             algorithms=["RS256"],
-            options={"verify_signature": True, "verify_aud": False},
+            options={
+                "verify_signature": True,
+                "verify_aud": False,
+                "verify_iat": False,
+            },
         )
         return {
             "id": access_info["username"],

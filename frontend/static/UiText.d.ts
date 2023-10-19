@@ -109,6 +109,7 @@ export interface UiText {
     ProfessionalMembershipRequire_ConfirmText: "Update Account Settings" | "계정 설정 변경하기";
     SearchBar_Placeholder: "Enter country, company, stock, commodity, forex, or crypto name/code" | "국가, 기업, 주식, 원자제, 외환, 암호화폐 이름 또는 코드 입력";
     SearchRequestAlreadyExist: "Results for this search term already exist or are being processed" | "검색 결과가 이미 존재하거나 처리중인 검색어입니다";
+    SearchRequestRateTooFastMessage: "Your request rate is too fast. Please wait until the previous search is completed and try again" | "요청 속도가 너무 빠릅니다. 기존 검색이 완료된 후 다시 시도하세요";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

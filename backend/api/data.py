@@ -1,6 +1,7 @@
 """ /api/data """
 import asyncio
 
+from aiocache import cached
 from fastapi import Body, HTTPException
 
 from backend.http import APIRouter
@@ -11,6 +12,7 @@ router = APIRouter("data")
 
 
 @router.basic.get("/elements")
+@cached(ttl=24 * 360)  # 실시간성이 없는 검색이므로 캐싱
 async def search_symbols_and_countries(query: str, lang: str):
     async def parsing(obj):
         name, note = await asyncio.gather(obj.name.en(), obj.note.trans(to=lang))

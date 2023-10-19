@@ -1,22 +1,17 @@
 <script lang="ts">
-    import { writable } from "svelte/store";
     import { fade } from "svelte/transition";
+    import { writable } from "svelte/store";
     import Swal from "sweetalert2";
     import Magnifier from "../../assets/icon/Magnifier.svelte";
     import DotLoader from "../../assets/animation/DotLoader.svelte";
-    import LineArrow from "../../assets/icon/LineArrow.svelte";
     import { api } from "../../modules/request";
     import { Text, Lang } from "../../modules/state";
     import { defaultSwalStyle } from "../../modules/functions";
 
     let inputText = "";
-    type Packet = { query: string; loading: boolean; resp: any };
-    const packets = writable<Packet[]>([]);
-    const displayedPackets = writable<Packet[]>([]);
-    const displayLimit = 4; // 실제 보여질 패킷 갯수, 나머지는 pagenation 처리
+    const packets = writable<{ query: string; loading: boolean; resp: any }[]>([]);
     const createPacket = async () => {
         const query = inputText.trim();
-        inputText = "";
         if (!query) {
             return;
         }
@@ -30,28 +25,26 @@
                 title: $Text.SearchRequestAlreadyExist,
             });
         }
+        if ($packets[3]?.loading) {
+            // 가장 오래된 패킷이 대기중인 경우 새로운 패킷 추가를 막음
+            return await Swal.fire({
+                ...defaultSwalStyle,
+                confirmButtonText: $Text.Ok,
+                icon: "info",
+                showDenyButton: false,
+                title: $Text.SearchRequestRateTooFastMessage,
+            });
+        }
+        inputText = "";
         const initialPacket = { query, loading: true, resp: null };
-        $packets = [...$packets, initialPacket];
-        $displayedPackets = $packets.slice(-4);
+        $packets = [initialPacket, ...$packets.slice(0, 3)];
         const resp = await api.member.get("/data/elements", { params: { query, lang: $Lang } });
         const updatedPacket = { ...initialPacket, loading: false, resp: resp.data };
         const index = $packets.findIndex((p) => p.query === query && p.loading);
-        $packets[index] = updatedPacket;
+        if (index !== -1) {
+            $packets[index] = updatedPacket;
+        }
     };
-    let packetBox: HTMLElement;
-    const scrollLeft = () => {
-        const baseIndex = $packets.findIndex((p) => p.query === $displayedPackets[0].query);
-        $displayedPackets = $packets.slice(baseIndex - 1, baseIndex + displayLimit - 1);
-    };
-    const scrollRight = () => {
-        const baseIndex = $packets.findIndex((p) => p.query === $displayedPackets[0].query);
-        $displayedPackets = $packets.slice(baseIndex + 1, baseIndex + displayLimit + 1);
-    };
-    $: scrollLeftAvailable =
-        $packets.length > displayLimit && $packets[0].query !== $displayedPackets[0].query;
-    $: scrollRightAvailable =
-        $packets.length > displayLimit &&
-        $packets[$packets.length - 1].query !== $displayedPackets[$displayedPackets.length - 1].query;
 </script>
 
 <main>
@@ -66,67 +59,29 @@
             placeholder={$Text.SearchBar_Placeholder}
             bind:value={inputText}
         />
-        <button in:fade class="search-btn"
-            ><img src="static/img/right-arrow.png" alt="search" height="25px" /></button
-        >
+        <button class="search-btn">
+            <img src="static/img/circle-arrow.png" alt="search" height="25px" />
+        </button>
     </form>
-    <section class="packets" bind:this={packetBox}>
-        {#each $displayedPackets as { query, resp }}
+    <section class="packets">
+        {#each $packets as { query, loading, resp }}
             <div class="packet">
                 <div class="packet__query"><span>{query}</span></div>
-                <div class="packet__loader"><DotLoader /></div>
+                {#if loading}
+                    <div class="packet__loader"><DotLoader /></div>
+                {:else}
+                    <button class="packet__result">
+                        <img in:fade src="static/img/file.png" alt="result" height="25px" />
+                    </button>
+                {/if}
             </div>
         {/each}
-    </section>
-    <section class="packet-scroll">
-        {#if scrollLeftAvailable}
-            <button class="packet-scroll__btn left" on:click={scrollLeft}><LineArrow /></button>
-        {:else}
-            <div class="packet-scroll__null" />
-        {/if}
-        {#if scrollLeftAvailable || scrollRightAvailable}
-            <button class="packet-scroll__clear">clear</button>
-        {/if}
-        {#if scrollRightAvailable}
-            <button class="packet-scroll__btn" on:click={scrollRight}><LineArrow /></button>
-        {:else}
-            <div class="packet-scroll__null" />
-        {/if}
     </section>
 </main>
 
 <style>
     main {
         width: 44rem;
-    }
-    .packet-scroll {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        margin-top: 0.7rem;
-    }
-    .packet-scroll__btn {
-        width: 2rem;
-        opacity: 0.2;
-        transition: opacity 100ms ease-in;
-    }
-    .packet-scroll__null {
-        width: 2rem;
-    }
-    .packet-scroll__clear {
-        color: white;
-        opacity: 0.2;
-        transition: opacity 100ms ease-in;
-    }
-    .packet-scroll__clear:hover {
-        opacity: 0.7;
-    }
-    .packet-scroll__btn.left {
-        transform: rotateZ(180deg);
-    }
-    .packet-scroll__btn:hover {
-        cursor: pointer;
-        opacity: 0.7;
     }
     .packets {
         display: flex;
@@ -160,18 +115,29 @@
             box-shadow: 0 0 0.6rem 0.1rem rgba(255, 255, 255, 0.05);
         }
         50% {
-            box-shadow: 0 0 0.6rem 0.1rem rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 0.6rem 0.1rem rgba(255, 255, 255, 0.22);
         }
     }
-    .packet__loader {
+    .packet__loader,
+    .packet__result {
         display: flex;
         align-items: center;
         justify-content: center;
         height: 2rem;
         width: 100%;
-        border: thin solid rgba(255, 255, 255, 0.5);
         border-radius: 1rem;
+    }
+    .packet__loader {
+        border: thin solid rgba(255, 255, 255, 0.5);
         animation: shadowPulse 1400ms infinite;
+    }
+    .packet__result {
+        border: thin solid white;
+        opacity: 0.5;
+    }
+    .packet__result:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        cursor: pointer;
     }
     .search-form {
         display: flex;

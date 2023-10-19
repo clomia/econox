@@ -336,6 +336,9 @@ SearchBar_Placeholder:
 SearchRequestAlreadyExist:
   en: "Results for this search term already exist or are being processed"
   ko: "검색 결과가 이미 존재하거나 처리중인 검색어입니다"
+SearchRequestRateTooFastMessage:
+  en: "Your request rate is too fast. Please wait until the previous search is completed and try again"
+  ko: "요청 속도가 너무 빠릅니다. 기존 검색이 완료된 후 다시 시도하세요"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

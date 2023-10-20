@@ -2,7 +2,6 @@
     import { fade } from "svelte/transition";
     import { writable } from "svelte/store";
     import Swal from "sweetalert2";
-    import Typed from "svelte-typed-js";
     import Magnifier from "../../assets/icon/Magnifier.svelte";
     import DotLoader from "../../assets/animation/DotLoader.svelte";
     import { api } from "../../modules/request";
@@ -116,9 +115,7 @@
                 <Magnifier size="1.3rem" color="rgba(255,255,255,0.3)" />
             </div>
             <div class="packet-info__query">
-                <Typed strings={[$packetInfo.query]} typeSpeed={10} startDelay={50} showCursor={false}>
-                    <div class="packet-info__query__text typing" />
-                </Typed>
+                <div class="packet-info__query__text">{$packetInfo.query}</div>
             </div>
         </section>
     </div>
@@ -168,15 +165,17 @@
     }
     .packet-info__query {
         margin-top: 1.8rem;
-        padding: 0 2rem;
+        padding: 0 6rem;
         display: flex;
         justify-content: center;
         align-items: center;
     }
     .packet-info__query__text {
-        color: rgba(255, 255, 255, 0.4);
+        color: rgba(255, 255, 255, 0.6);
         font-size: 1.3rem;
-        margin: 0 0.5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .search-form {
@@ -186,12 +185,13 @@
         height: 2.6rem;
         border-radius: 1.3rem;
         border: thin solid var(--border-white);
-        box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.3);
         transition: border-color 150ms ease-out;
     }
     .search {
         width: 100%;
         height: 100%;
+        padding-right: 0.7rem;
         color: var(--white);
     }
     .magnifier {
@@ -255,6 +255,7 @@
         height: 2rem;
         width: 100%;
         border-radius: 1rem;
+        box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.3);
     }
     .packet__loader {
         border: thin solid rgba(255, 255, 255, 0.5);

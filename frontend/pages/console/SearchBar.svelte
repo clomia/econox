@@ -2,11 +2,13 @@
     import { fade } from "svelte/transition";
     import { writable } from "svelte/store";
     import Swal from "sweetalert2";
+    import Typed from "svelte-typed-js";
     import Magnifier from "../../assets/icon/Magnifier.svelte";
     import DotLoader from "../../assets/animation/DotLoader.svelte";
     import { api } from "../../modules/request";
     import { Text, Lang } from "../../modules/state";
     import { defaultSwalStyle, format } from "../../modules/functions";
+    import CloseButton from "../../components/CloseButton.svelte";
 
     let inputText = "";
     const packets = writable<{ query: string; loading: boolean; resp: any }[]>([]);
@@ -57,10 +59,11 @@
         }
     };
 
-    const packetInfo = writable<any>({});
+    type PacketInfo = { query: string; resp: any };
+    const packetInfo = writable<PacketInfo>({ query: "", resp: "" });
     let packetInfoOn = false;
-    const onPacketInfo = (query: string, resp: any) => {
-        console.log(resp);
+    const onPacketInfo = (info: PacketInfo) => {
+        $packetInfo = info;
         packetInfoOn = true;
     };
 </script>
@@ -88,7 +91,12 @@
                 {#if loading}
                     <div class="packet__loader"><DotLoader /></div>
                 {:else}
-                    <button class="packet__result" on:click={() => onPacketInfo(query, resp)}>
+                    <button
+                        class="packet__result"
+                        on:click={() => {
+                            onPacketInfo({ query, resp });
+                        }}
+                    >
                         <img in:fade src="static/img/file.png" alt="result" height="25px" />
                     </button>
                 {/if}
@@ -98,9 +106,21 @@
 </main>
 
 {#if packetInfoOn}
+    <div id="membrane" />
     <div id="window">
-        <div id="membrane" />
-        <section class="packet-info">wow</section>
+        <section class="packet-info">
+            <button class="packet-info__close-button" on:click={() => (packetInfoOn = false)}>
+                <CloseButton />
+            </button>
+            <div class="packet-info__magnifier">
+                <Magnifier size="1.3rem" color="rgba(255,255,255,0.3)" />
+            </div>
+            <div class="packet-info__query">
+                <Typed strings={[$packetInfo.query]} typeSpeed={10} startDelay={50} showCursor={false}>
+                    <div class="packet-info__query__text typing" />
+                </Typed>
+            </div>
+        </section>
     </div>
 {/if}
 
@@ -108,27 +128,25 @@
     main {
         width: 44rem;
     }
-    #window {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        z-index: 2;
-        display: flex;
-        justify-content: center;
-    }
     #membrane {
-        width: 100vw;
-        height: 100vh;
         position: fixed;
+        z-index: 1;
         top: 0;
         left: 0;
-        z-index: 1;
+        width: 100%;
+        height: 100%;
         background-color: rgba(0, 0, 0, 0.2);
     }
-    .packet-info {
+    #window {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        width: 100%;
+        justify-content: center;
         z-index: 2;
+    }
+    .packet-info {
         width: 44rem;
         height: 31rem;
         margin-top: 18.5rem;
@@ -136,7 +154,29 @@
         border-radius: 0.3rem;
         border: thin solid rgba(255, 255, 255, 0.3);
         box-shadow: 0 0 10rem 0.2rem rgba(0, 0, 0, 0.5);
+        position: relative;
+    }
+    .packet-info__close-button {
+        position: absolute;
+        right: 1rem;
+        top: 1rem;
+    }
+    .packet-info__magnifier {
+        position: absolute;
+        top: 1.8rem;
+        left: 2rem;
+    }
+    .packet-info__query {
+        margin-top: 1.8rem;
+        padding: 0 2rem;
         display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .packet-info__query__text {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 1.3rem;
+        margin: 0 0.5rem;
     }
 
     .search-form {

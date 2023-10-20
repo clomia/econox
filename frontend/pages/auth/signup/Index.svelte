@@ -5,7 +5,7 @@
     import OptionForm from "./OptionForm.svelte";
     import PhoneConfirmCreateForm from "./PhoneConfirmCreateForm.svelte";
     import PhoneConfirmForm from "./PhoneConfirmForm.svelte";
-    import BillingForm from "./billingForm/index.svelte";
+    import BillingForm from "./billingForm/Index.svelte";
     import ResultProcess from "./ResultProcess.svelte";
 
     const componentStep = [

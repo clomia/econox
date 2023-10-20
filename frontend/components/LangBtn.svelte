@@ -49,7 +49,7 @@
         border-radius: 0.5rem;
         border: thin solid var(--border-white);
         background-color: rgb(32, 49, 55);
-        box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.3);
     }
     section button:hover {
         cursor: pointer;
@@ -63,7 +63,7 @@
         padding: 0 1rem;
         width: 11rem;
         background-color: rgb(32, 49, 55);
-        box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.3);
     }
     select:hover {
         cursor: pointer;

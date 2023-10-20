@@ -1,9 +1,6 @@
 <script lang="ts">
     import { navigate } from "svelte-routing";
     import { UserInfo, Text } from "../modules/state";
-    import Auth from "./auth/Index.svelte";
-
-    let authToggle = false;
 </script>
 
 <section>
@@ -16,13 +13,9 @@
             <div class="username">{$UserInfo.name}</div>
         </button>
     {:else}
-        <button on:click={() => (authToggle = !authToggle)}>{$Text.SignInOut}</button>
+        <button on:click={() => navigate("/auth")}>{$Text.SignInOut}</button>
     {/if}
 </section>
-
-{#if authToggle}
-    <Auth />
-{/if}
 
 <style>
     img {
@@ -56,7 +49,7 @@
         border: thin solid var(--border-white);
         border-radius: 2rem;
         position: relative;
-        box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.3);
     }
 
     section button:hover {

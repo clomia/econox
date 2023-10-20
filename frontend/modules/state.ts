@@ -11,13 +11,13 @@ export interface UserDetail {
     id: string;
     name: string;
     email: string;
-    membership: "basic" | "professional";
+    membership: "basic" | "professional" | "";
     signup_date: string;
     next_billing_date: string;
     billing: {
-        currency: "USD" | "KRW";
+        currency: "USD" | "KRW" | "";
         registered: boolean;
-        status: "active" | "require" | "deactive"
+        status: "active" | "require" | "deactive" | ""
         transactions: {
             time: string;
             name: string;
@@ -57,19 +57,14 @@ export const UserInfo: Writable<UserDetail> = writable({  // 로그인 되었다
     id: "",
     name: "",
     email: "",
-    membership: "basic",
+    membership: "",
     signup_date: "",
     next_billing_date: "",
     billing: {
-        currency: "USD",
+        currency: "",
         registered: false,
-        status: "active",
-        transactions: [{
-            time: "",
-            name: "",
-            amount: 0,
-            method: "",
-        }]
+        status: "",
+        transactions: []
     }
 })
 

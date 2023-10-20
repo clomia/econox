@@ -97,6 +97,9 @@
         margin: 0 0.5rem;
         padding: 0 1rem;
         height: 3rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
     }
     select:hover {
         cursor: pointer;

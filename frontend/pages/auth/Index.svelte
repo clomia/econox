@@ -1,9 +1,11 @@
 <script lang="ts">
+    import { verify } from "../../modules/functions";
     import { auth } from "../../modules/state";
     import Login from "./Login.svelte";
     import Signup from "./signup/Index.svelte";
     import LoginSignupToggle from "./LoginSignupToggle.svelte";
 
+    verify({ conds: { login: false }, failRedirect: "/account" });
     const Toggle = auth.Toggle;
 </script>
 
@@ -25,11 +27,7 @@
         display: flex;
         justify-content: center;
         align-items: start;
-        position: absolute;
-        top: 10rem;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        margin-top: 2rem;
     }
     .ground__window {
         width: 34rem;
@@ -37,5 +35,6 @@
         border-radius: 0.6rem;
         border: thin solid rgba(255, 255, 255, 0.2);
         background: var(--widget-background);
+        box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.5);
     }
 </style>

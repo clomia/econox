@@ -46,7 +46,7 @@ const tokenInsert = async (config: InternalAxiosRequestConfig) => {
 
 const authenticationFailureHandler = async (error: AxiosError) => {
     if (error.response && error.response.status === 401) {
-        return await logout() // 401 응답 시 토큰들 삭제 후 홈으로 이동
+        return await logout()
     }
     throw error;
 }
@@ -55,7 +55,7 @@ const permissionFailureHandler = async (error: AxiosError) => {
     const { text } = await loadUiText()
     switch (error.response?.status) {
         case 401:
-            return await logout() // 401 응답 시 토큰들 삭제 후 홈으로 이동
+            return await logout()
         case 402:
             await Swal.fire({
                 ...defaultSwalStyle,

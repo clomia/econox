@@ -52,7 +52,9 @@
         try {
             response = api.public.post("/user/cognito", { email, password });
             $InputResult = { ...$InputResult, email, password };
+            document.body.style.overflow = "hidden";
             await response;
+            document.body.style.overflow = "";
             dispatch("complete");
         } catch (error: any) {
             response = null;

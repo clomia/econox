@@ -1,10 +1,10 @@
+import { onMount } from "svelte"
+import { navigate } from "svelte-routing"
 import { api } from "./request"
 import { Text, UserInfo, Lang } from "./state"
 import { loadUiText } from "./uiText"
 import { settingObjectStore } from "./_storage"
-
-import type { UiText } from "../static/UiText"
-
+import type { UserDetail } from "./state"
 
 export const defaultSwalStyle = {
     width: "25rem",
@@ -62,14 +62,14 @@ export const init = async () => {
 }
 
 /**
- * 토큰 삭제 후 홈으로 리로딩
+ * 토큰 삭제 후 로그인 페이지로 리로딩
  */
 export const logout = async () => {
     await Promise.all([
         settingObjectStore.delete("cognitoToken"),
         settingObjectStore.delete("cognitoRefreshToken")
     ])
-    window.location.replace(window.location.origin) // 홈으로 리로딩
+    return window.location.replace(window.location.origin + "/auth")
 }
 
 /**
@@ -84,6 +84,50 @@ export const login = async (cognitoToken: string, cognitoRefreshToken: string, r
         window.location.replace(window.location.origin + "/console") // 콘솔로 리로딩
     }
 }
+
+
+type VerificationFactors = {
+    login?: boolean | null
+    membership?: "basic" | "professional" | null
+    billingOk?: boolean | null
+};
+
+type VerificationArgs = {
+    conds: VerificationFactors
+    failRedirect?: string
+}
+
+/**
+ * 클라이언트 상태에 따라 페이지 접근을 제한합니다.
+ * 파라미터로 허용 조건을 입력하고 허용되지 않을 경우의 리디렉션 경로를 failRedirect에 입력하세요.
+ * 사용 예시: `verify({conds: {login: true}, failRedirect: "/account"})`  
+ * @param conds 충족해야 하는 요구 조건
+ * @param failRedirect 요구 조건을 충족하지 못할 때 리디렉션할 경로
+ */
+export const verify = async ({
+    conds: {
+        login = null,
+        membership = null,
+        billingOk = null,
+    },
+    failRedirect = "/"
+}: VerificationArgs = { conds: {} }) => {
+    let userInfo: UserDetail;
+    UserInfo.subscribe(info => { userInfo = info });
+
+    onMount(() => {
+        const failureConditions = [
+            login !== null && login !== Boolean(userInfo.id),
+            membership !== null && membership !== userInfo.membership,
+            billingOk && userInfo.billing.status === 'require'
+        ];
+
+        if (failureConditions.some(Boolean)) {
+            navigate(failRedirect);
+        }
+    });
+}
+
 
 /**
  * 문자열 내부 중괄호를 매개변수로 채움, f_ 로 시작하는 UiText에 주로 사용

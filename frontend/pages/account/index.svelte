@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { format, logout, timeString, paymentMethodString } from "../../modules/functions";
+    import { format, logout, timeString, paymentMethodString, verify } from "../../modules/functions";
     import { Text, UserInfo } from "../../modules/state";
     import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
     import NameButton from "./NameButton.svelte";
@@ -7,6 +7,8 @@
     import MembershipButton from "./MembershipButton.svelte";
     import PaymentMethodButton from "./PaymentMethodButton.svelte";
     import DangerZone from "./DangerZone.svelte";
+
+    verify({ conds: { login: true }, failRedirect: "/auth" });
 
     /**
      *  언어에 맞게 금액을 표현하는 문자열을 변환

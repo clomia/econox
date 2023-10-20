@@ -58,7 +58,7 @@
     };
 
     const packetInfo = writable<any>({});
-    let packetInfoOn = false;
+    let packetInfoOn = true;
     const onPacketInfo = (query: string, resp: any) => {
         console.log(resp);
         packetInfoOn = true;

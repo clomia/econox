@@ -509,7 +509,7 @@ class PayPalWebhookAuth:
             raise HTTPException(status_code=401, detail="Event verification failed")
 
 
-@cached(ttl=10 * 24 * 360)  # 1주, 번역 비용 비싸서 오래 캐싱
+@cached(ttl=10 * 24 * 360)  # 번역 비용 비싸서 오래 캐싱
 async def deepl_translate(text: str, to_lang: str, *, from_lang: str = None) -> str:
     """deepl 공식 SDK쓰면 urllib 풀 사이즈 10개 제한 떠서 httpx 비동기 클라이언트로 별도의 함수 작성"""
 

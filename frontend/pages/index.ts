@@ -1,6 +1,6 @@
 import Auth from "./auth/Index.svelte"
-import Account from "./account/Index.svelte"
-import Console from "./console/Index.svelte"
+import Account from "./account/aaIndex.svelte"
+import Console from "./console/bbIndex.svelte"
 import Landing from "./Landing.svelte"
 import PageNotFound from "./NotFound404.svelte"
 

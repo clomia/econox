@@ -177,10 +177,17 @@ async def paypal_payment_webhook(event: dict = Body(...)):
                 "subscription_id": subscription_id,
             },
         )
+        log.info(
+            f"맴버십 비용 청구 완료({plan['name']})[Paypal]: user paypal_subscription_id={subscription_id}"
+        )
     except psycopg.errors.NotNullViolation:
+        subscription_id = event["resource"]["billing_agreement_id"]
+        await PayPalAPI(f"/v1/billing/subscriptions/{subscription_id}/suspend").post(
+            {"reason": "User that does not exist in Econox"}
+        )
         log.warning(
             "[paypal webhook: PAYMENT.SALE.COMPLETED]"
-            "구독에 해당하는 유저가 존재하지 않습니다."
+            "구독에 해당하는 유저가 존재하지 않습니다. Paypal에서 해당 구독을 중지하였습니다."
             f"\nSummary: {event['summary']}, 구독 ID:{event['resource']['billing_agreement_id']}"
         )
     except psycopg.errors.UniqueViolation:
@@ -252,7 +259,7 @@ async def billing():
                 )
             except httpx.HTTPStatusError as e:
                 log.info(
-                    f"[{e}] GET /webhook/billing: Tosspayments 구독료 청구 실패 - "
+                    f"[{e}] GET /webhook/billing: Tosspayments 맴버십 비용 청구 실패 - "
                     f"User(Email: {email}, membership: {membership}, next_billing_date: {next_billing_date})"
                 )
                 continue
@@ -287,10 +294,7 @@ async def billing():
                 current_billing_date=now,
                 user_id=user_id,
             )
-            log.info(
-                f"GET /webhook/billing: Tosspayments 구독료 청구 완료 - "
-                f"User(Email: {email}, membership: {membership})"
-            )
+            log.info(f"맴버십 비용 청구 완료({membership})[Tosspayments]: user id={user_id}")
     await db_transaction.exec()
     idempotent_mark.unlink(missing_ok=True)
     return {"message": "Process complete"}

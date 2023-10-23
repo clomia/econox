@@ -6,7 +6,7 @@
     import { api } from "../../modules/request";
     import { Text, UserInfo } from "../../modules/state";
 
-    const membershipMapping = {
+    const membershipMapping: any = {
         basic: $Text.BasicPlan,
         professional: $Text.ProfessionalPlan,
     };

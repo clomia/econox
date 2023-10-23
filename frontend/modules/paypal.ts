@@ -16,7 +16,7 @@ async function loadPaypalScript(clientId: string): Promise<void> {
 }
 
 interface PaypalWidgetOptions {
-    planName: "basic" | "professional";
+    planName: string;
     startTime?: string | null;
     onApprove?: (subscriptionId: string, orderId: string) => Promise<any>;
     onLoad?: () => void;

@@ -2,11 +2,11 @@
 import asyncio
 
 from aiocache import cached
-from fastapi import Body, HTTPException
 
 from backend.http import APIRouter
 from backend.math import datetime2utcstr
 from backend.data import fmp, world_bank
+from backend.data.text import nlp
 
 router = APIRouter("data")
 
@@ -26,7 +26,7 @@ async def search_symbols_and_countries(query: str, lang: str):
         return {
             "code": obj.code,
             "name": name,
-            "note": note,
+            "note": nlp.split_paragraph(note),
         }
 
     symbol_objects, country_objects = await asyncio.gather(

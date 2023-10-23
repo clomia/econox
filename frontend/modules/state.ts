@@ -11,13 +11,13 @@ export interface UserDetail {
     id: string;
     name: string;
     email: string;
-    membership: "basic" | "professional" | "";
+    membership: string;
     signup_date: string;
     next_billing_date: string;
     billing: {
-        currency: "USD" | "KRW" | "";
+        currency: string;
         registered: boolean;
-        status: "active" | "require" | "deactive" | ""
+        status: string
         transactions: {
             time: string;
             name: string;

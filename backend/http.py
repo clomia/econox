@@ -10,7 +10,6 @@ from typing import List, Awaitable, Callable, TypeVar, Literal
 from functools import partial
 
 import jwt
-import psycopg
 import httpx
 import wbdata
 from aiocache import cached
@@ -39,9 +38,9 @@ async def pooling(
     - timeout: 재시도 시간제한(초)
         - inspecter가 있는 경우 timeout 초과시 AssertionError가 발생합니다.
         - exceptions가 있는 경우 timeout 초과시 exceptions를 무시하지 않고 raise합니다.
-    - 비동기 함수를 대상으로 하는 비동기 함수이므로 await 빼먹지 않도록 주의
     - exponential_backoff: 지수 백오프로 점진적인 대기 수행 여부 [Default: True]
         - False로 설정 시 함수를 즉각 재시도함
+    - 비동기 함수를 대상으로 하는 비동기 함수이므로 await 빼먹지 않도록 주의
     """
     retry = -1
     base_delay = 0.05
@@ -553,7 +552,7 @@ async def deepl_translate(text: str, to_lang: str, *, from_lang: str = None) -> 
     source_language = from_lang.upper() if from_lang else None
 
     async def request():
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=18) as client:
             return await client.post(
                 host,
                 headers={

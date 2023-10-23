@@ -160,7 +160,7 @@ async def paypal_payment_webhook(event: dict = Body(...)):
             },
             silent=True,
         )
-        await pooling(  # 유저 생성 완료 전 요청 수신 시를 대비한 풀링 로직
+        await pooling(  # 유저 생성 완료 전 요청 수신 시를 대비한 풀링
             db_insert_func, exceptions=psycopg.errors.NotNullViolation, timeout=30
         )
         await db.exec(

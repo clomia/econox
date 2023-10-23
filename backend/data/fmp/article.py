@@ -99,6 +99,5 @@ async def news(symbol: str, limit=10) -> List[News]:
         if not crypto_news:  # 한번 돌았는데 누적된게 없는 경우
             break  # 뉴스가 없는거니까 검색 중지
         page += 1
-    print(len(stock_news), len(forex_news), len(crypto_news))
     total = marge_lists(stock_news, forex_news, crypto_news, limit=limit)
     return sorted(total, key=lambda news: news.date)

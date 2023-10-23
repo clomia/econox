@@ -47,7 +47,7 @@
                 $packets[index] = updatedPacket;
             }
         } catch {
-            $packets = $packets.filter((p) => p.query === query);
+            $packets = $packets.filter((p) => p.query !== query);
             return await Swal.fire({
                 ...defaultSwalStyle,
                 confirmButtonText: $Text.Ok,

@@ -1,6 +1,7 @@
 """ 외부 리소스 (클라우드 서비스, 데이터 API 등)에 대한 비동기 통신 클라이언트 객체들 """
 import json
 import time
+import random
 import base64
 import asyncio
 from uuid import uuid4
@@ -9,6 +10,7 @@ from typing import List, Awaitable, Callable, TypeVar, Literal
 from functools import partial
 
 import jwt
+import psycopg
 import httpx
 import wbdata
 from aiocache import cached
@@ -27,24 +29,42 @@ async def pooling(
     inspecter: Callable[[T], bool] = lambda _: True,
     exceptions: tuple | Exception = tuple(),
     timeout: int = 15,
+    exponential_backoff=True,
 ):
     """
     - 조건을 만족하는 반환값이 나올때까지 함수를 재실행합니다.
     - target: 무결성이 보장되어야 하는 대상 함수 (Async I/O Bound Function)
-    - inspecter: target함수의 반환값을 검사하는 함수 - bool을 반환해야 함
+    - inspecter: target함수의 반환값을 검사하는 함수, bool을 반환해야 함
     - exceptions: target 함수에서 발생될 예외중 무시할 예외들
     - timeout: 재시도 시간제한(초)
-        - timeout 초과시 AssertionError가 발생합니다.
+        - inspecter가 있는 경우 timeout 초과시 AssertionError가 발생합니다.
+        - exceptions가 있는 경우 timeout 초과시 exceptions를 무시하지 않고 raise합니다.
     - 비동기 함수를 대상으로 하는 비동기 함수이므로 await 빼먹지 않도록 주의
+    - exponential_backoff: 지수 백오프로 점진적인 대기 수행 여부 [Default: True]
+        - False로 설정 시 함수를 즉각 재시도함
     """
+    retry = -1
+    base_delay = 0.05
+    delay_limit = 7  # base_delay 0.05에서 시작해서 8번 재시도하면 약 6.45초 도달
+
     start = time.time()
     while time.time() < start + timeout:
+        retry += 1
         try:
-            if inspecter(result := await target()):
+            if inspecter(result := await target()):  # 함수 실행
                 return result
         except exceptions:
+            pass
+        if not exponential_backoff:  # 재수 백오프 비활성화시 바로 재시도
             continue
-    assert inspecter(result := await target())
+
+        exponential_delay = base_delay * (2**retry)  # 지수 백오프
+        random_delay = random.uniform(0, 0.1 * exponential_delay)  # 무작위성 추가
+        # delay_limit을 넘지 못하도록
+        delay = min(exponential_delay + random_delay, delay_limit)
+        await asyncio.sleep(delay)
+
+    assert inspecter(result := await target())  # 마지막으로 한번 더 실행
     return result
 
 
@@ -132,11 +152,20 @@ class CognitoTokenBearer(HTTPBearer):
         token = CognitoToken(id_token, access_token)
         try:
             user_info = await token.authentication()
-            if not await db.user_exists(user_info["email"]):
-                raise HTTPException(
-                    status_code=401,
-                    detail=f"Authorization failed, user does not exists",
-                )
+            user = await db.select_row(
+                "users",
+                fields=["membership", "billing_status"],
+                where={"id": user_info["id"]},
+            )
+            user_info |= {  # user_info에 맴버십과 청구상태 추가
+                "membership": user["membership"],
+                "billing_status": user["billing_status"],
+            }  # 유저 존재 확인 겸, MembershipPermissionInspector에서 필요로 하는 정보 미리 삽입
+        except psycopg.errors.NotNullViolation:
+            raise HTTPException(
+                status_code=401,
+                detail=f"Authorization failed, user does not exists",
+            )
         except jwt.PyJWTError as e:
             e_str = str(e)
             error_detail = e_str[0].lower() + e_str[1:]
@@ -158,25 +187,17 @@ class MembershipPermissionInspector(CognitoTokenBearer):
 
     async def __call__(self, request: Request) -> dict:
         user_info = await super().__call__(request)
-        user = await db.select_row(
-            "users",
-            fields=["membership", "billing_status"],
-            where={"id": user_info["id"]},
-        )
-        if user["billing_status"] == "require":
+        if user_info["billing_status"] == "require":
             raise HTTPException(
                 status_code=402,
                 detail="This account has unpaid membership fees. Payment is required",
             )
-        elif self.membership == "professional" and user["membership"] == "basic":
+        elif self.membership == "professional" and user_info["membership"] == "basic":
             raise HTTPException(
                 status_code=403,
                 detail="Professional membership is required. Your membership is basic",
             )
-        return user_info | {
-            "membership": user["membership"],
-            "billing_status": user["billing_status"],
-        }
+        return user_info
 
 
 class APIRouter:
@@ -242,21 +263,12 @@ class FmpAPI:
 
     async def get(self, path, **params) -> dict | list:
         request = self._request_use_caching if self.cache else self._request
-        for interval in [0, 0.2, 0.5, 1, 2, 3, 5, 6, None]:
-            try:
-                return await request(path, **params)
-            except Exception as error:
-                log.warning(
-                    "FMP API 서버와 통신에 실패했습니다."
-                    f"{interval}초 후 다시 시도합니다... (path: {path}) "
-                    f"Error: {error}"
-                )
-                if interval is None:
-                    log.error(f"FMP API 서버와 통신에 실패하여 데이터를 수신하지 못했습니다. (path: {path})")
-                    raise error  # 끝까지 통신에 실패하면 에러
-                else:
-                    await asyncio.sleep(interval)  # retry 대기
-                    continue
+        try:
+            return await pooling(partial(request, path, **params), exceptions=Exception)
+        except Exception as e:
+            log.error(
+                f"FMP API 서버와 통신에 실패하여 데이터를 수신하지 못했습니다. (path: {path}, error: {e})"
+            )
 
     @classmethod
     async def _request(cls, path, **params):
@@ -276,35 +288,51 @@ class FmpAPI:
 
 
 class WorldBankAPI:
-    """World Bank Open API Request"""
+    """
+    - World Bank Open API Request
+    - wbdata SDK의 각 함수에 캐싱, 비동기 호출, 지수 백오프 풀링 로직을 첨가하여 제공
+    """
 
     @classmethod
     @cached(ttl=12 * 360)
     async def get_data(cls, indicator, country) -> List[dict]:
         """국가의 지표 시계열을 반환합니다."""
-        result = await run_async(cls._safe_caller(wbdata.get_data), indicator, country)
+        result = await cls._exec(wbdata.get_data, indicator, country)
         return result if result else []
 
     @classmethod
     @cached(ttl=12 * 360)
     async def get_indicator(cls, indicator) -> dict:
         """지표에 대한 상세 정보를 반환합니다. 정보가 없는 경우 빈 딕셔너리가 반환됩니다."""
-        result = await run_async(cls._safe_caller(wbdata.get_indicator), indicator)
+        result = await cls._exec(wbdata.get_indicator, indicator)
         return result[0] if result else {}
 
     @classmethod
     @cached(ttl=12 * 360)
     async def search_countries(cls, text) -> List[dict]:
         """자연어로 국가들을 검색합니다."""
-        result = await run_async(cls._safe_caller(wbdata.search_countries), text)
+        result = await cls._exec(wbdata.search_countries, text)
         return list(result) if result else []
 
     @classmethod
     @cached(ttl=12 * 360)
     async def get_country(cls, code) -> dict:
         """국가 코드에 해당하는 국가를 반환합니다.."""
-        result = await run_async(cls._safe_caller(wbdata.get_country), code)
+        result = await cls._exec(wbdata.get_country, code)
         return result[0] if result else {}
+
+    @classmethod
+    async def _exec(cls, wb_func, *args):
+        try:
+            return await pooling(
+                partial(run_async, cls._safe_caller(wb_func), *args),
+                exceptions=Exception,
+            )
+        except Exception as e:
+            log.error(
+                f"World Bank API 서버와 통신에 실패하여 데이터를 수신하지 못했습니다."
+                f"(wbdata func: {wb_func.__name__}, args: {args}, error: {e})"
+            )
 
     @staticmethod
     def _safe_caller(wb_func):
@@ -513,7 +541,7 @@ class PayPalWebhookAuth:
 async def deepl_translate(text: str, to_lang: str, *, from_lang: str = None) -> str:
     """deepl 공식 SDK쓰면 urllib 풀 사이즈 10개 제한 떠서 httpx 비동기 클라이언트로 별도의 함수 작성"""
 
-    host = "https://api-free.deepl.com/v2/translate"  # * 유로버전이랑 무료버전 host 주소가 다르다
+    host = "https://api-free.deepl.com/v2/translate"  # * 유료버전이랑 무료버전 host 주소가 다르다
     variant_hendler = {
         "en": "EN-US",
         "pt": "PT-PT",
@@ -523,22 +551,29 @@ async def deepl_translate(text: str, to_lang: str, *, from_lang: str = None) -> 
     if to_lang in variant_hendler:
         target_language = variant_hendler[to_lang]
     source_language = from_lang.upper() if from_lang else None
-    async with httpx.AsyncClient() as client:
-        resp = await client.post(
-            host,
-            headers={
-                "Authorization": f"DeepL-Auth-Key {SECRETS['DEEPL_API_KEY']}",
-                "Content-Type": "application/json",
-            },
-            json={
-                "text": [text],
-                "target_lang": target_language,
-                "source_lang": source_language,
-            },
+
+    async def request():
+        async with httpx.AsyncClient() as client:
+            return await client.post(
+                host,
+                headers={
+                    "Authorization": f"DeepL-Auth-Key {SECRETS['DEEPL_API_KEY']}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "text": [text],
+                    "target_lang": target_language,
+                    "source_lang": source_language,
+                },
+            )
+
+    try:
+        resp = await pooling(
+            request,  # https://www.deepl.com/ko/docs-api/api-access/error-handling
+            inspecter=lambda resp: resp.status_code == 200,
+            exceptions=Exception,
         )
-    if resp.status_code == 200:
-        return resp.json()["translations"][0]["text"]
+    except (AssertionError, Exception) as e:
+        raise httpx.HTTPError(f"DeepL 통신 오류 Error: {e}")
     else:
-        raise httpx.HTTPError(
-            f"DeepL 통신 오류 (HTTPStatus:{resp.status_code}) {resp.text}"
-        )
+        return resp.json()["translations"][0]["text"]

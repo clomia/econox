@@ -141,7 +141,6 @@ async def signup(item: SignupInfo):
                         lambda results: results[0]["status"] == "APPROVED"
                         and results[1]["status"] == "ACTIVE"
                     ),
-                    timeout=30,  # 조건이 만족될때까지 최대 30초 재시도합니다.
                 )  # timeout이 초과되어도 조건이 만족되지 않으면 AssertionError
                 next_billing = utcstr2datetime(
                     subscription["billing_info"]["next_billing_time"]

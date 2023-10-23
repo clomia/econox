@@ -8,10 +8,10 @@
     import { Text, Lang } from "../../modules/state";
     import { defaultSwalStyle, format } from "../../modules/functions";
     import CloseButton from "../../components/CloseButton.svelte";
-    import type { AxiosError } from "axios";
 
     let inputText = "";
     const packets = writable<{ query: string; loading: boolean; resp: any }[]>([]);
+    const news = writable<any>({});
     const createPacket = async () => {
         const query = inputText.trim();
         if (!query) {
@@ -42,11 +42,25 @@
         $packets = [initialPacket, ...$packets.slice(0, 3)];
         try {
             const resp = await api.member.get("/data/elements", { params: { query, lang: $Lang } });
-            const updatedPacket = { ...initialPacket, loading: false, resp: resp.data };
+            const updatedPacket = { query, loading: false, resp: resp.data };
             const index = $packets.findIndex((p) => p.query === query && p.loading);
             if (index !== -1) {
-                $packets[index] = updatedPacket;
+                $packets[index] = updatedPacket; // 패킷 로딩은 여기서 종료됨
             }
+            const newsData = await Promise.all(
+                resp.data.symbols.map(async (ele: any) => {
+                    try {
+                        const resp = await api.member.get("/data/news", {
+                            params: { symbol: ele.code, lang: $Lang },
+                        });
+                        return [resp.data.symbol.code, resp.data.contents];
+                    } catch {
+                        return ["blank", null];
+                    }
+                })
+            );
+            const r = Object.fromEntries(newsData);
+            console.log(r);
         } catch {
             $packets = $packets.filter((p) => p.query !== query);
             return await Swal.fire({

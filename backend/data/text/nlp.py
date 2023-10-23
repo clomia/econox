@@ -3,7 +3,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-def split_paragraph(text, threshold=0.15):
+def split_paragraph(text, threshold=0.15):  # 일단 정확도 떨어져서 못씀
     """줄바꿈 없는 긴 글을 문단으로 나눠 줄바꿈을 삽입합니다."""
     # 괄호와 그 내용을 임시 문자열로 대체
     brackets = re.findall(r"\([^)]*\)", text)

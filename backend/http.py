@@ -157,15 +157,15 @@ class CognitoTokenBearer(HTTPBearer):
                 fields=["membership", "billing_status"],
                 where={"id": user_info["id"]},
             )
+            if not user:
+                raise HTTPException(
+                    status_code=401,
+                    detail=f"Authorization failed, user does not exists",
+                )
             user_info |= {  # user_info에 맴버십과 청구상태 추가
                 "membership": user["membership"],
                 "billing_status": user["billing_status"],
             }  # 유저 존재 확인 겸, MembershipPermissionInspector에서 필요로 하는 정보 미리 삽입
-        except psycopg.errors.NotNullViolation:
-            raise HTTPException(
-                status_code=401,
-                detail=f"Authorization failed, user does not exists",
-            )
         except jwt.PyJWTError as e:
             e_str = str(e)
             error_detail = e_str[0].lower() + e_str[1:]

@@ -4,6 +4,7 @@ import time
 import random
 import base64
 import asyncio
+from pathlib import Path
 from uuid import uuid4
 from datetime import datetime
 from typing import List, Awaitable, Callable, TypeVar, Literal
@@ -16,6 +17,7 @@ from aiocache import cached
 from fastapi import routing, HTTPException, Request, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
+import glossaries
 from backend import db
 from backend.math import utcstr2datetime
 from backend.system import SECRETS, log, run_async
@@ -540,12 +542,17 @@ class PayPalWebhookAuth:
 async def deepl_translate(text: str, to_lang: str, *, from_lang: str = None) -> str:
     """deepl 공식 SDK쓰면 urllib 풀 사이즈 10개 제한 떠서 httpx 비동기 클라이언트로 별도의 함수 작성"""
 
+    target = text.strip()
+
+    if dictionary := glossaries.dictionaries.get(to_lang):
+        if result := dictionary.get(target):
+            return result  # 해당 도착어에 대해 일치하는 번역 정의를 찾으면 그것을 반환한다.
+
     host = "https://api-free.deepl.com/v2/translate"  # * 유료버전이랑 무료버전 host 주소가 다르다
     variant_hendler = {
         "en": "EN-US",
         "pt": "PT-PT",
     }  # https://www.deepl.com/docs-api/translate-text/?utm_source=github&utm_medium=github-python-readme (Request Parameters부분의 source_lang, target_lang 섹션 참조)
-
     target_language = to_lang.upper()
     if to_lang in variant_hendler:
         target_language = variant_hendler[to_lang]
@@ -560,7 +567,7 @@ async def deepl_translate(text: str, to_lang: str, *, from_lang: str = None) -> 
                     "Content-Type": "application/json",
                 },
                 json={
-                    "text": [text],
+                    "text": [target],
                     "target_lang": target_language,
                     "source_lang": source_language,
                 },

@@ -161,7 +161,10 @@ class Transaction:
 
 
 async def select_row(table: str, fields: list, where: dict):
-    """limit 1 로 하나의 레코드만 선택하여 dict 형태로 반환합니다."""
+    """
+    - limit 1 로 하나의 레코드만 선택하여 dict 형태로 반환합니다.
+    - 레코드가 없으면 빈 딕셔너리 반환
+    """
     values = await exec(
         template=Template(table=table).select_query(*fields, where=where, limit=1),
         embed=True,

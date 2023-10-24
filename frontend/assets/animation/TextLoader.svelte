@@ -26,7 +26,7 @@
         font-family: ‘Arial Narrow’, sans-serif;
         font-weight: 100;
         font-size: 3rem;
-        color: #a3e1f0;
+        color: var(--white);
     }
 
     span {

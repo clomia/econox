@@ -35,7 +35,7 @@ async def translate(text: str, to_lang: str, *, from_lang: str = None) -> str:
         if result := glossary.get(target):
             return result  # 용어집에서 해당 도착어에 대해 일치하는 번역 정의를 찾으면 그것을 반환한다.
 
-    host = "https://api-free.deepl.com/v2/translate"  # * 유료버전이랑 무료버전 host 주소가 다르다
+    host = "https://api.deepl.com/v2/translate"
     variant_hendler = {
         "en": "EN-US",
         "pt": "PT-PT",
@@ -67,7 +67,7 @@ async def translate(text: str, to_lang: str, *, from_lang: str = None) -> str:
             exceptions=Exception,
         )
     except (AssertionError, Exception) as e:
-        raise httpx.HTTPError(f"DeepL 통신 오류 Error: {e}")
+        raise httpx.HTTPError(f"DeepL 통신 오류 Error: {e} (사용량 한도에 도달했을 수 있습니다.)")
     else:
         return resp.json()["translations"][0]["text"]
 

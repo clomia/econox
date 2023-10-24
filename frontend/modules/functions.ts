@@ -104,7 +104,7 @@ type VerificationArgs = {
  * @param conds 충족해야 하는 요구 조건
  * @param failRedirect 요구 조건을 충족하지 못할 때 리디렉션할 경로
  */
-export const verify = async ({
+export const verify = ({
     conds: {
         login = null,
         membership = null,
@@ -119,8 +119,8 @@ export const verify = async ({
         const failureConditions = [
             login !== null && login !== Boolean(userInfo.id),
             membership !== null && membership !== userInfo.membership,
-            billingOk && userInfo.billing.status === 'require'
-        ];
+            billingOk && !['active', 'deactive'].includes(userInfo.billing.status)
+        ]; // require 혹은 ''(기본값)인 경우는 billingOk가 아님
 
         if (failureConditions.some(Boolean)) {
             navigate(failRedirect);

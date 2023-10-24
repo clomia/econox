@@ -47,6 +47,10 @@
             if (index !== -1) {
                 $packets[index] = updatedPacket; // 패킷 로딩은 여기서 종료됨
             }
+
+            const loadingFrame = Object.fromEntries(resp.data.symbols.map((ele: any) => [ele.code, null]));
+            $news = { ...$news, ...loadingFrame }; // 값이 null인 경우 로딩중
+
             const newsData = await Promise.all(
                 resp.data.symbols.map(async (ele: any) => {
                     try {
@@ -58,9 +62,8 @@
                         return ["blank", null];
                     }
                 })
-            );
-            const r = Object.fromEntries(newsData);
-            console.log(r);
+            ); // 값이 []인 경우 뉴스 없음
+            $news = { ...$news, ...Object.fromEntries(newsData) };
         } catch {
             $packets = $packets.filter((p) => p.query !== query);
             return await Swal.fire({
@@ -79,12 +82,13 @@
         note: string;
         type: string;
     }
+    interface Resp {
+        countries: Element[];
+        symbols: Element[];
+    }
     interface PacketInfo {
         query: string;
-        resp: {
-            countries: Element[];
-            symbols: Element[];
-        };
+        resp: Resp;
         elements: Element[];
     }
 
@@ -95,24 +99,27 @@
     });
     let selectedElement: Element;
     let packetInfoOn = false;
-    const onPacketInfo = async (info: PacketInfo) => {
-        const countries = info.resp["countries"].map((obj) => {
+    const onPacketInfo = async (query: string, resp: Resp) => {
+        const countries = resp["countries"].map((obj) => {
             obj.type = "country";
             return obj;
         });
-        const symbols = info.resp["symbols"].map((obj) => {
+        const symbols = resp["symbols"].map((obj) => {
             obj.type = "symbol";
             return obj;
         });
-        $packetInfo = info;
-        $packetInfo.elements = [...countries, ...symbols];
-        packetInfoOn = true;
+        $packetInfo = { query, resp, elements: [...countries, ...symbols] };
         selectedElement = $packetInfo.elements[0];
+        packetInfoOn = true;
     };
     const selectElement = (element: Element) => {
         selectedElement = element;
     };
 </script>
+
+<svelte:head>
+    <link rel="preload" href="static/img/megaphone.png" as="image" />
+</svelte:head>
 
 <main>
     <form class="search-form" on:submit|preventDefault={createPacket}>
@@ -137,12 +144,7 @@
                 {#if loading}
                     <div class="packet__loader"><DotLoader /></div>
                 {:else}
-                    <button
-                        class="packet__result"
-                        on:click={() => {
-                            onPacketInfo({ query, resp, elements: [] });
-                        }}
-                    >
+                    <button class="packet__result" on:click={() => onPacketInfo(query, resp)}>
                         <img in:fade src="static/img/file.png" alt="result" height="25px" />
                     </button>
                 {/if}
@@ -180,6 +182,24 @@
                 <div class="packet-info__repr__name">{selectedElement.name}</div>
                 <div class="packet-info__repr__note">{selectedElement.note}</div>
             </div>
+            <div class="packet-info__news">
+                <div class="packet-info__news__header">
+                    <img src="static/img/megaphone.png" width="20px" alt="Megaphone" />
+                </div>
+                {#if !$news[selectedElement.code]}
+                    <div class="packet-info__news__loading">로뒹중...</div>
+                {:else if $news[selectedElement.code].length === 0}
+                    <div class="packet-info__news__null">뉴스없음...</div>
+                {:else}
+                    {#each $news[selectedElement.code] as news}
+                        <a href={news.src}>
+                            <div class="packet-info__news__title">{news.title}</div>
+                            <div class="packet-info__news__content">{news.content}</div>
+                            <div class="packet-info__news__date">{news.date}</div>
+                        </a>
+                    {/each}
+                {/if}
+            </div>
         </section>
     </div>
 {/if}
@@ -206,6 +226,16 @@
         justify-content: center;
         z-index: 2;
     }
+
+    .packet-info__news {
+        margin: 0 3rem;
+        padding: 1rem 0;
+    }
+    .packet-info__news__header {
+        display: flex;
+        justify-content: center;
+    }
+
     .packet-info {
         width: 44rem;
         min-height: 31rem;

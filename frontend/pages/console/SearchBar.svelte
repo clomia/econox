@@ -9,9 +9,25 @@
     import { defaultSwalStyle, format } from "../../modules/functions";
     import CloseButton from "../../components/CloseButton.svelte";
 
+    interface Element {
+        code: string;
+        name: string;
+        note: string;
+        type: string;
+    }
+    interface Resp {
+        countries: Element[];
+        symbols: Element[];
+    }
+    interface PacketInfo {
+        query: string;
+        resp: Resp;
+        elements: Element[];
+    }
+
     let inputText = "";
     const packets = writable<{ query: string; loading: boolean; resp: any }[]>([]);
-    const news = writable<any>({});
+    const news = writable<any>({}); // symbol: [news, news, ...]
     const createPacket = async () => {
         const query = inputText.trim();
         if (!query) {
@@ -57,7 +73,10 @@
                         const resp = await api.member.get("/data/news", {
                             params: { symbol: ele.code, lang: $Lang },
                         });
-                        return [resp.data.symbol.code, resp.data.contents];
+                        const newsContents = resp.data.contents.map((content: any) => {
+                            return { ...content, isOpen: false };
+                        });
+                        return [resp.data.symbol.code, newsContents];
                     } catch {
                         return ["blank", null];
                     }
@@ -76,27 +95,12 @@
         }
     };
 
-    interface Element {
-        code: string;
-        name: string;
-        note: string;
-        type: string;
-    }
-    interface Resp {
-        countries: Element[];
-        symbols: Element[];
-    }
-    interface PacketInfo {
-        query: string;
-        resp: Resp;
-        elements: Element[];
-    }
-
     const packetInfo = writable<PacketInfo>({
         query: "", // 초기값 세팅
         resp: { countries: [], symbols: [] },
         elements: [],
     });
+
     let selectedElement: Element;
     let packetInfoOn = false;
     const onPacketInfo = async (query: string, resp: Resp) => {
@@ -192,11 +196,18 @@
                     <div class="packet-info__news__null">뉴스없음...</div>
                 {:else}
                     {#each $news[selectedElement.code] as news}
-                        <a href={news.src}>
-                            <div class="packet-info__news__title">{news.title}</div>
-                            <div class="packet-info__news__content">{news.content}</div>
-                            <div class="packet-info__news__date">{news.date}</div>
-                        </a>
+                        <button class="packet-info__news__head" on:click={() => (news.isOpen = !news.isOpen)}>
+                            <div class="packet-info__news__head__title">{news.title}</div>
+                            <div class="packet-info__news__head__date">{news.date}</div>
+                        </button>
+                        {#if news.isOpen}
+                            <div class="packet-info__news__body">
+                                <div class="packet-info__news__body__content">{news.content}</div>
+                                <a href={news.src} target="_blank" rel="noopener noreferrer">
+                                    <div class="packet-info__news__body__href">바로가기</div>
+                                </a>
+                            </div>
+                        {/if}
                     {/each}
                 {/if}
             </div>
@@ -234,6 +245,17 @@
     .packet-info__news__header {
         display: flex;
         justify-content: center;
+        opacity: 0.5;
+        margin: 1rem 0;
+    }
+    .packet-info__news__head {
+        color: var(--white);
+        padding: 0.7rem;
+        border-radius: 0.4rem;
+    }
+    .packet-info__news__head:hover {
+        cursor: pointer;
+        background-color: rgba(255, 255, 255, 0.07);
     }
 
     .packet-info {

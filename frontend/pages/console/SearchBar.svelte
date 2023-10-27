@@ -187,7 +187,7 @@
                 <div class="packet-info__repr__note">{selectedElement.note}</div>
             </div>
             <div class="packet-info__news">
-                <div class="packet-info__news__header">
+                <div class="packet-info__news__icon">
                     <img src="static/img/megaphone.png" width="20px" alt="Megaphone" />
                 </div>
                 {#if !$news[selectedElement.code]}
@@ -195,19 +195,26 @@
                 {:else if $news[selectedElement.code].length === 0}
                     <div class="packet-info__news__null">뉴스없음...</div>
                 {:else}
-                    {#each $news[selectedElement.code] as news}
-                        <button class="packet-info__news__head" on:click={() => (news.isOpen = !news.isOpen)}>
-                            <div class="packet-info__news__head__title">{news.title}</div>
-                            <div class="packet-info__news__head__date">{news.date}</div>
-                        </button>
-                        {#if news.isOpen}
-                            <div class="packet-info__news__body">
-                                <div class="packet-info__news__body__content">{news.content}</div>
-                                <a href={news.src} target="_blank" rel="noopener noreferrer">
-                                    <div class="packet-info__news__body__href">바로가기</div>
-                                </a>
-                            </div>
-                        {/if}
+                    {#each $news[selectedElement.code] as newsElement}
+                        <div class="packet-info__news__ele">
+                            <button
+                                class="packet-info__news__ele__head"
+                                on:click={() => (newsElement.isOpen = !newsElement.isOpen)}
+                            >
+                                <div class="packet-info__news__ele__head__title">{newsElement.title}</div>
+                                <div class="packet-info__news__ele__head__date">{newsElement.date}</div>
+                            </button>
+                            {#if newsElement.isOpen}
+                                <div class="packet-info__news__ele__body">
+                                    <div class="packet-info__news__ele__body__content">
+                                        {newsElement.content}
+                                    </div>
+                                    <a href={newsElement.src} target="_blank" rel="noopener noreferrer">
+                                        <div class="packet-info__news__ele__body__href">바로가기</div>
+                                    </a>
+                                </div>
+                            {/if}
+                        </div>
                     {/each}
                 {/if}
             </div>
@@ -242,20 +249,36 @@
         margin: 0 3rem;
         padding: 1rem 0;
     }
-    .packet-info__news__header {
+    .packet-info__news__icon {
         display: flex;
         justify-content: center;
         opacity: 0.5;
         margin: 1rem 0;
     }
-    .packet-info__news__head {
+    .packet-info__news__ele {
+        border-bottom: thin solid rgba(255, 255, 255, 0.2);
+        color: var(--white);
+    }
+    .packet-info__news__ele__head {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        border-radius: 0.4rem;
         color: var(--white);
         padding: 0.7rem;
-        border-radius: 0.4rem;
     }
-    .packet-info__news__head:hover {
+    .packet-info__news__ele__head:hover {
         cursor: pointer;
         background-color: rgba(255, 255, 255, 0.07);
+    }
+    .packet-info__news__ele__head__date {
+        width: 100%;
+        text-align: end;
+        color: rgba(255, 255, 255, 0.4);
+    }
+    .packet-info__news__ele__body {
+        padding: 0.7rem;
+        padding-top: 0;
     }
 
     .packet-info {

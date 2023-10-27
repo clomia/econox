@@ -137,6 +137,14 @@ async def paypal_payment_webhook(event: dict = Body(...)):
         subscription = await PayPalAPI(
             f"/v1/billing/subscriptions/{subscription_id}"
         ).get()
+        if subscription["status"] != "ACTIVE":
+            log.info(
+                "[paypal webhook: PAYMENT.SALE.COMPLETED]"
+                f"구독 상태가 'ACTIVE'가 아닙니다. 이벤트를 무시합니다. 구독 상태: {subscription['status']}"
+                f"\nSummary: {event['summary']}, 구독 ID:{event['resource']['billing_agreement_id']}"
+            )
+            return {"message": "Apply success"}
+
         next_billing = utcstr2datetime(
             subscription["billing_info"]["next_billing_time"]
         )
@@ -179,7 +187,8 @@ async def paypal_payment_webhook(event: dict = Body(...)):
             },
         )
         log.info(
-            f"맴버십 비용 청구 완료({plan['name']})[Paypal]: user paypal_subscription_id={subscription_id}"
+            f"맴버십 비용 청구 완료({plan['name']})[Paypal]: "
+            f"user paypal_subscription_id={subscription_id}"
         )
     except psycopg.errors.NotNullViolation:
         subscription_id = event["resource"]["billing_agreement_id"]

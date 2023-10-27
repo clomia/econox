@@ -1,6 +1,6 @@
 <script>
     export let size = "1rem";
-    export let color = "rgba(255,255,255,0.4)";
+    export let color = "rgba(255,255,255,0.6)";
 </script>
 
 <svg

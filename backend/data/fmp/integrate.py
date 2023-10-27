@@ -213,7 +213,7 @@ async def search(text: str, limit: int = 8) -> List[Symbol]:
     - api/v3/search
     - text: 검색 문자열
         - 다국어 가능!
-    - limit: 검색 결과 갯수 제한
+    - limit: 검색 갯수 제한 (검색 부하량 조절을 위한 대략적인 펙터)
     - 검색어와 일치하는 symbol이 가장 앞으로 오고 나머지는 거래량이 큰게 앞으로 오도록 정렬되어 반환됩니다.
     - 검색 결과가 없으면 빈 리스트를 반환합니다.
     """

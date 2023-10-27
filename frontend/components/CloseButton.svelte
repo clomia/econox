@@ -19,7 +19,7 @@
         content: "";
         width: 55%;
         height: 0.067rem;
-        background: rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.7);
         position: absolute;
         top: 48%;
         left: 22%;

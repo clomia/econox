@@ -5,6 +5,7 @@
     import Magnifier from "../../assets/icon/Magnifier.svelte";
     import DotLoader from "../../assets/animation/DotLoader.svelte";
     import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
+    import TextLoader from "../../assets/animation/TextLoader.svelte";
     import { api } from "../../modules/request";
     import { Text, Lang } from "../../modules/state";
     import { defaultSwalStyle, format } from "../../modules/functions";
@@ -136,11 +137,6 @@
     };
 </script>
 
-<svelte:head>
-    <link rel="preload" href="static/img/megaphone.png" as="image" />
-    <link rel="preload" href="static/img/link.png" as="image" />
-</svelte:head>
-
 <main>
     <form class="search-form" on:submit|preventDefault={createPacket}>
         <div class="magnifier"><Magnifier /></div>
@@ -181,7 +177,7 @@
                 <CloseButton />
             </button>
             <div class="packet-info__magnifier">
-                <Magnifier size="1.3rem" color="rgba(255,255,255,0.3)" />
+                <Magnifier size="1.3rem" />
             </div>
             <div class="packet-info__query">
                 <div class="packet-info__query__text">{$packetInfo.query}</div>
@@ -208,9 +204,9 @@
                     <div class="packet-info__news__icon__text">News</div>
                 </div>
                 {#if !$news[selectedElement.code]}
-                    <div class="packet-info__news__loading">로뒹중...</div>
+                    <div class="packet-info__news__loading"><TextLoader /></div>
                 {:else if $news[selectedElement.code].length === 0}
-                    <div class="packet-info__news__null">뉴스없음...</div>
+                    <div class="packet-info__news__null">뉴스없음!</div>
                 {:else}
                     {#each $news[selectedElement.code] as newsElement}
                         <div class="packet-info__news__ele">
@@ -287,13 +283,21 @@
     .packet-info__news__icon {
         display: flex;
         justify-content: center;
-        opacity: 0.5;
+        opacity: 0.8;
         margin-bottom: 1rem;
     }
     .packet-info__news__icon__text {
         color: white;
         margin-left: 0.5rem;
         font-size: 1.1rem;
+    }
+    .packet-info__news__loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transform: scale(0.6);
+        margin-top: -2rem;
+        margin-bottom: 1.5rem;
     }
     .packet-info__news__ele {
         border-bottom: thin solid rgba(255, 255, 255, 0.2);
@@ -303,17 +307,19 @@
         width: 100%;
         display: flex;
         flex-direction: column;
-        border-radius: 0.4rem;
         color: var(--white);
         padding: 0.7rem;
     }
     .packet-info__news__ele__head:hover {
         cursor: pointer;
-        background-color: rgba(255, 255, 255, 0.07);
+        background-color: rgba(255, 255, 255, 0.15);
     }
     .news-ele-no-hover {
         cursor: default !important;
         background-color: transparent !important;
+    }
+    .packet-info__news__ele__head__title {
+        text-align: start;
     }
     .packet-info__news__ele__head__date {
         width: 100%;
@@ -373,7 +379,7 @@
         align-items: center;
     }
     .packet-info__query__text {
-        color: rgba(255, 255, 255, 0.6);
+        color: var(--white);
         font-size: 1.3rem;
         white-space: nowrap;
         overflow: hidden;
@@ -424,7 +430,7 @@
         text-justify: inter-word;
     }
     .packet-info__repr__name {
-        color: rgba(255, 255, 255, 0.6);
+        color: var(--white);
         font-size: 1.1rem;
     }
     .packet-info__repr__note {
@@ -460,11 +466,11 @@
         height: 100%;
         display: flex;
         align-items: center;
-        opacity: 0.3;
+        opacity: 0.5;
         transition: opacity 100ms ease-out;
     }
     .search-btn:hover {
-        opacity: 0.8;
+        opacity: 1;
         cursor: pointer;
     }
     /* pakcets */

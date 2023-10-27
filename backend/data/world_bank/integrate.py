@@ -99,8 +99,11 @@ class Country:
         return self.info["latitude"]
 
 
-async def search(text: str) -> List[Country]:
-    """is_valid가 False인 Country는 리스트에서 제외됩니다."""
+async def search(text: str, limit: int = 3) -> List[Country]:
+    """
+    - is_valid가 False인 Country는 리스트에서 제외됩니다.
+    - limit: 검색 갯수 제한 (World bank 약해서 한번에 너무 많이 하면 안돼)
+    """
     api = WorldBankAPI()
 
     en_text = await translate(text, to_lang="en")
@@ -110,8 +113,10 @@ async def search(text: str) -> List[Country]:
         api.search_countries(text),  # -> List[dict] - to l2
         api.search_countries(en_text),  # -> List[dict] - to l3
     )  # 여러 방법으로 검색하므로 합치면 중복 있음, set을 통해 중복 제거
-    iso_codes = {country["id"] for country in list(l1) + l2 + l3 if country}
-    countires = await asyncio.gather(*(Country(code).load() for code in iso_codes))
+    # text가 국가 코드인 경우 l1에 들어가므로 슬라이싱해도 유지됨 그니까 재정렬 안해도 됌
+    iso_code_set = {country["id"] for country in list(l1) + l2 + l3 if country}
+    target_list = list(iso_code_set)[:limit]
+    countires = await asyncio.gather(*(Country(code).load() for code in target_list))
     return sorted(
         [country for country in countires if country.is_valid],
         key=lambda country: len(country.name.text),  # 국가명이 짧은게 위로 오도록

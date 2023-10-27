@@ -30,7 +30,7 @@
         --rotation: -25;
         --ring-radius: 8;
         --ring-thickness: 0.75;
-        --bg: hsl(10, 100%, 85%);
+        --bg: white;
     }
 
     .loader {

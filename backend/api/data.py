@@ -19,6 +19,7 @@ async def search_symbols_and_countries(query: str, lang: str):
     - lang: 응답 데이터의 언어 (ISO 639-1)
     - Response: code, name, note를 가지는 요소들. countries와 symbols로 키가 분리되어 두개의 리스트로 제공
     """
+    query = query.strip()
 
     async def parsing(obj):
         name, note = await asyncio.gather(obj.name.en(), obj.note.trans(to=lang))

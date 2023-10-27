@@ -22,6 +22,7 @@
         width: 10rem;
         height: 10rem;
         overflow-x: hidden;
+        line-height: 1;
         --dot-size: 5;
         --speed: 1.5;
         --radius: 10;

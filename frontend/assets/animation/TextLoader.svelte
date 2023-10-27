@@ -18,6 +18,7 @@
         padding: 0;
         font-size: 100%;
         text-align: center;
+        line-height: 1;
     }
 
     h1 {

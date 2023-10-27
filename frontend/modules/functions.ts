@@ -166,7 +166,6 @@ export const timeString = (str: string) => {
     const day = date.getDate().toString().padStart(2, "0");
     return `${year}.${month}.${day}`;
 };
-
 /**
  * 결제수단을 표현하는 문자열 반환
  */

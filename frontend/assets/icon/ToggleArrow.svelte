@@ -1,5 +1,5 @@
 <script>
-    export const size = 1;
+    export let size = 1;
 </script>
 
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 316.15 84.56" style="width: {size * 4}rem;">

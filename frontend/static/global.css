@@ -2,7 +2,7 @@
 
 :root {
 	--white: rgba(255, 255, 255, 0.75);
-	--border-white: rgba(255, 255, 255, 0.4);
+	--border-white: rgba(255, 255, 255, 0.47);
 	--background: linear-gradient(to bottom, #202123, #1f3036);
 	--widget-background: linear-gradient(to bottom, #2e2f32, rgb(32, 49, 55));
 }
@@ -17,7 +17,7 @@ body {
 	padding-bottom: 3rem;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 16px;
-	line-height: 1.2;
+	line-height: 1.5;
 	background: var(--background);
 	position: relative;
 }

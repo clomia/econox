@@ -4,6 +4,7 @@
     import Swal from "sweetalert2";
     import Magnifier from "../../assets/icon/Magnifier.svelte";
     import DotLoader from "../../assets/animation/DotLoader.svelte";
+    import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
     import { api } from "../../modules/request";
     import { Text, Lang } from "../../modules/state";
     import { defaultSwalStyle, format } from "../../modules/functions";
@@ -119,10 +120,25 @@
     const selectElement = (element: Element) => {
         selectedElement = element;
     };
+    /**
+     * 2023-09-26T07:04:20.000Z 형식의 문자열을 받아 브라우저 시간대에 맞는 연.월.일 및 시:분:초 문자열 반환
+     */
+    const timeString = (str: string) => {
+        const date = new Date(str);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const day = date.getDate().toString().padStart(2, "0");
+        const hours = date.getHours().toString().padStart(2, "0");
+        const minutes = date.getMinutes().toString().padStart(2, "0");
+        const seconds = date.getSeconds().toString().padStart(2, "0");
+
+        return `${year}.${month}.${day} ${hours}:${minutes}:${seconds}`;
+    };
 </script>
 
 <svelte:head>
     <link rel="preload" href="static/img/megaphone.png" as="image" />
+    <link rel="preload" href="static/img/link.png" as="image" />
 </svelte:head>
 
 <main>
@@ -189,6 +205,7 @@
             <div class="packet-info__news">
                 <div class="packet-info__news__icon">
                     <img src="static/img/megaphone.png" width="20px" alt="Megaphone" />
+                    <div class="packet-info__news__icon__text">News</div>
                 </div>
                 {#if !$news[selectedElement.code]}
                     <div class="packet-info__news__loading">로뒹중...</div>
@@ -199,19 +216,37 @@
                         <div class="packet-info__news__ele">
                             <button
                                 class="packet-info__news__ele__head"
-                                on:click={() => (newsElement.isOpen = !newsElement.isOpen)}
+                                on:click={() => (newsElement.isOpen = true)}
+                                class:news-ele-no-hover={newsElement.isOpen}
                             >
                                 <div class="packet-info__news__ele__head__title">{newsElement.title}</div>
-                                <div class="packet-info__news__ele__head__date">{newsElement.date}</div>
+                                <div class="packet-info__news__ele__head__date">
+                                    {timeString(newsElement.date)}
+                                </div>
                             </button>
                             {#if newsElement.isOpen}
                                 <div class="packet-info__news__ele__body">
                                     <div class="packet-info__news__ele__body__content">
                                         {newsElement.content}
                                     </div>
-                                    <a href={newsElement.src} target="_blank" rel="noopener noreferrer">
-                                        <div class="packet-info__news__ele__body__href">바로가기</div>
-                                    </a>
+                                    <div class="packet-info__news__ele__body__buttons">
+                                        <div style="width: 25px;" />
+                                        <button
+                                            class="packet-info__news__ele__body__buttons__close"
+                                            on:click={() => (newsElement.isOpen = false)}
+                                        >
+                                            <ToggleArrow size={0.6} />
+                                        </button>
+                                        <a href={newsElement.src} target="_blank" rel="noopener noreferrer">
+                                            <div class="packet-info__news__ele__body__buttons__href">
+                                                <img
+                                                    src="static/img/link.png"
+                                                    alt={newsElement.src}
+                                                    width="25px"
+                                                />
+                                            </div>
+                                        </a>
+                                    </div>
                                 </div>
                             {/if}
                         </div>
@@ -253,7 +288,12 @@
         display: flex;
         justify-content: center;
         opacity: 0.5;
-        margin: 1rem 0;
+        margin-bottom: 1rem;
+    }
+    .packet-info__news__icon__text {
+        color: white;
+        margin-left: 0.5rem;
+        font-size: 1.1rem;
     }
     .packet-info__news__ele {
         border-bottom: thin solid rgba(255, 255, 255, 0.2);
@@ -271,14 +311,37 @@
         cursor: pointer;
         background-color: rgba(255, 255, 255, 0.07);
     }
+    .news-ele-no-hover {
+        cursor: default !important;
+        background-color: transparent !important;
+    }
     .packet-info__news__ele__head__date {
         width: 100%;
         text-align: end;
         color: rgba(255, 255, 255, 0.4);
+        margin-top: 0.35rem;
     }
     .packet-info__news__ele__body {
         padding: 0.7rem;
         padding-top: 0;
+    }
+    .packet-info__news__ele__body__buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 0.4rem;
+    }
+    .packet-info__news__ele__body__buttons__close {
+        opacity: 0.4;
+        transform: rotateZ(180deg);
+    }
+    .packet-info__news__ele__body__buttons__href {
+        opacity: 0.4;
+    }
+    .packet-info__news__ele__body__buttons__close:hover,
+    .packet-info__news__ele__body__buttons__href:hover {
+        cursor: pointer;
+        opacity: 1;
     }
 
     .packet-info {
@@ -369,7 +432,6 @@
         padding: 0 1rem;
         padding-top: 1rem;
         white-space: pre-line;
-        line-height: 1.2;
     }
 
     .search-form {

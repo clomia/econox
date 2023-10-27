@@ -19,6 +19,7 @@
     main {
         color: rgb(31, 36, 39);
         text-align: center;
+        line-height: 1;
     }
 
     .a {

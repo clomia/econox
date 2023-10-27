@@ -183,10 +183,7 @@
         justify-content: space-between;
     }
     .billing__limit {
-        opacity: 0.5;
+        opacity: 0.9;
         margin-top: 1rem;
-    }
-    li > div {
-        color: rgba(255, 255, 255, 0.6);
     }
 </style>

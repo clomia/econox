@@ -9,6 +9,7 @@
         left: 0;
         width: 100%;
         height: 100%;
+        line-height: 1;
     }
     #loader {
         display: block;

@@ -148,3 +148,29 @@ table {
     outline: none;
     background: transparent;
 }
+
+/* select 요소에 드롭다운 화살표 제거 */
+/* Firefox */
+select::-moz-focus-inner {
+    border-style: none;
+    padding: 0;
+}
+
+/* Chrome, Safari, Edge, Opera */
+select::-webkit-inner-spin-button,
+select::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Chrome, Firefox, Safari, Edge */
+select {
+    appearance: none;
+    /* 표준 속성 */
+    -webkit-appearance: none;
+    /* Webkit 브라우저용 */
+    -moz-appearance: none;
+    /* Firefox 브라우저용 */
+    background: transparent;
+    /* 화살표가 사라진 후 배경을 투명하게 만듦 */
+}

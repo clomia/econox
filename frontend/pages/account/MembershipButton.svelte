@@ -1,6 +1,6 @@
 <script lang="ts">
     import Swal from "sweetalert2";
-    import DefaultLoader from "../../assets/animation/DefaultLoader.svelte";
+    import CircleDotLoader from "../../assets/animation/CircleDotLoader.svelte";
     import { paypalWidget } from "../../modules/paypal";
     import { format, defaultSwalStyle, timeString, defaultToastStyle } from "../../modules/functions";
     import { api } from "../../modules/request";
@@ -197,7 +197,7 @@
                 <p>{$Text.ProfessionalPlanDescription}</p>
             </button>
             {#if membershipChangeLoader}
-                <div style="position: absolute; bottom: -1.1rem;"><DefaultLoader /></div>
+                <div style="position: absolute; bottom: -0.7rem;"><CircleDotLoader /></div>
             {:else}
                 <button class="membership-options__cancel" on:click={() => (membershipWidgetOn = false)}
                     >{$Text.Cancel}</button
@@ -249,6 +249,9 @@
         justify-content: center;
         align-items: center;
         z-index: 2;
+    }
+    .membership-options > main {
+        position: relative;
     }
     .membership-options__membrane {
         width: 100vw;

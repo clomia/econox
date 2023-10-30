@@ -2,7 +2,7 @@
     import { onMount, createEventDispatcher } from "svelte";
     import { api } from "../../../../modules/request";
     import { auth } from "../../../../modules/state";
-    import DefaultLoader from "../../../../assets/animation/DefaultLoader.svelte";
+    import CircleDotLoader from "../../../../assets/animation/CircleDotLoader.svelte";
 
     const dispatch = createEventDispatcher();
     const InputResult = auth.signup.InputResult;
@@ -59,7 +59,7 @@
 
 <main>
     <section>
-        {#if !isSdkLoaded} <DefaultLoader /> {/if}
+        {#if !isSdkLoaded} <CircleDotLoader /> {/if}
         <div id="paypal-button" style={!isSdkLoaded ? "display: none;" : ""} />
     </section>
 </main>

@@ -2,7 +2,7 @@
     import { createEventDispatcher } from "svelte";
     import { api } from "../../../modules/request";
     import { Text, auth } from "../../../modules/state";
-    import DefaultLoader from "../../../assets/animation/DefaultLoader.svelte";
+    import CircleDotLoader from "../../../assets/animation/CircleDotLoader.svelte";
     import CircleLoader from "../../../assets/animation/CircleLoader.svelte";
     import type { AxiosResponse } from "axios";
 
@@ -82,7 +82,7 @@
             <input class="password-input" type="password" name="retypePassword" autocomplete="off" />
         </label>
     </section>
-    {#await response}<DefaultLoader />{/await}
+    {#await response}<CircleDotLoader />{/await}
     <div>{message}</div>
     {#if !(response instanceof Promise)}
         <button type="submit">{$Text.Next}</button>

@@ -3,7 +3,7 @@
     import { Text } from "../../modules/state";
     import { api } from "../../modules/request";
     import Swal from "sweetalert2";
-    import DefaultLoader from "../../assets/animation/DefaultLoader.svelte";
+    import CircleDotLoader from "../../assets/animation/CircleDotLoader.svelte";
     import CircleLoader from "../../assets/animation/CircleLoader.svelte";
     import type { AxiosResponse, AxiosError } from "axios";
 
@@ -138,7 +138,7 @@
             >
         </label>
     </section>
-    {#await response}<DefaultLoader />{/await}
+    {#await response}<CircleDotLoader />{/await}
     <div>{message}</div>
     {#if !(response instanceof Promise)}
         <button type="submit" class="submit-btn">{$Text.Login}</button>
@@ -170,7 +170,7 @@
         flex-direction: column;
         align-items: center;
         width: 100%;
-        height: 16rem;
+        height: 18rem;
         margin-top: 2.5rem;
         color: var(--white);
     }

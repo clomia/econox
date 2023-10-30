@@ -4,7 +4,7 @@
     import { getCountryCallingCode } from "libphonenumber-js";
     import { api } from "../../../modules/request";
     import { Text, auth } from "../../../modules/state";
-    import DefaultLoader from "../../../assets/animation/DefaultLoader.svelte";
+    import CircleDotLoader from "../../../assets/animation/CircleDotLoader.svelte";
     import type { CountryCode } from "libphonenumber-js";
 
     const InputResult = auth.signup.InputResult;
@@ -60,7 +60,7 @@
     {#if !(response instanceof Promise)}
         <button>{$Text.SendVerificationCode}</button>
     {/if}
-    {#await response}<DefaultLoader />{/await}
+    {#await response}<CircleDotLoader />{/await}
 </form>
 
 <style>

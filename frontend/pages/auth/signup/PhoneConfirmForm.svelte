@@ -3,7 +3,7 @@
     import { api } from "../../../modules/request";
     import { secondToString } from "../../../modules/functions";
     import { Text, auth } from "../../../modules/state";
-    import DefaultLoader from "../../../assets/animation/DefaultLoader.svelte";
+    import CircleDotLoader from "../../../assets/animation/CircleDotLoader.svelte";
 
     const InputResult = auth.signup.InputResult;
     const PhoneConfirmTimeLimit = auth.signup.PhoneConfirmTimeLimit;
@@ -84,7 +84,7 @@
             <input type="text" name="code" placeholder={placeHolder} autocomplete="off" />
         </label>
     </section>
-    {#await response}<DefaultLoader />{/await}
+    {#await response}<CircleDotLoader />{/await}
 
     {#if !(response instanceof Promise)}
         <div>{message}</div>
@@ -101,7 +101,7 @@
         flex-direction: column;
         align-items: center;
         width: 100%;
-        height: 10rem;
+        height: 12rem;
         margin-top: 2.5rem;
         color: var(--white);
     }

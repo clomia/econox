@@ -356,7 +356,7 @@ f_LengthLimit:
   ko: "{v}글자 이상 입력할 수 없습니다"
 f_ForgotPassword_EnterNewPassword:
   en: "We've sent a code to {email}. Please enter it along with your new password"
-  ko: "인증코드가 {email}에 전송되었습니다. 해당 코드와 함께 새로운 비밀번호를 입력해주세요"
+  ko: "인증코드가 {email}에 전송되었습니다. 인증코드와 새로운 비밀번호를 입력해주세요"
 f_AlreadyAppliedMembership:
   en: "You are already enrolled in the {membership} membership"
   ko: "{membership} 맴버십은 이미 적용되어있습니다."

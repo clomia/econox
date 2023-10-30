@@ -118,6 +118,15 @@
         selectedElement = $packetInfo.elements[0];
         packetInfoOn = true;
     };
+    const noResultAlert = async () => {
+        return await Swal.fire({
+            ...defaultSwalStyle,
+            confirmButtonText: $Text.Ok,
+            icon: "info",
+            showDenyButton: false,
+            title: $Text.NoSearchResult,
+        });
+    };
     const selectElement = (element: Element) => {
         selectedElement = element;
     };
@@ -159,6 +168,10 @@
                 <div class="packet__query"><span>{query}</span></div>
                 {#if loading}
                     <div class="packet__loader"><DotLoader /></div>
+                {:else if resp.symbols.length === 0 && resp.countries.length === 0}
+                    <button class="packet__result" on:click={noResultAlert}>
+                        <img in:fade src="static/img/nofile.png" alt="result" height="25px" />
+                    </button>
                 {:else}
                     <button class="packet__result" on:click={() => onPacketInfo(query, resp)}>
                         <img in:fade src="static/img/file.png" alt="result" height="25px" />

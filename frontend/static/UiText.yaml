@@ -339,6 +339,9 @@ SearchRequestAlreadyExist:
 SearchRequestRateTooFastMessage:
   en: "Your request rate is too fast. Please wait until the previous search is completed and try again"
   ko: "요청 속도가 너무 빠릅니다. 기존 검색이 완료된 후 다시 시도하세요"
+NoSearchResult:
+  en: "No search results found"
+  ko: "검색 결과가 없습니다"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

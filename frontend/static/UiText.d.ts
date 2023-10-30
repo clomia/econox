@@ -111,6 +111,8 @@ export interface UiText {
     SearchRequestAlreadyExist: "Results for this search term already exist or are being processed" | "검색 결과가 이미 존재하거나 처리중인 검색어입니다";
     SearchRequestRateTooFastMessage: "Your request rate is too fast. Please wait until the previous search is completed and try again" | "요청 속도가 너무 빠릅니다. 기존 검색이 완료된 후 다시 시도하세요";
     NoSearchResult: "No search results found" | "검색 결과가 없습니다";
+    ElementNewsNotFound: "No related news found" | "관련 뉴스가 없습니다";
+    ElementNewsNotSupported: "News is not supported for this item" | "뉴스가 지원되지 않는 항목입니다";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

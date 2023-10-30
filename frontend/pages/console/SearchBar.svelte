@@ -66,6 +66,7 @@
                 $packets[index] = updatedPacket; // 패킷 로딩은 여기서 종료됨
             }
 
+            // symbols 타입만 뉴스 가져올 수 있음
             const loadingFrame = Object.fromEntries(resp.data.symbols.map((ele: any) => [ele.code, null]));
             $news = { ...$news, ...loadingFrame }; // 값이 null인 경우 로딩중
 
@@ -126,9 +127,6 @@
             showDenyButton: false,
             title: $Text.NoSearchResult,
         });
-    };
-    const selectElement = (element: Element) => {
-        selectedElement = element;
     };
     /**
      * 2023-09-26T07:04:20.000Z 형식의 문자열을 받아 브라우저 시간대에 맞는 연.월.일 및 시:분:초 문자열 반환
@@ -199,7 +197,7 @@
                 {#each $packetInfo.elements as element}
                     <button
                         class="packet-info__list__ele"
-                        on:click={() => selectElement(element)}
+                        on:click={() => (selectedElement = element)}
                         class:selected={selectedElement === element}
                     >
                         <div class="packet-info__list__ele__code">{element.code}</div>
@@ -216,50 +214,63 @@
                     <img src="static/img/megaphone.png" width="20px" alt="Megaphone" />
                     <div class="packet-info__news__icon__text">News</div>
                 </div>
-                {#if !$news[selectedElement.code]}
-                    <div class="packet-info__news__loading"><TextLoader /></div>
-                {:else if $news[selectedElement.code].length === 0}
-                    <div class="packet-info__news__null">뉴스없음!</div>
+                {#if selectedElement.type === "symbol"}
+                    {#if !$news[selectedElement.code]}
+                        <div class="packet-info__news__loading"><TextLoader /></div>
+                    {:else if $news[selectedElement.code].length === 0}
+                        <div class="packet-info__news__null">{$Text.ElementNewsNotFound}</div>
+                    {:else}
+                        {#each $news[selectedElement.code] as newsElement}
+                            <div class="packet-info__news__ele">
+                                <button
+                                    class="packet-info__news__ele__head"
+                                    on:click={() => (newsElement.isOpen = true)}
+                                    class:news-ele-no-hover={newsElement.isOpen}
+                                >
+                                    <div
+                                        class="packet-info__news__ele__head__title"
+                                        class:opened-news-title={newsElement.isOpen}
+                                    >
+                                        {newsElement.title}
+                                    </div>
+                                    <div class="packet-info__news__ele__head__date">
+                                        {timeString(newsElement.date)}
+                                    </div>
+                                </button>
+                                {#if newsElement.isOpen}
+                                    <div class="packet-info__news__ele__body">
+                                        <div class="packet-info__news__ele__body__content">
+                                            {newsElement.content}
+                                        </div>
+                                        <div class="packet-info__news__ele__body__buttons">
+                                            <div style="width: 25px;" />
+                                            <button
+                                                class="packet-info__news__ele__body__buttons__close"
+                                                on:click={() => (newsElement.isOpen = false)}
+                                            >
+                                                <ToggleArrow size={0.6} />
+                                            </button>
+                                            <a
+                                                href={newsElement.src}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                <div class="packet-info__news__ele__body__buttons__href">
+                                                    <img
+                                                        src="static/img/link.png"
+                                                        alt={newsElement.src}
+                                                        width="25px"
+                                                    />
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                {/if}
+                            </div>
+                        {/each}
+                    {/if}
                 {:else}
-                    {#each $news[selectedElement.code] as newsElement}
-                        <div class="packet-info__news__ele">
-                            <button
-                                class="packet-info__news__ele__head"
-                                on:click={() => (newsElement.isOpen = true)}
-                                class:news-ele-no-hover={newsElement.isOpen}
-                            >
-                                <div class="packet-info__news__ele__head__title">{newsElement.title}</div>
-                                <div class="packet-info__news__ele__head__date">
-                                    {timeString(newsElement.date)}
-                                </div>
-                            </button>
-                            {#if newsElement.isOpen}
-                                <div class="packet-info__news__ele__body">
-                                    <div class="packet-info__news__ele__body__content">
-                                        {newsElement.content}
-                                    </div>
-                                    <div class="packet-info__news__ele__body__buttons">
-                                        <div style="width: 25px;" />
-                                        <button
-                                            class="packet-info__news__ele__body__buttons__close"
-                                            on:click={() => (newsElement.isOpen = false)}
-                                        >
-                                            <ToggleArrow size={0.6} />
-                                        </button>
-                                        <a href={newsElement.src} target="_blank" rel="noopener noreferrer">
-                                            <div class="packet-info__news__ele__body__buttons__href">
-                                                <img
-                                                    src="static/img/link.png"
-                                                    alt={newsElement.src}
-                                                    width="25px"
-                                                />
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            {/if}
-                        </div>
-                    {/each}
+                    <div class="packet-info__news__null">{$Text.ElementNewsNotSupported}</div>
                 {/if}
             </div>
         </section>
@@ -289,6 +300,9 @@
         z-index: 2;
     }
 
+    .opened-news-title {
+        font-size: 1.2rem;
+    }
     .packet-info__news {
         margin: 0 3rem;
         padding: 1rem 0;
@@ -311,6 +325,10 @@
         transform: scale(0.6);
         margin-top: -2rem;
         margin-bottom: 1.5rem;
+    }
+    .packet-info__news__null {
+        text-align: center;
+        color: var(--white);
     }
     .packet-info__news__ele {
         border-bottom: thin solid rgba(255, 255, 255, 0.2);

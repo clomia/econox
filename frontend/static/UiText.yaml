@@ -342,6 +342,12 @@ SearchRequestRateTooFastMessage:
 NoSearchResult:
   en: "No search results found"
   ko: "검색 결과가 없습니다"
+ElementNewsNotFound:
+  en: "No related news found"
+  ko: "관련 뉴스가 없습니다"
+ElementNewsNotSupported:
+  en: "News is not supported for this item"
+  ko: "뉴스가 지원되지 않는 항목입니다"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

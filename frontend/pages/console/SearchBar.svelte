@@ -1,4 +1,6 @@
 <script lang="ts">
+    import axios from "axios";
+    import { onMount } from "svelte";
     import { fade } from "svelte/transition";
     import { writable } from "svelte/store";
     import Swal from "sweetalert2";
@@ -10,6 +12,13 @@
     import { Text, Lang } from "../../modules/state";
     import { defaultSwalStyle, format } from "../../modules/functions";
     import CloseButton from "../../components/CloseButton.svelte";
+
+    const countryCodeMap = writable<any>(null);
+    onMount(async () => {
+        const requests = axios.create({ baseURL: window.location.origin });
+        const resp = await requests.get("/static/countryCodeMap.json");
+        $countryCodeMap = resp.data;
+    });
 
     interface Element {
         code: string;
@@ -201,7 +210,17 @@
                         class:selected={selectedElement === element}
                     >
                         <div class="packet-info__list__ele__code">{element.code}</div>
-                        <div class="packet-info__list__ele__name">{element.name}</div>
+                        <div class="packet-info__list__ele__name">
+                            {element.name}
+                            {#if element.type === "country" && $countryCodeMap}
+                                {@const code = $countryCodeMap[element.code].toLowerCase()}
+                                <img
+                                    src={`https://flagcdn.com/w40/${code}.png`}
+                                    alt={element.name}
+                                    width="30px"
+                                />
+                            {/if}
+                        </div>
                     </button>
                 {/each}
             </div>
@@ -301,7 +320,7 @@
     }
 
     .opened-news-title {
-        font-size: 1.2rem;
+        font-size: 1.13rem;
     }
     .packet-info__news {
         margin: 0 3rem;

@@ -332,7 +332,7 @@ class WorldBankAPI:
             log.error(
                 f"World Bank API 서버와 통신에 실패하여 데이터를 수신하지 못했습니다."
                 f"(wbdata func: {wb_func.__name__}, args: {args}, error: {e})"
-            )
+            )  # 에러 발생 시 로그 출력 & None 반환 -> 검색결과 없음 처리
 
     @staticmethod
     def _safe_caller(wb_func):

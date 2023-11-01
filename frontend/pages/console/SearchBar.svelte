@@ -2,7 +2,7 @@
     import axios from "axios";
     import { onMount } from "svelte";
     import { fade } from "svelte/transition";
-    import { writable } from "svelte/store";
+    import { packets, news, countryCodeMap, packetInfo } from "../../modules/state";
     import Swal from "sweetalert2";
     import Magnifier from "../../assets/icon/Magnifier.svelte";
     import DotLoader from "../../assets/animation/DotLoader.svelte";
@@ -12,33 +12,15 @@
     import { Text, Lang } from "../../modules/state";
     import { defaultSwalStyle, format } from "../../modules/functions";
     import CloseButton from "../../components/CloseButton.svelte";
+    import type { Element, Resp } from "../../modules/state";
 
-    const countryCodeMap = writable<any>(null);
     onMount(async () => {
         const requests = axios.create({ baseURL: window.location.origin });
         const resp = await requests.get("/static/countryCodeMap.json");
         $countryCodeMap = resp.data;
     });
 
-    interface Element {
-        code: string;
-        name: string;
-        note: string;
-        type: string;
-    }
-    interface Resp {
-        countries: Element[];
-        symbols: Element[];
-    }
-    interface PacketInfo {
-        query: string;
-        resp: Resp;
-        elements: Element[];
-    }
-
     let inputText = "";
-    const packets = writable<{ query: string; loading: boolean; resp: any }[]>([]);
-    const news = writable<any>({}); // symbol: [news, news, ...]
     const createPacket = async () => {
         const query = inputText.trim();
         if (!query) {
@@ -106,12 +88,6 @@
             });
         }
     };
-
-    const packetInfo = writable<PacketInfo>({
-        query: "", // 초기값 세팅
-        resp: { countries: [], symbols: [] },
-        elements: [],
-    });
 
     let selectedElement: Element;
     let packetInfoOn = false;

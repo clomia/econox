@@ -27,19 +27,19 @@ export interface UserDetail {
     };
 }
 
-type PayPalType = {
+export type PayPalType = {
     order: string;
     subscription: string;
 } | null;
 
-type TossPaymentsType = {
+export type TossPaymentsType = {
     card_number: string;
     expiration_year: string;
     expiration_month: string;
     owner_id: string;
 } | null;
 
-interface InputResultType {
+export interface InputResultType {
     email: string;
     password: string;
     membership: string;
@@ -47,6 +47,22 @@ interface InputResultType {
     tosspayments: TossPaymentsType;
     paypal: PayPalType;
     phone: string;
+}
+
+export interface Element {
+    code: string;
+    name: string;
+    note: string;
+    type: string;
+}
+export interface Resp {
+    countries: Element[];
+    symbols: Element[];
+}
+export interface PacketInfo {
+    query: string;
+    resp: Resp;
+    elements: Element[];
 }
 
 // ============= 전역적으로 사용되는 상태들 =============
@@ -92,3 +108,12 @@ export const auth = { // 로그인,회원가입 컴포넌트 상태관리용
     }
 }
 
+// console.SearchBar 상태
+export const packets = writable<{ query: string; loading: boolean; resp: any }[]>([]);
+export const news = writable<any>({}); // symbol: [news, news, ...]
+export const countryCodeMap = writable<any>(null);
+export const packetInfo = writable<PacketInfo>({
+    query: "", // 초기값 세팅
+    resp: { countries: [], symbols: [] },
+    elements: [],
+}); // 검색을 수행하는 비동기 함수는 컴포넌트가 없어진다고 멈추지 않음, 따라서 전역 상태로 관리 가능

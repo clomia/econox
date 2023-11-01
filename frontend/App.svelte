@@ -43,8 +43,7 @@
         align-items: center;
         justify-content: center;
         padding-bottom: 25vh;
-        background: -webkit-linear-gradient(to bottom, #202123, #1f3036);
-        background: linear-gradient(to bottom, #202123, #1f3036);
+        background: var(--background);
         z-index: 1;
     }
 </style>

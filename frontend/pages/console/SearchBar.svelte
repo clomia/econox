@@ -295,6 +295,98 @@
         z-index: 2;
     }
 
+    .search-form {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 2.6rem;
+        border-radius: 1.3rem;
+        border: thin solid var(--border-white);
+        box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.3);
+        transition: border-color 150ms ease-out;
+    }
+    .search {
+        width: 100%;
+        height: 100%;
+        padding-right: 0.7rem;
+        color: var(--white);
+    }
+    .magnifier {
+        margin-left: 1.4rem;
+        margin-top: 0.2rem;
+        margin-right: 0.8rem;
+    }
+    .search-btn {
+        width: 2.5rem;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        opacity: 0.5;
+        transition: opacity 100ms ease-out;
+    }
+    .search-btn:hover {
+        opacity: 1;
+        cursor: pointer;
+    }
+    /* pakcets */
+    .packets {
+        display: flex;
+        justify-content: flex-end;
+        height: 4.3rem;
+        white-space: nowrap;
+    }
+    .packet {
+        width: 9.95rem;
+        height: 100%;
+        margin-left: 1.4rem;
+        flex-shrink: 0;
+    }
+    .packet__query {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 2.3rem;
+        width: 100%;
+        color: rgba(255, 255, 255, 0.3);
+    }
+    .packet__query > span {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        min-width: 0;
+    }
+    @keyframes shadowPulse {
+        0%,
+        100% {
+            box-shadow: 0 0 0.6rem 0.1rem rgba(255, 255, 255, 0.05);
+        }
+        50% {
+            box-shadow: 0 0 0.6rem 0.1rem rgba(255, 255, 255, 0.22);
+        }
+    }
+    .packet__loader,
+    .packet__result {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 2rem;
+        width: 100%;
+        border-radius: 1rem;
+        box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.3);
+    }
+    .packet__loader {
+        border: thin solid rgba(255, 255, 255, 0.5);
+        animation: shadowPulse 1400ms infinite;
+    }
+    .packet__result {
+        border: thin solid white;
+        opacity: 0.5;
+    }
+    .packet__result:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        cursor: pointer;
+    }
+
     .opened-news-title {
         font-size: 1.13rem;
     }
@@ -464,97 +556,5 @@
         padding: 0 1rem;
         padding-top: 1rem;
         white-space: pre-line;
-    }
-
-    .search-form {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        height: 2.6rem;
-        border-radius: 1.3rem;
-        border: thin solid var(--border-white);
-        box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.3);
-        transition: border-color 150ms ease-out;
-    }
-    .search {
-        width: 100%;
-        height: 100%;
-        padding-right: 0.7rem;
-        color: var(--white);
-    }
-    .magnifier {
-        margin-left: 1.4rem;
-        margin-top: 0.2rem;
-        margin-right: 0.8rem;
-    }
-    .search-btn {
-        width: 2.5rem;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        opacity: 0.5;
-        transition: opacity 100ms ease-out;
-    }
-    .search-btn:hover {
-        opacity: 1;
-        cursor: pointer;
-    }
-    /* pakcets */
-    .packets {
-        display: flex;
-        justify-content: flex-end;
-        height: 4.3rem;
-        white-space: nowrap;
-    }
-    .packet {
-        width: 9.95rem;
-        height: 100%;
-        margin-left: 1.4rem;
-        flex-shrink: 0;
-    }
-    .packet__query {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 2.3rem;
-        width: 100%;
-        color: rgba(255, 255, 255, 0.3);
-    }
-    .packet__query > span {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        min-width: 0;
-    }
-    @keyframes shadowPulse {
-        0%,
-        100% {
-            box-shadow: 0 0 0.6rem 0.1rem rgba(255, 255, 255, 0.05);
-        }
-        50% {
-            box-shadow: 0 0 0.6rem 0.1rem rgba(255, 255, 255, 0.22);
-        }
-    }
-    .packet__loader,
-    .packet__result {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 2rem;
-        width: 100%;
-        border-radius: 1rem;
-        box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.3);
-    }
-    .packet__loader {
-        border: thin solid rgba(255, 255, 255, 0.5);
-        animation: shadowPulse 1400ms infinite;
-    }
-    .packet__result {
-        border: thin solid white;
-        opacity: 0.5;
-    }
-    .packet__result:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-        cursor: pointer;
     }
 </style>

@@ -12,8 +12,6 @@
     <div class="tool"><div id="Tool2" /></div>
     <div class="tool"><div id="Tool3" /></div>
 </div>
-<!-- 개발용 마진 -->
-<div style="height: 200vh;" />
 
 <style>
     .search-bar {

@@ -87,6 +87,7 @@ CREATE TABLE elements (
     "id" SERIAL NOT NULL PRIMARY KEY,
     "type" element_type NOT NULL,
     "code" VARCHAR(50) NOT NULL
+    UNIQUE ("type", "code")
 );
 
 ------------------------------------------------

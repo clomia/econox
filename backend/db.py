@@ -127,7 +127,7 @@ class Template:
         end = "LIMIT {limit};" if limit else ";"
         if limit:
             where["limit"] = limit
-        return f"SELECT {select} FROM {self.table} WHERE {cond} {end}", where
+        return f"SELECT {select} FROM {self.table} WHERE {cond} {end};", where
 
 
 # ======== 쿼리 실행 추상화 함수 =========
@@ -147,12 +147,16 @@ class Transaction:
     def prepend(self, query="", template=None, **params):
         if template:
             query, params = template
+        if (query := query.strip()) and (query[-1] != ";"):
+            query += ";"  # 여러 쿼리 넣을땐 ; 로 구분해줘야 함
         self.query_list.insert(0, query)
         self.param_dict = params | self.param_dict
 
     def append(self, query="", template=None, **params):
         if template:
             query, params = template
+        if (query := query.strip()) and (query[-1] != ";"):
+            query += ";"
         self.query_list.append(query)
         self.param_dict |= params
 

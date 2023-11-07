@@ -1,4 +1,4 @@
---- Last commit: 2023-10-06 16:03:21 ---
+--- Last commit: 2023-11-07 21:38:32 ---
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ------------------------------------------------
@@ -63,6 +63,7 @@ CREATE TABLE tosspayments_billings (
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 );
 CREATE INDEX idx_tosspayments_billings_user_id ON tosspayments_billings(user_id);
+
 ------------------------------------------------
 -- PayPal 청구 내역
 ------------------------------------------------
@@ -77,3 +78,25 @@ CREATE TABLE paypal_billings (
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 );
 CREATE INDEX idx_paypal_billings_user_id ON paypal_billings(user_id);
+
+------------------------------------------------
+-- 요소들
+------------------------------------------------
+CREATE TYPE element_type AS ENUM('symbol', 'country');
+CREATE TABLE elements (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "type" element_type NOT NULL,
+    "code" VARCHAR(50) NOT NULL
+);
+
+------------------------------------------------
+-- 유저가 선택하여 단변량 툴에 추가된 요소들
+------------------------------------------------
+CREATE TABLE users_elements (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "user_id" UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    "element_id" INT NOT NULL REFERENCES elements(id) ON DELETE CASCADE,
+    UNIQUE ("user_id", "element_id")
+);
+CREATE INDEX idx_users_elements_user_id ON users_elements(user_id);
+CREATE INDEX idx_users_elements_element_id ON users_elements(element_id);

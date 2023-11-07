@@ -1,4 +1,4 @@
---- Last commit: 2023-11-07 21:38:32 ---
+--- Last commit: 2023-11-07 23:25:58 ---
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ------------------------------------------------
@@ -82,12 +82,12 @@ CREATE INDEX idx_paypal_billings_user_id ON paypal_billings(user_id);
 ------------------------------------------------
 -- 요소들
 ------------------------------------------------
-CREATE TYPE element_type AS ENUM('symbol', 'country');
+CREATE TYPE element_code_type AS ENUM('symbol', 'country');
 CREATE TABLE elements (
     "id" SERIAL NOT NULL PRIMARY KEY,
-    "type" element_type NOT NULL,
-    "code" VARCHAR(50) NOT NULL
-    UNIQUE ("type", "code")
+    "code_type" element_code_type NOT NULL,
+    "code" VARCHAR(50) NOT NULL,
+    UNIQUE ("code_type", "code") -- 이 순서가 인덱스 효율적임
 );
 
 ------------------------------------------------

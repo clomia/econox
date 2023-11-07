@@ -87,12 +87,12 @@ async def paypal_payment_webhook(event: dict = Body(...)):
         )
         user = await db.select_row(
             table="users",
-            fields=["email"],
+            fields=["email", "membership"],
             where={"paypal_subscription_id": subscription_id},
         )
         log.info(
-            f"맴버십 비용 청구 완료({plan['name']})[Paypal]: "
-            f"User(Email: {user['email']}, membership: {plan['name']})"
+            "맴버십 비용 청구 완료 [Paypal]: "
+            f"User(Email: {user['email']}, Membership: {user['membership']})"
         )
     except psycopg.errors.NotNullViolation:
         subscription_id = event["resource"]["billing_agreement_id"]
@@ -209,8 +209,8 @@ async def billing():
                 user_id=user_id,
             )
             log.info(
-                f"맴버십 비용 청구 완료({membership})[Tosspayments]: "
-                f"User(Email: {email}, membership: {membership})"
+                f"맴버십 비용 청구 완료 [Tosspayments]: "
+                f"User(Email: {email}, Membership: {membership})"
             )
     await db_transaction.exec()
     idempotent_mark.unlink(missing_ok=True)

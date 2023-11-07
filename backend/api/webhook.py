@@ -78,7 +78,7 @@ async def paypal_payment_webhook(event: dict = Body(...)):
                 current_billing_date={current_billing_date}, 
                 origin_billing_date=base_billing_date, 
                 billing_status='active'
-            WHERE paypal_subscription_id={subscription_id};""",
+            WHERE paypal_subscription_id={subscription_id}""",
             params={
                 "next_billing_date": next_billing,
                 "current_billing_date": transaction_time,
@@ -136,7 +136,7 @@ async def billing():
     target_users = await db.exec(
         """
         SELECT id, email, currency, membership, base_billing_date, next_billing_date, tosspayments_billing_key, billing_status
-        FROM users WHERE next_billing_date < now();
+        FROM users WHERE next_billing_date < now()
         """
     )
     now = datetime.now()

@@ -423,18 +423,18 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
         SET membership={new_membership}, 
             base_billing_date={base_billing_date},
             next_billing_date={next_billing}
-        WHERE id={user_id};"""
+        WHERE id={user_id}"""
     update_query_paypal = """
         UPDATE users 
         SET membership={new_membership}, 
             base_billing_date={base_billing_date},
             next_billing_date={next_billing},
             paypal_subscription_id={subscription_id}
-        WHERE id={user_id};"""  # paypal_subscription_id 업데이트 필요
+        WHERE id={user_id}"""  # paypal_subscription_id 업데이트 필요
 
     if db_user["current_billing_date"] is None:  # 결제가 필요 없는 계정이므로 맴버십만 바꾸면 됌
         await db.exec(
-            "UPDATE users SET membership={new_membership} WHERE id={user_id};",
+            "UPDATE users SET membership={new_membership} WHERE id={user_id}",
             params={"new_membership": new_membership, "user_id": user["id"]},
         )
         adjusted_next_billing = db_user["next_billing_date"]
@@ -615,7 +615,7 @@ async def deactivated_billing(user=router.private.auth):
             f"/v1/billing/subscriptions/{db_user['paypal_subscription_id']}/suspend"
         ).post({"reason": "Deactivate Billing"})
     await db.exec(
-        "UPDATE users SET billing_status={value} WHERE id={user_id};",
+        "UPDATE users SET billing_status={value} WHERE id={user_id}",
         params={"value": "deactive", "user_id": user["id"]},
     )
     return {"message": "User billing deactivated"}

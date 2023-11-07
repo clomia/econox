@@ -10,13 +10,13 @@
     .search {
         display: flex;
         align-items: center;
-        padding-left: 0.6rem;
-        height: 2rem;
+        padding-left: 0.8rem;
+        height: 2.6rem;
         border-bottom: thin solid rgba(255, 255, 255, 0.2);
     }
     .search input {
         height: 100%;
-        margin-left: 0.6rem;
+        margin-left: 0.7rem;
         width: 90%;
         color: var(--white);
     }

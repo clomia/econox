@@ -109,6 +109,8 @@ def marge_lists(*lists: list, limit: int) -> list:
     return result
 
 
+# Dockerfile 보면 컨테이너에 시간대를 Asia/Seoul 로 박아놨다.
+# 따라서 Asia/Seoul 시간대가 곧 서버 시간대이다. 이건 계속 유지한다.
 def utcstr2datetime(timestring: str) -> datetime:
     """UTC 시간대 ISO 8601 문자열 -> Asia/Seoul 시간대 datetime 객체"""
     utc_time = datetime.fromisoformat(

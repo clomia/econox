@@ -232,9 +232,9 @@ class APIRouter:
             dependencies=[self.permission["professional"]],
         )
 
-        self.private.auth = self.auth
-        self.basic.auth = self.permission["basic"]
-        self.professional.auth = self.permission["professional"]
+        self.private.auth: dict = self.auth
+        self.basic.auth: dict = self.permission["basic"]
+        self.professional.auth: dict = self.permission["professional"]
 
         # fastapi.APIRouter의 메서드가 path 인자를 입력받지 않은 경우 기본값 "" 를 사용하도록 변경
         methods = ["get", "post", "put", "patch", "delete", "options", "head", "trace"]

@@ -47,7 +47,24 @@ async def insert_element_to_user(item: Element, user=router.basic.auth):
         raise HTTPException(
             status_code=409, detail=f"User already has {item.code_type} {item.code}"
         )
-    return {"message": f"User inserts element {item.code_type} {item.code}"}
+    return {"message": f"Insert element {item.code_type} {item.code} to user"}
+
+
+@router.basic.delete("/user/element")
+async def insert_element_to_user(item: Element, user=router.basic.auth):
+    """엘리먼트를 유저에게서 삭제합니다."""
+    await db.exec(
+        """
+        DELETE FROM users_elements
+        USING elements
+        WHERE users_elements.element_id = elements.id
+        AND users_elements.user_id = {user_id}
+        AND elements.code_type = {code_type}
+        AND elements.code = {code}
+        """,
+        params={"user_id": user["id"], "code_type": item.code_type, "code": item.code},
+    )
+    return {"message": "Delete successfully"}  # 실제로 삭제 동작을 했는지는 모름, 결과가 무결하므로 200 응답
 
 
 @router.basic.get("/user/elements")

@@ -1,4 +1,4 @@
---- Last commit: 2023-11-07 23:25:58 ---
+--- Last commit: 2023-11-08 20:30:16 ---
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ------------------------------------------------
@@ -50,9 +50,9 @@ CREATE TABLE tosspayments_billings (
     "transaction_time" TIMESTAMP NOT NULL, 
     "payment_key" VARCHAR(255) NOT NULL, -- Toss가 발급
     "order_name" VARCHAR(255) NOT NULL, -- 상품명
-    "total_amount" FLOAT NOT NULL, -- 고객이 결제한 금액
-    "supply_price" FLOAT NOT NULL,  -- 공급가액
-    "vat" FLOAT NOT NULL, -- 부가세
+    "total_amount" DECIMAL(15, 5) NOT NULL, -- 고객이 결제한 금액
+    "supply_price" DECIMAL(15, 5) NOT NULL,  -- 공급가액
+    "vat" DECIMAL(15, 5) NOT NULL, -- 부가세
     "card_issuer" VARCHAR(50) NOT NULL, -- 카드 발급사
     "card_acquirer" VARCHAR(50) NOT NULL, -- 카드 매입사
     "card_number_masked" VARCHAR(50) NOT NULL, -- 가려진 카드번호
@@ -73,8 +73,8 @@ CREATE TABLE paypal_billings (
     "transaction_id" VARCHAR(60) UNIQUE NOT NULL, -- 멱등키로 사용
     "transaction_time" TIMESTAMP NOT NULL,
     "order_name" VARCHAR(255) NOT NULL, -- 상품명
-    "total_amount" FLOAT NOT NULL, -- 고객이 결제한 금액
-    "fee_amount" FLOAT NOT NULL, -- PayPal 수수료
+    "total_amount" DECIMAL(15, 5) NOT NULL, -- 고객이 결제한 금액
+    "fee_amount" DECIMAL(15, 5) NOT NULL, -- PayPal 수수료
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 );
 CREATE INDEX idx_paypal_billings_user_id ON paypal_billings(user_id);

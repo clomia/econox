@@ -66,7 +66,7 @@ export interface PacketInfoType {
     elements: ElementType[];
 }
 
-export interface UnivariateType {
+export interface UnivariateElementType {
     code: string;
     code_type: string;
     update_time: string;
@@ -125,4 +125,4 @@ export const PacketInfo = writable<PacketInfoType>({
     elements: [],
 }); // 검색을 수행하는 비동기 함수는 컴포넌트가 없어진다고 멈추지 않음, 따라서 전역 상태로 관리 가능
 
-export const UnivariateList = writable<UnivariateType[]>([])
+export const UnivariateElements = writable<UnivariateElementType[]>([])

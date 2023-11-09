@@ -1,7 +1,7 @@
 import { onMount } from "svelte"
 import { navigate } from "svelte-routing"
 import { api } from "./request"
-import { Text, UserInfo, Lang } from "./state"
+import { Text, UserInfo, Lang, UnivariateElements } from "./state"
 import { loadUiText } from "./uiText"
 import { settingObjectStore } from "./_storage"
 import type { UserDetailType } from "./state"
@@ -56,6 +56,7 @@ export const init = async () => {
         Text.set(uiText.text)
         Lang.set(uiText.lang)
         UserInfo.set(userInfo.data)
+        UnivariateElements.set(univariateElements.data)
     } else {
         const uiText = await loadUiText()
         Text.set(uiText.text)

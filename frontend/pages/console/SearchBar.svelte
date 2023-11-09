@@ -2,7 +2,7 @@
     import axios from "axios";
     import { onMount } from "svelte";
     import { fade } from "svelte/transition";
-    import { packets, news, countryCodeMap, packetInfo } from "../../modules/state";
+    import { Packets, News, CountryCodeMap, PacketInfo } from "../../modules/state";
     import Swal from "sweetalert2";
     import Magnifier from "../../assets/icon/Magnifier.svelte";
     import DotLoader from "../../assets/animation/DotLoader.svelte";
@@ -12,12 +12,12 @@
     import { Text, Lang } from "../../modules/state";
     import { defaultSwalStyle, format } from "../../modules/functions";
     import CloseButton from "../../components/CloseButton.svelte";
-    import type { Element, Resp } from "../../modules/state";
+    import type { ElementType, RespPacketType } from "../../modules/state";
 
     onMount(async () => {
         const requests = axios.create({ baseURL: window.location.origin });
         const resp = await requests.get("/static/countryCodeMap.json");
-        $countryCodeMap = resp.data;
+        $CountryCodeMap = resp.data;
     });
 
     let inputText = "";
@@ -26,8 +26,8 @@
         if (!query) {
             return;
         }
-        // 동일한 query 값을 가진 패킷이 packets 내에 있는지 확인
-        if ($packets.find((p) => p.query === query)) {
+        // 동일한 query 값을 가진 패킷이 Packets 내에 있는지 확인
+        if ($Packets.find((p) => p.query === query)) {
             return await Swal.fire({
                 ...defaultSwalStyle,
                 confirmButtonText: $Text.Ok,
@@ -36,7 +36,7 @@
                 title: $Text.SearchRequestAlreadyExist,
             });
         }
-        if ($packets[3]?.loading) {
+        if ($Packets[3]?.loading) {
             // 가장 오래된 패킷이 대기중인 경우 새로운 패킷 추가를 막음
             return await Swal.fire({
                 ...defaultSwalStyle,
@@ -48,18 +48,18 @@
         }
         inputText = "";
         const initialPacket = { query, loading: true, resp: null };
-        $packets = [initialPacket, ...$packets.slice(0, 3)];
+        $Packets = [initialPacket, ...$Packets.slice(0, 3)];
         try {
             const resp = await api.member.get("/data/elements", { params: { query, lang: $Lang } });
             const updatedPacket = { query, loading: false, resp: resp.data };
-            const index = $packets.findIndex((p) => p.query === query && p.loading);
+            const index = $Packets.findIndex((p) => p.query === query && p.loading);
             if (index !== -1) {
-                $packets[index] = updatedPacket; // 패킷 로딩은 여기서 종료됨
+                $Packets[index] = updatedPacket; // 패킷 로딩은 여기서 종료됨
             }
 
             // symbols 타입만 뉴스 가져올 수 있음
             const loadingFrame = Object.fromEntries(resp.data.symbols.map((ele: any) => [ele.code, null]));
-            $news = { ...$news, ...loadingFrame }; // 값이 null인 경우 로딩중
+            $News = { ...$News, ...loadingFrame }; // 값이 null인 경우 로딩중
 
             const newsData = await Promise.all(
                 resp.data.symbols.map(async (ele: any) => {
@@ -76,9 +76,9 @@
                     }
                 })
             ); // 값이 []인 경우 뉴스 없음
-            $news = { ...$news, ...Object.fromEntries(newsData) };
+            $News = { ...$News, ...Object.fromEntries(newsData) };
         } catch {
-            $packets = $packets.filter((p) => p.query !== query);
+            $Packets = $Packets.filter((p) => p.query !== query);
             return await Swal.fire({
                 ...defaultSwalStyle,
                 confirmButtonText: $Text.Ok,
@@ -89,9 +89,9 @@
         }
     };
 
-    let selectedElement: Element;
+    let selectedElement: ElementType;
     let packetInfoOn = false;
-    const onPacketInfo = async (query: string, resp: Resp) => {
+    const onPacketInfo = async (query: string, resp: RespPacketType) => {
         const countries = resp["countries"].map((obj) => {
             obj.type = "country";
             return obj;
@@ -100,8 +100,8 @@
             obj.type = "symbol";
             return obj;
         });
-        $packetInfo = { query, resp, elements: [...countries, ...symbols] };
-        selectedElement = $packetInfo.elements[0];
+        $PacketInfo = { query, resp, elements: [...countries, ...symbols] };
+        selectedElement = $PacketInfo.elements[0];
         packetInfoOn = true;
     };
     const noResultAlert = async () => {
@@ -146,7 +146,7 @@
         </button>
     </form>
     <section class="packets">
-        {#each $packets as { query, loading, resp }}
+        {#each $Packets as { query, loading, resp }}
             <div class="packet">
                 <div class="packet__query"><span>{query}</span></div>
                 {#if loading}
@@ -176,10 +176,10 @@
                 <Magnifier size="1.3rem" />
             </div>
             <div class="packet-info__query">
-                <div class="packet-info__query__text">{$packetInfo.query}</div>
+                <div class="packet-info__query__text">{$PacketInfo.query}</div>
             </div>
             <div class="packet-info__list">
-                {#each $packetInfo.elements as element}
+                {#each $PacketInfo.elements as element}
                     <button
                         class="packet-info__list__ele"
                         on:click={() => (selectedElement = element)}
@@ -188,8 +188,8 @@
                         <div class="packet-info__list__ele__code">{element.code}</div>
                         <div class="packet-info__list__ele__name">
                             {element.name}
-                            {#if element.type === "country" && $countryCodeMap}
-                                {@const code = $countryCodeMap[element.code].toLowerCase()}
+                            {#if element.type === "country" && $CountryCodeMap}
+                                {@const code = $CountryCodeMap[element.code].toLowerCase()}
                                 <img
                                     src={`https://flagcdn.com/w40/${code}.png`}
                                     alt={element.name}
@@ -210,12 +210,12 @@
                     <div class="packet-info__news__icon__text">News</div>
                 </div>
                 {#if selectedElement.type === "symbol"}
-                    {#if !$news[selectedElement.code]}
+                    {#if !$News[selectedElement.code]}
                         <div class="packet-info__news__loading"><TextLoader /></div>
-                    {:else if $news[selectedElement.code].length === 0}
+                    {:else if $News[selectedElement.code].length === 0}
                         <div class="packet-info__news__null">{$Text.ElementNewsNotFound}</div>
                     {:else}
-                        {#each $news[selectedElement.code] as newsElement}
+                        {#each $News[selectedElement.code] as newsElement}
                             <div class="packet-info__news__ele">
                                 <button
                                     class="packet-info__news__ele__head"

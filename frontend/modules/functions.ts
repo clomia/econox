@@ -4,7 +4,7 @@ import { api } from "./request"
 import { Text, UserInfo, Lang } from "./state"
 import { loadUiText } from "./uiText"
 import { settingObjectStore } from "./_storage"
-import type { UserDetail } from "./state"
+import type { UserDetailType } from "./state"
 
 export const defaultSwalStyle = {
     width: "25rem",
@@ -50,7 +50,9 @@ export const init = async () => {
         settingObjectStore.get("cognitoRefreshToken"),
     ])
     if (cognitoToken && cognitoRefreshToken) {
-        const [uiText, userInfo] = await Promise.all([loadUiText(), api.private.get("/user")])
+        const [uiText, userInfo, univariateElements] = await Promise.all([
+            loadUiText(), api.private.get("/user"), api.member.get("/feature/user/elements")
+        ])
         Text.set(uiText.text)
         Lang.set(uiText.lang)
         UserInfo.set(userInfo.data)
@@ -112,7 +114,7 @@ export const verify = ({
     },
     failRedirect = "/"
 }: VerificationArgs = { conds: {} }) => {
-    let userInfo: UserDetail;
+    let userInfo: UserDetailType;
     UserInfo.subscribe(info => { userInfo = info });
 
     onMount(() => {

@@ -12,13 +12,12 @@ from backend.http import APIRouter
 router = APIRouter("feature")
 
 
-class Element(BaseModel):
-    code_type: Literal["symbol", "country"]
-    code: constr(min_length=1)
-
-
 @router.basic.post("/user/element")
-async def insert_element_to_user(item: Element, user=router.basic.auth):
+async def insert_element_to_user(
+    code: constr(min_length=1),
+    code_type: Literal["symbol", "country"],
+    user=router.basic.auth,
+):
     """엘리먼트를 유저에게 저장합니다."""
     db_transaction = db.Transaction()
     db_transaction.append(  # elements가 없다면 생성
@@ -27,8 +26,8 @@ async def insert_element_to_user(item: Element, user=router.basic.auth):
         VALUES ({code_type}, {code})
         ON CONFLICT (code_type, code) DO NOTHING
         """,
-        code_type=item.code_type,
-        code=item.code,
+        code_type=code_type,
+        code=code,
     )
     db_transaction.append(  # 유저에 element 연결
         """
@@ -38,20 +37,24 @@ async def insert_element_to_user(item: Element, user=router.basic.auth):
             (SELECT id FROM elements WHERE code_type={code_type} and code={code})
         )""",
         user_id=user["id"],
-        code_type=item.code_type,
-        code=item.code,
+        code_type=code_type,
+        code=code,
     )
     try:
-        await db_transaction.exec()
+        await db_transaction.exec(silent=True)  # 아래 에러는 의도된거라 로그 안떠도 됌
     except psycopg.errors.UniqueViolation:
         raise HTTPException(
-            status_code=409, detail=f"User already has {item.code_type} {item.code}"
+            status_code=409, detail=f"User already has {code_type} {code}"
         )
-    return {"message": f"Insert element {item.code_type} {item.code} to user"}
+    return {"message": f"Insert element {code_type} {code} to user"}
 
 
 @router.basic.delete("/user/element")
-async def insert_element_to_user(item: Element, user=router.basic.auth):
+async def insert_element_to_user(
+    code: constr(min_length=1),
+    code_type: Literal["symbol", "country"],
+    user=router.basic.auth,
+):
     """엘리먼트를 유저에게서 삭제합니다."""
     await db.exec(
         """
@@ -62,7 +65,7 @@ async def insert_element_to_user(item: Element, user=router.basic.auth):
         AND elements.code_type = {code_type}
         AND elements.code = {code}
         """,
-        params={"user_id": user["id"], "code_type": item.code_type, "code": item.code},
+        params={"user_id": user["id"], "code_type": code_type, "code": code},
     )
     return {"message": "Delete successfully"}  # 실제로 삭제 동작을 했는지는 모름, 결과가 무결하므로 200 응답
 

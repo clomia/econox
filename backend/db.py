@@ -162,8 +162,8 @@ class Transaction:
         self.query_list.append(query)
         self.param_dict |= params
 
-    async def exec(self):
-        return await exec(*self.query_list, params=self.param_dict)
+    async def exec(self, silent=False):
+        return await exec(*self.query_list, params=self.param_dict, silent=silent)
 
 
 async def select_row(table: str, fields: list, where: dict):

@@ -1,15 +1,18 @@
 <script lang="ts">
     import axios from "axios";
+    import Swal from "sweetalert2";
     import { onMount } from "svelte";
     import { fade } from "svelte/transition";
     import { Packets, News, CountryCodeMap, PacketInfo } from "../../modules/state";
-    import Swal from "sweetalert2";
+    import { appendElement, deleteElement } from "./univariate-tool/functions";
     import Magnifier from "../../assets/icon/Magnifier.svelte";
+    import PlusIcon from "../../assets/icon/PlusIcon.svelte";
+    import MinusIcon from "../../assets/icon/MinusIcon.svelte";
     import DotLoader from "../../assets/animation/DotLoader.svelte";
     import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
     import TextLoader from "../../assets/animation/TextLoader.svelte";
     import { api } from "../../modules/request";
-    import { Text, Lang } from "../../modules/state";
+    import { Text, Lang, UnivariateElements } from "../../modules/state";
     import { defaultSwalStyle, format } from "../../modules/functions";
     import CloseButton from "../../components/CloseButton.svelte";
     import type { ElementType, RespPacketType } from "../../modules/state";
@@ -180,6 +183,9 @@
             </div>
             <div class="packet-info__list">
                 {#each $PacketInfo.elements as element}
+                    {@const isInUnivariateList = !!$UnivariateElements.find(
+                        (ele) => ele.code === element.code && ele.code_type === element.type
+                    )}
                     <button
                         class="packet-info__list__ele"
                         on:click={() => (selectedElement = element)}
@@ -197,6 +203,20 @@
                                 />
                             {/if}
                         </div>
+                        <button
+                            class="packet-info__list__ele__add-btn"
+                            on:click={() => {
+                                isInUnivariateList
+                                    ? deleteElement(element.code, element.type)
+                                    : appendElement(element.code, element.type);
+                            }}
+                        >
+                            {#if isInUnivariateList}
+                                <MinusIcon size={1.2} />
+                            {:else}
+                                <PlusIcon size={1.2} />
+                            {/if}
+                        </button>
                     </button>
                 {/each}
             </div>
@@ -516,6 +536,7 @@
         padding: 0.5rem 0;
         border-radius: 0.35rem;
         border: thin solid rgba(255, 255, 255, 0);
+        position: relative;
     }
     .packet-info__list__ele.selected {
         border-color: rgba(255, 255, 255, 0.2);
@@ -533,6 +554,22 @@
     }
     .packet-info__list__ele__name {
         color: var(--white);
+    }
+    .packet-info__list__ele__add-btn {
+        width: 2rem;
+        height: 2rem;
+        position: absolute;
+        right: 0.5rem;
+        border-radius: 0.3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0.7;
+    }
+    .packet-info__list__ele__add-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        opacity: 1;
     }
 
     .packet-info__repr {

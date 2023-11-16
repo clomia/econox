@@ -6,9 +6,9 @@ from collections import defaultdict
 
 import deepl
 import httpx
-from aiocache import cached
+from diskcache import Cache
 
-from backend.system import SECRETS
+from backend.system import SECRETS, EFS_VOLUME_PATH
 from backend.http import pooling
 
 # - 번역 용어집: 인공지능 번역의 불완전한 부분을 보완하는데 사용됩니다.
@@ -25,7 +25,27 @@ for name, glossary in glossaries_json.items():
         glossaries[to_lang][from_txt] = to_txt
 
 
-@cached(ttl=10 * 24 * 360)  # 번역 비용 비싸서 오래 캐싱
+class DeeplCache:
+    expire = 360 * 24 * 100  # 100일동안 사용되지 않으면 만료되도록 설정
+
+    def __init__(self, to_lang: str, from_lang: str = None):
+        """인스턴스가 초기화될 때 만료된 캐시가 디스크에서 정리됩니다."""
+        identifier = f"{str(from_lang).lower()}-{to_lang.lower()}"
+        self.path = EFS_VOLUME_PATH / f"deepl_cache/{identifier}"
+        with Cache(self.path) as cache:
+            cache.expire()  # 만료된 데이터 청소
+
+    def set(self, key: str, value: str):
+        with Cache(self.path) as cache:
+            cache.set(key, value, expire=self.expire)
+
+    def get(self, key: str):
+        with Cache(self.path) as cache:
+            if value := cache.get(key):
+                cache.touch(key, expire=self.expire)
+        return value
+
+
 async def translate(text: str, to_lang: str, *, from_lang: str = None) -> str:
     """deepl 공식 SDK쓰면 urllib 풀 사이즈 10개 제한 떠서 httpx 비동기 클라이언트로 별도의 함수 작성"""
 
@@ -35,6 +55,11 @@ async def translate(text: str, to_lang: str, *, from_lang: str = None) -> str:
         if result := glossary.get(target):
             return result  # 용어집에서 해당 도착어에 대해 일치하는 번역 정의를 찾으면 그것을 반환한다.
 
+    cache = DeeplCache(to_lang, from_lang)
+    if result := cache.get(target):
+        return result  # 캐싱된 데이터가 있다면 그것을 반환한다.
+
+    # DeepL API를 사용해서 번역
     host = "https://api.deepl.com/v2/translate"
     variant_hendler = {
         "en": "EN-US",
@@ -69,7 +94,9 @@ async def translate(text: str, to_lang: str, *, from_lang: str = None) -> str:
     except (AssertionError, Exception) as e:
         raise httpx.HTTPError(f"DeepL 통신 오류 Error: {e} (사용량 한도에 도달했을 수 있습니다.)")
     else:
-        return resp.json()["translations"][0]["text"]
+        result = resp.json()["translations"][0]["text"]
+        cache.set(target, result)
+        return result
 
 
 class Multilingual:

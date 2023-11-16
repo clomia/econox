@@ -1,6 +1,7 @@
 # data client
 httpx==0.25.0
 aiocache==0.12.2
+diskcache==5.6.3
 wbdata==0.3.0
 requests==2.31.0 # wbdata dependency
 pycountry==22.3.5

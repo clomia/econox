@@ -408,7 +408,7 @@
     }
 
     .opened-news-title {
-        font-size: 1.13rem;
+        font-size: 1.1rem;
     }
     .packet-info__news {
         margin: 0 3rem;

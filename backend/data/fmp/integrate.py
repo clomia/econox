@@ -13,7 +13,8 @@ from backend.data.fmp import data_metaclass
 from backend.data.text import Multilingual, translate
 
 # ========= data_class.json에 정의된대로 클래스들을 생성합니다. =========
-classes = dict(json.load(data_metaclass.CLASS_PATH.open("r")))
+with data_metaclass.CLASS_PATH.open("r") as file:
+    classes = dict(json.load(file))
 
 
 def create_class(name: str) -> type:
@@ -119,7 +120,8 @@ class Symbol:
 
         # ======= EFS volume 에서 가져오기 =======
         if self.info_path.exists():  # 볼륨에서 가져오기
-            return json.load(self.info_path.open("r"))
+            with self.info_path.open("r") as file:
+                return json.load(file)
 
         # ======= API 사용해서 데이터 수집 =======
         profile_resp, search_api_resp = await asyncio.gather(
@@ -150,7 +152,8 @@ class Symbol:
         else:
             info = {"name": name, "note": None}  # name은 None일 수도 있음
         self.info_path.parent.mkdir(parents=True, exist_ok=True)
-        json.dump(info, self.info_path.open("w"))  # EFS volume에 저장
+        with self.info_path.open("w") as file:
+            json.dump(info, file)  # EFS volume에 저장
         return info
 
     @property

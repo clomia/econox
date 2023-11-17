@@ -48,7 +48,8 @@ class Country:
     async def get_info(self):
         # ======= EFS volume 에서 가져오기 =======
         if self.info_path.exists():  # 볼륨에서 가져오기
-            return json.load(self.info_path.open("r"))
+            with self.info_path.open("r") as file:
+                return json.load(file)
 
         # ======= API 사용해서 데이터 수집 =======
         if info := (await self.api.get_country(self.code)):
@@ -70,7 +71,8 @@ class Country:
             "latitude": float(latitude) if latitude else None,
         }
         self.info_path.parent.mkdir(parents=True, exist_ok=True)
-        json.dump(info, self.info_path.open("w"))  # EFS volume에 저장
+        with self.info_path.open("w") as file:
+            json.dump(info, file)  # EFS volume에 저장
         return info
 
     @property

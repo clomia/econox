@@ -46,10 +46,12 @@ export const init = async () => {
     }
 
     // ========== UI 텍스트와 유저 데이터를 불러옵니다. ==========
-    const [cognitoToken, cognitoRefreshToken, uiText, countryCodeMap] = await Promise.all([
-        settingObjectStore.get("cognitoToken"),
+    const [cognitoToken, cognitoRefreshToken] = await Promise.all([
+        settingObjectStore.get("cognitoToken"), // 이 작업들은 매우 빠름
         settingObjectStore.get("cognitoRefreshToken"),
-        loadUiText(),
+    ])
+    const [uiText, countryCodeMap] = await Promise.all([
+        loadUiText(), // 이 작업들은 API 통신을 함
         axios.create({ baseURL: window.location.origin }).get("/static/countryCodeMap.json")
     ])
     Text.set(uiText.text)
@@ -57,7 +59,7 @@ export const init = async () => {
     CountryCodeMap.set(countryCodeMap.data)
     if (cognitoToken && cognitoRefreshToken) { // 계정에 묶인 데이터 가져오기
         const [userInfo, univariateElements] = await Promise.all([
-            api.private.get("/user"),
+            api.private.get("/user"), // 이 작업들은 인증이 포함된 API 통신을 함
             api.member.get("/feature/user/elements", { params: { lang: uiText.lang } }),
         ])
         UserInfo.set(userInfo.data)

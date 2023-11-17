@@ -8,7 +8,7 @@ from fastapi import HTTPException
 
 from backend import db
 from backend.data import fmp, world_bank
-from backend.math import datetime2utcstr, utcstr2datetime
+from backend.math import datetime2utcstr
 from backend.http import APIRouter
 
 router = APIRouter("feature")

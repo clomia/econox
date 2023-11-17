@@ -24,27 +24,27 @@
         $UnivariateElements = [
             {
                 code: element.code,
-                code_type: element.type,
+                section: element.section,
                 name: element.name,
                 note: element.note,
                 update_time: new Date().toISOString(),
             },
             ...$UnivariateElements,
         ];
-        univariateRequests[`${element.code}|${element.type}`] = "append";
+        univariateRequests[`${element.code}|${element.section}`] = "append";
     };
     /**
      * 단변량 요소 삭제 요청을 저장합니다.
      */
     const univariateDelete = (element: ElementType) => {
         const target = $UnivariateElements.find(
-            (ele) => ele.code === element.code && ele.code_type === element.type
+            (ele) => ele.code === element.code && ele.section === element.section
         );
         if (!target) {
             throw new Error("Element does not exists");
         }
         $UnivariateElements = $UnivariateElements.filter((ele) => ele !== target);
-        univariateRequests[`${element.code}|${element.type}`] = "delete";
+        univariateRequests[`${element.code}|${element.section}`] = "delete";
     };
     /**
      * 창이 닫히면 단변량 요소 추가/삭제 요청을 한번에 처리합니다.
@@ -56,11 +56,11 @@
         // 비동기적으로 모든 요청을 API로 전송
         Promise.all(
             Object.entries(requests).map(([key, action]) => {
-                const [code, code_type] = key.split("|");
+                const [code, section] = key.split("|");
                 if (action === "append") {
-                    return api.member.post("/feature/user/element", {}, { params: { code, code_type } });
+                    return api.member.post("/feature/user/element", {}, { params: { code, section } });
                 } else if (action === "delete") {
-                    return api.member.delete("/feature/user/element", { params: { code, code_type } });
+                    return api.member.delete("/feature/user/element", { params: { code, section } });
                 }
             })
         );
@@ -139,11 +139,11 @@
     let packetInfoOn = false;
     const onPacketInfo = async (query: string, resp: RespPacketType) => {
         const countries = resp["countries"].map((obj) => {
-            obj.type = "country";
+            obj.section = "country";
             return obj;
         });
         const symbols = resp["symbols"].map((obj) => {
-            obj.type = "symbol";
+            obj.section = "symbol";
             return obj;
         });
         $PacketInfo = { query, resp, elements: [...countries, ...symbols] };
@@ -227,7 +227,7 @@
             <div class="packet-info__list">
                 {#each $PacketInfo.elements as element}
                     {@const isInUnivariateList = !!$UnivariateElements.find(
-                        (ele) => ele.code === element.code && ele.code_type === element.type
+                        (ele) => ele.code === element.code && ele.section === element.section
                     )}
                     <button
                         class="packet-info__list__ele"
@@ -237,7 +237,7 @@
                         <div class="packet-info__list__ele__code">{element.code}</div>
                         <div class="packet-info__list__ele__name">
                             {element.name}
-                            {#if element.type === "country" && $CountryCodeMap}
+                            {#if element.section === "country" && $CountryCodeMap}
                                 {@const code = $CountryCodeMap[element.code].toLowerCase()}
                                 <img
                                     src={`https://flagcdn.com/w40/${code}.png`}
@@ -270,7 +270,7 @@
                     <img src="static/img/megaphone.png" width="20px" alt="Megaphone" />
                     <div class="packet-info__news__icon__text">News</div>
                 </div>
-                {#if selectedElement.type === "symbol"}
+                {#if selectedElement.section === "symbol"}
                     {#if !$News[selectedElement.code]}
                         <div class="packet-info__news__loading"><TextLoader /></div>
                     {:else if $News[selectedElement.code].length === 0}

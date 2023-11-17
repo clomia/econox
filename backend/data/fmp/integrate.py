@@ -59,7 +59,7 @@ class Symbol:
         - 경고! load 안하면 종목 메타데이터 조회 못함
         """
         self.code = code
-        self.info_path = EFS_VOLUME_PATH / "info" / f"symbol/{self.code}.json"
+        self.info_path = EFS_VOLUME_PATH / f"features/symbol/{self.code}/info.json"
         self.info = {"note": None, "name": None}  # load 메서드가 할당함
         self.is_valid = False  # load 메서드가 할당함
 

@@ -1,41 +1,53 @@
 <script lang="ts">
     import Magnifier from "../../../assets/icon/Magnifier.svelte";
     import MinusIcon from "../../../assets/icon/MinusIcon.svelte";
-    import { UnivariateElements, UnivariateNote, CountryCodeMap } from "../../../modules/state";
+    import { Text, UnivariateElements, UnivariateNote, CountryCodeMap } from "../../../modules/state";
     import { deleteElement } from "./functions";
-    import type { UnivariateElementType } from "../../../modules/state";
+    import type { ElementType } from "../../../modules/state";
 
-    let selected: UnivariateElementType;
-    const select = (ele: UnivariateElementType) => {
+    let selected: ElementType;
+    const select = (ele: ElementType) => {
         selected = ele;
         $UnivariateNote = ele.note;
     };
 </script>
 
 <main>
-    <div class="search"><Magnifier /> <input type="text" /></div>
+    {#if $UnivariateElements.length}
+        <div class="search"><Magnifier /> <input type="text" /></div>
+    {/if}
     <div class="list">
         {#each $UnivariateElements as ele}
             <button class="list__ele" on:click={() => select(ele)} class:selected={selected === ele}>
                 <div class="list__ele__code">{ele.code}</div>
                 <div class="list__ele__name">
                     {ele.name}
-                    {#if ele.code_type === "country" && $CountryCodeMap}
+                    {#if ele.section === "country" && $CountryCodeMap}
                         {@const code = $CountryCodeMap[ele.code].toLowerCase()}
                         <img src={`https://flagcdn.com/w40/${code}.png`} alt={ele.name} width="30px" />
                     {/if}
                 </div>
-                <button class="list__ele__del-btn" on:click={() => deleteElement(ele.code, ele.code_type)}>
+                <button class="list__ele__del-btn" on:click={() => deleteElement(ele.code, ele.section)}>
                     <MinusIcon size={1.2} />
                 </button>
             </button>
+        {:else}
+            <div class="list-blank">{$Text.ElementsListBlank}</div>
         {/each}
     </div>
 </main>
 
 <style>
     main {
-        min-height: 2rem;
+        border-bottom: thin solid rgba(255, 255, 255, 0.2);
+    }
+    .list-blank {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.5);
     }
     .search {
         display: flex;
@@ -52,6 +64,7 @@
     }
     .list {
         margin: 1rem;
+        height: 10rem;
     }
     .list__ele {
         width: 100%;

@@ -13,22 +13,24 @@ from backend.http import APIRouter
 
 router = APIRouter("feature")
 
+section_type = Literal["symbol", "country", "custom"]
+
 
 @router.basic.post("/user/element")
 async def insert_element_to_user(
     code: constr(min_length=1),
-    code_type: Literal["symbol", "country"],
+    section: section_type,
     user=router.basic.auth,
 ):
     """엘리먼트를 유저에게 저장합니다."""
     db_transaction = db.Transaction()
     db_transaction.append(  # elements가 없다면 생성
         """
-        INSERT INTO elements (code_type, code)
-        VALUES ({code_type}, {code})
-        ON CONFLICT (code_type, code) DO NOTHING
+        INSERT INTO elements (section, code)
+        VALUES ({section}, {code})
+        ON CONFLICT (section, code) DO NOTHING
         """,
-        code_type=code_type,
+        section=section,
         code=code,
     )
     db_transaction.append(  # 유저에 element 연결
@@ -36,25 +38,25 @@ async def insert_element_to_user(
         INSERT INTO users_elements (user_id, element_id)
         VALUES (
             {user_id},
-            (SELECT id FROM elements WHERE code_type={code_type} and code={code})
+            (SELECT id FROM elements WHERE section={section} and code={code})
         )""",
         user_id=user["id"],
-        code_type=code_type,
+        section=section,
         code=code,
     )
     try:
         await db_transaction.exec(silent=True)  # 아래 에러는 의도된거라 로그 안떠도 됌
     except psycopg.errors.UniqueViolation:
         raise HTTPException(
-            status_code=409, detail=f"User already has {code_type} {code}"
+            status_code=409, detail=f"User already has {section} {code}"
         )
-    return {"message": f"Insert element {code_type} {code} to user"}
+    return {"message": f"Insert element {section} {code} to user"}
 
 
 @router.basic.delete("/user/element")
 async def insert_element_to_user(
     code: constr(min_length=1),
-    code_type: Literal["symbol", "country"],
+    section: section_type,
     user=router.basic.auth,
 ):
     """엘리먼트를 유저에게서 삭제합니다."""
@@ -64,10 +66,10 @@ async def insert_element_to_user(
         USING elements
         WHERE users_elements.element_id = elements.id
         AND users_elements.user_id = {user_id}
-        AND elements.code_type = {code_type}
+        AND elements.section = {section}
         AND elements.code = {code}
         """,
-        params={"user_id": user["id"], "code_type": code_type, "code": code},
+        params={"user_id": user["id"], "section": section, "code": code},
     )
     return {"message": "Delete successfully"}  # 실제로 삭제 동작을 했는지는 모름, 결과가 무결하므로 200 응답
 
@@ -80,7 +82,7 @@ async def get_element_from_user(lang: str, user=router.basic.auth):
     """
     elements = await db.exec(
         """
-    SELECT e.code, e.code_type, ue.created
+    SELECT e.code, e.section, ue.created
     FROM elements e
     INNER JOIN users_elements ue ON ue.element_id = e.id
     WHERE ue.user_id = {user_id}
@@ -89,22 +91,21 @@ async def get_element_from_user(lang: str, user=router.basic.auth):
         params={"user_id": user["id"]},
     )
 
-    async def parsing(code, code_type, update_time):
-        if code_type == "symbol":
+    async def parsing(code, section, update_time):
+        if section == "symbol":
             ele = await fmp.Symbol(code).load()
-        elif code_type == "country":
+        elif section == "country":
             ele = await world_bank.Country(code).load()
         name, note = await asyncio.gather(ele.name.en(), ele.note.trans(to=lang))
         return {
             "code": code,
-            "code_type": code_type,
+            "section": section,
             "name": name,
             "note": note,
             "update": datetime2utcstr(update_time),
         }
 
     tasks = [
-        parsing(code, code_type, update_time)
-        for code, code_type, update_time in elements
+        parsing(code, section, update_time) for code, section, update_time in elements
     ]
     return await asyncio.gather(*tasks)

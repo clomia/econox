@@ -42,7 +42,7 @@ export const init = async () => {
     const localHosts = ["localhost", "127.0.0.1"];
     if (!hostname.startsWith("www.") && !localHosts.includes(hostname)) {
         currentUrl.hostname = "www." + hostname;
-        window.location.href = currentUrl.toString();
+        window.location.href = currentUrl.toString(); // 리디렉션
     }
 
     // ========== UI 텍스트와 유저 데이터를 불러옵니다. ==========

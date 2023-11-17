@@ -18,7 +18,7 @@ from backend.data.factor import Factor
 from backend.data.text import Multilingual
 from backend.system import ROOT_PATH, EFS_VOLUME_PATH
 
-XARRAY_PATH = EFS_VOLUME_PATH / "xarray"
+DATA_PATH = EFS_VOLUME_PATH / "features/symbol"
 CLASS_PATH = ROOT_PATH / "backend/data/fmp/data_class.json"
 
 
@@ -45,9 +45,13 @@ class ClientMeta(type):
         """
         - JSON에서 클래스 구성을 불러옵니다.
         - JSON 구성이 올바른지 검사합니다.
+        JSON에서 실제 key와 factor값은 둘 다 필요함
+        factor는 FMP가 제공하는 camalCase이고 실제 Key는 Python에서 쓸 snake_case이다.
+        즉 factor는 config의 key에 대한 실제 API 응답 데이터의 key로 매핑해준다
         """
         try:
-            config = dict(json.load(CLASS_PATH.open(mode="rb")))[name]
+            with CLASS_PATH.open(mode="r") as file:
+                config = dict(json.load(file))[name]
         except:
             raise NotImplementedError(f"{CLASS_PATH}의 {name} 구성이 정의되지 않음.")
         if not config.get("setting"):
@@ -82,7 +86,7 @@ class ClientMeta(type):
         # ========= 기본 속성 구성 =========
         ins = super().__call__()  # 깡통 인스턴스 생성
         ins.symbol = symbol
-        ins.path = XARRAY_PATH / cls.__name__ / symbol
+        ins.path = DATA_PATH / symbol / cls.__name__
         if cls.symbol_in_query:  # symbol을 쿼리스트링으로 넣기
             ins.api_params = cls.api_params | {"symbol": symbol}
         else:  # symbol을 URL경로로 넣기

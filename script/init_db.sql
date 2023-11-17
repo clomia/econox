@@ -1,4 +1,4 @@
---- Last commit: 2023-11-08 21:08:23 ---
+--- Last commit: 2023-11-17 20:06:40 ---
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ------------------------------------------------
@@ -82,15 +82,27 @@ CREATE INDEX idx_paypal_billings_user_id ON paypal_billings(user_id);
 ------------------------------------------------
 -- 요소들
 ------------------------------------------------
-CREATE TYPE element_code_type AS ENUM('symbol', 'country');
+CREATE TYPE element_section AS ENUM('symbol', 'country', 'custom');
 CREATE TABLE elements (
     "id" SERIAL NOT NULL PRIMARY KEY,
-    "code_type" element_code_type NOT NULL,
+    "section" element_section NOT NULL,
     "code" VARCHAR(50) NOT NULL,
-    UNIQUE ("code_type", "code") -- 이 순서가 인덱스 효율적임
+    UNIQUE ("section", "code") -- 이 순서가 인덱스 효율적임
 );
 
 ------------------------------------------------
+-- 펙터들
+------------------------------------------------
+CREATE TABLE factors (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "section" VARCHAR(255) NOT NULL, -- factor가 속한 클래스
+    "code" VARCHAR(255) NOT NULL, -- factor의 변수명
+    "name" VARCHAR(255) NOT NULL, -- 노출되는 이름
+    "note" TEXT NOT NULL, -- 설명
+    UNIQUE ("section", "code")
+);
+
+-----------------------------------------------
 -- 유저가 선택하여 단변량 툴에 추가된 요소들
 ------------------------------------------------
 CREATE TABLE users_elements (
@@ -102,3 +114,16 @@ CREATE TABLE users_elements (
 );
 CREATE INDEX idx_users_elements_user_id ON users_elements(user_id);
 CREATE INDEX idx_users_elements_element_id ON users_elements(element_id);
+
+------------------------------------------------
+-- 요소에 대해 유효한 펙터들
+------------------------------------------------
+CREATE TABLE elements_factors (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "element_id" INT NOT NULL REFERENCES elements(id) ON DELETE CASCADE,
+    "factor_id" INT NOT NULL REFERENCES elements(id) ON DELETE CASCADE,
+    "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE ("element_id", "factor_id")
+);
+CREATE INDEX idx_elements_factors_element_id ON elements_factors(element_id);
+CREATE INDEX idx_elements_factors_factor_id ON elements_factors(factor_id);

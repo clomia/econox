@@ -113,6 +113,7 @@ export interface UiText {
     NoSearchResult: "No search results found" | "검색 결과가 없습니다";
     ElementNewsNotFound: "No related news found" | "관련 뉴스가 없습니다";
     ElementNewsNotSupported: "News is not supported for this item" | "뉴스가 지원되지 않는 항목입니다";
+    ElementsListBlank: "The list is empty. Add elements through search to populate it." | "리스트가 비어있습니다. 검색을 통해 요소를 추가하세요.";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

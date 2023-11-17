@@ -70,8 +70,10 @@ async def login(
 
 
 # ------------------ for phone authentication ------------------
-PHONE_CONFIRM_CODE_PATH = EFS_VOLUME_PATH / "phone_confirm_code"
-PHONE_CONFIRM_CODE_PATH.mkdir(parents=True, exist_ok=True)
+def phone_confirm_code_path(phone: str) -> PosixPath:
+    dir_path = EFS_VOLUME_PATH / "phone_confirm_code"
+    dir_path.mkdir(parents=True, exist_ok=True)
+    return EFS_VOLUME_PATH / f"phone_confirm_code/{phone}.txt"
 
 
 @router.public.post("/phone")
@@ -81,7 +83,7 @@ async def create_phone_confirmation(phone: str = Body(..., min_length=1, embed=T
     - 3분 뒤 인증코드 만료
     - POST /api/auth/phone/confirm API로 해당 인증코드를 인증해야 함
     """
-    target_path: PosixPath = PHONE_CONFIRM_CODE_PATH / phone
+    target_path = phone_confirm_code_path(phone)
     issued_code = f"{secrets.randbelow(10**6):06}"
     target_path.write_text(issued_code)
     sns = boto3.client("sns")
@@ -112,7 +114,7 @@ async def phone_confirmation(
     - 전송된 인증코드로 전화번호 인증
     - POST /api/auth/phone API로 인증코드를 전송할 수 있음
     """
-    target_path = PHONE_CONFIRM_CODE_PATH / phone
+    target_path = phone_confirm_code_path(phone)
     if not target_path.exists():  # 코드 만료
         raise HTTPException(
             status_code=401, detail="This confirmation has already expired."

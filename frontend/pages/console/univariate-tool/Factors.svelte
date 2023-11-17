@@ -13,7 +13,6 @@
         padding-left: 0.8rem;
         height: 2.6rem;
         border-bottom: thin solid rgba(255, 255, 255, 0.2);
-        border-left: thin solid rgba(255, 255, 255, 0.2);
     }
     .search input {
         height: 100%;

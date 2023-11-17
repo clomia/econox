@@ -51,9 +51,10 @@ export interface InputResultType {
 
 export interface ElementType {
     code: string;
+    section: string;
     name: string;
     note: string;
-    type: string;
+    update_time: string | undefined;
 }
 export interface RespPacketType {
     countries: ElementType[];
@@ -63,14 +64,6 @@ export interface PacketInfoType {
     query: string;
     resp: RespPacketType;
     elements: ElementType[];
-}
-
-export interface UnivariateElementType {
-    code: string;
-    code_type: string;
-    name: string;
-    note: string;
-    update_time: string;
 }
 
 // ============= 전역적으로 사용되는 상태들 =============
@@ -126,5 +119,5 @@ export const PacketInfo = writable<PacketInfoType>({
     elements: [],
 }); // 검색을 수행하는 비동기 함수는 컴포넌트가 없어진다고 멈추지 않음, 따라서 전역 상태로 관리 가능
 
-export const UnivariateElements = writable<UnivariateElementType[]>([])
+export const UnivariateElements = writable<ElementType[]>([])
 export const UnivariateNote = writable("")

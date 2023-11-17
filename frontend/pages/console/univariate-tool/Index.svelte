@@ -6,8 +6,6 @@
 <main>
     <div class="element-selector"><Elements /></div>
     <div class="factor-selector"><Factors /></div>
-    <div id="Note" />
-    <div id="Chart" />
 </main>
 
 <style>
@@ -16,13 +14,5 @@
         border: thin solid rgba(255, 255, 255, 0.2);
         border-radius: 0.5rem;
         box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.5);
-    }
-    #Note {
-        height: 10rem;
-        border-top: thin solid var(--border-white);
-        border-bottom: thin solid var(--border-white);
-    }
-    #Chart {
-        height: 30rem;
     }
 </style>

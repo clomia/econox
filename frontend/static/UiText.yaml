@@ -348,6 +348,9 @@ ElementNewsNotFound:
 ElementNewsNotSupported:
   en: "News is not supported for this item"
   ko: "뉴스가 지원되지 않는 항목입니다"
+ElementsListBlank:
+  en: "The list is empty. Add elements through search to populate it."
+  ko: "리스트가 비어있습니다. 검색을 통해 요소를 추가하세요."
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

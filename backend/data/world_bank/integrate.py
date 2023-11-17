@@ -8,8 +8,6 @@ from backend.system import EFS_VOLUME_PATH
 from backend.data.text import Multilingual, translate
 from backend.data.world_bank.data_class import *
 
-INFO_PATH = EFS_VOLUME_PATH / "info"
-
 
 class Country:
     def __init__(self, code: str):
@@ -21,7 +19,7 @@ class Country:
         """
         self.api = WorldBankAPI()
         self.code = code
-        self.info_path = INFO_PATH / f"country/{code}.json"
+        self.info_path = EFS_VOLUME_PATH / f"features/country/{code}/info.json"
         self.info = {"name": None, "note": None}
         self.is_valid = False
 

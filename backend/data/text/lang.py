@@ -26,6 +26,10 @@ for name, glossary in glossaries_json.items():
 
 
 class DeeplCache:
+    """
+    - 파일 기반으로 작동하며 번역 결과를 캐싱
+    """
+
     expire = 360 * 24 * 100  # 100일동안 사용되지 않으면 만료되도록 설정
 
     def __init__(self, to_lang: str, from_lang: str = None):

@@ -11,7 +11,7 @@ from backend.system import EFS_VOLUME_PATH
 from backend.data.factor import Factor
 from backend.data.text import Multilingual
 
-XARRAY_PATH = EFS_VOLUME_PATH / "xarray"
+DATA_PATH = EFS_VOLUME_PATH / "features/country"
 
 
 def _xr_meta(element, factor, **kwargs) -> dict:
@@ -31,7 +31,7 @@ class DataManager:
     def __init__(self, country: str, indicator: str):
         self.country = country
         self.indicator = indicator
-        self.zarr_path = XARRAY_PATH / country / f"{indicator}.zarr"
+        self.zarr_path = DATA_PATH / country / f"{indicator}.zarr"
         self.api = WorldBankAPI()
 
     def __repr__(self) -> str:

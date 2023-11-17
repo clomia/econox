@@ -1,10 +1,9 @@
 <script lang="ts">
     import axios from "axios";
     import Swal from "sweetalert2";
-    import { onMount } from "svelte";
+    import { onMount, onDestroy } from "svelte";
     import { fade } from "svelte/transition";
     import { Packets, News, CountryCodeMap, PacketInfo } from "../../modules/state";
-    import { appendElement, deleteElement } from "./univariate-tool/functions";
     import Magnifier from "../../assets/icon/Magnifier.svelte";
     import PlusIcon from "../../assets/icon/PlusIcon.svelte";
     import MinusIcon from "../../assets/icon/MinusIcon.svelte";
@@ -22,6 +21,48 @@
         const resp = await requests.get("/static/countryCodeMap.json");
         $CountryCodeMap = resp.data;
     });
+
+    let univariateRequests: any = {};
+    /**
+     * 단변량 요소 추가 요청을 저장합니다.
+     */
+    const univariateAppend = (code: string, code_type: string) => {
+        $UnivariateElements = [
+            { code, code_type, update_time: new Date().toISOString() },
+            ...$UnivariateElements,
+        ];
+        univariateRequests[`${code}|${code_type}`] = "append";
+    };
+    /**
+     * 단변량 요소 삭제 요청을 저장합니다.
+     */
+    const univariateDelete = (code: string, code_type: string) => {
+        const target = $UnivariateElements.find((ele) => ele.code === code && ele.code_type === code_type);
+        if (!target) {
+            throw new Error("Element does not exists");
+        }
+        $UnivariateElements = $UnivariateElements.filter((ele) => ele !== target);
+        univariateRequests[`${code}|${code_type}`] = "delete";
+    };
+    /**
+     * 창이 닫히면 단변량 요소 추가/삭제 요청을 한번에 처리합니다.
+     */
+    const closePacketInfo = () => {
+        const requests = { ...univariateRequests }; // 모인 요청데이터를 함수 내부로 복사
+        univariateRequests = {}; // 요청데이터 초기화 -> 상태를 바로 초기화해줘야 함
+        packetInfoOn = false; // 창 닫기
+        // 모든 요청을 API로 전송
+        Promise.all(
+            Object.entries(requests).map(([key, action]) => {
+                const [code, code_type] = key.split("|");
+                if (action === "append") {
+                    return api.member.post("/feature/user/element", {}, { params: { code, code_type } });
+                } else if (action === "delete") {
+                    return api.member.delete("/feature/user/element", { params: { code, code_type } });
+                }
+            })
+        );
+    };
 
     let inputText = "";
     const createPacket = async () => {
@@ -172,7 +213,7 @@
     <div id="membrane" />
     <div id="window">
         <section class="packet-info">
-            <button class="packet-info__close-button" on:click={() => (packetInfoOn = false)}>
+            <button class="packet-info__close-button" on:click={closePacketInfo}>
                 <CloseButton />
             </button>
             <div class="packet-info__magnifier">
@@ -207,8 +248,8 @@
                             class="packet-info__list__ele__add-btn"
                             on:click={() => {
                                 isInUnivariateList
-                                    ? deleteElement(element.code, element.type)
-                                    : appendElement(element.code, element.type);
+                                    ? univariateDelete(element.code, element.type)
+                                    : univariateAppend(element.code, element.type);
                             }}
                         >
                             {#if isInUnivariateList}

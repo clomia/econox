@@ -105,7 +105,7 @@ async def get_element_from_user(lang: str, user=router.basic.auth):
             "update": datetime2utcstr(update_time),
         }
 
-    tasks = [
+    tasks = [  # 캐싱되어있으면 엄청 빠름
         parsing(code, section, update_time) for code, section, update_time in elements
     ]
     return await asyncio.gather(*tasks)

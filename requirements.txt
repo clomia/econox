@@ -1,24 +1,26 @@
+# updated: 2023.11.17
+
 # data client
-httpx==0.25.0
+httpx==0.25.1
 aiocache==0.12.2
 diskcache==5.6.3
 wbdata==0.3.0
 requests==2.31.0 # wbdata dependency
 pycountry==22.3.5
-deepl==1.15.0
+deepl==1.16.1
 
 # compute
-numpy==1.26.0
-xarray==2023.8.0
+numpy==1.26.2
+xarray==2023.10.1
 zarr==2.16.1
-dask==2023.9.2
-scipy==1.11.2
-matplotlib==3.8.0
-scikit-learn==1.3.1
+dask==2023.11.0
+scipy==1.11.3
+matplotlib==3.8.1
+scikit-learn==1.3.2
 
 # Web
-fastapi==0.103.1
-uvicorn==0.23.2
+fastapi==0.104.1
+uvicorn==0.24.0.post1
 gunicorn==21.2.0
 PyJWT==2.8.0
 jwcrypto==1.5.0
@@ -27,7 +29,7 @@ ipinfo==4.4.3
 pytz==2023.3.post1
 
 # Infra
-boto3==1.28.53
-botocore==1.31.53
-psycopg==3.1.11
-psycopg-binary==3.1.11 # psycopg dependency
+boto3==1.29.2
+botocore==1.32.2
+psycopg==3.1.12
+psycopg-binary==3.1.12 # psycopg dependency

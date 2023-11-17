@@ -1,12 +1,14 @@
 """ /api/data """
+import asyncio
 from typing import Literal
 
 import psycopg
-from pydantic import BaseModel, constr
+from pydantic import constr
 from fastapi import HTTPException
 
 from backend import db
-from backend.math import datetime2utcstr
+from backend.data import fmp, world_bank
+from backend.math import datetime2utcstr, utcstr2datetime
 from backend.http import APIRouter
 
 router = APIRouter("feature")
@@ -71,8 +73,11 @@ async def insert_element_to_user(
 
 
 @router.basic.get("/user/elements")
-async def get_element_from_user(user=router.basic.auth):
-    """유저에게 저장된 엘리먼트들을 가져옵니다."""
+async def get_element_from_user(lang: str, user=router.basic.auth):
+    """
+    - 유저에게 저장된 엘리먼트들을 가져옵니다.
+    - lang: 응답 데이터의 언어 (ISO 639-1)
+    """
     elements = await db.exec(
         """
     SELECT e.code, e.code_type, ue.created
@@ -80,10 +85,26 @@ async def get_element_from_user(user=router.basic.auth):
     INNER JOIN users_elements ue ON ue.element_id = e.id
     WHERE ue.user_id = {user_id}
     ORDER BY ue.created DESC;
-    """,
+    """,  # 최신의 것이 앞으로 오도록 정렬
         params={"user_id": user["id"]},
     )
-    return [
-        {"code": code, "code_type": code_type, "update": datetime2utcstr(update_time)}
+
+    async def parsing(code, code_type, update_time):
+        if code_type == "symbol":
+            ele = await fmp.Symbol(code).load()
+        elif code_type == "country":
+            ele = await world_bank.Country(code).load()
+        name, note = await asyncio.gather(ele.name.en(), ele.note.trans(to=lang))
+        return {
+            "code": code,
+            "code_type": code_type,
+            "name": name,
+            "note": note,
+            "update": datetime2utcstr(update_time),
+        }
+
+    tasks = [
+        parsing(code, code_type, update_time)
         for code, code_type, update_time in elements
     ]
+    return await asyncio.gather(*tasks)

@@ -1,9 +1,8 @@
 import { writable } from "svelte/store";
 import type { Writable } from "svelte/store";
 import type { UiText } from "../static/UiText";
-// * 1. writeable 객체 변수명은 CamelCase로 짓는다.
+// * 1. writeable 객체 변수명은 CamelCase로 짓는다. 값 변수명은 snake_case로 짓는다.
 // * 2. 모든 타입은 뒤에 Type을 붙인다. writeable을 CamalCase로 쓰니까, 겹치지 않도록
-// 2. 가급적 모듈 레벨에 writeable 객체를 선언한다 그래야 import 후 바로 $ 표현식 쓸 수 있다.
 
 // ============= 필요한 타입 정의 =============
 export const defaultObject: any = (defaultValue: string) => new Proxy({}, { get: () => defaultValue });
@@ -69,6 +68,8 @@ export interface PacketInfoType {
 export interface UnivariateElementType {
     code: string;
     code_type: string;
+    name: string;
+    note: string;
     update_time: string;
 }
 
@@ -126,3 +127,4 @@ export const PacketInfo = writable<PacketInfoType>({
 }); // 검색을 수행하는 비동기 함수는 컴포넌트가 없어진다고 멈추지 않음, 따라서 전역 상태로 관리 가능
 
 export const UnivariateElements = writable<UnivariateElementType[]>([])
+export const UnivariateNote = writable("")

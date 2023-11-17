@@ -1,7 +1,7 @@
 <script lang="ts">
     import axios from "axios";
     import Swal from "sweetalert2";
-    import { onMount, onDestroy } from "svelte";
+    import { onMount } from "svelte";
     import { fade } from "svelte/transition";
     import { Packets, News, CountryCodeMap, PacketInfo } from "../../modules/state";
     import Magnifier from "../../assets/icon/Magnifier.svelte";
@@ -16,33 +16,35 @@
     import CloseButton from "../../components/CloseButton.svelte";
     import type { ElementType, RespPacketType } from "../../modules/state";
 
-    onMount(async () => {
-        const requests = axios.create({ baseURL: window.location.origin });
-        const resp = await requests.get("/static/countryCodeMap.json");
-        $CountryCodeMap = resp.data;
-    });
-
     let univariateRequests: any = {};
     /**
      * 단변량 요소 추가 요청을 저장합니다.
      */
-    const univariateAppend = (code: string, code_type: string) => {
+    const univariateAppend = (element: ElementType) => {
         $UnivariateElements = [
-            { code, code_type, update_time: new Date().toISOString() },
+            {
+                code: element.code,
+                code_type: element.type,
+                name: element.name,
+                note: element.note,
+                update_time: new Date().toISOString(),
+            },
             ...$UnivariateElements,
         ];
-        univariateRequests[`${code}|${code_type}`] = "append";
+        univariateRequests[`${element.code}|${element.type}`] = "append";
     };
     /**
      * 단변량 요소 삭제 요청을 저장합니다.
      */
-    const univariateDelete = (code: string, code_type: string) => {
-        const target = $UnivariateElements.find((ele) => ele.code === code && ele.code_type === code_type);
+    const univariateDelete = (element: ElementType) => {
+        const target = $UnivariateElements.find(
+            (ele) => ele.code === element.code && ele.code_type === element.type
+        );
         if (!target) {
             throw new Error("Element does not exists");
         }
         $UnivariateElements = $UnivariateElements.filter((ele) => ele !== target);
-        univariateRequests[`${code}|${code_type}`] = "delete";
+        univariateRequests[`${element.code}|${element.type}`] = "delete";
     };
     /**
      * 창이 닫히면 단변량 요소 추가/삭제 요청을 한번에 처리합니다.
@@ -51,7 +53,7 @@
         const requests = { ...univariateRequests }; // 모인 요청데이터를 함수 내부로 복사
         univariateRequests = {}; // 요청데이터 초기화 -> 상태를 바로 초기화해줘야 함
         packetInfoOn = false; // 창 닫기
-        // 모든 요청을 API로 전송
+        // 비동기적으로 모든 요청을 API로 전송
         Promise.all(
             Object.entries(requests).map(([key, action]) => {
                 const [code, code_type] = key.split("|");
@@ -247,9 +249,7 @@
                         <button
                             class="packet-info__list__ele__add-btn"
                             on:click={() => {
-                                isInUnivariateList
-                                    ? univariateDelete(element.code, element.type)
-                                    : univariateAppend(element.code, element.type);
+                                isInUnivariateList ? univariateDelete(element) : univariateAppend(element);
                             }}
                         >
                             {#if isInUnivariateList}

@@ -1,7 +1,8 @@
+import axios from "axios"
 import { onMount } from "svelte"
 import { navigate } from "svelte-routing"
 import { api } from "./request"
-import { Text, UserInfo, Lang, UnivariateElements } from "./state"
+import { Text, UserInfo, Lang, UnivariateElements, CountryCodeMap } from "./state"
 import { loadUiText } from "./uiText"
 import { settingObjectStore } from "./_storage"
 import type { UserDetailType } from "./state"
@@ -45,22 +46,22 @@ export const init = async () => {
     }
 
     // ========== UI 텍스트와 유저 데이터를 불러옵니다. ==========
-    const [cognitoToken, cognitoRefreshToken] = await Promise.all([
+    const [cognitoToken, cognitoRefreshToken, uiText, countryCodeMap] = await Promise.all([
         settingObjectStore.get("cognitoToken"),
         settingObjectStore.get("cognitoRefreshToken"),
+        loadUiText(),
+        axios.create({ baseURL: window.location.origin }).get("/static/countryCodeMap.json")
     ])
-    if (cognitoToken && cognitoRefreshToken) {
-        const [uiText, userInfo, univariateElements] = await Promise.all([
-            loadUiText(), api.private.get("/user"), api.member.get("/feature/user/elements")
+    Text.set(uiText.text)
+    Lang.set(uiText.lang)
+    CountryCodeMap.set(countryCodeMap.data)
+    if (cognitoToken && cognitoRefreshToken) { // 계정에 묶인 데이터 가져오기
+        const [userInfo, univariateElements] = await Promise.all([
+            api.private.get("/user"),
+            api.member.get("/feature/user/elements", { params: { lang: uiText.lang } }),
         ])
-        Text.set(uiText.text)
-        Lang.set(uiText.lang)
         UserInfo.set(userInfo.data)
         UnivariateElements.set(univariateElements.data)
-    } else {
-        const uiText = await loadUiText()
-        Text.set(uiText.text)
-        Lang.set(uiText.lang)
     }
 }
 

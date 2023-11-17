@@ -25,7 +25,7 @@ export const currentLang = async () => {
  * 브라우저에 언어를 세팅하고 언어와 언어에 대한 텍스트 매핑 오브젝트를 반환합니다.
  */
 export const loadUiText = async () => {
-    let lang = await settingObjectStore.get("lang")
+    let lang: string = await settingObjectStore.get("lang")
 
     if (!lang) { // 언어 설정이 없는 경우
         const browserLanguage = navigator.language.split("-")[0];

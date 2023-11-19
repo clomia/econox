@@ -262,10 +262,11 @@ class FmpAPI:
         self.cache = cache
 
     async def get(self, path, **params) -> dict | list:
+        log.info(f"[GET 요청 함수 시작!] FMP API GET: {path} - {params}")
         request = self._request_use_caching if self.cache else self._request
         try:
             start = time.time()
-            print(f"[시작] FMP API GET: {path} - {params} (요청함수: {request})")
+            log.info(f"[시작] FMP API GET: {path} - {params} (요청함수: {request})")
             # return await pooling(partial(request, path, **params), exceptions=Exception)
             return await request(path, **params)
         except Exception as e:
@@ -273,7 +274,7 @@ class FmpAPI:
                 f"FMP API 서버와 통신에 실패하여 데이터를 수신하지 못했습니다. (path: {path}, error: {e})"
             )
         finally:
-            print(
+            log.info(
                 f"[종료] FMP API GET: {path} - {params} , 걸린시간: {time.time() - start:.3f} (요청함수: {request})"
             )
 

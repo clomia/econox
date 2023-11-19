@@ -1,4 +1,4 @@
-FROM node:20.5.0 as frontend-stage
+FROM node:21.2.0 as frontend-stage
 
 COPY ./frontend /stage/frontend
 COPY package.json /stage

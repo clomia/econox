@@ -30,9 +30,7 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v1
 
     - name: Build Docker image
-      uses: pguyot/arm-runner-action@v2.5.2
-      with:
-        commands: docker build -t econox-app .
+      run: docker build -t econox-app .
     
     - name: Push to ECR
       env:

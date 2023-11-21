@@ -18,7 +18,6 @@ ENV PYTHONUNBUFFERED 1
 
 RUN apt-get update && apt-get install -y gcc
 RUN pip install --upgrade pip
-RUN pip install numcodecs
 
 COPY . /server
 COPY --from=frontend-stage /stage/frontend/static/build /server/frontend/static/build

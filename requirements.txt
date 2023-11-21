@@ -1,5 +1,4 @@
 # updated: 2023.11.17
-numcodecs==0.12.1
 
 # data client
 httpx==0.25.1

@@ -1,4 +1,4 @@
-FROM node:21.2.0 as frontend-stage
+FROM --platform=linux/arm64 node:21.2.0 as frontend-stage
 
 COPY ./frontend /stage/frontend
 COPY package.json /stage
@@ -10,7 +10,7 @@ WORKDIR /stage
 RUN npm install
 RUN npm run build
 
-FROM python:3.11.4 as backend-stage
+FROM --platform=linux/arm64 python:3.11.4 as backend-stage
 
 ENV TZ=Asia/Seoul
 ENV PYTHONDONTWRITEBYTECODE 1

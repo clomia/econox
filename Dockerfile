@@ -24,4 +24,4 @@ COPY --from=frontend-stage /stage/frontend/static/build /server/frontend/static/
 RUN pip install -r /server/requirements.txt
 
 WORKDIR /server
-CMD bash -c "gunicorn -w $(nproc) -k uvicorn.workers.UvicornWorker -b 0.0.0.0:80 app:app"
+CMD uvicorn app:app --host 0.0.0.0 --port 80

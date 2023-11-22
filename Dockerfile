@@ -10,7 +10,7 @@ WORKDIR /stage
 RUN npm install
 RUN npm run build
 
-FROM python:3.12 as backend-stage
+FROM python:3.11.6 as backend-stage
 
 ENV TZ=Asia/Seoul
 ENV PYTHONDONTWRITEBYTECODE 1

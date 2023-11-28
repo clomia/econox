@@ -261,20 +261,12 @@ class FmpAPI:
         self.cache = cache
 
     async def get(self, path, **params) -> dict | list:
-        log.info(f"[GET 요청 함수 시작!] FMP API GET: {path} - {params}")
         request = self._request_use_caching if self.cache else self._request
         try:
-            start = time.time()
-            log.info(f"[시작] FMP API GET: {path} - {params} (요청함수: {request})")
-            # return await pooling(partial(request, path, **params), exceptions=Exception)
-            return await request(path, **params)
+            return await pooling(partial(request, path, **params), exceptions=Exception)
         except Exception as e:
             log.error(
                 f"FMP API 서버와 통신에 실패하여 데이터를 수신하지 못했습니다. (path: {path}, error: {e})"
-            )
-        finally:
-            log.info(
-                f"[종료] FMP API GET: {path} - {params} , 걸린시간: {time.time() - start:.3f} (요청함수: {request})"
             )
 
     @classmethod
@@ -467,7 +459,7 @@ class PayPalAPI:
         except httpx.LocalProtocolError as e:
             # 토큰이 없는 경우는 LocalProtocolError가 바로 raise 됨
             log.info(  # resp는 undifined임, 토큰 없으면 요청 자체가 실행되지 않음
-                f"POST {self.path}: PayPal 토큰 인증에 실패하였습니다. 토큰 갱신 후 재시도합니다. (error message: {e})"
+                f"POST {self.path}: PayPal 토큰 인증에 실패하였습니다. 토큰 갱신 후 재시도합니다. ({e})"
             )
             await self._refresh_access_token()
             return await retry()

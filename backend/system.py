@@ -40,7 +40,7 @@ class LogHandler(logging.NullHandler):
         memory_status = f"메모리: {memory_gb}({memory_percent})"
         disk_status = f"디스크: {disk_gb}({disk_percent})"
         time = f"{now.month}/{now.day} {now.hour}시 {now.minute}분 {now.second}초"
-        content = f"[{record.levelname}][{time}][pid:{self.pid}][{disk_status}][{memory_status}]\n{self.format(record)}"
+        content = f"[{record.levelname}][{time}][pid:{self.pid}][{disk_status}][{memory_status}]: {self.format(record)}"
         print(content)
 
 

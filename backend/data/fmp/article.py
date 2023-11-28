@@ -26,7 +26,7 @@ class News:
             if len(self.content.text) <= 30
             else self.content.text[:30] + "..."
         )
-        return f"<News: {self.symbol.code} {self.date.strftime('%Y-%m-%d %H:%M')} '{text_repr}'>"
+        return f"<News: {self.symbol} {self.date.strftime('%Y-%m-%d %H:%M')} '{text_repr}'>"
 
 
 async def news(symbol: str, limit=10) -> List[News]:

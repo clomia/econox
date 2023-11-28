@@ -124,7 +124,6 @@ class Symbol:
                 return json.load(file)
 
         # ======= API 사용해서 데이터 수집 =======
-        print("get_info -> FmpAPI get 요청 시작!")
         profile_resp, search_api_resp = await asyncio.gather(
             FmpAPI(cache=False).get(f"api/v3/profile/{self.code}"),
             FmpAPI(cache=False).get("api/v3/search", query=self.code),

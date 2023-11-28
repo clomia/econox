@@ -93,7 +93,6 @@ async def get_element_from_user(lang: str, user=router.basic.auth):
 
     async def parsing(code, section, update_time):
         if section == "symbol":
-            print(f"get element from user: {code} Symbol 로드 시작")
             ele = await fmp.Symbol(code).load()
         elif section == "country":
             ele = await world_bank.Country(code).load()

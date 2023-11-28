@@ -11,6 +11,7 @@ from functools import partial
 from typing import Callable, Any, Dict
 from concurrent.futures import ThreadPoolExecutor
 
+import psutil
 import boto3
 
 
@@ -23,8 +24,23 @@ class LogHandler(logging.NullHandler):
 
     def handle(self, record):
         now = datetime.now()
+        memory = psutil.virtual_memory()
+        memory_used = memory.total - memory.available
+        memory_percent = (memory_used / memory.total) * 100
+
+        disk = psutil.disk_usage("/")
+        disk_used = disk.total - disk.free
+        disk_percent = (disk_used / disk.total) * 100
+
+        memory_percent = f"{memory_percent:.0f}%"
+        disk_percent = f"{disk_percent:.0f}%"
+        memory_gb = f"{memory_used * 1e-9:.0f}GB"
+        disk_gb = f"{disk_used * 1e-9:.0f}GB"
+
+        memory_status = f"메모리: {memory_gb}({memory_percent})"
+        disk_status = f"디스크: {disk_gb}({disk_percent})"
         time = f"{now.month}/{now.day} {now.hour}시 {now.minute}분 {now.second}초"
-        content = f"[{record.levelname}][{time}][pid:{self.pid}] {self.format(record)}"
+        content = f"[{record.levelname}][{time}][pid:{self.pid}][{disk_status}][{memory_status}]\n{self.format(record)}"
         print(content)
 
 

@@ -7,9 +7,9 @@ on:
 
 env:
   AWS_REGION: us-east-1 
-  ECR_REPOSITORY: econox-app
-  ECS_SERVICE: econox-app-server 
-  ECS_CLUSTER: econox-app-cluster
+  ECR_REPOSITORY: econox-ecr-repository
+  ECS_SERVICE: econox-ecs-service 
+  ECS_CLUSTER: econox-ecs-cluster
 
 jobs:
   deploy: 

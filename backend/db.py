@@ -10,160 +10,124 @@
 
 import re
 import json
-from typing import Tuple, Dict, Any
+import asyncio
+from typing import List, Tuple, Dict, Any
 
 import boto3
 import psycopg
+from psycopg.rows import dict_row
 
-from backend.system import SECRETS, run_async, log
+from backend.system import SECRETS, log
 
 # ======== 쿼리 실행 함수 =========
 
 
+class SQL:
+    def __init__(self, query: str, params: Dict[str, Any] = {}, fetch: bool = True):
+        """PostgreSQL 문자열 컨벤션이 아닌 python 객체를 사용합니다. 문자열을 ''로 감싸지 마세요"""
+        if "SELECT" not in query.upper() and fetch is True:
+            raise Exception(f"[SQL 객체 생성 불가] Write 쿼리는 fetch를 수행할 수 없습니다. ({query})")
+        self.query = query
+        self.params = params
+        self.fetch = fetch
+
+    def __repr__(self) -> str:
+        return f"<SQL (fetch={self.fetch}) {self.query} >"
+
+    def encode(self) -> Tuple[str, tuple]:
+        # 쿼리에서 사용되는 파라미터 키들
+        param_keys = re.findall(r"\{(.*?)\}", self.query)
+        # 쿼리에 넣어줘야 하는 파라미터 값들
+        param_values = tuple(self.params[key] for key in param_keys)
+        # 쿼리의 {}를 %s로 변환
+        query_converted = re.sub(r"\{(.*?)\}", "%s", self.query)
+        return query_converted, param_values
+
+
+class QueryError(Exception):
+    def __init__(self, sql: SQL):
+        self.sql = sql
+        super().__init__(f"SQL 실행 실패: {sql}")
+
+
 async def exec(
-    *queries: str,
-    params: Dict[str, Any] = None,
-    template: Tuple[str, dict] = None,
-    silent=False,
-    embed=False,
-) -> list | tuple:
+    *sql: SQL,
+    dbname: str = "econox",
+    _retry=False,
+) -> Dict[SQL, None | List[Dict[str, Any]]]:
     """
-    - DB에 SQL 쿼리를 실행하고 결과를 반환합니다.
-    - queries: 쿼리 템플릿 문자열
-    - params: 템플릿 문자열에 할당해야 하는 값이 매핑된 딕셔너리
-        - 값은 Python 객체여야 합니다. PostgreSQL 객체를 문자열로 표현하지 마세요
-    - template: 쿼리 문자열과 파라미터 딕셔너리로 이루어진 튜플입니다.
-        - queries, params 매개변수를 직접 넣지 않고 Template 클래스를 통해 쿼리를 생성하는 경우 사용합니다.
-        - template 여러개를 단일 트렌젝션으로 실행하려면 Transaction 클래스를 사용하세요
-    - silent: 에러 로그를 띄우지 않으려면 True로 설정하세요, 적절한 예외처리가 있다면 True로 설정하세요.
-    - embed: 결과중 첫번째 튜플을 반환합니다. 단일 행을 읽을때 True로 설정하세요
-    - 사용 예
-        - `db.exec("SELECT name={name} FROM {table};", params={"table":"user", "name":"John"})`
-        - 여러개의 쿼리 문자열도 허용됩니다. (너무 길어서 예시코드 안만듬)
+    - psycopg3의 비동기 클라이언트를 사용해서 여러 쿼리를 동시에 실행합니다.
+        - 너무 많은 쿼리를 동시에 실행하면 DB 응답이 늦을 수 있습니다.
+        - 실제로 쿼리의 병렬 처리 능력은 AWS RDS 클러스터의 인스턴스 갯수에 따라 다릅니다.
+    - retuen: SQL에 대한 결과가 딕셔너리로 매핑되어 반환됩니다.
+        - 그리고 결과는 컬럼과 값이 매핑된 딕셔너리입니다.
+    - exception: 발생된 예외의 __cause__ 속성을 통해 QueryError 인스턴스를 가져올 수 있습니다.
+        - 그리고 QueryError 객체의 sql 속성을 통해 실패한 SQL 객체를 가져올 수 있습니다.
     """
-    if template:
-        *queries, params = template
-    query = " \n".join(queries)
 
-    safe_queries, safe_params = [], []
-    for query in queries:
-        # psycopg의 Parameterized Queries 사용을 위해 { } -> %s
-        safe_queries.append(re.sub(r"\{(.*?)\}", "%s", query))
-        # 올바르게 정렬된 매개변수 배열
-        safe_params.append([params[key] for key in re.findall(r"\{(.*?)\}", query)])
-
-    def sync_exec():
+    async def execute_query(_sql: SQL, cur):
+        query, params = _sql.encode()
         try:
-            conn = psycopg.connect(
-                host=SECRETS["DB_HOST"],
-                dbname=SECRETS["DB_NAME"],
-                user=SECRETS["DB_USERNAME"],
-                password=SECRETS["DB_PASSWORD"],
-            )
-            cur = conn.cursor()
-            for query, params in zip(safe_queries, safe_params):
-                cur.execute(query, params)
-            conn.commit()
-            result = cur.fetchall()
-            return result
-        except psycopg.ProgrammingError as e:
-            # write 쿼리이기 때문에 읽을 결과가 없는 경우는 제외
-            if "result" not in str(e):  # 읽을 결과가 없는 경우 에러메세지에 "result"단어가 들어감
-                raise e
-        except psycopg.OperationalError as e:  # password authentication failed
-            # Secrets Manager에서 암호 교체가 이루어졌다고 간주하고 암호 업데이트 후 재시도
-            latest_password = json.loads(
-                boto3.client("secretsmanager").get_secret_value(
-                    SecretId=SECRETS["RDS_SECRET_MANAGER_ARN"]
-                )["SecretString"]
-            )["password"]
-            SECRETS["DB_PASSWORD"] = latest_password
-            log.warning(
-                f"\n{e}\n DB 연결 오류가 발생하였습니다. Secrets Manager로부터 암호를 업데이트하여 재시도합니다."
-            )
-            return sync_exec()
+            await cur.execute(query, params)
+            return await cur.fetchall() if _sql.fetch else None
         except Exception as e:
-            conn.rollback()
-            if not silent:
-                log.critical(f"\n{e}\nDB 쿼리 실행 오류가 발생하여 롤백하였습니다.\nQuery: {query}")
+            # DB 에러에 따른 분기 처리를 위해서 psycopg의 예외 클래스를 raise 해야 함
+            raise e from QueryError(_sql)  # e.__cause__ = QueryError(_sql)
+
+    try:
+        async with await psycopg.AsyncConnection.connect(
+            host=SECRETS["DB_HOST"],
+            dbname=dbname,
+            user=SECRETS["DB_USERNAME"],
+            password=SECRETS["DB_PASSWORD"],
+            row_factory=dict_row,
+        ) as conn:
+            if _retry:
+                log.info("[DB] Secrets Manager로부터 업데이트된 암호로 인증에 성공하였습니다.")
+            async with conn.cursor() as cur:
+                tasks = [execute_query(_sql, cur) for _sql in sql]
+                results = await asyncio.gather(*tasks)
+                return {_sql: result for _sql, result in zip(sql, results)}
+    except psycopg.OperationalError as e:
+        if _retry:
             raise e
-        finally:
-            try:
-                cur.close()
-                conn.close()
-            except:  # cur 혹은 conn이 정의되지 않은 경우를 무시한다.
-                pass
-
-    result = await run_async(sync_exec)
-    return result if not embed else (result[0] if result else tuple())
-
-
-# ======== 쿼리 생성 함수 =========
-
-
-class Template:
-    """
-    - 템플릿은 쿼리 문자열과 파라미터 딕셔너리로 이루어진 튜플입니다.
-    - exec등의 메서드에서 query, params 매개변수 대신 template 매개변수를 통해 실행하면 됩니다.
-    """
-
-    def __init__(self, table: str):
-        self.table = table
-
-    def insert_query(self, **params) -> Tuple[str, dict]:
-        columns = ", ".join(params.keys())
-        values = ", ".join([f"{{{column}}}" for column in params.keys()])
-        return f"INSERT INTO {self.table} ({columns}) VALUES ({values});", params
-
-    def select_query(
-        self, *columns: str, where: dict, limit: int | None = None
-    ) -> Tuple[str, dict]:
-        """
-        - columns: 선택할 열 이름들
-        - where: 조건을 구성할 딕셔너리
-            - "="조건만 가능합니다. 복잡한 쿼리는 db.exec 함수를 사용하세요
-        - limit: LIMIT 인자
-        """
-        select = ", ".join(columns)
-        cond = " AND ".join(f"{key}={{{key}}}" for key in where.keys())
-        end = "LIMIT {limit};" if limit else ";"
-        if limit:
-            where["limit"] = limit
-        return f"SELECT {select} FROM {self.table} WHERE {cond} {end};", where
-
-
-# ======== 쿼리 실행 추상화 함수 =========
+        # Secrets Manager에서 암호 교체가 이루어졌다고 간주하고 암호 업데이트 후 재시도
+        SECRETS["DB_PASSWORD"] = json.loads(  # 최신 비밀번호로 업데이트
+            boto3.client("secretsmanager").get_secret_value(
+                SecretId=SECRETS["RDS_SECRET_MANAGER_ARN"]
+            )["SecretString"]
+        )["password"]
+        log.info("[DB] 암호 변경 감지. Secrets Manager로부터 암호를 업데이트합니다.")
+        return exec(*sql, dbname, _retry=True)  # 재시도
 
 
 class Transaction:
-    def __init__(self):
+    def __init__(self, dbname: str = "econox"):
         """
         - 단일 트렌젝션으로 여러개의 쿼리를 실행합니다
         - prepend, append 메서드를 통해 쿼리 순서를 설정하세요
             - prepend(앞에 추가), append(뒤에추가)
         - set 메서드를 사용해서 한번에 여러개를 추가할 수 있습니다.
         """
+        self.dbname = dbname
         self.query_list = []
         self.param_dict = {}
 
-    def prepend(self, query="", template=None, **params):
-        if template:
-            query, params = template
+    def prepend(self, query: str, params):
         if (query := query.strip()) and (query[-1] != ";"):
             query += ";"  # 여러 쿼리 넣을땐 ; 로 구분해줘야 함
         self.query_list.insert(0, query)
         self.param_dict = params | self.param_dict
 
-    def append(self, query="", template=None, **params):
-        if template:
-            query, params = template
+    def append(self, query: str, **params):
         if (query := query.strip()) and (query[-1] != ";"):
             query += ";"
         self.query_list.append(query)
         self.param_dict |= params
 
-    async def exec(self, silent=False):
-        return await exec(*self.query_list, params=self.param_dict, silent=silent)
+    async def exec(self):  # 하나의 SQL 객체로 만들어서 exec 해야 함!
+        query = SQL(" ".join(self.query_list), params=self.param_dict)
+        return await exec(query, dbname=self.dbname)
 
 
 async def select_row(table: str, fields: list, where: dict):

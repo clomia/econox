@@ -1,4 +1,4 @@
---- Last commit: 2023-11-19 22:06:08 ---
+--- Last commit: 2023-11-30 14:01:21 ---
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ------------------------------------------------
@@ -24,7 +24,7 @@ CREATE TABLE users (
     "billing_status" billing_status DEFAULT 'active',
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 ); 
-CREATE INDEX idx_paypal_subscription_id ON users (paypal_subscription_id);
+CREATE INDEX idx_users_paypal_subscription_id ON users (paypal_subscription_id);
 -- (email -> user) 검색 최적화 관련: email 필드에 UNIQUE속성 있어서 자동으로 인덱스 생성되므로 별도의 인덱스 생성 불필요
 -- 기준 날짜란: 구독 결제 시작일 혹은 변경일이다. 다음 청구일을 정확하게 계산하려면 꼭 필요한 값이다. (날짜 계산시 발생하는 예외 처리를 위해 필요함)
 

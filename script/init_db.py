@@ -4,16 +4,17 @@ from datetime import datetime
 
 import psycopg
 
-sql_path = Path("script/init_db.sql")
 host = input("host: ")
 password = input("password: ")
+sql_path = Path(input("SQL path: "))
+dbname = input("db name: ")
 
 sql = sql_path.read_text()
 print(f"\n(SQL 코드 검토)\n\n{sql}\n\n")
-input("실행 하시겠습니까? ( Enter / Ctrl+C )\n")
+input(f"실행 하시겠습니까? db name: {dbname}  ( Enter / Ctrl+C )\n")
 conn = psycopg.connect(
     host=host,
-    dbname="econox",
+    dbname=dbname,
     user="postgres",
     password=password,
 )

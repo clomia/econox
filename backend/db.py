@@ -17,6 +17,7 @@ element = fetched[read_sql]
 print(element) # {'id': 8, 'section': 'country', 'code': 'AAPLE'}
 ```
 - SQL 클래스를 사용해서 단일 쿼리를 정의하세요.
+    - INSERT 쿼리는 SQL의 하위클래스인 InsertSQL를 사용하여 간결하게 정의하세요.
 - exec 함수를 사용해서 쿼리를 실행하세요.
     - SQL 객체의 exec 메서드를 통해 단일 쿼리를 실행할 수 있습니다.
     - 모듈에 정의된 exec 함수를 통해 여러 쿼리를 단일 트렌젝션으로 실행할 수 있습니다.
@@ -150,6 +151,22 @@ class SQL:
     async def exec(self, dbname: str = "econox"):
         fetched = await exec(self, dbname=dbname)
         return fetched[self]
+
+
+class InsertSQL(SQL):  # where 등 복잡한 구문이 없으므로 추상화 가능
+    def __init__(self, table: str, **params):
+        """
+        - table: 데이터를 삽입할 테이블
+            - [!] SQL 인젝션에 대한 보안을 위해서 table 매개변수는 반드시
+                리터럴 값이어야 하며, 외부로부터 입력받아선 안됩니다.
+        - params: 컬럼명, 값 쌍들
+        """
+        keys = tuple(params.keys())
+        keys_str = f"({', '.join(keys)})"
+        values_str = ", ".join([f"{{{key}}}" for key in keys])
+        # 테이블 이름은 파라미터화 할 수 없습니다.
+        query = f"INSERT INTO {table} {keys_str} VALUES ({values_str})"
+        super().__init__(query, params, fetch=False)
 
 
 # ======================== 단축 함수들 ========================

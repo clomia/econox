@@ -39,8 +39,6 @@ from psycopg.rows import dict_row
 
 from backend.system import SECRETS, log
 
-# ======== 쿼리 실행 함수 =========
-
 
 class QueryError(Exception):
     def __init__(self, sql: SQL, msg: str = ""):

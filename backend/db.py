@@ -198,28 +198,6 @@ async def get_user(*, email: str = None, user_id: str = None) -> dict | None:
     return await sql.exec()
 
 
-async def payment_method_exists(
-    *, email: str = None, user_id: str = None, db_user: dict = None
-) -> bool:
-    """
-    - 결제수단 등록 여부
-    - db_user: get_user 함수를 통해 가져온 DB 유저 데이터
-    - email, user_id, db_user 셋 중 하나만 입력하세요.
-        - 이미 get_user를 한 경우 db_user를 사용하세요.
-    - 해당하는 유저가 없는 경우 KeyError 발생
-    """
-    if email is None and user_id is None and db_user is None:
-        raise TypeError(f"[db.payment_method_exists] 매개변수가 입력되지 않았습니다.")
-    if db_user is None:
-        db_user = await get_user(email=email, user_id=user_id)
-        if db_user is None:
-            raise KeyError("[payment_method_exists]: 해당하는 유저가 없습니다!")
-    return bool(
-        (db_user["currency"] == "KRW" and db_user["tosspayments_billing_key"])
-        or (db_user["currency"] == "USD" and db_user["paypal_subscription_id"])
-    )
-
-
 async def signup_history_exists(email: str, phone: str) -> bool:
     query = """
         SELECT id FROM signup_histories 

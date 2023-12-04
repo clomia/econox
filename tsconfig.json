@@ -7,6 +7,6 @@
     "static/*"
   ],
   "compilerOptions": {
-    "moduleResolution": "node"
+    "moduleResolution": "node" // svelte-routing에 대한 ts빌드 오류 해결
   }
 }

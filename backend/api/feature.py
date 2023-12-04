@@ -20,7 +20,7 @@ section_type = Literal["symbol", "country", "custom"]
 async def insert_element_to_user(
     code: constr(min_length=1),
     section: section_type,
-    user=router.basic.auth,
+    user=router.basic.user,
 ):
     """엘리먼트를 유저에게 저장합니다."""
     insert_element_if_it_does_not_exist = db.SQL(
@@ -53,7 +53,7 @@ async def insert_element_to_user(
 async def insert_element_to_user(
     code: constr(min_length=1),
     section: section_type,
-    user=router.basic.auth,
+    user=router.basic.user,
 ):
     """엘리먼트를 유저에게서 삭제합니다."""
     query = """
@@ -70,7 +70,7 @@ async def insert_element_to_user(
 
 
 @router.basic.get("/user/elements")
-async def get_element_from_user(lang: str, user=router.basic.auth):
+async def get_element_from_user(lang: str, user=router.basic.user):
     """
     - 유저에게 저장된 엘리먼트들을 가져옵니다.
     - lang: 응답 데이터의 언어 (ISO 639-1)
@@ -80,7 +80,7 @@ async def get_element_from_user(lang: str, user=router.basic.auth):
         FROM elements e
         INNER JOIN users_elements ue ON ue.element_id = e.id
         WHERE ue.user_id = {user_id}
-        ORDER BY ue.created DESC; """  # 최신의 것이 앞으로 오도록 정렬
+        ORDER BY ue.created DESC """  # 최신의 것이 앞으로 오도록 정렬
     fetched = await db.SQL(query, params={"user_id": user["id"]}, fetch="all").exec()
 
     async def parsing(record: dict):

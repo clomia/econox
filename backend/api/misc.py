@@ -64,7 +64,7 @@ async def paypal_plan_info():
 
 @paypal.private.get("/membership-change-subscription-start-time")
 async def calculation_of_next_billing_date_according_to_membership_change(
-    new_membership: str, user=paypal.private.auth
+    new_membership: str, user=paypal.private.user
 ):
     """
     - PayPal 유저의 맴버십 변경 시 PATCH /api/user/membership 호출 이전에 이 API로 구독 시작일을 계산한 뒤
@@ -74,25 +74,24 @@ async def calculation_of_next_billing_date_according_to_membership_change(
             - PATCH /api/user/membership 호출 시 사용
             - PayPal SDK 생성 시 start_time 매개변수로 사용
     """
-    db_user = await db.get_user(user_id=user["id"])
-    if db_user["currency"] != "USD":
+    if user["currency"] != "USD":
         raise HTTPException(status_code=409, detail="The user does not use PayPal.")
-    if db_user["membership"] == new_membership or new_membership not in MEMBERSHIP:
+    if user["membership"] == new_membership or new_membership not in MEMBERSHIP:
         raise HTTPException(
             status_code=409,
             detail=f"The {new_membership} membership is either identical to the already set value or invalid",
         )
-    if db_user["origin_billing_date"] == db_user["base_billing_date"]:  # 맴버십 변경
+    if user["origin_billing_date"] == user["base_billing_date"]:  # 맴버십 변경
         adjusted_next_billing = calc_next_billing_date_adjust_membership_change(
-            base_billing=db_user["base_billing_date"],
-            current_billing=db_user["current_billing_date"],
-            current_membership=db_user["membership"],
+            base_billing=user["base_billing_date"],
+            current_billing=user["current_billing_date"],
+            current_membership=user["membership"],
             new_membership=new_membership,
             change_day=datetime.now(),
             currency="USD",
         )
     else:  # 변경된 맴버십 롤백
         adjusted_next_billing = calc_next_billing_date(
-            base=db_user["origin_billing_date"], current=db_user["current_billing_date"]
+            base=user["origin_billing_date"], current=user["current_billing_date"]
         )
     return {"adjusted_next_billing": datetime2utcstr(adjusted_next_billing)}

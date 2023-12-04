@@ -130,11 +130,13 @@ class CognitoToken:
 
 class CognitoTokenBearer(HTTPBearer):
     """
+    - 기본적인 코드니토 토큰 검증을 구현합니다.
     - 이 토큰은 Cognito idToken과 accessToken을 '|'로 이어붙인것입니다.
     - 두 토큰을 검증한 뒤 유저정보(id, email)를 제공합니다.
     """
 
     async def __call__(self, request: Request) -> dict:
+        """토큰을 검증하고 해당하는 유저 정보를 반환합니다."""
         try:
             credentials: HTTPAuthorizationCredentials = await super().__call__(request)
         except HTTPException:
@@ -156,37 +158,50 @@ class CognitoTokenBearer(HTTPBearer):
                     status_code=401,
                     detail=f"Authorization failed, user does not exists",
                 )
-            return db_user
+            user = user_info | db_user
+            user["id"] = str(user["id"])  # UUID -> str (UUID 타입 쓸모 없음 코드 복잡도만 늘어남)
+            return user
         except jwt.PyJWTError as e:
             e_str = str(e)
             error_detail = e_str[0].lower() + e_str[1:]
             raise HTTPException(status_code=401, detail=f"Authorization {error_detail}")
 
 
-class MembershipPermissionInspector(CognitoTokenBearer):
+class ServiceTokenBearer(CognitoTokenBearer):
     """
-    - 맴버십 API 권한 의존성
+    - 코그니토 토큰을 기반으로 맴버십에 따른 권한까지 검증합니다.
     - 대금이 밀려 청구 상태가 "require"인 경우 402 응답.
     - 요구되는 맴버십과 맞지 않는 유저인 경우 403 응답.
     """
 
-    def __init__(self, membership: Literal["basic", "professional"]):
+    def __init__(self, authority: Literal["all", "basic", "professional"]):
         super().__init__()
-        self.membership = membership
+        self.authority = authority
 
     async def __call__(self, request: Request) -> dict:
         db_user = await super().__call__(request)
-        if db_user["billing_status"] == "require":
-            raise HTTPException(
-                status_code=402,
-                detail="This account has unpaid membership fees. Payment is required",
-            )
-        elif self.membership == "professional" and db_user["membership"] == "basic":
-            raise HTTPException(
-                status_code=403,
-                detail="Professional membership is required. Your membership is basic",
-            )
-        return db_user
+        match self.authority:
+            case "all":  # 서비스 회원 모두 허용
+                return db_user
+            case "basic":  # 맴버십이 basic 이상인 회원만 허용
+                if db_user["billing_status"] == "require":
+                    raise HTTPException(
+                        status_code=402,
+                        detail="This account has unpaid membership fees. Payment is required",
+                    )
+                return db_user
+            case "professional":  # 맴버십이 professional 이상인 회원만 허용
+                if db_user["billing_status"] == "require":
+                    raise HTTPException(
+                        status_code=402,
+                        detail="This account has unpaid membership fees. Payment is required",
+                    )
+                if db_user["membership"] != "professional":
+                    raise HTTPException(
+                        status_code=403,
+                        detail="Professional membership is required. Your membership is basic",
+                    )
+                return db_user
 
 
 class APIRouter:
@@ -198,32 +213,35 @@ class APIRouter:
     - professional: basic + professional맴버십 유저만 요청 가능
     """
 
-    auth = Depends(CognitoTokenBearer())
-    permission = {
-        "basic": Depends(MembershipPermissionInspector("basic")),
-        "professional": Depends(MembershipPermissionInspector("professional")),
-    }
+    allow_all_user = Depends(ServiceTokenBearer("all"))
+    allow_basic_user = Depends(ServiceTokenBearer("basic"))
+    allow_professional_user = Depends(ServiceTokenBearer("professional"))
 
     def __init__(self, prefix: str):
         self.path = f"/api/{prefix}"
         self.public = routing.APIRouter(prefix=self.path, tags=[prefix])
         self.private = routing.APIRouter(
-            prefix=self.path, tags=[prefix], dependencies=[self.auth]
+            prefix=self.path, tags=[prefix], dependencies=[self.allow_all_user]
         )
         self.basic = routing.APIRouter(
             prefix=self.path,
             tags=[prefix],
-            dependencies=[self.permission["basic"]],
+            dependencies=[self.allow_basic_user],
         )
         self.professional = routing.APIRouter(
             prefix=self.path,
             tags=[prefix],
-            dependencies=[self.permission["professional"]],
+            dependencies=[self.allow_professional_user],
         )
 
-        self.private.auth: dict = self.auth
-        self.basic.auth: dict = self.permission["basic"]
-        self.professional.auth: dict = self.permission["professional"]
+        # 각 라우터에 대해서 유저 정보애 접근할 수 있도록 Depends 객체를 속성으로 할당
+        # Depends는 한번의 API호출에 대해서 한번만 실행되므로 쿼리 반복 실행 등에 대한 걱정 안해도 됌
+        # 여기에서는 API 함수가 어떤 라우터를 사용했는지 알 방법이 없으므로 이렇게 제공하는수밖에 없음..
+        # 따라서  API 함수가 사용한 라우터에 맞게 알아서 가져다 써야 함
+        # user 값은 db.get_user 가 반환한 dict임
+        self.private.user = self.allow_all_user
+        self.basic.user = self.allow_basic_user
+        self.professional.user = self.allow_professional_user
 
         # fastapi.APIRouter의 메서드가 path 인자를 입력받지 않은 경우 기본값 "" 를 사용하도록 변경
         methods = ["get", "post", "put", "patch", "delete", "options", "head", "trace"]

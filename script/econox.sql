@@ -1,4 +1,4 @@
---- Last commit: 2023-11-30 14:01:21 ---
+--- Last commit: 2023-12-04 17:13:48 ---
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ------------------------------------------------
@@ -21,6 +21,7 @@ CREATE TABLE users (
     "next_billing_date" TIMESTAMP NOT NULL, -- 다음 청구 날짜
     "tosspayments_billing_key" VARCHAR(255), 
     "paypal_subscription_id" VARCHAR(255), 
+    "billing_method" VARCHAR(255), 
     "billing_status" billing_status DEFAULT 'active',
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 ); 

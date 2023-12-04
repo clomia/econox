@@ -87,6 +87,7 @@ async def signup(item: SignupInfo):
     if cognito_user["UserStatus"] != "CONFIRMED":
         raise HTTPException(status_code=401, detail="Cognito user is not confirmed")
 
+    billing_method = None
     now = datetime.now()
     next_billing: datetime = calc_next_billing_date(base=now, current=now)
     signup_history = await db.signup_history_exists(email=item.email, phone=item.phone)
@@ -130,6 +131,7 @@ async def signup(item: SignupInfo):
                 card_owner_type=payment["card"]["ownerType"],
                 receipt_url=payment["receipt"]["url"],
             )
+            billing_method = payment["card"]["number"]
         elif item.currency == "USD" and item.paypal:  # 페이팔 빌링
             # -- 빌링 성공여부 확인 --
             # DB 데이터 입력은 웹훅 API가 수행합니다.(POST /api/webhook/paypal/payment-sale-complete)
@@ -152,6 +154,7 @@ async def signup(item: SignupInfo):
                 next_billing = utcstr2datetime(
                     subscription["billing_info"]["next_billing_time"]
                 )
+                billing_method = "Paypal"
             except (httpx.HTTPStatusError, AssertionError):
                 raise HTTPException(
                     status_code=402,
@@ -179,6 +182,7 @@ async def signup(item: SignupInfo):
         next_billing_date=next_billing,
         tosspayments_billing_key=tosspayments_billing_key,
         paypal_subscription_id=paypal_subscription_id,
+        billing_method=billing_method,
     )
     insert_signup_history = db.InsertSQL(
         "signup_histories",
@@ -204,13 +208,14 @@ class BillingTransaction(BaseModel):
     time: utcstr_type
     name: constr(min_length=1)
     amount: float
-    method: constr(min_length=1)
+    method: constr(min_length=1)  # 사용된 결제수단
 
 
 class UserBillingDetail(BaseModel):
     currency: Literal["USD", "KRW"]
     registered: bool  # 결제수단 등록 여부
     status: Literal["active", "require", "deactive"]
+    method: constr(min_length=1) | None  # 현재 등록되어있는 결제수단
     transactions: List[BillingTransaction]
 
 
@@ -241,6 +246,7 @@ async def get_user_detail(user=router.private.user):
             "currency": user["currency"],
             "registered": payment_method_exists(user),
             "status": user["billing_status"],
+            "method": user["billing_method"],
             "transactions": [],
         },
     }
@@ -506,11 +512,11 @@ async def change_payment_method(item: PaymentMethodInfo, user=router.private.use
                 item.tosspayments.expiration_month,
                 item.tosspayments.owner_id,
             )
-            payment_info = await tosspayments.billing(
+            payment = await tosspayments.billing(
                 billing_key, amount=100, order_name="Payment method confirmation"
             )  # 100원 결제
             await TosspaymentsAPI(  # 100원 환불
-                f"/v1/payments/{payment_info['paymentKey']}/cancel"
+                f"/v1/payments/{payment['paymentKey']}/cancel"
             ).post({"cancelReason": "Confirmed"})
         except httpx.HTTPStatusError:
             raise HTTPException(
@@ -518,8 +524,16 @@ async def change_payment_method(item: PaymentMethodInfo, user=router.private.use
                 detail=f"[Tosspayments] Your payment information is incorrect.",
             )
         await db.SQL(
-            "UPDATE users SET tosspayments_billing_key={billing_key} WHERE id={user_id}",
-            params={"billing_key": billing_key, "user_id": user["id"]},
+            """
+            UPDATE users 
+            SET tosspayments_billing_key={billing_key},
+                billing_method={billing_method}
+            WHERE id={user_id}""",
+            params={
+                "billing_key": billing_key,
+                "user_id": user["id"],
+                "billing_method": payment["card"]["number"],
+            },
         ).exec()
     elif user["currency"] == "USD" and item.paypal_subscription_id:  # 페이팔 빌링
         try:
@@ -559,7 +573,7 @@ async def deactivated_billing(user=router.private.user):
     """
     - 계정의 결제를 비활성화합니다. 이후 비용이 청구되지 않습니다.
     """
-    if not await payment_method_exists(user):
+    if not payment_method_exists(user):
         raise HTTPException(
             status_code=402, detail="There is no registered payment method"
         )
@@ -589,7 +603,7 @@ async def activate_billing(item: BillingRestore, user=router.private.user):
         - 결제 주기를 벗어나 비활성화된 계정에 대해서는 결제정보를 받아 다시 청구를 재개해야 하므로 402을 응답합니다.
         - 결제정보가 올바르지 않은 경우에도 402 에러가 응답됩니다.
     """
-    if not await payment_method_exists(user):
+    if not payment_method_exists(user):
         raise HTTPException(  # 첫 회원가입 혜택 대상자는 청구 비활성/활성 동작이 유효하지 않습니다.
             status_code=409, detail="There is no registered payment method"
         )

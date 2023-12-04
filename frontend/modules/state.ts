@@ -18,6 +18,7 @@ export interface UserDetailType {
         currency: string;
         registered: boolean;
         status: string
+        method: string
         transactions: {
             time: string;
             name: string;
@@ -81,6 +82,7 @@ export const UserInfo: Writable<UserDetailType> = writable({  // 로그인 되�
         currency: "",
         registered: false,
         status: "",
+        method: "",
         transactions: []
     }
 })

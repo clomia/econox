@@ -103,7 +103,7 @@
 
     let currentBillingMethodString: string;
     if ($UserInfo["billing"]["transactions"][0]) {
-        currentBillingMethodString = paymentMethodString($UserInfo["billing"]["transactions"][0]["method"]);
+        currentBillingMethodString = paymentMethodString($UserInfo["billing"]["method"]);
     } else {
         if ($UserInfo["billing"]["registered"]) {
             currentBillingMethodString = $Text.PaymentMethod_Waiting;

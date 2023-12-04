@@ -1,4 +1,4 @@
---- Last commit: 2023-11-30 14:02:17 ---
+--- Last commit: 2023-12-04 17:13:03 ---
 CREATE TABLE deepl (
     "id" SERIAL NOT NULL PRIMARY KEY,
     "from_lang" VARCHAR(3),

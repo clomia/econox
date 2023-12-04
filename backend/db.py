@@ -49,10 +49,14 @@ class QueryError(Exception):
 async def exec(
     *sql: SQL,
     dbname: str = "econox",
+    parallel: bool = False,
     _retry=False,
 ) -> Dict[SQL, None | List[Dict[str, Any]]]:
     """
     - 여러 SQL을 동시에 실행합니다. 하나의 트렌젝션으로 취급되며 하나라도 실패하면 모두 안전하게 롤백됩니다.
+    - parallel: 병렬 처리 활성화 여부
+        - 여러 SQL을 실행할 때, 각각의 SQL이 서로 종속성을 띄지 않는 경우 병렬 옵션을 활성화 하세요.
+        - 종속성을 띄는 SQL들을 병렬로 수행하지 마세요!
     - retuen: SQL에 대한 결과가 딕셔너리로 매핑되어 반환됩니다.
         - 그리고 결과는 컬럼과 값이 매핑된 딕셔너리입니다.
     - exception: 발생된 예외의 __cause__ 속성을 통해 QueryError 인스턴스를 가져올 수 있습니다.
@@ -87,7 +91,10 @@ async def exec(
                 log.info("[DB] Secrets Manager로부터 업데이트된 암호로 인증에 성공하였습니다.")
             async with conn.cursor() as cur:
                 tasks = [_exec(_sql, cur) for _sql in sql]
-                results = await asyncio.gather(*tasks)
+                if parallel:
+                    results = await asyncio.gather(*tasks)  # 동시 실행
+                else:
+                    results = [await task for task in tasks]  # 순차 실행
                 return {_sql: result for _sql, result in zip(sql, results)}
     except psycopg.OperationalError as e:
         if _retry:
@@ -107,7 +114,7 @@ class SQL:
         self,
         query: str,
         params: Dict[str, Any] = {},
-        fetch: Literal[False, "one", "all"] = "one",
+        fetch: Literal[False, "one", "all"] = False,
     ):
         """
         - PostgreSQL 문자열 컨벤션이 아닌 python 객체를 사용합니다. 문자열을 ''로 감싸지 마세요
@@ -155,7 +162,7 @@ class InsertSQL(SQL):  # where 등 복잡한 구문이 없으므로 추상화 �
     def __init__(self, table: str, **params):
         """
         - table: 데이터를 삽입할 테이블
-            - [!] SQL 인젝션에 대한 보안을 위해서 table 매개변수는 반드시
+            - [!] SQL 인젝션 보안을 위해서 table 매개변수는 반드시
                 리터럴 값이어야 하며, 외부로부터 입력받아선 안됩니다.
         - params: 컬럼명, 값 쌍들
         """
@@ -170,9 +177,47 @@ class InsertSQL(SQL):  # where 등 복잡한 구문이 없으므로 추상화 �
 # ======================== 단축 함수들 ========================
 
 
-async def user_exists(email: str) -> bool:
-    sql = SQL("SELECT id FROM users WHERE email={email}", params={"email": email})
-    return bool(await sql.exec())
+async def get_user(*, email: str = None, user_id: str = None) -> dict | None:
+    """
+    - 유저 레코드 가져오기
+    - email, user_id 둘 중 하나만 입력하세요.
+    - 해당하는 유저가 없으면 None을 반환합니다.
+    """
+    if email is not None:
+        sql = SQL(
+            "SELECT * FROM users WHERE email={email}",
+            params={"email": email},
+            fetch="one",
+        )
+    elif user_id is not None:
+        sql = SQL(
+            "SELECT * FROM users WHERE id={id}", params={"id": user_id}, fetch="one"
+        )
+    else:
+        raise TypeError(f"[db.get_user] 매개변수가 입력되지 않았습니다.")
+    return await sql.exec()
+
+
+async def payment_method_exists(
+    *, email: str = None, user_id: str = None, db_user: dict = None
+) -> bool:
+    """
+    - 결제수단 등록 여부
+    - db_user: get_user 함수를 통해 가져온 DB 유저 데이터
+    - email, user_id, db_user 셋 중 하나만 입력하세요.
+        - 이미 get_user를 한 경우 db_user를 사용하세요.
+    - 해당하는 유저가 없는 경우 KeyError 발생
+    """
+    if email is None and user_id is None and db_user is None:
+        raise TypeError(f"[db.payment_method_exists] 매개변수가 입력되지 않았습니다.")
+    if db_user is None:
+        db_user = await get_user(email=email, user_id=user_id)
+        if db_user is None:
+            raise KeyError("[payment_method_exists]: 해당하는 유저가 없습니다!")
+    return bool(
+        (db_user["currency"] == "KRW" and db_user["tosspayments_billing_key"])
+        or (db_user["currency"] == "USD" and db_user["paypal_subscription_id"])
+    )
 
 
 async def signup_history_exists(email: str, phone: str) -> bool:
@@ -181,16 +226,5 @@ async def signup_history_exists(email: str, phone: str) -> bool:
         WHERE email={email} or phone={phone}
         LIMIT 1
     """  # email, phone이 UNIQUE가 아니라서 LIMIT 1 해줘야 함
-    sql = SQL(query, params={"email": email, "phone": phone})
+    sql = SQL(query, params={"email": email, "phone": phone}, fetch="one")
     return bool(await sql.exec())
-
-
-async def payment_method_exists(email: str) -> bool:
-    """결제수단 등록 여부"""
-    sql = SQL("SELECT * FROM users WHERE email={email}", {"email": email})
-    if user := await sql.exec() is None:
-        raise QueryError(sql, "[payment_method_exists]: 해당하는 유저가 없습니다!")
-    return bool(
-        (user["currency"] == "KRW" and user["tosspayments_billing_key"])
-        or (user["currency"] == "USD" and user["paypal_subscription_id"])
-    )

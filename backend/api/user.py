@@ -78,8 +78,6 @@ async def signup(item: SignupInfo):
 
     now = datetime.now()
     next_billing: datetime = calc_next_billing_date(base=now, current=now)
-
-    signup_transaction = db.Transaction()
     signup_history = await db.signup_history_exists(email=item.email, phone=item.phone)
     if signup_history:
         # 회원가입 내역이 있다면 결제정보 필요함
@@ -103,25 +101,23 @@ async def signup(item: SignupInfo):
                     status_code=402,
                     detail=f"[Tosspayments] Your payment information is incorrect.",
                 )
-
-            signup_transaction.append(
-                template=db.Template(table="tosspayments_billings").insert_query(
-                    user_id=user_id,
-                    order_id=payment["orderId"],
-                    transaction_time=datetime.fromisoformat(payment["approvedAt"]),
-                    payment_key=payment["paymentKey"],
-                    order_name=payment["orderName"],
-                    total_amount=payment["totalAmount"],
-                    supply_price=payment["suppliedAmount"],
-                    vat=payment["vat"],
-                    card_issuer=payment["card"]["issuerCode"],
-                    card_acquirer=payment["card"]["acquirerCode"],
-                    card_number_masked=payment["card"]["number"],
-                    card_approve_number=payment["card"]["approveNo"],
-                    card_type=payment["card"]["cardType"],
-                    card_owner_type=payment["card"]["ownerType"],
-                    receipt_url=payment["receipt"]["url"],
-                )
+            insert_tosspayments_billing = db.InsertSQL(
+                "tosspayments_billings",
+                user_id=user_id,
+                order_id=payment["orderId"],
+                transaction_time=datetime.fromisoformat(payment["approvedAt"]),
+                payment_key=payment["paymentKey"],
+                order_name=payment["orderName"],
+                total_amount=payment["totalAmount"],
+                supply_price=payment["suppliedAmount"],
+                vat=payment["vat"],
+                card_issuer=payment["card"]["issuerCode"],
+                card_acquirer=payment["card"]["acquirerCode"],
+                card_number_masked=payment["card"]["number"],
+                card_approve_number=payment["card"]["approveNo"],
+                card_type=payment["card"]["cardType"],
+                card_owner_type=payment["card"]["ownerType"],
+                receipt_url=payment["receipt"]["url"],
             )
         elif item.currency == "USD" and item.paypal:  # 페이팔 빌링
             # -- 빌링 성공여부 확인 --
@@ -158,31 +154,36 @@ async def signup(item: SignupInfo):
 
     tosspayments_billing_key = billing_key if item.tosspayments else None
     paypal_subscription_id = item.paypal.subscription if item.paypal else None
-    signup_transaction.prepend(  # 외래키 제약조건으로 인해 가장 먼저 실행되어야 함
-        template=db.Template(table="users").insert_query(
-            id=user_id,
-            email=item.email,
-            name=item.email.split("@")[0][:10],
-            phone=item.phone,
-            membership=item.membership,
-            currency=item.currency,
-            origin_billing_date=now if signup_history else None,
-            base_billing_date=now if signup_history else None,
-            current_billing_date=now if signup_history else None,
-            next_billing_date=next_billing,
-            tosspayments_billing_key=tosspayments_billing_key,
-            paypal_subscription_id=paypal_subscription_id,
-        )
+    insert_user = db.InsertSQL(  # 외래키 제약조건으로 인해 가장 먼저 실행되어야 함
+        "users",
+        id=user_id,
+        email=item.email,
+        name=item.email.split("@")[0][:10],
+        phone=item.phone,
+        membership=item.membership,
+        currency=item.currency,
+        origin_billing_date=now if signup_history else None,
+        base_billing_date=now if signup_history else None,
+        current_billing_date=now if signup_history else None,
+        next_billing_date=next_billing,
+        tosspayments_billing_key=tosspayments_billing_key,
+        paypal_subscription_id=paypal_subscription_id,
     )
-    signup_transaction.append(
-        template=db.Template(table="signup_histories").insert_query(
-            user_id=user_id,
-            email=item.email,
-            phone=item.phone,
-        )
+    insert_signup_history = db.InsertSQL(
+        "signup_histories",
+        user_id=user_id,
+        email=item.email,
+        phone=item.phone,
     )
     try:
-        await signup_transaction.exec()
+        if item.currency == "KRW" and item.tosspayments:
+            await db.exec(
+                insert_user,
+                insert_signup_history,
+                insert_tosspayments_billing,
+            )
+        else:
+            await db.exec(insert_user, insert_signup_history)
     except psycopg.errors.UniqueViolation:  # email colume is unique
         raise HTTPException(status_code=409, detail="Email is already in used")
     return {"first_signup_benefit": not signup_history}  # 첫 회원가입 혜택 여부
@@ -218,86 +219,60 @@ async def get_user_detail(user=router.private.auth):
     - 유저 상세 정보를 가져옵니다.
     - Response: UserDetail 스키마를 참조
     """
-    db_user = await db.select_row(
-        "users",
-        fields=[
-            "name",
-            "membership",
-            "currency",
-            "next_billing_date",
-            "billing_status",
-            "created",
-        ],
-        where={"id": user["id"]},
-    )
-
+    db_user = await db.get_user(user_id=user["id"])
     detail = {
-        "id": user["id"],
+        "id": db_user["id"],
         "name": db_user["name"],
-        "email": user["email"],
+        "email": db_user["email"],
         "membership": db_user["membership"],
         "signup_date": datetime2utcstr(db_user["created"]),
         "next_billing_date": datetime2utcstr(db_user["next_billing_date"]),
         "billing": {
             "currency": db_user["currency"],
-            "registered": await db.payment_method_exists(user["email"]),
+            "registered": await db.payment_method_exists(db_user=db_user),
             "status": db_user["billing_status"],
             "transactions": [],
         },
     }
-    transaction_fields = ["time", "name", "amount", "method"]
-
-    cond_kwargs = {"where": {"user_id": user["id"]}, "limit": 15}
     if db_user["currency"] == "KRW":
-        transactions: list = await db.exec(
-            template=db.Template(table="tosspayments_billings").select_query(
-                "transaction_time",
-                "order_name",
-                "total_amount",
-                "card_number_masked",
-                **cond_kwargs,
-            )
-        )
-        transactions.sort(key=lambda row: row[0], reverse=True)  # 거래 시간으로 내림차순 정렬
-        for transaction in transactions:
-            transaction = list(transaction)
-            transaction[0] = datetime2utcstr(transaction[0])
+        query = "SELECT * FROM tosspayments_billings WHERE user_id={user_id} ORDER BY created DESC LIMIT 15"
+        select_transactions = db.SQL(query, params={"user_id": user["id"]}, fetch="all")
+        for transaction in await select_transactions.exec():
             detail["billing"]["transactions"].append(
-                dict(zip(transaction_fields, transaction))
+                {
+                    "time": datetime2utcstr(transaction["transaction_time"]),
+                    "name": transaction["order_name"],
+                    "amount": transaction["total_amount"],
+                    "method": transaction["card_number_masked"],
+                }
             )
     elif db_user["currency"] == "USD":
-        transactions = await db.exec(
-            template=db.Template(table="paypal_billings").select_query(
-                "transaction_time", "order_name", "total_amount", **cond_kwargs
-            )
-        )
-        transactions.sort(key=lambda row: row[0], reverse=True)  # 거래 시간으로 내림차순 정렬
-        for transaction in transactions:
-            transaction = list(transaction)
-            transaction[0] = datetime2utcstr(transaction[0])
-            transaction.append("PayPal")  # method -> PayPal
+        query = "SELECT * FROM paypal_billings WHERE user_id={user_id} ORDER BY created DESC LIMIT 15"
+        select_transactions = db.SQL(query, params={"user_id": user["id"]}, fetch="all")
+        for transaction in await select_transactions.exec():
             detail["billing"]["transactions"].append(
-                dict(zip(transaction_fields, transaction))
+                {
+                    "time": datetime2utcstr(transaction["transaction_time"]),
+                    "name": transaction["order_name"],
+                    "amount": transaction["total_amount"],
+                    "method": "PayPal",
+                }
             )
     return detail
 
 
 @router.private.delete()
-async def delete_user(user=router.private.auth):
+async def user_delete(user=router.private.auth):
     """DB와 Cognito에서 유저 삭제 (회원탈퇴)"""
-    await db.exec(
-        "DELETE FROM users WHERE id={user_id};",
-        """
-        UPDATE signup_histories 
-        SET user_deleted = CURRENT_TIMESTAMP 
-        WHERE user_id={user_id};
-        """,
+    delete_user = db.SQL(
+        "DELETE FROM users WHERE id={user_id}", params={"user_id": user["id"]}
+    )
+    update_signup_history_marking_as_user_deleted = db.SQL(
+        "UPDATE signup_histories SET user_deleted=CURRENT_TIMESTAMP WHERE user_id={user_id}",
         params={"user_id": user["id"]},
     )
-    await run_async(
-        cognito.delete_user,
-        AccessToken=user["cognito_access_token"],
-    )
+    await db.exec(delete_user, update_signup_history_marking_as_user_deleted)
+    await run_async(cognito.delete_user, AccessToken=user["cognito_access_token"])
     return {"message": "Delete successfully"}
 
 
@@ -311,7 +286,7 @@ async def create_cognito_user(
     - POST /api/auth/email/confirm API로 해당 인증코드를 인증해야 함
     - Response: Cognito에서 생성된 유저 ID
     """
-    if await db.user_exists(email):
+    if await db.get_user(email=email):
         raise HTTPException(status_code=409, detail="Email is already in used")
     create_cognito_user_func = partial(
         run_async,
@@ -345,10 +320,10 @@ async def change_user_name(
     user=router.private.auth,
 ):
     """유저 이름 변경"""
-    await db.exec(
-        "UPDATE users SET name={user_name} WHERE id={user_id}",
-        params={"user_name": new_name, "user_id": user["id"]},
-    )
+    await db.SQL(
+        "UPDATE users SET name={new_name} WHERE id={id}",
+        params={"id": user["id"], "new_name": new_name},
+    ).exec()
     return {"message": "Changed successfully"}
 
 
@@ -365,7 +340,7 @@ async def change_password(
     - confirm_code: send-password-reset-code API를 통해 유저에게 발송된 인증코드
     - email: send-password-reset-code API에 사용한 이메일과 동일한 이메일
     """
-    if not await db.user_exists(email):
+    if not await db.get_user(email=email):
         raise HTTPException(status_code=404, detail="User does not exist")
     try:
         await run_async(
@@ -397,27 +372,19 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
         - 구독 생성 시 GET /api/paypal/membership-change-subscription-start-time 를 사용하세요
     - Response: 조정된 다음 청구일시
     """
-    db_user = await db.select_row(
-        "users",
-        fields=[
-            "membership",
-            "currency",
-            "origin_billing_date",
-            "base_billing_date",
-            "current_billing_date",
-            "next_billing_date",
-            "paypal_subscription_id",
-        ],
-        where={"id": user["id"]},
-    )
-
-    new_membership = item.new_membership
-    if db_user["membership"] == new_membership or new_membership not in MEMBERSHIP:
+    db_user = await db.get_user(user_id=user["id"])
+    if (  # new_membership값이 올바른지 확인
+        db_user["membership"] == item.new_membership
+        or item.new_membership not in MEMBERSHIP
+    ):
         raise HTTPException(
             status_code=409,
-            detail=f"The {new_membership} membership is either identical to the already set value or invalid",
+            detail=f"The {item.new_membership} membership is either identical to the already set value or invalid",
         )
 
+    update_query_trial = """
+        UPDATE users SET membership={new_membership} WHERE id={user_id}
+    """
     update_query_tosspayments = """
         UPDATE users 
         SET membership={new_membership}, 
@@ -433,89 +400,83 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.a
         WHERE id={user_id}"""  # paypal_subscription_id 업데이트 필요
 
     if db_user["current_billing_date"] is None:  # 결제가 필요 없는 계정이므로 맴버십만 바꾸면 됌
-        await db.exec(
-            "UPDATE users SET membership={new_membership} WHERE id={user_id}",
-            params={"new_membership": new_membership, "user_id": user["id"]},
-        )
+        await db.SQL(
+            update_query_trial,
+            params={"new_membership": item.new_membership, "user_id": user["id"]},
+        ).exec()
         adjusted_next_billing = db_user["next_billing_date"]
-    elif (
-        db_user["origin_billing_date"] == db_user["base_billing_date"]
-    ):  # 이전에 결제된 맴버십을 다른것으로 변경하는 경우
+    elif db_user["origin_billing_date"] == db_user["base_billing_date"]:
+        # 이전에 결제된 맴버십을 다른것으로 변경하는 경우
         if db_user["currency"] == "USD" and item.paypal_subscription_id:
             adjusted_next_billing = await get_paypal_next_billing_date(
                 item.paypal_subscription_id  # 다음 청구 날짜는 이미 새로운 구독에 반영되어있음
             )
-
             cancel_reason = "A new subscription has been created to apply the difference due to the change in the plan."
             await PayPalAPI(  # 기존 구독 비활성화
                 f"/v1/billing/subscriptions/{db_user['paypal_subscription_id']}/cancel"
             ).post({"reason": cancel_reason})
-
-            await db.exec(
+            await db.SQL(
                 update_query_paypal,
                 params={
-                    "new_membership": new_membership,
+                    "new_membership": item.new_membership,
                     "base_billing_date": adjusted_next_billing,
                     "next_billing": adjusted_next_billing,
                     "user_id": user["id"],
                     "subscription_id": item.paypal_subscription_id,
                 },
-            )
+            ).exec()
         elif db_user["currency"] == "KRW":
             # Tosspayments -> 다음 청구 날짜 직접 계산
             adjusted_next_billing = calc_next_billing_date_adjust_membership_change(
                 base_billing=db_user["base_billing_date"],
                 current_billing=db_user["current_billing_date"],
                 current_membership=db_user["membership"],
-                new_membership=new_membership,
+                new_membership=item.new_membership,
                 change_day=datetime.now(),
                 currency=db_user["currency"],
             )
-            await db.exec(
+            await db.SQL(
                 update_query_tosspayments,
                 params={
-                    "new_membership": new_membership,
+                    "new_membership": item.new_membership,
                     "base_billing_date": adjusted_next_billing,
                     "next_billing": adjusted_next_billing,
                     "user_id": user["id"],
                 },
-            )
+            ).exec()
     else:  # 결제가 이루어지기 전에, 기존 맴버십으로 롤백하는 경우
         if db_user["currency"] == "USD" and item.paypal_subscription_id:
             adjusted_next_billing = await get_paypal_next_billing_date(
                 item.paypal_subscription_id  # 다음 청구 날짜는 이미 새로운 구독에 반영되어있음
             )
-
             cancel_reason = "A new subscription has been created to apply the difference due to the change in the plan."
             await PayPalAPI(  # 기존 구독 비활성화
                 f"/v1/billing/subscriptions/{db_user['paypal_subscription_id']}/cancel"
             ).post({"reason": cancel_reason})
-
-            await db.exec(
+            await db.SQL(
                 update_query_paypal,
                 params={
-                    "new_membership": new_membership,
+                    "new_membership": item.new_membership,
                     "base_billing_date": db_user["origin_billing_date"],  # 롤백
                     "next_billing": adjusted_next_billing,
                     "user_id": user["id"],
                     "subscription_id": item.paypal_subscription_id,
                 },
-            )
+            ).exec()
         elif db_user["currency"] == "KRW":
             adjusted_next_billing = calc_next_billing_date(
                 base=db_user["origin_billing_date"],
                 current=db_user["current_billing_date"],
             )
-            await db.exec(
+            await db.SQL(
                 update_query_tosspayments,
                 params={
-                    "new_membership": new_membership,
+                    "new_membership": item.new_membership,
                     "base_billing_date": db_user["origin_billing_date"],
                     "next_billing": adjusted_next_billing,
                     "user_id": user["id"],
                 },
-            )
-
+            ).exec()
     return {"adjusted_next_billing": datetime2utcstr(adjusted_next_billing)}
 
 
@@ -527,12 +488,8 @@ class PaymentMethodInfo(BaseModel):
 @router.private.patch("/payment-method")
 async def change_payment_method(item: PaymentMethodInfo, user=router.private.auth):
     """결제수단을 변경합니다. PG사 변경은 불가능합니다."""
-    currency, *_ = await db.exec(
-        "SELECT currency FROM users WHERE id={user_id}",
-        params={"user_id": user["id"]},
-        embed=True,
-    )
-    if currency == "KRW" and item.tosspayments:
+    db_user = await db.get_user(user_id=user["id"])
+    if db_user["currency"] == "KRW" and item.tosspayments:
         tosspayments = TosspaymentsBilling(user_id=user["id"])
         try:
             billing_key = await tosspayments.get_billing_key(
@@ -544,27 +501,22 @@ async def change_payment_method(item: PaymentMethodInfo, user=router.private.aut
             payment_info = await tosspayments.billing(
                 billing_key, amount=100, order_name="Payment method confirmation"
             )  # 100원 결제
-            await TosspaymentsAPI(
+            await TosspaymentsAPI(  # 100원 환불
                 f"/v1/payments/{payment_info['paymentKey']}/cancel"
-            ).post(
-                {"cancelReason": "Confirmed"}  # 100원 환불
-            )
+            ).post({"cancelReason": "Confirmed"})
         except httpx.HTTPStatusError:
             raise HTTPException(
                 status_code=402,
                 detail=f"[Tosspayments] Your payment information is incorrect.",
             )
-        await db.exec(
+        await db.SQL(
             "UPDATE users SET tosspayments_billing_key={billing_key} WHERE id={user_id}",
             params={"billing_key": billing_key, "user_id": user["id"]},
-        )
-    elif currency == "USD" and item.paypal_subscription_id:  # 페이팔 빌링
+        ).exec()
+    elif db_user["currency"] == "USD" and item.paypal_subscription_id:  # 페이팔 빌링
         try:
             next_billing = await get_paypal_next_billing_date(
                 item.paypal_subscription_id
-            )
-            db_user = await db.select_row(
-                "users", fields=["paypal_subscription_id"], where={"id": user["id"]}
             )
             await PayPalAPI(  # 기존 구독 취소
                 f"/v1/billing/subscriptions/{db_user['paypal_subscription_id']}/cancel"
@@ -574,7 +526,7 @@ async def change_payment_method(item: PaymentMethodInfo, user=router.private.aut
                 status_code=402,
                 detail=f"[PayPal] Your subscription status in paypal server is incorrect",
             )
-        await db.exec(
+        await db.SQL(
             """
             UPDATE users SET paypal_subscription_id={subscription}, 
                 next_billing_date={next_billing} 
@@ -585,7 +537,7 @@ async def change_payment_method(item: PaymentMethodInfo, user=router.private.aut
                 "next_billing": next_billing,
                 "user_id": user["id"],
             },
-        )
+        ).exec()
     else:
         raise HTTPException(
             status_code=409,
@@ -599,25 +551,21 @@ async def deactivated_billing(user=router.private.auth):
     """
     - 계정의 결제를 비활성화합니다. 이후 비용이 청구되지 않습니다.
     """
-    if not await db.payment_method_exists(user["email"]):
+    db_user = await db.get_user(user_id=user["id"])
+    if not await db.payment_method_exists(db_user=db_user):
         raise HTTPException(
             status_code=402, detail="There is no registered payment method"
         )
-    db_user = await db.select_row(
-        "users",
-        fields=["paypal_subscription_id", "billing_status"],
-        where={"id": user["id"]},
-    )
     if not db_user["billing_status"] == "active":
         raise HTTPException(status_code=409, detail="Billing is already suspended")
     if db_user["paypal_subscription_id"]:
         await PayPalAPI(
             f"/v1/billing/subscriptions/{db_user['paypal_subscription_id']}/suspend"
         ).post({"reason": "Deactivate Billing"})
-    await db.exec(
-        "UPDATE users SET billing_status={value} WHERE id={user_id}",
-        params={"value": "deactive", "user_id": user["id"]},
-    )
+    await db.SQL(
+        "UPDATE users SET billing_status='deactive' WHERE id={user_id}",
+        params={"user_id": user["id"]},
+    ).exec()
     return {"message": "User billing deactivated"}
 
 
@@ -634,27 +582,16 @@ async def activate_billing(item: BillingRestore, user=router.private.auth):
         - 결제 주기를 벗어나 비활성화된 계정에 대해서는 결제정보를 받아 다시 청구를 재개해야 하므로 402을 응답합니다.
         - 결제정보가 올바르지 않은 경우에도 402 에러가 응답됩니다.
     """
-    if not await db.payment_method_exists(user["email"]):
+    db_user = await db.get_user(user_id=user["id"])
+    if not await db.payment_method_exists(db_user=db_user):
         raise HTTPException(  # 첫 회원가입 혜택 대상자는 청구 비활성/활성 동작이 유효하지 않습니다.
             status_code=409, detail="There is no registered payment method"
         )
-    db_user = await db.select_row(
-        "users",
-        fields=[
-            "membership",
-            "billing_status",
-            "currency",
-            "next_billing_date",
-            "tosspayments_billing_key",
-            "paypal_subscription_id",
-        ],
-        where={"id": user["id"]},
-    )
     if db_user["billing_status"] == "active":
         raise HTTPException(status_code=409, detail="You are already activated")
 
+    sql_list = []
     now = datetime.now()
-    db_transaction = db.Transaction()
     if db_user["next_billing_date"] - timedelta(days=1) < now:  # 결제 주기를 벗어남 (계정 정지 상태)
         # 결제가 정확한 시간에 이루어지는게 아니라서 결제 예정일 하루 전을 기준으로 함, paypal 웹훅 딜레이 있어서 billing_status로 구분하면 안됌
         if db_user["currency"] == "USD" and db_user["paypal_subscription_id"]:  # Paypal
@@ -669,14 +606,17 @@ async def activate_billing(item: BillingRestore, user=router.private.auth):
             await PayPalAPI(  # 기존 paypal 구독 취소
                 f"/v1/billing/subscriptions/{db_user['paypal_subscription_id']}/cancel"
             ).post({"reason": "Reactivate Billing"})
-            db_transaction.append(
-                "UPDATE users SET paypal_subscription_id={subscription_id} WHERE id={user_id};",
-                subscription_id=item.paypal.subscription,
-                user_id=user["id"],
+            sql_list.append(
+                db.SQL(
+                    "UPDATE users SET paypal_subscription_id={subscription_id} WHERE id={user_id}",
+                    params={
+                        "subscription_id": item.paypal.subscription,
+                        "user_id": user["id"],
+                    },
+                )
             )
-        if (
-            db_user["currency"] == "KRW" and db_user["tosspayments_billing_key"]
-        ):  # Tosspayments
+        if db_user["currency"] == "KRW" and db_user["tosspayments_billing_key"]:
+            # Tosspayments
             if not item.tosspayments:
                 raise HTTPException(
                     status_code=402,
@@ -703,13 +643,15 @@ async def activate_billing(item: BillingRestore, user=router.private.auth):
                     detail=f"[Tosspayments] Your payment information is incorrect.",
                 )
             else:
-                db_transaction.append(
-                    "UPDATE users SET tosspayments_billing_key={new_billing_key} WHERE id={user_id};",
-                    new_billing_key=new_billing_key,
-                    user_id=user["id"],
+                sql_list.append(
+                    db.SQL(
+                        "UPDATE users SET tosspayments_billing_key={new_key} WHERE id={id}",
+                        params={"new_key": new_billing_key, "id": user["id"]},
+                    )
                 )
-                db_transaction.append(
-                    template=db.Template(table="tosspayments_billings").insert_query(
+                sql_list.append(
+                    db.InsertSQL(
+                        "tosspayments_billings",
                         user_id=user["id"],
                         order_id=payment["orderId"],
                         transaction_time=datetime.fromisoformat(payment["approvedAt"]),
@@ -728,19 +670,21 @@ async def activate_billing(item: BillingRestore, user=router.private.auth):
                     )
                 )
             next_billing_date = calc_next_billing_date(base=now, current=now)
-
-        db_transaction.append(
-            """
+        sql_list.append(
+            db.SQL(
+                """
             UPDATE users 
             SET origin_billing_date={now}, base_billing_date={now}, 
                 current_billing_date={now}, next_billing_date={next_billing_date}
             WHERE id={user_id};
             """,
-            now=now,
-            next_billing_date=next_billing_date,
-            user_id=user["id"],
+                params={
+                    "now": now,
+                    "next_billing_date": next_billing_date,
+                    "user_id": user["id"],
+                },
+            )
         )
-
     else:  # 아직 결제 주기 안에 있음 (계정 정지 예정인 상태)
         if db_user["currency"] == "USD" and db_user["paypal_subscription_id"]:  # PayPal
             try:
@@ -752,11 +696,11 @@ async def activate_billing(item: BillingRestore, user=router.private.auth):
                     status_code=402,
                     detail=f"[PayPal] Your paypal status is incorrect. can't activate subscription",
                 )
-    db_transaction.append(
-        "UPDATE users SET billing_status={value} WHERE id={user_id}",
-        value="active",
-        user_id=user["id"],
+    sql_list.append(
+        db.SQL(
+            "UPDATE users SET billing_status='active' WHERE id={id}",
+            params={"id": user["id"]},
+        )
     )
-
-    await db_transaction.exec()
+    await db.exec(*sql_list)
     return {"message": "User billing activated"}

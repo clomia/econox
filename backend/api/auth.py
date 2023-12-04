@@ -26,7 +26,7 @@ async def login(
     - Response: 인증 토큰 & 갱신용 토큰
     """
 
-    if not await db.user_exists(email):
+    if not await db.get_user(email=email):
         raise HTTPException(status_code=404, detail="User does not exist")
     # ========== 이전에 발급된 모든 refresh 토큰 무효화 요청 ==========
     try:
@@ -181,7 +181,7 @@ async def send_password_reset_confirmation_code(
     - email: 비밀번호를 재설정할 계정의 이메일
     - PATCH /api/user/password API 사용시 필요합니다.
     """
-    if not await db.user_exists(email):
+    if not await db.get_user(email=email):
         raise HTTPException(status_code=404, detail="User does not exist")
     try:
         await run_async(

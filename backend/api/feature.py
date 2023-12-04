@@ -30,7 +30,6 @@ async def insert_element_to_user(
         ON CONFLICT (section, code) DO NOTHING
         """,
         params={"section": section, "code": code},
-        fetch=False,
     )
     create_connection = db.SQL(
         """
@@ -40,7 +39,6 @@ async def insert_element_to_user(
             (SELECT id FROM elements WHERE section={section} and code={code})
         )""",
         params={"user_id": user["id"], "section": section, "code": code},
-        fetch=False,
     )
     try:
         await db.exec(insert_element_if_it_does_not_exist, create_connection)
@@ -67,7 +65,7 @@ async def insert_element_to_user(
         AND elements.code = {code}
     """
     params = {"user_id": user["id"], "section": section, "code": code}
-    await db.SQL(query, params, fetch=False).exec()
+    await db.SQL(query, params).exec()
     return {"message": "Delete successfully"}  # 실제로 삭제 동작을 했는지는 모르지만 결과가 무결하므로 200 응답
 
 
@@ -85,22 +83,20 @@ async def get_element_from_user(lang: str, user=router.basic.auth):
         ORDER BY ue.created DESC; """  # 최신의 것이 앞으로 오도록 정렬
     fetched = await db.SQL(query, params={"user_id": user["id"]}, fetch="all").exec()
 
-    # todo 나중에 와서 여기 fetched 어떻게 생겼는지 로그 찍어보고 밑에 로직 짜야 함
-    async def parsing(code, section, update_time):
-        if section == "symbol":
-            ele = await fmp.Symbol(code).load()
-        elif section == "country":
-            ele = await world_bank.Country(code).load()
+    async def parsing(record: dict):
+        # 캐싱되어있으면 엄청 빠름
+        if record["section"] == "symbol":
+            ele = await fmp.Symbol(record["code"]).load()
+        elif record["section"] == "country":
+            ele = await world_bank.Country(record["code"]).load()
         name, note = await asyncio.gather(ele.name.en(), ele.note.trans(to=lang))
         return {
-            "code": code,
-            "section": section,
+            "code": record["code"],
+            "section": record["section"],
             "name": name,
             "note": note,
-            "update": datetime2utcstr(update_time),
+            "update": datetime2utcstr(record["update_time"]),
         }
 
-    tasks = [  # 캐싱되어있으면 엄청 빠름
-        parsing(code, section, update_time) for code, section, update_time in elements
-    ]
+    tasks = [parsing(record) for record in fetched]
     return await asyncio.gather(*tasks)

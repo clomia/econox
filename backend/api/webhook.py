@@ -48,30 +48,19 @@ async def paypal_payment_webhook(event: dict = Body(...)):
             subscription["billing_info"]["next_billing_time"]
         )
         plan = await PayPalAPI(f"/v1/billing/plans/{subscription['plan_id']}").get()
-        db_insert_func = partial(
-            db.exec,
-            """
-            INSERT INTO paypal_billings (user_id, transaction_id, transaction_time, 
-                order_name, total_amount, fee_amount)
-            VALUES (
-                (SELECT id FROM users WHERE paypal_subscription_id={subscription_id} LIMIT 1),
-                {transaction_id}, {transaction_time}, {order_name}, {total_amount}, {fee_amount}
-            )
-            """,
-            params={
-                "subscription_id": subscription_id,
-                "transaction_id": event["resource"]["id"],
-                "transaction_time": transaction_time,
-                "order_name": plan["name"],
-                "total_amount": float(event["resource"]["amount"]["total"]),
-                "fee_amount": float(event["resource"]["transaction_fee"]["value"]),
-            },
-            silent=True,
+        insert_sql = db.InsertSQL(
+            "paypal_billings",
+            subscription_id=subscription_id,
+            transaction_id=event["resource"]["id"],
+            transaction_time=transaction_time,
+            order_name=plan["name"],
+            total_amount=float(event["resource"]["amount"]["total"]),
+            fee_amount=float(event["resource"]["transaction_fee"]["value"]),
         )
-        await pooling(  # 유저 생성 완료 전 요청 수신 시를 대비한 풀링
-            db_insert_func, exceptions=psycopg.errors.NotNullViolation, timeout=30
+        await pooling(  # 유저 생성이 완료되기 전에 요청을 수신했을 때를 대비한 풀링
+            insert_sql.exec, exceptions=psycopg.errors.NotNullViolation, timeout=30
         )
-        await db.exec(
+        await db.SQL(
             """
             UPDATE users  
             SET next_billing_date={next_billing_date}, 
@@ -84,15 +73,14 @@ async def paypal_payment_webhook(event: dict = Body(...)):
                 "current_billing_date": transaction_time,
                 "subscription_id": subscription_id,
             },
-        )
-        user = await db.select_row(
-            table="users",
-            fields=["email", "membership"],
-            where={"paypal_subscription_id": subscription_id},
-        )
+        ).exec()
+        db_user = await db.SQL(
+            "SELECT * FROM users WHERE paypal_subscription_id={subscription_id}",
+            params={"subscription_id": subscription_id},
+        ).exec()
         log.info(
             "맴버십 비용 청구 완료 [Paypal]: "
-            f"User(Email: {user['email']}, Membership: {user['membership']})"
+            f"User(Email: {db_user['email']}, Membership: {db_user['membership']})"
         )
     except psycopg.errors.NotNullViolation:
         subscription_id = event["resource"]["billing_agreement_id"]
@@ -127,59 +115,56 @@ async def billing():
     - Tosspayments 유저의 반복 결제를 수행한다.
     - 대금이 지불되지 않았거나 비활성화된 계정의 맴버십 유효기간이 지난 경우 계정을 비활성화한다.
     """
+    # 이 함수가 완료되기전 프로세서가 종료되면 멱등로직으로 인해 수행 불가 상태가 됨
+    # ECS 배포의 경우 기존 테스크의 처리 완료를 대기하므로 위와같은 문제는 발생하지 않음
 
     idempotent_mark = EFS_VOLUME_PATH / "processing_on_billing"
     if idempotent_mark.exists():
         return {"message": "There are processors that already do this"}
     idempotent_mark.write_text("")
 
-    target_users = await db.exec(
-        """
-        SELECT id, email, currency, membership, base_billing_date, next_billing_date, tosspayments_billing_key, billing_status
-        FROM users WHERE next_billing_date < now()
-        """
-    )
+    query = "SELECT * FROM users WHERE next_billing_date < now()"
+    target_users = await db.SQL(query).exec()
     now = datetime.now()
-    db_transaction = db.Transaction()
+
+    deactive = failure = complete = 0
+
+    sql_list = []
     for user in target_users:
-        (
-            user_id,
-            email,
-            currency,
-            membership,
-            base_billing_date,
-            next_billing_date,
-            tosspayments_billing_key,
-            billing_status,
-        ) = user
-        if next_billing_date < now - timedelta(days=3) or (
-            next_billing_date < now and billing_status == "deactive"
+        if user["next_billing_date"] < now - timedelta(days=3) or (
+            user["next_billing_date"] < now and user["billing_status"] == "deactive"
         ):  # 결제가 누락된 경우 3일 버퍼를 주고, 사용자가 비활성화를 선택한 경우 즉시 계정을 비활성화
-            db_transaction.append(
-                "UPDATE users SET billing_status='require' WHERE id={user_id}",
-                user_id=user_id,
+            sql_list.append(
+                db.SQL(
+                    "UPDATE users SET billing_status='require' WHERE id={id}",
+                    params={"id": user["id"]},
+                )
             )
             log.info(
                 f"GET /webhook/billing: 대금 미지급으로 인한 계정 비활성화 - "
-                f"User(Email: {email}, membership: {membership}, next_billing_date: {next_billing_date})"
+                f"User(Email: {user['email']}, membership: {user['membership']}, next_billing_date: {user['next_billing_date']})"
             )
-        elif currency == "KRW" and tosspayments_billing_key:  # Tosspayments 결제
+            deactive += 1
+        elif user["currency"] == "KRW" and user["tosspayments_billing_key"]:
+            # Tosspayments 결제
             try:
-                payment = await TosspaymentsBilling(user_id=str(user_id)).billing(
-                    tosspayments_billing_key,
-                    order_name=f"Econox {membership.capitalize()} Membership",
-                    amount=MEMBERSHIP[membership][currency],
-                    email=email,
+                payment = await TosspaymentsBilling(user_id=user["id"]).billing(
+                    user["tosspayments_billing_key"],
+                    order_name=f"Econox {user['membership'].capitalize()} Membership",
+                    amount=MEMBERSHIP[user["membership"]][user["currency"]],
+                    email=user["email"],
                 )
             except httpx.HTTPStatusError as e:
                 log.info(
                     f"[{e}] GET /webhook/billing: Tosspayments 맴버십 비용 청구 실패 - "
-                    f"User(Email: {email}, membership: {membership}, next_billing_date: {next_billing_date})"
+                    f"User(Email: {user['email']}, membership: {user['membership']}, next_billing_date: {user['next_billing_date']})"
                 )
+                failure += 1
                 continue
-            db_transaction.append(
-                template=db.Template(table="tosspayments_billings").insert_query(
-                    user_id=user_id,
+            sql_list.append(
+                db.InsertSQL(
+                    "tosspayments_billings",
+                    user_id=user["id"],
                     order_id=payment["orderId"],
                     transaction_time=datetime.fromisoformat(payment["approvedAt"]),
                     payment_key=payment["paymentKey"],
@@ -196,22 +181,37 @@ async def billing():
                     receipt_url=payment["receipt"]["url"],
                 )
             )
-            db_transaction.append(
-                """ 
+            next_billing_date = calc_next_billing_date(user["base_billing_date"], now)
+            sql_list.append(
+                db.SQL(
+                    """ 
                 UPDATE users 
                 SET next_billing_date={next_billing_date}, 
                     origin_billing_date=base_billing_date,
                     current_billing_date={current_billing_date},
                     billing_status='active'
-                WHERE id={user_id};""",
-                next_billing_date=calc_next_billing_date(base_billing_date, now),
-                current_billing_date=now,
-                user_id=user_id,
+                WHERE id={user_id}""",
+                    params={
+                        "next_billing_date": next_billing_date,
+                        "current_billing_date": now,
+                        "user_id": user["id"],
+                    },
+                )
             )
             log.info(
                 f"맴버십 비용 청구 완료 [Tosspayments]: "
-                f"User(Email: {email}, Membership: {membership})"
+                f"User(Email: {user['email']}, Membership: {user['membership']})"
             )
-    await db_transaction.exec()
-    idempotent_mark.unlink(missing_ok=True)
+            complete += 1
+    if sql_list:
+        await db.exec(*sql_list, parallel=True)  # 각 쿼리가 모두 독립적므로 병렬 처리
+
+    target_user_emails = [user["email"] for user in target_users]
+    log.info(
+        f"[GET /webhook/billing: Tosspayments 맴버십 비용 처리 완료] "
+        f"처리가 필요한 유저는 {len(target_user_emails)}명입니다. "
+        f"{complete}명에게 청구를 완료하였으며 청구에 실패한 미납자는 {failure}명 입니다. "
+        f"3일 이상 청구에 실패하였거나 결제 중지가 요청된 {deactive}개의 계정을 비활성화 하였습니다."
+    )
+    idempotent_mark.unlink()
     return {"message": "Process complete"}

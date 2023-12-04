@@ -60,7 +60,7 @@ export default {
 		css({ output: 'bundle.css' }),
 		json(),
 
-		execute('python script/yaml2dts.py', { once: false }), // UiText.yaml에 대한 Type 정의 자동 생성
+		execute('python script/ui_text_dts.py', { once: false }), // UiText.yaml에 대한 Type 정의 자동 생성
 		typescript({
 			sourceMap: !production,
 			inlineSources: !production

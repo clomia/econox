@@ -74,17 +74,7 @@ async def calculation_of_next_billing_date_according_to_membership_change(
             - PATCH /api/user/membership 호출 시 사용
             - PayPal SDK 생성 시 start_time 매개변수로 사용
     """
-    db_user = await db.select_row(
-        "users",
-        fields=[
-            "membership",
-            "currency",
-            "origin_billing_date",
-            "base_billing_date",
-            "current_billing_date",
-        ],
-        where={"id": user["id"]},
-    )
+    db_user = await db.get_user(user_id=user["id"])
     if db_user["currency"] != "USD":
         raise HTTPException(status_code=409, detail="The user does not use PayPal.")
     if db_user["membership"] == new_membership or new_membership not in MEMBERSHIP:

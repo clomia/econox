@@ -1,5 +1,4 @@
 <script>
-    import { onMount } from "svelte";
     import { Router, Route } from "svelte-routing";
     import { routes } from "./pages";
     import Navigator from "./components/Navigator.svelte";

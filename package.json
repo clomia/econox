@@ -19,7 +19,7 @@
     "@tsconfig/svelte": "^5.0.0",
     "@types/country-list": "^2.1.1",
     "@types/js-yaml": "^4.0.5",
-    "rollup": "^3.27.1",
+    "rollup": "^4.6.1",
     "rollup-plugin-css-only": "^4.3.0",
     "rollup-plugin-execute": "^1.1.1",
     "rollup-plugin-livereload": "^2.0.5",
@@ -32,7 +32,7 @@
     "typescript": "^5.3.2"
   },
   "dependencies": {
-    "@tosspayments/payment-widget-sdk": "^0.9.1",
+    "@tosspayments/payment-widget-sdk": "^0.10.0",
     "@types/jsonwebtoken": "^9.0.2",
     "axios": "^1.4.0",
     "country-list": "^2.3.0",
@@ -41,10 +41,10 @@
     "js-yaml": "^4.1.0",
     "jsonwebtoken": "^9.0.1",
     "libphonenumber-js": "^1.10.39",
-    "rollup-plugin-polyfill-node": "^0.12.0",
+    "rollup-plugin-polyfill-node": "^0.13.0",
     "semver": "^7.5.4",
     "sirv-cli": "^2.0.2",
     "svelte-typed-js": "^1.0.3",
-    "sweetalert2": "^11.7.20"
+    "sweetalert2": "^11.6.13"
   }
 }

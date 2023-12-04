@@ -5,5 +5,8 @@
   ],
   "exclude": [
     "static/*"
-  ]
+  ],
+  "compilerOptions": {
+    "moduleResolution": "node"
+  }
 }

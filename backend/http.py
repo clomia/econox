@@ -151,26 +151,16 @@ class CognitoTokenBearer(HTTPBearer):
         token = CognitoToken(id_token, access_token)
         try:
             user_info = await token.authentication()
-            user = await db.select_row(
-                "users",
-                fields=["membership", "billing_status"],
-                where={"id": user_info["id"]},
-            )
-            if not user:
+            if not (db_user := await db.get_user(user_id=user_info["id"])):
                 raise HTTPException(
                     status_code=401,
                     detail=f"Authorization failed, user does not exists",
                 )
-            user_info |= {  # user_info에 맴버십과 청구상태 추가
-                "membership": user["membership"],
-                "billing_status": user["billing_status"],
-            }  # 유저 존재 확인 겸, MembershipPermissionInspector에서 필요로 하는 정보 미리 삽입
+            return db_user
         except jwt.PyJWTError as e:
             e_str = str(e)
             error_detail = e_str[0].lower() + e_str[1:]
             raise HTTPException(status_code=401, detail=f"Authorization {error_detail}")
-        else:
-            return user_info
 
 
 class MembershipPermissionInspector(CognitoTokenBearer):
@@ -185,18 +175,18 @@ class MembershipPermissionInspector(CognitoTokenBearer):
         self.membership = membership
 
     async def __call__(self, request: Request) -> dict:
-        user_info = await super().__call__(request)
-        if user_info["billing_status"] == "require":
+        db_user = await super().__call__(request)
+        if db_user["billing_status"] == "require":
             raise HTTPException(
                 status_code=402,
                 detail="This account has unpaid membership fees. Payment is required",
             )
-        elif self.membership == "professional" and user_info["membership"] == "basic":
+        elif self.membership == "professional" and db_user["membership"] == "basic":
             raise HTTPException(
                 status_code=403,
                 detail="Professional membership is required. Your membership is basic",
             )
-        return user_info
+        return db_user
 
 
 class APIRouter:

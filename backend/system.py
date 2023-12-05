@@ -2,12 +2,13 @@
 
 import os
 import json
+import uuid
 import asyncio
 import logging
 import logging.config
 from pathlib import Path
 from datetime import datetime
-from functools import partial
+from functools import partial, wraps
 from typing import Callable, Any, Dict
 from concurrent.futures import ThreadPoolExecutor
 
@@ -115,3 +116,45 @@ async def run_async(func, *args, **kwargs):
     """단일 동기 함수를 비동기로 실행합니다."""
     target = partial(func, *args, **kwargs)
     return (await run_async_parallel(target))[target]
+
+
+class Idempotent:
+    """
+    - FastAPI 함수에 멱등성을 부여합니다. (동시에 실행되지 않도록 합니다.)
+        - 비동기 함수라면 모두 사용 가능합니다.
+    - EFS 파일 시스템에 함수의 실행 상태를 저장합니다.
+        해당 함수가 이미 실행중인 경우 함수를 실행하지 않고 default를 반환합니다.
+
+    ```python
+    @router.public.get("/billing")
+    @Idempotent(default={"message": "There are processors that already do this"})
+    async def billing():
+        ...
+    ```
+    """
+
+    path = EFS_VOLUME_PATH / "idempotent"
+
+    def __init__(self, default):
+        """
+        - default: 해당 함수가 이미 실행중인 경우,
+            함수를 실행하지 않고 반환할 기본값
+        """
+        self.default = default
+
+    def __call__(self, func):
+        mark = self.path / f"{func.__name__ }-{uuid.uuid4().hex[:10]}.txt"
+        mark.parent.mkdir(parents=True, exist_ok=True)
+
+        @wraps(func)
+        async def wrapper(*args, **kwargs):
+            if mark.exists():  # 이미 실행중인 경우
+                return self.default
+            else:  # 아니라면 EFS에 마크 작성
+                mark.write_text(f"{func.__module__}.{func.__name__}")
+            try:
+                return await func(*args, **kwargs)
+            finally:
+                mark.unlink()  # EFS에서 마크 제거
+
+        return wrapper

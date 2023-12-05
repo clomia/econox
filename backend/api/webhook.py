@@ -6,7 +6,7 @@ import psycopg
 from fastapi import Body, Depends, HTTPException
 
 from backend import db
-from backend.system import EFS_VOLUME_PATH, log, MEMBERSHIP
+from backend.system import Idempotent, EFS_VOLUME_PATH, log, MEMBERSHIP
 from backend.math import utcstr2datetime, calc_next_billing_date
 from backend.http import (
     APIRouter,
@@ -117,26 +117,25 @@ async def paypal_payment_webhook(event: dict = Body(...)):
 
 
 @router.public.get("/billing")
+@Idempotent(default={"message": "There are processors that already do this"})
 async def billing():
     """
     - 스케쥴링된 람다가 주기적으로 호출해야 하는 웹훅 API
     - Tosspayments 유저의 반복 결제를 수행한다.
     - 대금이 지불되지 않았거나 비활성화된 계정의 맴버십 유효기간이 지난 경우 계정을 비활성화한다.
     """
-    # 이 함수가 완료되기전 프로세서가 종료되면 멱등로직으로 인해 수행 불가 상태가 됨
-    # ECS 배포의 경우 기존 테스크의 처리 완료를 대기하므로 위와같은 문제는 발생하지 않음
-
-    idempotent_mark = EFS_VOLUME_PATH / "processing_on_billing"
-    if idempotent_mark.exists():
-        return {"message": "There are processors that already do this"}
-    idempotent_mark.write_text("")
 
     query = "SELECT * FROM users WHERE next_billing_date < now()"
     target_users = await db.SQL(query).exec()
+    if not target_users:
+        log.info(
+            f"[GET /webhook/billing: No Action] "
+            "Tosspayments 사용자 중 비용 청구가 필요한 유저가 없습니다."
+        )
+        return {"message": "Process complete (No Action)"}
+
     now = datetime.now()
-
     deactive = failure = complete = 0
-
     sql_list = []
     for user in target_users:
         if user["next_billing_date"] < now - timedelta(days=3) or (
@@ -149,7 +148,7 @@ async def billing():
                 )
             )
             log.info(
-                f"GET /webhook/billing: 대금 미지급으로 인한 계정 비활성화 - "
+                f"GET /webhook/billing: 대금 미지급으로 계정 비활성화 - "
                 f"User(Email: {user['email']}, membership: {user['membership']}, next_billing_date: {user['next_billing_date']})"
             )
             deactive += 1
@@ -214,12 +213,10 @@ async def billing():
     if sql_list:
         await db.exec(*sql_list, parallel=True)  # 각 쿼리가 모두 독립적므로 병렬 처리
 
-    target_user_emails = [user["email"] for user in target_users]
     log.info(
-        f"[GET /webhook/billing: Tosspayments 맴버십 비용 처리 완료] "
-        f"처리가 필요한 유저는 {len(target_user_emails)}명입니다. "
+        f"[GET /webhook/billing: 맴버십 비용 처리 완료] "
+        f"Tosspayments 사용자 중 청구 대상자는 {len(target_users)}명입니다. "
         f"{complete}명에게 청구를 완료하였으며 청구에 실패한 미납자는 {failure}명 입니다. "
-        f"3일 이상 청구에 실패하였거나 결제 중지가 요청된 {deactive}개의 계정을 비활성화 하였습니다."
+        f"또한, 3일 이상 청구에 실패하였거나 결제 중지가 요청된 {deactive}개의 계정을 비활성화 하였습니다."
     )
-    idempotent_mark.unlink()
-    return {"message": "Process complete"}
+    return {"message": "Process complete", "target_users": target_users}

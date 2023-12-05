@@ -43,31 +43,25 @@ async def paypal_payment_webhook(event: dict = Body(...)):
                 f"\nSummary: {event['summary']}, 구독 ID:{event['resource']['billing_agreement_id']}"
             )
             return {"message": "Apply success"}
-
-        next_billing = utcstr2datetime(
-            subscription["billing_info"]["next_billing_time"]
-        )
         plan = await PayPalAPI(f"/v1/billing/plans/{subscription['plan_id']}").get()
-        insert_sql = db.SQL(
-            """
-            INSERT INTO paypal_billings (user_id, transaction_id, transaction_time, 
-                order_name, total_amount, fee_amount)
-            VALUES (
-                (SELECT id FROM users WHERE paypal_subscription_id={subscription_id} LIMIT 1),
-                {transaction_id}, {transaction_time}, {order_name}, {total_amount}, {fee_amount}
-            )""",
-            params={
-                "subscription_id": subscription_id,
-                "transaction_id": event["resource"]["id"],
-                "transaction_time": transaction_time,
-                "order_name": plan["name"],
-                "total_amount": float(event["resource"]["amount"]["total"]),
-                "fee_amount": float(event["resource"]["transaction_fee"]["value"]),
-            },
+        user = await db.SQL(
+            "SELECT * FROM users WHERE paypal_subscription_id={subscription_id} LIMIT 1",
+            params={"subscription_id": subscription_id},
+            fetch="one",
+        ).exec()
+        insert_sql = db.InsertSQL(
+            "paypal_billings",
+            user_id=user["id"],
+            transaction_id=event["resource"]["id"],
+            transaction_time=transaction_time,
+            order_name=plan["name"],
+            total_amount=float(event["resource"]["amount"]["total"]),
+            fee_amount=float(event["resource"]["transaction_fee"]["value"]),
         )
         await pooling(  # 유저 생성이 완료되기 전에 요청을 수신했을 때를 대비한 풀링
             insert_sql.exec, exceptions=psycopg.errors.NotNullViolation, timeout=30
         )
+        next_billing_time = subscription["billing_info"]["next_billing_time"]
         await db.SQL(
             """
             UPDATE users  
@@ -77,18 +71,14 @@ async def paypal_payment_webhook(event: dict = Body(...)):
                 billing_status='active'
             WHERE paypal_subscription_id={subscription_id}""",
             params={
-                "next_billing_date": next_billing,
+                "next_billing_date": utcstr2datetime(next_billing_time),
                 "current_billing_date": transaction_time,
                 "subscription_id": subscription_id,
             },
         ).exec()
-        db_user = await db.SQL(
-            "SELECT * FROM users WHERE paypal_subscription_id={subscription_id}",
-            params={"subscription_id": subscription_id},
-        ).exec()
         log.info(
             "맴버십 비용 청구 완료 [Paypal]: "
-            f"User(Email: {db_user['email']}, Membership: {db_user['membership']})"
+            f"User(Email: {user['email']}, Membership: {user['membership']})"
         )
     except psycopg.errors.NotNullViolation:
         subscription_id = event["resource"]["billing_agreement_id"]
@@ -126,7 +116,7 @@ async def billing():
     """
 
     query = "SELECT * FROM users WHERE next_billing_date < now()"
-    target_users = await db.SQL(query).exec()
+    target_users = await db.SQL(query, fetch="all").exec()
     if not target_users:
         log.info(
             f"[GET /webhook/billing: No Action] "

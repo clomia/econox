@@ -1,9 +1,9 @@
 --- Last commit: 2023-12-04 17:13:03 ---
 CREATE TABLE deepl (
     "id" SERIAL NOT NULL PRIMARY KEY,
-    "from_lang" VARCHAR(3),
+    "from_lang" VARCHAR(3), -- 2자릿수 코드
     "from_text" TEXT NOT NULL,
-    "to_lang" VARCHAR(3) NOT NULL,
+    "to_lang" VARCHAR(3) NOT NULL, -- 2자릿수 코드
     "to_text" TEXT NOT NULL,
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 );

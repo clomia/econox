@@ -16,7 +16,7 @@ import psutil
 import boto3
 
 
-# ==================== logger object ====================
+# ==================== LOGGING ====================
 class LogHandler(logging.NullHandler):
     pid = os.getpid()
 

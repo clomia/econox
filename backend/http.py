@@ -302,11 +302,9 @@ class WorldBankAPI:
     BASE_URL = "http://api.worldbank.org/v2"
     countries = None
 
-    @classmethod
-    async def pagenation_api_call(cls, endpoint: str, params: dict = {}) -> list:
-        """
-        - pagenation을 통해 모든 배열 응답을 모아서 반환합니다.
-        """
+    @cached(ttl=12 * 360)
+    async def pagenation_api_call(self, endpoint: str, params: dict = {}) -> list:
+        """pagenation을 통해 모든 배열 응답을 모아서 반환합니다."""
         timeout = 20
         all_data = []
         page = 0
@@ -320,7 +318,9 @@ class WorldBankAPI:
                 params["page"] = page
 
                 async def request():
-                    resp = await client.get(f"{cls.BASE_URL}/{endpoint}", params=params)
+                    resp = await client.get(
+                        f"{self.BASE_URL}/{endpoint}", params=params
+                    )
                     resp.raise_for_status()
                     return resp
 
@@ -330,7 +330,7 @@ class WorldBankAPI:
                 meta, data = resp.json()
                 all_data.extend(data)
                 if meta["page"] == meta["pages"]:
-                    # page: 현재 페이지, pages: 총 페이지 갯수
+                    # 현재 페이지가 총 페이지 갯수와 같다면 종료
                     break
                 if time.time() - start > timeout:
                     log.error(
@@ -340,39 +340,38 @@ class WorldBankAPI:
                     break
         return all_data
 
-    @classmethod
-    async def api_call(cls, endpoint: str, params: dict = {}) -> dict | list:
-        """단순 API 요청 & 응답 반환"""
-        print("API Call! ", params)
+    @cached(ttl=12 * 360)
+    async def api_call(self, endpoint: str, params: dict = {}) -> dict | list:
+        """단순히  API 요청 후 응답 반환"""
         params["format"] = "json"
         async with httpx.AsyncClient() as client:
-            resp = await client.get(f"{cls.BASE_URL}/{endpoint}", params=params)
+            resp = await client.get(f"{self.BASE_URL}/{endpoint}", params=params)
             resp.raise_for_status()
             return resp.json()
 
-    @classmethod
-    async def get_data(cls, indicator: str, country: str) -> list:
-        data = await cls.pagenation_api_call(f"country/{country}/indicator/{indicator}")
+    async def get_data(self, indicator: str, country: str) -> list:
+        data = await self.pagenation_api_call(
+            f"country/{country}/indicator/{indicator}"
+        )
         return data
 
-    @classmethod
-    async def get_indicator(cls, indicator: str) -> dict:
-        request = partial(cls.api_call, f"indicator/{indicator}")
+    async def get_indicator(self, indicator: str) -> dict:
+        request = partial(self.api_call, f"indicator/{indicator}")
         try:
             return (await pooling(request, exceptions=Exception))[1][0]
         except IndexError:
             return {}
 
-    @classmethod
-    async def search_countries(cls, query: str) -> list:
-        if not cls.countries:
-            cls.countries = await cls.pagenation_api_call("countries")
+    async def search_countries(self, query: str) -> list:
+        if not self.countries:
+            self.countries = await self.pagenation_api_call("countries")
         pattern = re.compile(query, re.IGNORECASE)
-        return [country for country in cls.countries if pattern.search(country["name"])]
+        return [
+            country for country in self.countries if pattern.search(country["name"])
+        ]
 
-    @classmethod
-    async def get_country(cls, code: str) -> dict:
-        request = partial(cls.api_call, f"country/{code}")
+    async def get_country(self, code: str) -> dict:
+        request = partial(self.api_call, f"country/{code}")
         try:
             return (await pooling(request, exceptions=Exception))[1][0]
         except IndexError:

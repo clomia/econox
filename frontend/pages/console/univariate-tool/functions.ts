@@ -1,5 +1,5 @@
 import { api } from "../../../modules/request";
-import { UnivariateElements, Lang } from "../../../modules/state";
+import { UnivariateElements, UnivariateElementsLoaded, Lang } from "../../../modules/state";
 import type { ElementType } from "../../../modules/state";
 
 /**
@@ -31,13 +31,21 @@ export const deleteElement = async (code: string, section: string) => {
 };
 
 /**
- * UnivariateElements를 세팅합니다.
+ * UnivariateElements를 세팅합니다. 이미 세팅된 경우 아무런 동작을 하지 않습니다.
  * 이 함수가 실행된 이후 UnivariateElements를 통해 데이터에 접근 가능해집니다.
  */
 export const setElements = async () => {
     let lang: string = "en";
-    const unsubscribe = Lang.subscribe((_lang: string) => { lang = _lang; });
-    const univariateElements = await api.member.get("/feature/user/elements", { params: { lang } });
-    UnivariateElements.set(univariateElements.data);
-    unsubscribe();
+    let univariateElementsLoaded: boolean = false;
+    const unsubscribe1 = Lang.subscribe((v: string) => { lang = v; });
+    const unsubscribe2 = UnivariateElementsLoaded.subscribe((v: boolean) => { univariateElementsLoaded = v; });
+
+    if (!univariateElementsLoaded) {
+        const univariateElements = await api.member.get("/feature/user/elements", { params: { lang } });
+        UnivariateElements.set(univariateElements.data);
+        UnivariateElementsLoaded.set(true);
+    }
+
+    unsubscribe1();
+    unsubscribe2();
 };

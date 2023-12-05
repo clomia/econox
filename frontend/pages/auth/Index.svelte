@@ -28,7 +28,7 @@
         justify-content: center;
         align-items: start;
         margin-top: 2rem;
-        height: 85vh;
+        height: 45rem;
     }
     .ground__window {
         width: 34rem;

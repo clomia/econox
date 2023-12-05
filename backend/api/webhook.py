@@ -48,14 +48,22 @@ async def paypal_payment_webhook(event: dict = Body(...)):
             subscription["billing_info"]["next_billing_time"]
         )
         plan = await PayPalAPI(f"/v1/billing/plans/{subscription['plan_id']}").get()
-        insert_sql = db.InsertSQL(
-            "paypal_billings",
-            subscription_id=subscription_id,
-            transaction_id=event["resource"]["id"],
-            transaction_time=transaction_time,
-            order_name=plan["name"],
-            total_amount=float(event["resource"]["amount"]["total"]),
-            fee_amount=float(event["resource"]["transaction_fee"]["value"]),
+        insert_sql = db.SQL(
+            """
+            INSERT INTO paypal_billings (user_id, transaction_id, transaction_time, 
+                order_name, total_amount, fee_amount)
+            VALUES (
+                (SELECT id FROM users WHERE paypal_subscription_id={subscription_id} LIMIT 1),
+                {transaction_id}, {transaction_time}, {order_name}, {total_amount}, {fee_amount}
+            )""",
+            params={
+                "subscription_id": subscription_id,
+                "transaction_id": event["resource"]["id"],
+                "transaction_time": transaction_time,
+                "order_name": plan["name"],
+                "total_amount": float(event["resource"]["amount"]["total"]),
+                "fee_amount": float(event["resource"]["transaction_fee"]["value"]),
+            },
         )
         await pooling(  # 유저 생성이 완료되기 전에 요청을 수신했을 때를 대비한 풀링
             insert_sql.exec, exceptions=psycopg.errors.NotNullViolation, timeout=30

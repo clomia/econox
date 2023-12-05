@@ -17,8 +17,8 @@ export interface UserDetailType {
     billing: {
         currency: string;
         registered: boolean;
-        status: string
-        method: string
+        status: string;
+        method: string;
         transactions: {
             time: string;
             name: string;
@@ -69,8 +69,8 @@ export interface PacketInfoType {
 
 // ============= 전역적으로 사용되는 상태들 =============
 
-export const Lang = writable("en")
-export const Text: Writable<UiText> = writable(defaultObject(""))
+export const Lang = writable("en");
+export const Text: Writable<UiText> = writable(defaultObject(""));
 export const UserInfo: Writable<UserDetailType> = writable({  // 로그인 되었다면 GET /api/user 응답 데이터가 들어옴
     id: "",
     name: "",
@@ -85,7 +85,7 @@ export const UserInfo: Writable<UserDetailType> = writable({  // 로그인 되�
         method: "",
         transactions: []
     }
-})
+});
 
 
 // ============= 기능적으로 사용되는 상태들 =============
@@ -109,10 +109,10 @@ export const auth = { // 로그인,회원가입 컴포넌트 상태관리용
             phone: "",
         })
     }
-}
+};
 
 // console.SearchBar 상태
-export const Packets = writable<{ query: string; loading: boolean; resp: any }[]>([]);
+export const Packets = writable<{ query: string; loading: boolean; resp: any; }[]>([]);
 export const News = writable<any>({});
 export const CountryCodeMap = writable<any>(null);
 export const PacketInfo = writable<PacketInfoType>({
@@ -121,5 +121,5 @@ export const PacketInfo = writable<PacketInfoType>({
     elements: [],
 }); // 검색을 수행하는 비동기 함수는 컴포넌트가 없어진다고 멈추지 않음, 따라서 전역 상태로 관리 가능
 
-export const UnivariateElements = writable<ElementType[]>([])
-export const UnivariateNote = writable("")
+export const UnivariateElements = writable<ElementType[]>([]);
+export const UnivariateNote = writable("");

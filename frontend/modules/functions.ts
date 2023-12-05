@@ -1,11 +1,11 @@
-import axios from "axios"
-import { onMount } from "svelte"
-import { navigate } from "svelte-routing"
-import { api } from "./request"
-import { Text, UserInfo, Lang, UnivariateElements, CountryCodeMap } from "./state"
-import { loadUiText } from "./uiText"
-import { settingObjectStore } from "./_storage"
-import type { UserDetailType } from "./state"
+import axios from "axios";
+import { onMount } from "svelte";
+import { navigate } from "svelte-routing";
+import { api } from "./request";
+import { Text, UserInfo, Lang, UnivariateElements, CountryCodeMap } from "./state";
+import { loadUiText } from "./uiText";
+import { settingObjectStore } from "./_storage";
+import type { UserDetailType } from "./state";
 
 export const defaultSwalStyle = {
     width: "25rem",
@@ -49,23 +49,27 @@ export const init = async () => {
     const [cognitoToken, cognitoRefreshToken] = await Promise.all([
         settingObjectStore.get("cognitoToken"), // 이 작업들은 매우 빠름
         settingObjectStore.get("cognitoRefreshToken"),
-    ])
-    const [uiText, countryCodeMap] = await Promise.all([
-        loadUiText(), // 이 작업들은 API 통신을 함
-        axios.create({ baseURL: window.location.origin }).get("/static/countryCodeMap.json")
-    ])
-    Text.set(uiText.text)
-    Lang.set(uiText.lang)
-    CountryCodeMap.set(countryCodeMap.data)
-    if (cognitoToken && cognitoRefreshToken) { // 계정에 묶인 데이터 가져오기
-        const [userInfo, univariateElements] = await Promise.all([
-            api.private.get("/user"), // 이 작업들은 인증이 포함된 API 통신을 함
-            api.member.get("/feature/user/elements", { params: { lang: uiText.lang } }),
-        ])
-        UserInfo.set(userInfo.data)
-        UnivariateElements.set(univariateElements.data)
+    ]);
+    if (cognitoToken && cognitoRefreshToken) { // 로그인된 경우 유저 데이터 세팅하기
+        const [uiText, countryCodeMap, userInfo] = await Promise.all([
+            loadUiText(),
+            axios.create({ baseURL: window.location.origin }).get("/static/countryCodeMap.json"),
+            api.private.get("/user")
+        ]);
+        Text.set(uiText.text);
+        Lang.set(uiText.lang);
+        CountryCodeMap.set(countryCodeMap.data);
+        UserInfo.set(userInfo.data);
+    } else { // 로그인 안된 경우 유저 데이터 세팅 안하기
+        const [uiText, countryCodeMap] = await Promise.all([
+            loadUiText(),
+            axios.create({ baseURL: window.location.origin }).get("/static/countryCodeMap.json")
+        ]);
+        Text.set(uiText.text);
+        Lang.set(uiText.lang);
+        CountryCodeMap.set(countryCodeMap.data);
     }
-}
+};
 
 /**
  * 토큰 삭제 후 로그인 페이지로 리로딩
@@ -74,9 +78,9 @@ export const logout = async () => {
     await Promise.all([
         settingObjectStore.delete("cognitoToken"),
         settingObjectStore.delete("cognitoRefreshToken")
-    ])
-    return window.location.replace(window.location.origin + "/auth")
-}
+    ]);
+    return window.location.replace(window.location.origin + "/auth");
+};
 
 /**
  * 토큰 저장 후 콘솔로 리로팅
@@ -85,23 +89,23 @@ export const login = async (cognitoToken: string, cognitoRefreshToken: string, r
     await Promise.all([
         settingObjectStore.put("cognitoToken", cognitoToken),
         settingObjectStore.put("cognitoRefreshToken", cognitoRefreshToken)
-    ])
+    ]);
     if (reload) {
-        window.location.replace(window.location.origin + "/console") // 콘솔로 리로딩
+        window.location.replace(window.location.origin + "/console"); // 콘솔로 리로딩
     }
-}
+};
 
 
 type VerificationFactors = {
-    login?: boolean | null
-    membership?: "basic" | "professional" | null
-    billingOk?: boolean | null
+    login?: boolean | null;
+    membership?: "basic" | "professional" | null;
+    billingOk?: boolean | null;
 };
 
 type VerificationArgs = {
-    conds: VerificationFactors
-    failRedirect?: string
-}
+    conds: VerificationFactors;
+    failRedirect?: string;
+};
 
 /**
  * 클라이언트 상태에 따라 페이지 접근을 제한합니다.
@@ -119,7 +123,7 @@ export const verify = ({
     failRedirect = "/"
 }: VerificationArgs = { conds: {} }) => {
     let userInfo: UserDetailType;
-    UserInfo.subscribe(info => { userInfo = info });
+    UserInfo.subscribe(info => { userInfo = info; });
 
     onMount(() => {
         const failureConditions = [
@@ -132,7 +136,7 @@ export const verify = ({
             navigate(failRedirect);
         }
     });
-}
+};
 
 
 /**
@@ -141,8 +145,8 @@ export const verify = ({
 export const format = (template: string, { ...kwargs }) => {
     return template.replace(/{(\w+)}/g, function (match, key) {
         return kwargs.hasOwnProperty(key) ? kwargs[key] : match;
-    })
-}
+    });
+};
 
 /**
  * 초단위 정수를 분:초 문자열로 반환
@@ -158,9 +162,9 @@ export const isLoggedIn = async (): Promise<boolean> => {
     const [cognitoToken, cognitoRefreshToken] = await Promise.all([
         settingObjectStore.get("cognitoToken"),
         settingObjectStore.get("cognitoRefreshToken"),
-    ])
-    return cognitoToken && cognitoRefreshToken
-}
+    ]);
+    return cognitoToken && cognitoRefreshToken;
+};
 
 /**
  * 2023-09-26T07:04:20.000Z 형식의 문자열을 받아 브라우저 시간대에 맞는 연.월.일 문자열 반환

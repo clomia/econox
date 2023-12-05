@@ -65,7 +65,7 @@ export const paypalWidget = async ({
         alignItems: 'center',
         background: 'linear-gradient(to bottom, #3b3c3f, #263c42'
     });
-    const { text } = await loadUiText()
+    const { text } = await loadUiText();
     const closeButton = document.createElement('button');
     closeButton.innerText = text.Close;
     Object.assign(closeButton.style, {
@@ -117,4 +117,4 @@ export const paypalWidget = async ({
         },
     }).render(`#${paypalButton.id}`);
     onLoad();
-}
+};

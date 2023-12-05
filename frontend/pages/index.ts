@@ -1,12 +1,12 @@
-import Auth from "./auth/Index.svelte"
-import Account from "./account/Index.svelte"
-import Console from "./console/Index.svelte"
-import Landing from "./Landing.svelte"
-import PageNotFound from "./NotFound404.svelte"
+import Auth from "./auth/Index.svelte";
+import Account from "./account/Index.svelte";
+import Console from "./console/Index.svelte";
+import Landing from "./Landing.svelte";
+import PageNotFound from "./NotFound404.svelte";
 
 interface Route {
-    path: string
-    page: object
+    path: string;
+    page: object;
 }
 
 export const routes: Route[] = [

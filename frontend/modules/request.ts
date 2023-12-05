@@ -4,17 +4,17 @@ import Swal from "sweetalert2";
 
 import { settingObjectStore } from "./_storage";
 import { logout, defaultSwalStyle } from "./functions";
-import { loadUiText } from "./uiText"
+import { loadUiText } from "./uiText";
 
 import type { JwtPayload } from "jsonwebtoken";
 import type { AxiosError, InternalAxiosRequestConfig } from "axios";
 
-export const apiHostPath = window.location.origin + "/api"
+export const apiHostPath = window.location.origin + "/api";
 export const api = {
     public: axios.create({ baseURL: apiHostPath }),
     private: axios.create({ baseURL: apiHostPath }), // 인증
     member: axios.create({ baseURL: apiHostPath }), // 인증 + 권한 
-}
+};
 
 const isJwtExpired = (token: string): boolean => {
     try {
@@ -23,39 +23,39 @@ const isJwtExpired = (token: string): boolean => {
     } catch (error) {
         return true;
     }
-}
+};
 
 
 const tokenInsert = async (config: InternalAxiosRequestConfig) => {
     let [cognitoToken, cognitoRefreshToken] = await Promise.all([
         settingObjectStore.get("cognitoToken"),
         settingObjectStore.get("cognitoRefreshToken"),
-    ])
+    ]);
 
     if (cognitoToken && cognitoRefreshToken) {
-        const [idToken, accessToken] = cognitoToken.split("|")
+        const [idToken, accessToken] = cognitoToken.split("|");
         if (isJwtExpired(idToken) || isJwtExpired(accessToken)) {
-            const response = await api.public.post("/auth/refresh-cognito-token", { cognito_refresh_token: cognitoRefreshToken })
-            cognitoToken = response.data["cognito_token"]
-            settingObjectStore.put("cognitoToken", cognitoToken)
+            const response = await api.public.post("/auth/refresh-cognito-token", { cognito_refresh_token: cognitoRefreshToken });
+            cognitoToken = response.data["cognito_token"];
+            settingObjectStore.put("cognitoToken", cognitoToken);
         }
-        config.headers["Authorization"] = `Bearer ${cognitoToken}`
+        config.headers["Authorization"] = `Bearer ${cognitoToken}`;
     }
-    return config
-}
+    return config;
+};
 
 const authenticationFailureHandler = async (error: AxiosError) => {
     if (error.response && error.response.status === 401) {
-        return await logout()
+        return await logout();
     }
     throw error;
-}
+};
 
 const permissionFailureHandler = async (error: AxiosError) => {
-    const { text } = await loadUiText()
+    const { text } = await loadUiText();
     switch (error.response?.status) {
         case 401:
-            return await logout()
+            return await logout();
         case 402:
             await Swal.fire({
                 ...defaultSwalStyle,
@@ -64,7 +64,7 @@ const permissionFailureHandler = async (error: AxiosError) => {
                 title: text.DeactivatedAccountBillingRequire,
                 confirmButtonText: text.Ok,
             });
-            return window.location.replace(window.location.origin + "/account")
+            return window.location.replace(window.location.origin + "/account");
         case 403:
             return await Swal.fire({
                 ...defaultSwalStyle,
@@ -75,12 +75,12 @@ const permissionFailureHandler = async (error: AxiosError) => {
                 preConfirm: async () => window.location.replace(window.location.origin + "/account"),
             });
         default:
-            throw error
+            throw error;
     }
-}
+};
 
-api.private.interceptors.request.use(tokenInsert)
-api.private.interceptors.response.use(undefined, authenticationFailureHandler)
+api.private.interceptors.request.use(tokenInsert);
+api.private.interceptors.response.use(undefined, authenticationFailureHandler);
 
-api.member.interceptors.request.use(tokenInsert)
-api.member.interceptors.response.use(undefined, permissionFailureHandler)
+api.member.interceptors.request.use(tokenInsert);
+api.member.interceptors.response.use(undefined, permissionFailureHandler);

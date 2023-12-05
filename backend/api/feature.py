@@ -95,7 +95,7 @@ async def get_element_from_user(lang: str, user=router.basic.user):
             "section": record["section"],
             "name": name,
             "note": note,
-            "update": datetime2utcstr(record["update_time"]),
+            "update": datetime2utcstr(record["created"]),
         }
 
     tasks = [parsing(record) for record in fetched]

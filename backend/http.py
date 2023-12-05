@@ -1,4 +1,5 @@
 """ 외부 리소스 (클라우드 서비스, 데이터 API 등)에 대한 비동기 통신 클라이언트 객체들 """
+import re
 import json
 import time
 import random
@@ -11,7 +12,6 @@ from functools import partial
 
 import jwt
 import httpx
-import wbdata
 from aiocache import cached
 from fastapi import routing, HTTPException, Request, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -297,66 +297,86 @@ class FmpAPI:
 class WorldBankAPI:
     """
     - World Bank Open API Request
-    - wbdata SDK의 각 함수에 캐싱, 비동기 호출, 지수 백오프 풀링 로직을 첨가하여 제공
     """
 
-    @classmethod
-    @cached(ttl=12 * 360)
-    async def get_data(cls, indicator, country) -> List[dict]:
-        """국가의 지표 시계열을 반환합니다."""
-        result = await cls._exec(wbdata.get_data, indicator, country)
-        return result if result else []
+    BASE_URL = "http://api.worldbank.org/v2"
+    countries = None
 
     @classmethod
-    @cached(ttl=12 * 360)
-    async def get_indicator(cls, indicator) -> dict:
-        """지표에 대한 상세 정보를 반환합니다. 정보가 없는 경우 빈 딕셔너리가 반환됩니다."""
-        result = await cls._exec(wbdata.get_indicator, indicator)
-        return result[0] if result else {}
+    async def pagenation_api_call(cls, endpoint: str, params: dict = {}) -> list:
+        """
+        - pagenation을 통해 모든 배열 응답을 모아서 반환합니다.
+        """
+        timeout = 20
+        all_data = []
+        page = 0
+        start = time.time()
+
+        async with httpx.AsyncClient() as client:
+            params["format"] = "json"
+            params["per_page"] = 1000
+            while True:
+                page += 1
+                params["page"] = page
+
+                async def request():
+                    resp = await client.get(f"{cls.BASE_URL}/{endpoint}", params=params)
+                    resp.raise_for_status()
+                    return resp
+
+                resp = await pooling(request, exceptions=Exception)
+                if len(resp.json()) != 2:
+                    break  # [{'message': [{'id': '120', 'key': 'Invalid value', 'value': 'The provided parameter value is not valid'}]}]
+                meta, data = resp.json()
+                all_data.extend(data)
+                if meta["page"] == meta["pages"]:
+                    # page: 현재 페이지, pages: 총 페이지 갯수
+                    break
+                if time.time() - start > timeout:
+                    log.error(
+                        f"[WorldBankAPI.pagenation_api_call 시간초과로 데이터 수집 중단 Timeout=({timeout}초)] "
+                        f"[Endpoint={endpoint}, Params={params}] 마지막으로 수집한 페이지: {page}, 현재까지 수집된 데이터: {all_data}"
+                    )
+                    break
+        return all_data
 
     @classmethod
-    @cached(ttl=12 * 360)
-    async def search_countries(cls, text) -> List[dict]:
-        """자연어로 국가들을 검색합니다."""
-        result = await cls._exec(wbdata.search_countries, text)
-        return list(result) if result else []
+    async def api_call(cls, endpoint: str, params: dict = {}) -> dict | list:
+        """단순 API 요청 & 응답 반환"""
+        print("API Call! ", params)
+        params["format"] = "json"
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(f"{cls.BASE_URL}/{endpoint}", params=params)
+            resp.raise_for_status()
+            return resp.json()
 
     @classmethod
-    @cached(ttl=12 * 360)
-    async def get_country(cls, code) -> dict:
-        """국가 코드에 해당하는 국가를 반환합니다.."""
-        result = await cls._exec(wbdata.get_country, code)
-        return result[0] if result else {}
+    async def get_data(cls, indicator: str, country: str) -> list:
+        data = await cls.pagenation_api_call(f"country/{country}/indicator/{indicator}")
+        return data
 
     @classmethod
-    async def _exec(cls, wb_func, *args):
+    async def get_indicator(cls, indicator: str) -> dict:
+        request = partial(cls.api_call, f"indicator/{indicator}")
         try:
-            return await pooling(
-                partial(run_async, cls._safe_caller(wb_func), *args),
-                exceptions=Exception,
-            )
-        except Exception as e:
-            log.error(
-                f"World Bank API 서버와 통신에 실패하여 데이터를 수신하지 못했습니다."
-                f"(wbdata func: {wb_func.__name__}, args: {args}, error: {e})"
-            )  # 에러 발생 시 로그 출력 & None 반환 -> 검색결과 없음 처리
+            return (await pooling(request, exceptions=Exception))[1][0]
+        except IndexError:
+            return {}
 
-    @staticmethod
-    def _safe_caller(wb_func):
-        """
-        - wbdata 함수가 안전하게 작동하도록 감쌉니다.
-        - wbdata 라이브러리의 캐싱 알고리즘은 thread-safe하지 않으므로
-        항상 cache=False 해줘야 하며, 결과가 없을 때 RuntimeError를 발생시키는데
-        에러를 발생시키는 대신에 None을 반환하도록 변경합니다.
-        """
+    @classmethod
+    async def search_countries(cls, query: str) -> list:
+        if not cls.countries:
+            cls.countries = await cls.pagenation_api_call("countries")
+        pattern = re.compile(query, re.IGNORECASE)
+        return [country for country in cls.countries if pattern.search(country["name"])]
 
-        def wrapper(*args, **kwargs):
-            try:
-                return wb_func(*args, **kwargs, cache=False)
-            except RuntimeError:
-                return None
-
-        return wrapper
+    @classmethod
+    async def get_country(cls, code: str) -> dict:
+        request = partial(cls.api_call, f"country/{code}")
+        try:
+            return (await pooling(request, exceptions=Exception))[1][0]
+        except IndexError:
+            return {}
 
 
 class TosspaymentsAPI:

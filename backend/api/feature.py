@@ -98,5 +98,4 @@ async def get_element_from_user(lang: str, user=router.basic.user):
             "update": datetime2utcstr(record["created"]),
         }
 
-    tasks = [parsing(record) for record in fetched]
-    return await asyncio.gather(*tasks)
+    return await asyncio.gather(*[parsing(record) for record in fetched])

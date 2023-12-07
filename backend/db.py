@@ -16,6 +16,7 @@ fetched = await db.exec(read_sql, write_sql)
 element = fetched[read_sql]
 print(element) # {'id': 8, 'section': 'country', 'code': 'AAPLE'}
 ```
+
 - SQL 클래스를 사용해서 단일 쿼리를 정의하세요.
     - INSERT 쿼리는 SQL의 하위클래스인 InsertSQL를 사용하여 간결하게 정의하세요.
 - exec 함수를 사용해서 쿼리를 실행하세요.

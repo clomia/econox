@@ -1,6 +1,7 @@
 <script lang="ts">
   import { navigate } from "svelte-routing";
   import { UserInfo, Text } from "../modules/state";
+  import Profile from "../assets/icon/Profile.svelte";
 </script>
 
 <section>
@@ -9,7 +10,7 @@
   <button>{$Text.FeatureHub}</button>
   {#if $UserInfo.id}
     <button on:click={() => navigate("/account")}>
-      <img src="static/img/profile.png" alt="profile" />
+      <div class="profile-icon"><Profile /></div>
       <div class="username">{$UserInfo.name}</div>
     </button>
   {:else}
@@ -18,11 +19,12 @@
 </section>
 
 <style>
-  img {
+  .profile-icon {
     width: 1.6rem;
     height: 1.6rem;
     position: absolute;
     left: 0.4rem;
+    opacity: 0.65;
   }
   .username {
     margin-left: 1rem;

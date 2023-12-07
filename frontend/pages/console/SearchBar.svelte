@@ -1,7 +1,5 @@
 <script lang="ts">
-  import axios from "axios";
   import Swal from "sweetalert2";
-  import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import { Packets, News, CountryCodeMap, PacketInfo } from "../../modules/state";
   import Magnifier from "../../assets/icon/Magnifier.svelte";
@@ -10,6 +8,11 @@
   import DotLoader from "../../assets/animation/DotLoader.svelte";
   import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
   import TextLoader from "../../assets/animation/TextLoader.svelte";
+  import CircleArrow from "../../assets/icon/CircleArrow.svelte";
+  import Folder from "../../assets/icon/Folder.svelte";
+  import NoFolder from "../../assets/icon/NoFolder.svelte";
+  import OpenLink from "../../assets/icon/OpenLink.svelte";
+  import Megaphone from "../../assets/icon/Megaphone.svelte";
   import { api } from "../../modules/request";
   import { Text, Lang, UnivariateElements } from "../../modules/state";
   import { defaultSwalStyle, format } from "../../modules/functions";
@@ -188,7 +191,7 @@
       bind:value={inputText}
     />
     <button class="search-btn">
-      <img src="static/img/circle-arrow.png" alt="search" height="25px" />
+      <CircleArrow />
     </button>
   </form>
   <section class="packets">
@@ -199,11 +202,11 @@
           <div class="packet__loader"><DotLoader /></div>
         {:else if resp.symbols.length === 0 && resp.countries.length === 0}
           <button class="packet__result" on:click={noResultAlert}>
-            <img in:fade src="static/img/nofile.png" alt="result" height="25px" />
+            <div in:fade class="folder-icon"><NoFolder /></div>
           </button>
         {:else}
           <button class="packet__result" on:click={() => onPacketInfo(query, resp)}>
-            <img in:fade src="static/img/file.png" alt="result" height="25px" />
+            <div in:fade class="folder-icon"><Folder /></div>
           </button>
         {/if}
       </div>
@@ -263,7 +266,7 @@
       </div>
       <div class="packet-info__news">
         <div class="packet-info__news__icon">
-          <img src="static/img/megaphone.png" width="20px" alt="Megaphone" />
+          <Megaphone />
           <div class="packet-info__news__icon__text">News</div>
         </div>
         {#if selectedElement.section === "symbol"}
@@ -304,7 +307,7 @@
                       </button>
                       <a href={newsElement.src} target="_blank" rel="noopener noreferrer">
                         <div class="packet-info__news__ele__body__buttons__href">
-                          <img src="static/img/link.png" alt={newsElement.src} width="25px" />
+                          <OpenLink />
                         </div>
                       </a>
                     </div>
@@ -342,6 +345,13 @@
     width: 100%;
     justify-content: center;
     z-index: 2;
+  }
+  .folder-icon {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .search-form {

@@ -10,13 +10,18 @@
     selected = ele;
     $UnivariateNote = ele.note;
   };
+
+  let scrolled = false;
+  const scrollHandler = () => {
+    scrolled = true;
+  };
 </script>
 
 <main>
   {#if $UnivariateElements.length}
     <div class="search"><Magnifier /> <input type="text" /></div>
   {/if}
-  <div class="list">
+  <div class="list" on:scroll={scrollHandler}>
     {#each $UnivariateElements as ele}
       <button class="list__ele" on:click={() => select(ele)} class:selected={selected === ele}>
         <div class="list__ele__code">{ele.code}</div>
@@ -35,11 +40,15 @@
       <div class="list-blank">{$Text.ElementsListBlank}</div>
     {/each}
   </div>
+  {#if !scrolled && $UnivariateElements.length > 4}
+    <div class="scroll-guide">스크롤하여 더보기</div>
+  {/if}
 </main>
 
 <style>
   main {
     border-bottom: thin solid rgba(255, 255, 255, 0.2);
+    position: relative;
   }
   .list-blank {
     width: 100%;
@@ -64,7 +73,8 @@
   }
   .list {
     margin: 1rem;
-    height: 10rem;
+    height: 10.78rem;
+    overflow: scroll;
   }
   .list__ele {
     width: 100%;
@@ -107,5 +117,16 @@
     background-color: rgba(255, 255, 255, 0.1);
     cursor: pointer;
     opacity: 1;
+  }
+  .scroll-guide {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: start;
+    color: var(--white);
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 0.15rem 0;
   }
 </style>

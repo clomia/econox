@@ -174,3 +174,27 @@ select {
     background: transparent;
     /* 화살표가 사라진 후 배경을 투명하게 만듦 */
 }
+
+/* 스크롤바 스타일 일관되게 지정 */
+::-webkit-scrollbar {
+    width: 0.4rem;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(199, 202, 204);
+    border-radius: 9999px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-button,
+::-webkit-scrollbar-corner {
+    display: none;
+}
+
+body::-webkit-scrollbar-track {
+    background-color: #1F282B;
+    /* 메인 스크롤바는 배경색과 최대한 비슷하도록 트랙 색상 지정 */
+}

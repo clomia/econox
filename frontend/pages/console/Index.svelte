@@ -22,7 +22,6 @@
 
   .tools {
     margin: 1rem 0;
-    width: 100vw;
     display: flex;
     flex-direction: column;
     align-items: center;

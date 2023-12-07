@@ -74,7 +74,7 @@
   .list {
     margin: 1rem;
     height: 10.78rem;
-    overflow: scroll;
+    overflow: auto;
   }
   .list__ele {
     width: 100%;

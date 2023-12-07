@@ -181,8 +181,12 @@ select {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: rgba(199, 202, 204);
+    background-color: #494953;
     border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #6d6d74;
 }
 
 ::-webkit-scrollbar-track {

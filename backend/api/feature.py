@@ -75,6 +75,7 @@ async def get_element_from_user(lang: str, user=router.basic.user):
     - 유저에게 저장된 엘리먼트들을 가져옵니다.
     - lang: 응답 데이터의 언어 (ISO 639-1)
     """
+
     query = """
         SELECT e.code, e.section, ue.created
         FROM elements e

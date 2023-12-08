@@ -319,7 +319,8 @@ class WorldBankAPI:
 
                 async def request():
                     resp = await client.get(
-                        f"{self.BASE_URL}/{endpoint}", params=params
+                        f"{self.BASE_URL}/{endpoint}",
+                        params=params,
                     )
                     resp.raise_for_status()
                     return resp
@@ -330,8 +331,7 @@ class WorldBankAPI:
                 meta, data = resp.json()
                 all_data.extend(data)
                 if meta["page"] == meta["pages"]:
-                    # 현재 페이지가 총 페이지 갯수와 같다면 종료
-                    break
+                    break  # 현재 페이지가 총 페이지 갯수와 같다면 종료
                 if time.time() - start > timeout:
                     log.error(
                         f"[WorldBankAPI.pagenation_api_call 시간초과로 데이터 수집 중단 Timeout=({timeout}초)] "

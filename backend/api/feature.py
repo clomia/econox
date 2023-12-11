@@ -112,14 +112,37 @@ async def get_factor_from_element(element_code: str, element_section: str, lang:
     query = """
         SELECT f.*
         FROM elements e
-        INNER JOIN elements_factors ef ON e.id = ef.element_id
-        INNER JOIN factors f ON ef.factor_id = f.id
-        WHERE e.code={code} AND e.section={section} """
-    factors = await db.SQL(
+        LEFT JOIN elements_factors ef ON e.id = ef.element_id
+        LEFT JOIN factors f ON ef.factor_id = f.id
+        WHERE e.code = {code} AND e.section = {section};
+    """  # Element가 없는 경우과 Factor가 없는 경우를 구분하기 위해 LEFT JOIN 사용
+    fetched = await db.SQL(
         query, params={"code": element_code, "section": element_section}, fetch="all"
     ).exec()
-    if not factors:
+    if not fetched:  # Element 자체가 없는 경우
+        pass  # Elment 만들기
+    if fetched[0]["id"] is None:  # Element에 대한 Factor가 하나도 없는 경우
+        # Element code랑 section으로 Factor 싹 연결시켜주기
+        # 연결시켜줄 떄 DB에 Factor 있으면 그거 쓰고, 없으면 만들어서 쓰기
         pass
-    print(factors)
+
+    # 이제 아래 형식으로 가공해서 반환
+    # [ { code, name, note, section: {code, name, note} }, ... ]
+
+    # 첫 요청인 경우 .factors() 반환값 그대로 응답하고
+    # 아니면 DB응답 사용해서 가공하고
+    # section의 code, name, note만 가져오고 나머지 정보는 DB 응답에 있는거 그대로 쓰면 됌
+    # 근데 번역해야 함
+    # 아니면 그냥 factors() 하고 유효한것만 한번 필터링해서 반환하는게 간단할듯
+
+    # 없을 때 채우는건 이런식으로 하면 됌!
+    if element_section == "symbol":
+        symbol = await fmp.Symbol(element_code).load()
+        symbol.factors()
+    elif element_section == "country":
+        country = await world_bank.Country(element_code).load()
+        country.factors()
+    elif element_section == "custom":
+        pass
 
     return {}

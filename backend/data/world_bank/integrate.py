@@ -64,12 +64,7 @@ class Country:
 
     async def load(self):
         info, *_ = await asyncio.gather(
-            self.get_info(),
-            self.trade.load_factor(),
-            self.natural.load_factor(),
-            self.population.load_factor(),
-            self.industry.load_factor(),
-            self.economy.load_factor(),
+            self.get_info(), *[section.load_factor() for section in self.sections]
         )
         self.info = info
         self.is_valid = self.info["name"] and self.info["note"]

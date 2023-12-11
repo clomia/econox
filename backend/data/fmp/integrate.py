@@ -106,8 +106,8 @@ class Symbol:
     def __repr__(self) -> str:
         return f"<Symbol: {self.code}>"
 
-    @classmethod
-    def factors(cls) -> List[dict]:
+    @staticmethod
+    def factors() -> List[dict]:
         """
         - Symbol에 대한 모든 펙터를 반환
         - return: [ { code, name, note, section: {code, name, note} }, ... ]

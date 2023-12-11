@@ -22,15 +22,45 @@ class Country:
         self.info_path = EFS_VOLUME_PATH / f"features/country/{code}/info.json"
         self.info = {"name": None, "note": None}
         self.is_valid = False
-
-        self.trade = Trade(code)
-        self.natural = Natural(code)
-        self.population = Population(code)
-        self.industry = Industry(code)
-        self.economy = Economy(code)
+        (
+            self.trade,
+            self.natural,
+            self.population,
+            self.industry,
+            self.economy,
+        ) = self.sections = [
+            Trade(code),
+            Natural(code),
+            Population(code),
+            Industry(code),
+            Economy(code),
+        ]
 
     def __repr__(self) -> str:
         return f"<Country: {self.code}>"
+
+    def factors(self) -> List[dict]:
+        """
+        - Country에 대한 모든 펙터를 반환
+        - return: [ { code, name, note, section: {code, name, note} }, ... ]
+        """
+        factors = []
+        for section in self.sections:
+            for factor_code in section.indicator_codes.values():
+                factor = getattr(section, factor_code)
+                factors.append(
+                    {
+                        "code": factor_code,
+                        "name": factor.name,
+                        "note": factor.note,
+                        "section": {
+                            "code": section.__class__.__name__,
+                            "name": section.name,
+                            "note": section.note,
+                        },
+                    }
+                )
+        return factors
 
     async def load(self):
         info, *_ = await asyncio.gather(

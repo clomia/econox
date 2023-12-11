@@ -101,11 +101,10 @@ class ClientMeta(type):
             )
             setattr(self, name, factor)
 
-        await asyncio.gather(
-            *(
-                set_factor(indicator, name)
-                for indicator, name in self.indicator_codes.items()
-            )
-        )
+        tasks = [
+            set_factor(indicator, name)
+            for indicator, name in self.indicator_codes.items()
+        ]
+        await asyncio.gather(*tasks)
         self.get = lambda code: getattr(self, self.indicator_codes[code]).get()
         return self

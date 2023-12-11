@@ -3469,7 +3469,7 @@
         },
         "adj_close": {
             "factor": "adjClose",
-            "name": "adjClose",
+            "name": "adjusted closing price",
             "note": "all open interest"
         },
         "low": {

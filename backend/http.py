@@ -302,7 +302,6 @@ class WorldBankAPI:
     BASE_URL = "http://api.worldbank.org/v2"
     countries = None
 
-    @cached(ttl=12 * 360)
     async def pagenation_api_call(self, endpoint: str, params: dict = {}) -> list:
         """pagenation을 통해 모든 배열 응답을 모아서 반환합니다."""
         timeout = 20
@@ -340,7 +339,6 @@ class WorldBankAPI:
                     break
         return all_data
 
-    @cached(ttl=12 * 360)
     async def api_call(self, endpoint: str, params: dict = {}) -> dict | list:
         """단순히  API 요청 후 응답 반환"""
         params["format"] = "json"
@@ -349,12 +347,14 @@ class WorldBankAPI:
             resp.raise_for_status()
             return resp.json()
 
+    @cached(ttl=12 * 360)  # 이건 상위 객체에서 zarr 파일로 캐싱됨
     async def get_data(self, indicator: str, country: str) -> list:
         data = await self.pagenation_api_call(
             f"country/{country}/indicator/{indicator}"
         )
         return data
 
+    @cached()  # 메타정보는 영구 캐싱
     async def get_indicator(self, indicator: str) -> dict:
         request = partial(self.api_call, f"indicator/{indicator}")
         try:
@@ -362,6 +362,7 @@ class WorldBankAPI:
         except IndexError:
             return {}
 
+    # self.countries 속성을 통해 API 호출을 캐싱하므로 별도의 캐싱 불필요
     async def search_countries(self, query: str) -> list:
         if not self.countries:
             self.countries = await self.pagenation_api_call("countries")
@@ -370,6 +371,7 @@ class WorldBankAPI:
             country for country in self.countries if pattern.search(country["name"])
         ]
 
+    @cached()  # 메타정보는 영구 캐싱
     async def get_country(self, code: str) -> dict:
         request = partial(self.api_call, f"country/{code}")
         try:

@@ -106,6 +106,30 @@ class Symbol:
     def __repr__(self) -> str:
         return f"<Symbol: {self.code}>"
 
+    @classmethod
+    def factors(cls) -> List[dict]:
+        """
+        - Symbol에 대한 모든 펙터를 반환
+        - return: [ { code, name, note, section: {code, name, note} }, ... ]
+        """
+        factor_list = []
+        for section in classes.keys():
+            _, *factor_codes = list(classes[section].keys())
+            for code in factor_codes:
+                factor_list.append(
+                    {
+                        "code": code,
+                        "name": Multilingual(classes[section][code]["name"]),
+                        "note": Multilingual(classes[section][code]["note"]),
+                        "section": {
+                            "code": section,
+                            "name": Multilingual(classes[section]["setting"]["name"]),
+                            "note": Multilingual(classes[section]["setting"]["note"]),
+                        },
+                    }
+                )
+        return factor_list
+
     async def load(self):
         self.info = await self.get_info()
         self.is_valid = self.info["name"] and self.info["note"]

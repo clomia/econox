@@ -115,22 +115,11 @@ async def get_factor_from_element(element_code: str, element_section: str, lang:
         INNER JOIN elements_factors ef ON e.id = ef.element_id
         INNER JOIN factors f ON ef.factor_id = f.id
         WHERE e.code={code} AND e.section={section} """
+    factors = await db.SQL(
+        query, params={"code": element_code, "section": element_section}, fetch="all"
+    ).exec()
+    if not factors:
+        pass
+    print(factors)
 
-    # fetched = await db.SQL(query, params={"user_id": user["id"]}, fetch="all").exec()
-
-    async def parsing(record: dict):
-        # 캐싱되어있으면 엄청 빠름
-        if record["section"] == "symbol":
-            ele = await fmp.Symbol(record["code"]).load()
-        elif record["section"] == "country":
-            ele = await world_bank.Country(record["code"]).load()
-        name, note = await asyncio.gather(ele.name.en(), ele.note.trans(to=lang))
-        return {
-            "code": record["code"],
-            "section": record["section"],
-            "name": name,
-            "note": note,
-            "update": datetime2utcstr(record["created"]),
-        }
-
-    # return await asyncio.gather(*[parsing(record) for record in fetched])
+    return {}

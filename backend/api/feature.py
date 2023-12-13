@@ -156,32 +156,29 @@ async def get_factor_from_element(element_code: str, element_section: str, lang:
     ).exec()
     print("쿼리 실행 완료!")
 
-    response = []
     tasks = []
     for factor in all_factors:
 
         async def task():
-            print(f"Task 실행! {factor}")
             factor_name, factor_note, section_name, section_note = await asyncio.gather(
                 factor["name"].trans(to=lang),
                 factor["note"].trans(to=lang),
                 factor["section"]["name"].trans(to=lang),
                 factor["section"]["note"].trans(to=lang),
             )
-            response.append(
-                {
-                    "code": factor["code"],
-                    "name": factor_name,
-                    "note": factor_note,
-                    "section": {
-                        "code": factor["section"]["code"],
-                        "name": section_name,
-                        "note": section_note,
-                    },
-                }
-            )
-            print(f"Task 종료! {factor}")
+            return {
+                "code": factor["code"],
+                "name": factor_name,
+                "note": factor_note,
+                "section": {
+                    "code": factor["section"]["code"],
+                    "name": section_name,
+                    "note": section_note,
+                },
+            }
 
         tasks.append(task())
-    await asyncio.gather(*tasks)
-    return response
+
+    print(f"Task 갯수: {len(tasks) * 4}")
+    return {}
+    return await asyncio.gather(*tasks)

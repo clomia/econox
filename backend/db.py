@@ -134,7 +134,8 @@ class SQL:
         self.params = params
         self.fetch = fetch
         # QueryError 쓰려면 우선 SQL 객체가 구성되어야 하므로 이 코드들은 밑에 있어야 함
-        if query.upper()[:6] != "SELECT" and fetch is not False:
+        _q = query.upper()
+        if not (_q[:6] == "SELECT" or "RETURNING" in _q) and fetch is not False:
             error_msg = f"[SQL 객체 생성 불가] Write 쿼리는 fetch를 수행할 수 없습니다. ({query})"
             raise QueryError(self, error_msg)
         if fetch not in [False, "one", "all"]:
@@ -159,12 +160,10 @@ class SQL:
         return fetched[self]
 
 
-class InsertSQL(SQL):  # where 등 복잡한 구문이 없으므로 추상화 가능
+class InsertSQL(SQL):
     def __init__(self, table: str, **params):
         """
         - table: 데이터를 삽입할 테이블
-            - [!] SQL 인젝션 보안을 위해서 table 매개변수는 반드시
-                리터럴 값이어야 하며, 외부로부터 입력받아선 안됩니다.
         - params: 컬럼명, 값 쌍들
         """
         keys = tuple(params.keys())
@@ -173,6 +172,41 @@ class InsertSQL(SQL):  # where 등 복잡한 구문이 없으므로 추상화 �
         # 테이블 이름은 파라미터화 할 수 없습니다.
         query = f"INSERT INTO {table} {keys_str} VALUES ({values_str})"
         super().__init__(query, params, fetch=False)
+
+
+class ManyInsertSQL(SQL):
+    def __init__(self, table: str, params: Dict[str, list], conflict_pass: list = []):
+        """
+        - table: 데이터를 삽입할 테이블
+        - params: 컬럼명, 값 리스트
+            - 모든 리스트의 길이는 동일해야 합니다.
+        - conflict_pass: 제약 조건에 대해 에러 출력 없이 넘어갈 컬럼 지정
+        """
+        list_lengths = [len(lst) for lst in params.values()]
+        if not all(length == list_lengths[0] for length in list_lengths):
+            raise ValueError(f"[ManyInsertSQL] params 값 리스트의 길이가 동일하지 않습니다")
+        keys = tuple(params.keys())
+        length = len(params[keys[0]])
+
+        keys_str = f"({', '.join(keys)})"
+        values_str = ", ".join(
+            [
+                f'({", ".join([f"{{{idx}_{key}}}" for key in keys])})'
+                for idx in range(length)
+            ]
+        )
+
+        params_dict = {}
+        for key in keys:
+            for idx, value in enumerate(params[key]):
+                params_dict[f"{idx}_{key}"] = value
+
+        query = f"INSERT INTO {table} {keys_str} VALUES {values_str}"
+
+        if conflict_pass:
+            query += f" ON CONFLICT ({', '.join(conflict_pass)}) DO NOTHING"
+
+        super().__init__(query, params_dict, fetch=False)
 
 
 # ======================== 단축 함수들 ========================

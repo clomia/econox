@@ -112,37 +112,76 @@ async def get_factor_from_element(element_code: str, element_section: str, lang:
     query = """
         SELECT f.*
         FROM elements e
-        LEFT JOIN elements_factors ef ON e.id = ef.element_id
-        LEFT JOIN factors f ON ef.factor_id = f.id
-        WHERE e.code = {code} AND e.section = {section};
-    """  # Element가 없는 경우과 Factor가 없는 경우를 구분하기 위해 LEFT JOIN 사용
+        INNER JOIN elements_factors ef ON e.id = ef.element_id
+        INNER JOIN factors f ON ef.factor_id = f.id
+        WHERE e.code = {code} AND e.section = {section}
+    """  # Element가 없는 경우와 Factor가 없는 경우를 구분하기 위해 LEFT JOIN 사용
     fetched = await db.SQL(
         query, params={"code": element_code, "section": element_section}, fetch="all"
     ).exec()
-    if not fetched:  # Element 자체가 없는 경우
-        pass  # Elment 만들기
-    if fetched[0]["id"] is None:  # Element에 대한 Factor가 하나도 없는 경우
-        # Element code랑 section으로 Factor 싹 연결시켜주기
-        # 연결시켜줄 떄 DB에 Factor 있으면 그거 쓰고, 없으면 만들어서 쓰기
-        pass
+    if fetched and fetched[0]["id"] is not None:
+        return fetched  # factors 검색되면 정제해서 바로 반환
 
-    # 이제 아래 형식으로 가공해서 반환
-    # [ { code, name, note, section: {code, name, note} }, ... ]
+    await db.SQL(  # Element 없으면 생성
+        """
+        INSERT INTO elements (section, code) 
+        VALUES ({section}, {code})
+        ON CONFLICT (section, code) DO NOTHING """,
+        params={"section": element_section, "code": element_code},
+    ).exec()
 
-    # 첫 요청인 경우 .factors() 반환값 그대로 응답하고
-    # 아니면 DB응답 사용해서 가공하고
-    # section의 code, name, note만 가져오고 나머지 정보는 DB 응답에 있는거 그대로 쓰면 됌
-    # 근데 번역해야 함
-    # 아니면 그냥 factors() 하고 유효한것만 한번 필터링해서 반환하는게 간단할듯
-
-    # 없을 때 채우는건 이런식으로 하면 됌!
     if element_section == "symbol":
-        symbol = await fmp.Symbol(element_code).load()
-        symbol.factors()
+        element = await fmp.Symbol(element_code).load()
     elif element_section == "country":
-        country = await world_bank.Country(element_code).load()
-        country.factors()
-    elif element_section == "custom":
-        pass
+        element = await world_bank.Country(element_code).load()
 
-    return {}
+    all_factors = element.factors()
+    codes, names, notes, sections = [], [], [], []
+    for factor in all_factors:
+        codes.append(factor["code"])
+        names.append(await factor["name"].en())
+        notes.append(await factor["note"].en())
+        sections.append(factor["section"]["code"])
+
+    print("쿼리 실행!")
+    await db.ManyInsertSQL(
+        "factors",
+        params={
+            "code": codes,
+            "name": names,
+            "note": notes,
+            "section": sections,
+        },
+        conflict_pass=["section", "code"],
+    ).exec()
+    print("쿼리 실행 완료!")
+
+    response = []
+    tasks = []
+    for factor in all_factors:
+
+        async def task():
+            print(f"Task 실행! {factor}")
+            factor_name, factor_note, section_name, section_note = await asyncio.gather(
+                factor["name"].trans(to=lang),
+                factor["note"].trans(to=lang),
+                factor["section"]["name"].trans(to=lang),
+                factor["section"]["note"].trans(to=lang),
+            )
+            response.append(
+                {
+                    "code": factor["code"],
+                    "name": factor_name,
+                    "note": factor_note,
+                    "section": {
+                        "code": factor["section"]["code"],
+                        "name": section_name,
+                        "note": section_note,
+                    },
+                }
+            )
+            print(f"Task 종료! {factor}")
+
+        tasks.append(task())
+    await asyncio.gather(*tasks)
+    return response

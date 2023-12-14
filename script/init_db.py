@@ -1,4 +1,7 @@
-""" schema.sql을 실행합니다. """
+""" 
+- sql 파일을 실행합니다. 
+- [DB이름].sql 형식으로 파일을 관리하세요
+"""
 from pathlib import Path
 from datetime import datetime
 
@@ -7,7 +10,8 @@ import psycopg
 host = input("host: ")
 password = input("password: ")
 sql_path = Path(input("SQL path: "))
-dbname = input("db name: ")
+_dbname = sql_path.stem
+dbname = input(f"db name [Default: {_dbname}]: ") or _dbname
 
 sql = sql_path.read_text()
 print(f"\n(SQL 코드 검토)\n\n{sql}\n\n")

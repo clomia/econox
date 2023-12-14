@@ -49,7 +49,7 @@ class QueryError(Exception):
 
 async def exec(
     *sql: SQL,
-    dbname: str = "econox",
+    dbname: str = "main",
     parallel: bool = False,
     _retry=False,
 ) -> Dict[SQL, None | List[Dict[str, Any]]]:
@@ -155,7 +155,7 @@ class SQL:
         query = re.sub(r"\{(.*?)\}", "%s", self.query)
         return query, param_values
 
-    async def exec(self, dbname: str = "econox"):
+    async def exec(self, dbname: str = "main"):
         fetched = await exec(self, dbname=dbname)
         return fetched[self]
 

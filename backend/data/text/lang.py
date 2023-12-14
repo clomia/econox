@@ -8,8 +8,8 @@ import deepl
 import httpx
 import redis.asyncio as redis
 
-from backend.system import SECRETS
 from backend.http import pooling
+from backend.system import SECRETS, REDIS_CONFIG
 
 # - 번역 용어집: 인공지능 번역의 불완전한 부분을 보완하는데 사용됩니다.
 # - 이 디렉토리에 {출발어}-{목적어}.json 파일로 용어집을 생성하세요 (언어 표기는 ISO 639-1 사용)
@@ -28,10 +28,8 @@ for name, glossary in glossaries_json.items():
 class DeeplCache:
     """Redis를 백엔드로 사용합니다"""
 
-    expire = 360 * 24 * 30
-    cache = redis.Redis(
-        host=SECRETS["RADIS_HOST"], decode_responses=True, socket_timeout=3
-    )
+    expire = 360 * 24 * 30  # 30일
+    cache = redis.Redis(**REDIS_CONFIG)
 
     def __init__(self, to_lang: str, from_lang: str = None):
         self.key_prefix = f"{str(from_lang).lower()}-{to_lang.lower()}"

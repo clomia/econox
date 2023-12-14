@@ -14,7 +14,6 @@ from concurrent.futures import ThreadPoolExecutor
 
 import psutil
 import boto3
-from aiocache import RedisCache
 
 
 # ==================== LOGGING ====================
@@ -85,8 +84,18 @@ db_secrets = json.loads(db_data["SecretString"])
 
 SECRETS = dict(secrets)
 SECRETS["DB_PASSWORD"] = db_secrets["password"]
-if os.getenv("IS_LOCAL"):
+
+is_local = bool(os.getenv("IS_LOCAL"))
+if is_local:
     SECRETS["RADIS_HOST"] = "localhost"
+
+REDIS_CONFIG = {  # 사용법: redis.Redis(**REDIS_CONFIG)
+    "host": SECRETS["RADIS_HOST"],
+    "decode_responses": True,
+    "socket_connect_timeout": 5,
+    "socket_timeout": 5,  # timeout 지정 안해주면 영원히 블로킹될 수 있다
+    "ssl": True if not is_local else False,  # AWS ElastiCache는 SSL이 필수다.
+}  # (참고): aiocached에 Redis 백엔드가 있으나 ssl 매개변수를 지원하지 않으므로 쓰기 어렵다
 
 log.debug(
     f"보안 데이터 {len(SECRETS)}개 로드 완료\n"

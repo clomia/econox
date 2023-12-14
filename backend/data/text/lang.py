@@ -24,6 +24,10 @@ for name, glossary in glossaries_json.items():
     for from_txt, to_txt in glossary.items():
         glossaries[to_lang][from_txt] = to_txt
 
+print("redis 연결 시작!")
+cache = redis.Redis(host=SECRETS["RADIS_HOST"], decode_responses=True)
+print("redis 연결 완료!")
+
 
 class DeeplCache:
     """Redis를 백엔드로 사용합니다"""

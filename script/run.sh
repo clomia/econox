@@ -6,7 +6,6 @@ export IS_LOCAL="true"
 
 # Redis 서버 시작
 redis-server &
-REDIS_PID=$!
 
 # Svelte 코드 빌드 & 번들링
 npm run build
@@ -14,7 +13,6 @@ npm run build
 # 종료 처리기 함수
 cleanup() {
   # Redis 서버 종료
-  kill $REDIS_PID
 
   # pycache 파일 제거
   find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$)" | xargs rm -rf

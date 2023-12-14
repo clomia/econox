@@ -57,10 +57,12 @@ async def pooling(
         if not exponential_backoff:  # 재수 백오프 비활성화시 바로 재시도
             continue
 
-        exponential_delay = base_delay * (2**retry)  # 지수 백오프
-        random_delay = random.uniform(0, 0.1 * exponential_delay)  # 무작위성 추가
-        # delay_limit을 넘지 못하도록
-        delay = min(exponential_delay + random_delay, delay_limit)
+        exponential_delay = base_delay * ((1.5**retry) - 1)  # 지수 백오프
+        random_max = 5.6 * delay_limit
+        random_factor = random.uniform(0.1, random_max)  # 무작위성 추가
+        random_delay = random_factor * exponential_delay
+        delay = min(random_delay, delay_limit)
+        # 무작위성을 많이 넣어야 동시에 많이 실행될 때 호출 시간 분포가 잘 흩어진다.
         await asyncio.sleep(delay)
 
     assert inspecter(result := await target())  # 마지막으로 한번 더 실행

@@ -39,14 +39,10 @@ class DeeplCache:
 
     async def set(self, key: str, value: str):
         _key = self.cache_key(key)
-        print(f"[시작] SET key: {key}")
         await self.cache.set(_key, str(value), ex=self.expire)
-        print(f"[종료] SET key: {key}")
 
     async def get(self, key: str):
-        print(f"[시작] GET key: {key}")
         value = await self.cache.get(self.cache_key(key))
-        print(f"[종료] GET key: {key}")
         return value
 
 

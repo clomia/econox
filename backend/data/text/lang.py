@@ -6,7 +6,7 @@ from collections import defaultdict
 
 import deepl
 import httpx
-import redis  # .asyncio as redis
+import redis.asyncio as redis
 
 from backend.system import SECRETS
 from backend.http import pooling
@@ -29,7 +29,9 @@ class DeeplCache:
     """Redis를 백엔드로 사용합니다"""
 
     expire = 360 * 24 * 30
-    cache = redis.Redis(host=SECRETS["RADIS_HOST"], decode_responses=True)
+    cache = redis.Redis(
+        host=SECRETS["RADIS_HOST"], decode_responses=True, socket_timeout=3
+    )
 
     def __init__(self, to_lang: str, from_lang: str = None):
         self.key_prefix = f"{str(from_lang).lower()}-{to_lang.lower()}"
@@ -40,12 +42,12 @@ class DeeplCache:
     async def set(self, key: str, value: str):
         _key = self.cache_key(key)
         print(f"[시작] SET key: {key}")
-        self.cache.set(_key, str(value), ex=self.expire)
+        await self.cache.set(_key, str(value), ex=self.expire)
         print(f"[종료] SET key: {key}")
 
     async def get(self, key: str):
         print(f"[시작] GET key: {key}")
-        value = self.cache.get(self.cache_key(key))
+        value = await self.cache.get(self.cache_key(key))
         print(f"[종료] GET key: {key}")
         return value
 

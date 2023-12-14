@@ -182,3 +182,19 @@ async def get_factor_from_element(element_code: str, element_section: str, lang:
     print(f"Task 갯수: {len(tasks) * 4}")
     return {}
     return await asyncio.gather(*tasks)
+
+
+@router.basic.get("/tast")
+async def get_factor_from_element():
+    import socket
+
+    try:
+        # Create a socket object
+        with socket.create_connection(
+            ("deepl-cache-avvler.serverless.use1.cache.amazonaws.com", 11211),
+            timeout=10,
+        ):
+            print("연결 성공!")
+    except socket.error as e:
+        print("연결 실패!", e)
+        raise e

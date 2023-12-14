@@ -18,7 +18,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from backend import db
 from backend.math import utcstr2datetime
-from backend.system import SECRETS, REDIS_BACKEND, log
+from backend.system import SECRETS, log
 
 T = TypeVar("T")
 
@@ -271,7 +271,9 @@ class FmpAPI:
     async def get(self, path, **params) -> dict | list:
         request = self._request_use_caching if self.cache else self._request
         try:
-            return await pooling(partial(request, path, **params), exceptions=Exception)
+            return await pooling(
+                partial(request, path, **params), exceptions=Exception, timeout=20
+            )
         except Exception as e:
             log.error(
                 f"FMP API 서버와 통신에 실패하여 데이터를 수신하지 못했습니다. (path: {path}, error: {e})"
@@ -354,7 +356,7 @@ class WorldBankAPI:
         )
         return data
 
-    @cached(**REDIS_BACKEND)  # 메타정보는 영구 캐싱
+    @cached()  # 메타정보는 영구 캐싱
     async def get_indicator(self, indicator: str) -> dict:
         request = partial(self.api_call, f"indicator/{indicator}")
         try:
@@ -371,7 +373,7 @@ class WorldBankAPI:
             country for country in self.countries if pattern.search(country["name"])
         ]
 
-    @cached(**REDIS_BACKEND)  # 메타정보는 영구 캐싱
+    @cached()  # 메타정보는 영구 캐싱
     async def get_country(self, code: str) -> dict:
         request = partial(self.api_call, f"country/{code}")
         try:

@@ -2,7 +2,8 @@
 
 # data client
 httpx==0.25.1
-aiocache[redis]==0.12.2
+aiocache==0.12.2 # aiocache의 redis백엔드는 버그가 많음..
+redis[hiredis]==5.0.1 # 직접 만들어서 쓰는게 훨씬 나음
 pycountry==22.3.5
 deepl==1.16.1
 

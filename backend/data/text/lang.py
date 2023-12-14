@@ -24,10 +24,6 @@ for name, glossary in glossaries_json.items():
     for from_txt, to_txt in glossary.items():
         glossaries[to_lang][from_txt] = to_txt
 
-print("redis 연결 시작!")
-cache = redis.Redis(host=SECRETS["RADIS_HOST"], decode_responses=True)
-print("redis 연결 완료!")
-
 
 class DeeplCache:
     """Redis를 백엔드로 사용합니다"""
@@ -43,11 +39,15 @@ class DeeplCache:
 
     async def set(self, key: str, value: str):
         _key = self.cache_key(key)
-        await self.cache.set(_key, str(value))
-        await self.cache.expire(_key, self.expire)
+        print(f"[시작] SET key: {key}")
+        await self.cache.set(_key, str(value), ex=self.expire)
+        print(f"[종료] SET key: {key}")
 
     async def get(self, key: str):
-        return await self.cache.get(self.cache_key(key))
+        print(f"[시작] GET key: {key}")
+        value = await self.cache.get(self.cache_key(key))
+        print(f"[종료] GET key: {key}")
+        return value
 
 
 async def translate(text: str, to_lang: str, *, from_lang: str = None) -> str:

@@ -6,9 +6,9 @@ from collections import defaultdict
 
 import deepl
 import httpx
+from aiocache import cached
 
-from backend import db
-from backend.system import SECRETS
+from backend.system import SECRETS, REDIS_BACKEND
 from backend.http import pooling
 
 # - 번역 용어집: 인공지능 번역의 불완전한 부분을 보완하는데 사용됩니다.
@@ -25,43 +25,7 @@ for name, glossary in glossaries_json.items():
         glossaries[to_lang][from_txt] = to_txt
 
 
-class DeeplCache:
-    """
-    - deepl API 사용량이 매우 많고, 비용도 많이 나가기 때문에 무조건 캐싱 해야 함
-    """
-
-    def __init__(self, to_lang: str, from_lang: str = None):
-        self.from_lang = from_lang
-        self.to_lang = to_lang
-
-    async def set(self, from_text: str, to_text: str):
-        await db.InsertSQL(
-            "deepl",
-            from_lang=self.from_lang,
-            to_lang=self.to_lang,
-            from_text=from_text,
-            to_text=to_text,
-        ).exec(dbname="cache")
-
-    async def get(self, text: str) -> str | None:
-        fetched = await db.SQL(
-            """ 
-            SELECT to_text FROM deepl 
-            WHERE from_lang={from_lang} 
-                AND to_lang={to_lang}
-                AND from_text={from_text} 
-            LIMIT 1
-            """,
-            params={
-                "from_lang": self.from_lang,
-                "to_lang": self.to_lang,
-                "from_text": text,
-            },
-            fetch="one",
-        ).exec(dbname="cache")
-        return fetched["to_text"] if fetched else None
-
-
+@cached(**REDIS_BACKEND)
 async def translate(text: str, to_lang: str, *, from_lang: str = None) -> str:
     """deepl 공식 SDK쓰면 urllib 풀 사이즈 10개 제한 떠서 httpx 비동기 클라이언트로 별도의 함수 작성"""
 
@@ -71,11 +35,6 @@ async def translate(text: str, to_lang: str, *, from_lang: str = None) -> str:
         if result := glossary.get(target):
             return result  # 용어집에서 해당 도착어에 대해 일치하는 번역 정의를 찾으면 그것을 반환한다.
 
-    cache = DeeplCache(to_lang, from_lang)
-    if result := (await cache.get(target)):
-        return result  # 캐싱된 결과가 있다면 그것을 반환한다.
-
-    host = "https://api.deepl.com/v2/translate"
     variant_hendler = {
         "en": "EN-US",
         "pt": "PT-PT",
@@ -86,9 +45,9 @@ async def translate(text: str, to_lang: str, *, from_lang: str = None) -> str:
     source_language = from_lang.upper() if from_lang else None
 
     async def request():
-        async with httpx.AsyncClient(timeout=18) as client:
+        async with httpx.AsyncClient(timeout=6) as client:
             return await client.post(
-                host,
+                "https://api.deepl.com/v2/translate",
                 headers={
                     "Authorization": f"DeepL-Auth-Key {SECRETS['DEEPL_API_KEY']}",
                     "Content-Type": "application/json",
@@ -110,7 +69,6 @@ async def translate(text: str, to_lang: str, *, from_lang: str = None) -> str:
         raise httpx.HTTPError(f"DeepL 통신 오류 Error: {e} (사용량 한도에 도달했을 수 있습니다.)")
     else:
         result = resp.json()["translations"][0]["text"]
-        await cache.set(from_text=target, to_text=result)
         return result
 
 

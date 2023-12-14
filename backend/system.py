@@ -14,6 +14,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 import psutil
 import boto3
+from aiocache import RedisCache
 
 
 # ==================== LOGGING ====================
@@ -84,6 +85,14 @@ db_secrets = json.loads(db_data["SecretString"])
 
 SECRETS = dict(secrets)
 SECRETS["DB_PASSWORD"] = db_secrets["password"]
+if os.getenv("IS_LOCAL"):
+    SECRETS["RADIS_HOST"] = "localhost"
+
+REDIS_BACKEND = {  # aiocache에서 Radis를 백엔드로 사용하려면 이 설정을 가져다 쓰세요
+    "cache": RedisCache,
+    "endpoint": SECRETS["RADIS_HOST"],
+    "ttl": 30 * 24 * 360,  # 한달에 한번이라도 조회되면 살려두기
+}  # 사용법: @cached(**REDIS_BACKEND)
 
 log.debug(
     f"보안 데이터 {len(SECRETS)}개 로드 완료\n"

@@ -18,7 +18,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from backend import db
 from backend.math import utcstr2datetime
-from backend.system import SECRETS, log, run_async
+from backend.system import SECRETS, REDIS_BACKEND, log
 
 T = TypeVar("T")
 
@@ -354,7 +354,7 @@ class WorldBankAPI:
         )
         return data
 
-    @cached()  # 메타정보는 영구 캐싱
+    @cached(**REDIS_BACKEND)  # 메타정보는 영구 캐싱
     async def get_indicator(self, indicator: str) -> dict:
         request = partial(self.api_call, f"indicator/{indicator}")
         try:
@@ -371,7 +371,7 @@ class WorldBankAPI:
             country for country in self.countries if pattern.search(country["name"])
         ]
 
-    @cached()  # 메타정보는 영구 캐싱
+    @cached(**REDIS_BACKEND)  # 메타정보는 영구 캐싱
     async def get_country(self, code: str) -> dict:
         request = partial(self.api_call, f"country/{code}")
         try:

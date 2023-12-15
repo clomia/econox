@@ -10,25 +10,19 @@
 
 <style>
   .progress-bar {
-    border-radius: 60px;
+    border-radius: 2rem;
     overflow: hidden;
     width: 100%;
-    position: fixed;
-    left: 50%;
-    max-width: 50%;
-    top: 50%;
-    transform: translate3d(-50%, -50%, 0);
+    max-width: 100%;
   }
 
   .bar {
-    background: rgba(0, 0, 0, 0.075);
-    display: block;
+    background: rgba(0, 0, 0, 0.3);
   }
 
   .progress {
-    background: #75b800;
-    color: #fff;
-    padding: 5px;
+    background: rgba(255, 255, 255, 0.3);
+    padding: 0.35rem;
     transition: width 0.5s ease;
   }
 </style>

@@ -1,6 +1,7 @@
 <script lang="ts">
   import Magnifier from "../../../assets/icon/Magnifier.svelte";
   import ProgressBar from "../../../components/ProgressBar.svelte";
+  import CircleDotLoader from "../../../assets/animation/CircleDotLoader.svelte";
   import { Text } from "../../../modules/state";
   import {
     UnivariateNote,
@@ -30,8 +31,13 @@
   {#if factors.length}
     <div class="search"><Magnifier /><input type="text" /></div>
   {/if}
+  {#if 0 < progress && progress < 1}
+    <div class="progress">
+      <div class="progress__bar"><ProgressBar {progress} /></div>
+      <div class="progress__percent">{(progress * 100).toFixed(0)}%</div>
+    </div>
+  {/if}
   <div class="list" on:scroll={scrollHandler}>
-    <ProgressBar {progress} />
     {#each factors as fac}
       <button
         class="list__ele"
@@ -41,14 +47,13 @@
         <div class="list__ele__code">{fac.code}</div>
         <div class="list__ele__name">{fac.name}</div>
       </button>
-    {:else}
-      {#if $UnivariateElementSelected}
-        <ProgressBar {progress} />
-      {:else}
-        <div class="list-blank">{$Text.ElementsListBlank}</div>
-      {/if}
     {/each}
   </div>
+  {#if progress === 0 && ele}
+    <CircleDotLoader />
+  {:else if progress === 0 && !ele}
+    <div class="list-blank">{$Text.ElementsListBlank}</div>
+  {/if}
   {#if !scrolled && factors.length > 4}
     <div class="scroll-guide">{$Text.ScrollMore}</div>
   {/if}
@@ -121,5 +126,21 @@
     color: var(--white);
     background-color: rgba(0, 0, 0, 0.2);
     padding: 0.15rem 0;
+  }
+  .progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+  .progress__bar {
+    width: 80%;
+  }
+  .progress__percent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 1rem;
+    color: var(--white);
   }
 </style>

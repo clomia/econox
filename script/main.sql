@@ -1,4 +1,4 @@
---- Last commit: 2023-12-05 13:28:38 ---
+--- Last commit: 2023-12-15 14:09:17 ---
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ------------------------------------------------
@@ -122,7 +122,7 @@ CREATE INDEX idx_users_elements_element_id ON users_elements(element_id);
 CREATE TABLE elements_factors (
     "id" SERIAL NOT NULL PRIMARY KEY,
     "element_id" INT NOT NULL REFERENCES elements(id) ON DELETE CASCADE,
-    "factor_id" INT NOT NULL REFERENCES elements(id) ON DELETE CASCADE,
+    "factor_id" INT NOT NULL REFERENCES factors(id) ON DELETE CASCADE,
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE ("element_id", "factor_id")
 );

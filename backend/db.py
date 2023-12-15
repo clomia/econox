@@ -175,12 +175,19 @@ class InsertSQL(SQL):
 
 
 class ManyInsertSQL(SQL):
-    def __init__(self, table: str, params: Dict[str, list], conflict_pass: list = []):
+    def __init__(
+        self,
+        table: str,
+        params: Dict[str, list],
+        conflict_pass: list = [],
+        returning: bool = False,
+    ):
         """
         - table: 데이터를 삽입할 테이블
         - params: 컬럼명, 값 리스트
             - 모든 리스트의 길이는 동일해야 합니다.
         - conflict_pass: 제약 조건에 대해 에러 출력 없이 넘어갈 컬럼 지정
+        - returning: 실행 시 삽입에 성공한 레코드가 모두 반환됩니다.
         """
         list_lengths = [len(lst) for lst in params.values()]
         if not all(length == list_lengths[0] for length in list_lengths):
@@ -205,8 +212,10 @@ class ManyInsertSQL(SQL):
 
         if conflict_pass:
             query += f" ON CONFLICT ({', '.join(conflict_pass)}) DO NOTHING"
+        if returning:
+            query += " RETURNING *"
 
-        super().__init__(query, params_dict, fetch=False)
+        super().__init__(query, params_dict, fetch="all" if returning else False)
 
 
 # ======================== 단축 함수들 ========================

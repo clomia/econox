@@ -126,7 +126,7 @@
         }),
       ); // 값이 []인 경우 뉴스 없음
       $News = { ...$News, ...Object.fromEntries(newsData) };
-    } catch (error) {
+    } catch {
       $Packets = $Packets.filter((p) => p.query !== query);
       return await Swal.fire({
         ...defaultSwalStyle,

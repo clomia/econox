@@ -103,11 +103,47 @@ async def get_element_from_user(lang: str, user=router.basic.user):
 
 
 @router.basic.get("/factors")
-async def get_factor_from_element(element_code: str, element_section: str, lang: str):
+async def get_factor_from_element(
+    element_code: str, element_section: str, lang: str, page: int = 1
+):
     """
-    - Element에 대한 펙터들을 가져옵니다.
+    - Element에 속한 펙터들을 가져옵니다.
     - lang: 응답 데이터의 언어 (ISO 639-1)
+    - page: 가져올 페이지 지정
+        - 페이지당 5개의 펙터를 포함하며 범위를 벗어나면 빈 배열을 응답합니다.
     """
+
+    per_page = 5
+    page_offset = (page - 1) * per_page
+
+    async def translate(factor: dict):
+        """
+        - 펙터의 다국어객체를 번역해서 직렬화 가능한 dict로 변환
+        - factor: element의 factors 메서드를 통해 얻은 펙터 하나
+        """
+
+        factor_name, factor_note, section_name, section_note = await asyncio.gather(
+            factor["name"].trans(to=lang),
+            factor["note"].trans(to=lang),
+            factor["section"]["name"].trans(to=lang),
+            factor["section"]["note"].trans(to=lang),
+        )
+        return {
+            "code": factor["code"],
+            "name": factor_name,
+            "note": factor_note,
+            "section": {
+                "code": factor["section"]["code"],
+                "name": section_name,
+                "note": section_note,
+            },
+        }
+
+    if element_section == "symbol":
+        element = await fmp.Symbol(element_code).load()
+    elif element_section == "country":
+        element = await world_bank.Country(element_code).load()
+    all_factors = element.factors()
 
     query = """
         SELECT f.*
@@ -115,12 +151,23 @@ async def get_factor_from_element(element_code: str, element_section: str, lang:
         INNER JOIN elements_factors ef ON e.id = ef.element_id
         INNER JOIN factors f ON ef.factor_id = f.id
         WHERE e.code = {code} AND e.section = {section}
-    """  # Element가 없는 경우와 Factor가 없는 경우를 구분하기 위해 LEFT JOIN 사용
+    """
     fetched = await db.SQL(
         query, params={"code": element_code, "section": element_section}, fetch="all"
     ).exec()
-    if fetched and fetched[0]["id"] is not None:
-        return fetched  # factors 검색되면 정제해서 바로 반환
+
+    if fetched:  # 해당하는 펙터만 정제해서 응답
+        target = []
+        db_factors = [(fac["section"], fac["code"]) for fac in fetched]
+        for factor in all_factors:
+            if (factor["section"]["code"], factor["code"]) in db_factors:
+                target.append(factor)
+        target = target[page_offset : page_offset + per_page]
+        # translate 할 수 있는 횟수에 한계가 있으므로 pagenation 해야 함
+        return await asyncio.gather(*[translate(factor) for factor in target])
+
+    # ==================== DB 셋업 시작 ====================
+    # 필요한 Element와 Factor들이 모두 있도록 한 후 연결합니다. 약 10초 소요됩니다.
 
     await db.SQL(  # Element 없으면 생성
         """
@@ -129,13 +176,12 @@ async def get_factor_from_element(element_code: str, element_section: str, lang:
         ON CONFLICT (section, code) DO NOTHING """,
         params={"section": element_section, "code": element_code},
     ).exec()
+    db_element = await db.SQL(  # Element ID 가져오기
+        "SELECT * FROM elements WHERE section={s} and code={c}",
+        {"s": element_section, "c": element_code},
+        fetch="one",
+    ).exec()
 
-    if element_section == "symbol":
-        element = await fmp.Symbol(element_code).load()
-    elif element_section == "country":
-        element = await world_bank.Country(element_code).load()
-
-    all_factors = element.factors()
     codes, names, notes, sections = [], [], [], []
     for factor in all_factors:
         codes.append(factor["code"])
@@ -143,8 +189,7 @@ async def get_factor_from_element(element_code: str, element_section: str, lang:
         notes.append(await factor["note"].en())
         sections.append(factor["section"]["code"])
 
-    print("쿼리 실행!")
-    await db.ManyInsertSQL(
+    await db.ManyInsertSQL(  # Factors 없으면 생성
         "factors",
         params={
             "code": codes,
@@ -154,47 +199,21 @@ async def get_factor_from_element(element_code: str, element_section: str, lang:
         },
         conflict_pass=["section", "code"],
     ).exec()
-    print("쿼리 실행 완료!")
 
-    tasks = []
-    for factor in all_factors:
+    query = "SELECT * FROM factors WHERE "
+    query += " OR ".join(  # Factors ID 가져오기
+        [f"(section = '{sec}' AND code = '{co}')" for sec, co in zip(sections, codes)]
+    )  # factors는 서버 내부에서 입력하는거라 파라미터화 안해도 됌
+    db_factors = await db.SQL(query, fetch="all").exec()
 
-        async def task():
-            factor_name, factor_note, section_name, section_note = await asyncio.gather(
-                factor["name"].trans(to=lang),
-                factor["note"].trans(to=lang),
-                factor["section"]["name"].trans(to=lang),
-                factor["section"]["note"].trans(to=lang),
-            )
-            return {
-                "code": factor["code"],
-                "name": factor_name,
-                "note": factor_note,
-                "section": {
-                    "code": factor["section"]["code"],
-                    "name": section_name,
-                    "note": section_note,
-                },
-            }
-
-        tasks.append(task())
-
-    print(f"Task 갯수: {len(tasks) * 4}")
-    return {}
-    return await asyncio.gather(*tasks)
-
-
-@router.basic.get("/tast")
-async def get_factor_from_element():
-    import socket
-
-    try:
-        # Create a socket object
-        with socket.create_connection(
-            ("deepl-cache-avvler.serverless.use1.cache.amazonaws.com", 11211),
-            timeout=10,
-        ):
-            print("연결 성공!")
-    except socket.error as e:
-        print("연결 실패!", e)
-        raise e
+    await db.ManyInsertSQL(  # Element에 Factors모두 연결
+        "elements_factors",
+        params={
+            "element_id": [int(db_element["id"])] * len(db_factors),
+            "factor_id": [int(db_factor["id"]) for db_factor in db_factors],
+        },
+        conflict_pass=["element_id", "factor_id"],
+    ).exec()
+    # ==================== DB 셋업 종료 ====================
+    target = all_factors[page_offset : page_offset + per_page]
+    return await asyncio.gather(*[translate(factor) for factor in target])

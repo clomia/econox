@@ -140,3 +140,4 @@ export const UnivariateElementsLoaded = writable(false);
 export const UnivariateElementSelected = writable<ElementType>();
 // 키는 Element의 "{section}-{code}" 입니다.
 export const UnivariateFactors = writable<{ [key: string]: FactorType[]; }>({});
+export const UnivariateFactorSelected = writable<FactorType>();

@@ -1,17 +1,26 @@
 <script lang="ts">
   import Magnifier from "../../../assets/icon/Magnifier.svelte";
-  import MinusIcon from "../../../assets/icon/MinusIcon.svelte";
-  import { Text, CountryCodeMap } from "../../../modules/state";
-  import { UnivariateFactors, UnivariateElementSelected } from "../../../modules/state";
-  import { deleteElement } from "./functions";
+  import { Text } from "../../../modules/state";
+  import {
+    UnivariateNote,
+    UnivariateFactors,
+    UnivariateElementSelected,
+    UnivariateFactorSelected,
+  } from "../../../modules/state";
+  import type { ElementType, FactorType } from "../../../modules/state";
+
+  const select = (fac: FactorType) => {
+    $UnivariateFactorSelected = fac;
+    $UnivariateNote = fac.note;
+  };
 
   let scrolled = false;
   const scrollHandler = () => {
     scrolled = true;
   };
 
-  let ele = $UnivariateElementSelected;
-  let factors = $UnivariateFactors[`${ele.section}-${ele.code}`];
+  $: ele = $UnivariateElementSelected;
+  $: factors = ele ? $UnivariateFactors[`${ele.section}-${ele.code}`] || [] : [];
 </script>
 
 <main>
@@ -19,25 +28,20 @@
     <div class="search"><Magnifier /><input type="text" /></div>
   {/if}
   <div class="list" on:scroll={scrollHandler}>
-    {#each $UnivariateElements as ele}
-      <button class="list__ele">
-        <div class="list__ele__code">{ele.code}</div>
-        <div class="list__ele__name">
-          {ele.name}
-          {#if ele.section === "country" && $CountryCodeMap}
-            {@const code = $CountryCodeMap[ele.code].toLowerCase()}
-            <img src={`https://flagcdn.com/w40/${code}.png`} alt={ele.name} width="30px" />
-          {/if}
-        </div>
-        <button class="list__ele__del-btn" on:click={() => deleteElement(ele.code, ele.section)}>
-          <MinusIcon size={1.2} />
-        </button>
+    {#each factors as fac}
+      <button
+        class="list__ele"
+        on:click={() => select(fac)}
+        class:selected={$UnivariateFactorSelected === fac}
+      >
+        <div class="list__ele__code">{fac.code}</div>
+        <div class="list__ele__name">{fac.name}</div>
       </button>
     {:else}
       <div class="list-blank">{$Text.ElementsListBlank}</div>
     {/each}
   </div>
-  {#if !scrolled && $UnivariateElements.length > 4}
+  {#if !scrolled && factors.length > 4}
     <div class="scroll-guide">스크롤하여 더보기</div>
   {/if}
 </main>
@@ -98,22 +102,6 @@
   }
   .list__ele__name {
     color: var(--white);
-  }
-  .list__ele__del-btn {
-    width: 2rem;
-    height: 2rem;
-    position: absolute;
-    right: 0.5rem;
-    border-radius: 0.3rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.7;
-  }
-  .list__ele__del-btn:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    cursor: pointer;
-    opacity: 1;
   }
   .scroll-guide {
     position: absolute;

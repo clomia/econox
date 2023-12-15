@@ -76,7 +76,7 @@ export const setFactors = async (ele: ElementType) => {
     let page = 1;
     const accumulated: FactorType[] = [];
     while (true) {
-        const resp = await api.member.get("/api/feature/factors", {
+        const resp = await api.member.get("/feature/factors", {
             "params": {
                 "element_code": ele.code,
                 "element_section": ele.section,

@@ -121,12 +121,12 @@
             });
             return [resp.data.symbol.code, newsContents];
           } catch {
-            return ["blank", null];
+            return [ele.code, false];
           }
         }),
       ); // 값이 []인 경우 뉴스 없음
       $News = { ...$News, ...Object.fromEntries(newsData) };
-    } catch {
+    } catch (error) {
       $Packets = $Packets.filter((p) => p.query !== query);
       return await Swal.fire({
         ...defaultSwalStyle,
@@ -270,8 +270,10 @@
           <div class="packet-info__news__icon__text">News</div>
         </div>
         {#if selectedElement.section === "symbol"}
-          {#if !$News[selectedElement.code]}
+          {#if $News[selectedElement.code] === null}
             <div class="packet-info__news__loading"><TextLoader /></div>
+          {:else if $News[selectedElement.code] === false}
+            <div class="packet-info__news__null">{$Text.NewsGetFailed}</div>
           {:else if $News[selectedElement.code].length === 0}
             <div class="packet-info__news__null">{$Text.ElementNewsNotFound}</div>
           {:else}

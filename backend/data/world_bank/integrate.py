@@ -1,10 +1,11 @@
 """ 모든 data_class를 Country 객체로 통합 """
-import json
 import asyncio
 from typing import List
 
+from aiocache import cached
+
 from backend.http import WorldBankAPI
-from backend.system import EFS_VOLUME_PATH
+from backend.system import ElasticRedisCache
 from backend.data.text import Multilingual, translate
 from backend.data.world_bank.data_class import *
 
@@ -19,7 +20,6 @@ class Country:
         """
         self.api = WorldBankAPI()
         self.code = code
-        self.info_path = EFS_VOLUME_PATH / f"features/country/{code}/info.json"
         self.info = {"name": None, "note": None}
         self.is_valid = False
         (
@@ -70,13 +70,8 @@ class Country:
         self.is_valid = self.info["name"] and self.info["note"]
         return self
 
+    @cached(cache=ElasticRedisCache)
     async def get_info(self):
-        # ======= EFS volume 에서 가져오기 =======
-        if self.info_path.exists():  # 볼륨에서 가져오기
-            with self.info_path.open("r") as file:
-                return json.load(file)
-
-        # ======= API 사용해서 데이터 수집 =======
         if info := (await self.api.get_country(self.code)):
             name = info.get("name")
             region = info["region"].get("value")
@@ -95,9 +90,6 @@ class Country:
             "longitude": float(longitude) if longitude else None,
             "latitude": float(latitude) if latitude else None,
         }
-        self.info_path.parent.mkdir(parents=True, exist_ok=True)
-        with self.info_path.open("w") as file:
-            json.dump(info, file)  # EFS volume에 저장
         return info
 
     @property

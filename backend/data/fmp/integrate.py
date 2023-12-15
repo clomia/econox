@@ -6,9 +6,10 @@ import asyncio
 from typing import List
 
 import pycountry
+from aiocache import cached
 
 from backend.http import FmpAPI
-from backend.system import EFS_VOLUME_PATH
+from backend.system import ElasticRedisCache
 from backend.data.fmp import data_metaclass
 from backend.data.text import Multilingual, translate
 
@@ -60,7 +61,6 @@ class Symbol:
         - 경고! load 안하면 종목 메타데이터 조회 못함
         """
         self.code = code
-        self.info_path = EFS_VOLUME_PATH / f"features/symbol/{self.code}/info.json"
         self.info = {"note": None, "name": None}  # load 메서드가 할당함
         self.is_valid = False  # load 메서드가 할당함
 
@@ -135,6 +135,7 @@ class Symbol:
         self.is_valid = self.info["name"] and self.info["note"]
         return self
 
+    @cached(cache=ElasticRedisCache)
     async def get_info(self):
         """
         - name과 note정보를 수집해서 정제한 뒤 반환합니다.
@@ -142,12 +143,6 @@ class Symbol:
         - api/v3/profile API로 검색하고 정보가 없다면 api/v3/search로 다시 검색합니다.
         """
 
-        # ======= EFS volume 에서 가져오기 =======
-        if self.info_path.exists():  # 볼륨에서 가져오기
-            with self.info_path.open("r") as file:
-                return json.load(file)
-
-        # ======= API 사용해서 데이터 수집 =======
         profile_resp, search_api_resp = await asyncio.gather(
             FmpAPI(cache=False).get(f"api/v3/profile/{self.code}"),
             FmpAPI(cache=False).get("api/v3/search", query=self.code),
@@ -175,9 +170,6 @@ class Symbol:
             info = {"name": name, "note": note}
         else:
             info = {"name": name, "note": None}  # name은 None일 수도 있음
-        self.info_path.parent.mkdir(parents=True, exist_ok=True)
-        with self.info_path.open("w") as file:
-            json.dump(info, file)  # EFS volume에 저장
         return info
 
     @property

@@ -14,6 +14,9 @@ from concurrent.futures import ThreadPoolExecutor
 
 import psutil
 import boto3
+import redis.asyncio as redis
+from aiocache import RedisCache
+from aiocache.backends.redis import RedisBackend
 
 
 # ==================== LOGGING ====================
@@ -155,11 +158,10 @@ class Idempotent:
         self.default = default
 
     def __call__(self, func):
-        mark = self.path / f"{func.__name__ }-{uuid.uuid4().hex[:10]}.txt"
-        mark.parent.mkdir(parents=True, exist_ok=True)
-
         @wraps(func)
         async def wrapper(*args, **kwargs):
+            mark = self.path / f"{func.__name__ }-{uuid.uuid4().hex[:10]}.txt"
+            mark.parent.mkdir(parents=True, exist_ok=True)
             if mark.exists():  # 이미 실행중인 경우
                 return self.default
             else:  # 아니라면 EFS에 마크 작성
@@ -170,3 +172,21 @@ class Idempotent:
                 mark.unlink()  # EFS에서 마크 제거
 
         return wrapper
+
+
+class ElasticRedisBackend(RedisBackend):
+    """
+    - aiocache에서 제공하는 Redis 백엔드 클래스는 ssl 매개변수를 설정할 수 없다.
+    - ssl 매개변수를 설정할 수 있어야 ElastiCache를 사용할 수 있으므로 상속을 통해 해결
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.client = redis.Redis(**REDIS_CONFIG | {"decode_responses": False})
+
+
+class ElasticRedisCache(ElasticRedisBackend, RedisCache):
+    """
+    - AWS ElastiCache와의 호환성이 구현된 aiocache의 RedisCache 자식 클래스
+    - 사용법 @cached(cache=ElasticRedisCache , ...)
+    """

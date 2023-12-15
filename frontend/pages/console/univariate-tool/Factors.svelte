@@ -1,19 +1,22 @@
 <script lang="ts">
   import Magnifier from "../../../assets/icon/Magnifier.svelte";
   import MinusIcon from "../../../assets/icon/MinusIcon.svelte";
-  import { Text, UnivariateElements, UnivariateNote, CountryCodeMap } from "../../../modules/state";
+  import { Text, CountryCodeMap } from "../../../modules/state";
+  import { UnivariateFactors, UnivariateElementSelected } from "../../../modules/state";
   import { deleteElement } from "./functions";
-  import type { ElementType } from "../../../modules/state";
 
   let scrolled = false;
   const scrollHandler = () => {
     scrolled = true;
   };
+
+  let ele = $UnivariateElementSelected;
+  let factors = $UnivariateFactors[`${ele.section}-${ele.code}`];
 </script>
 
 <main>
-  {#if $UnivariateElements.length}
-    <div class="search"><Magnifier /> <input type="text" /></div>
+  {#if factors.length}
+    <div class="search"><Magnifier /><input type="text" /></div>
   {/if}
   <div class="list" on:scroll={scrollHandler}>
     {#each $UnivariateElements as ele}

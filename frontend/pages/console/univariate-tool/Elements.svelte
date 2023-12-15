@@ -1,14 +1,15 @@
 <script lang="ts">
   import Magnifier from "../../../assets/icon/Magnifier.svelte";
   import MinusIcon from "../../../assets/icon/MinusIcon.svelte";
-  import { Text, UnivariateElements, UnivariateNote, CountryCodeMap } from "../../../modules/state";
-  import { deleteElement } from "./functions";
+  import { deleteElement, setFactors } from "./functions";
+  import { Text, CountryCodeMap } from "../../../modules/state";
+  import { UnivariateElements, UnivariateElementSelected, UnivariateNote } from "../../../modules/state";
   import type { ElementType } from "../../../modules/state";
 
-  let selected: ElementType;
   const select = (ele: ElementType) => {
-    selected = ele;
+    $UnivariateElementSelected = ele;
     $UnivariateNote = ele.note;
+    setFactors(ele);
   };
 
   let scrolled = false;
@@ -23,7 +24,11 @@
   {/if}
   <div class="list" on:scroll={scrollHandler}>
     {#each $UnivariateElements as ele}
-      <button class="list__ele" on:click={() => select(ele)} class:selected={selected === ele}>
+      <button
+        class="list__ele"
+        on:click={() => select(ele)}
+        class:selected={$UnivariateElementSelected === ele}
+      >
         <div class="list__ele__code">{ele.code}</div>
         <div class="list__ele__name">
           {ele.name}

@@ -1,6 +1,7 @@
 import { api } from "../../../modules/request";
-import { UnivariateElements, UnivariateElementsLoaded, Lang } from "../../../modules/state";
-import type { ElementType } from "../../../modules/state";
+import { Lang } from "../../../modules/state";
+import { UnivariateElements, UnivariateFactors, UnivariateElementsLoaded } from "../../../modules/state";
+import type { ElementType, FactorType } from "../../../modules/state";
 
 /**
  * 요소를 제거합니다.   
@@ -45,6 +46,52 @@ export const setElements = async () => {
         UnivariateElements.set(univariateElements.data);
         UnivariateElementsLoaded.set(true);
     }
+
+    unsubscribe1();
+    unsubscribe2();
+};
+
+/**
+ * Element에 대한 Factor를 UnivariateFactors를 세팅합니다. 이미 세팅된 경우 아무런 동작을 하지 않습니다.  
+ * 이 함수가 실행된 이후 UnivariateFactors를 통해 Element에 대한 Factor들에 접근할 수 있습니다.  
+ * 이 함수는 오래걸리니 await을 통해 대기하지 말고 UnivariateFactors를 통해 결과를 스트리밍 받으세요.
+ * @param ele Factor를 가져올 Element
+ */
+export const setFactors = async (ele: ElementType) => {
+    let lang: string = "en";
+    let univariateFactors: { [key: string]: FactorType[]; } = {};
+
+    const unsubscribe1 = Lang.subscribe((v: string) => { lang = v; });
+    const unsubscribe2 = UnivariateFactors.subscribe(
+        (v: { [key: string]: FactorType[]; }) => { univariateFactors = v; }
+    );
+
+    const elementKey = `${ele.section}-${ele.code}`;
+    if (elementKey in univariateFactors) {
+        unsubscribe1(); // 이미 세팅이 된 경우 아무런 동작 안함
+        unsubscribe2();
+        return;
+    }
+
+    let page = 1;
+    const accumulated: FactorType[] = [];
+    while (true) {
+        const resp = await api.member.get("/api/feature/factors", {
+            "params": {
+                "element_code": ele.code,
+                "element_section": ele.section,
+                "lang": lang,
+                "page": page++,
+            }
+        });
+        const factors = resp.data as FactorType[];
+        if (factors.length === 0) {
+            break;
+        } else {
+            accumulated.push(...factors);
+            UnivariateFactors.set({ ...univariateFactors, [elementKey]: accumulated });
+        }
+    };
 
     unsubscribe1();
     unsubscribe2();

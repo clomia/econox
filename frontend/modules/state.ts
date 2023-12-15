@@ -57,6 +57,18 @@ export interface ElementType {
     note: string;
     update_time: string | undefined;
 }
+
+export interface FactorType {
+    code: string,
+    name: string,
+    note: string,
+    section: {
+        code: string,
+        name: string,
+        note: string,
+    },
+}
+
 export interface RespPacketType {
     countries: ElementType[];
     symbols: ElementType[];
@@ -121,6 +133,10 @@ export const PacketInfo = writable<PacketInfoType>({
     elements: [],
 }); // 검색을 수행하는 비동기 함수는 컴포넌트가 없어진다고 멈추지 않음, 따라서 전역 상태로 관리 가능
 
-export const UnivariateElementsLoaded = writable(false);
-export const UnivariateElements = writable<ElementType[]>([]);
+// console.univariate-tool 상태
 export const UnivariateNote = writable("");
+export const UnivariateElements = writable<ElementType[]>([]);
+export const UnivariateElementsLoaded = writable(false);
+export const UnivariateElementSelected = writable<ElementType>();
+// 키는 Element의 "{section}-{code}" 입니다.
+export const UnivariateFactors = writable<{ [key: string]: FactorType[]; }>({});

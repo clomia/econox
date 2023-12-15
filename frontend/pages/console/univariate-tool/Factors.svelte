@@ -1,13 +1,15 @@
 <script lang="ts">
   import Magnifier from "../../../assets/icon/Magnifier.svelte";
+  import ProgressBar from "../../../components/ProgressBar.svelte";
   import { Text } from "../../../modules/state";
   import {
     UnivariateNote,
     UnivariateFactors,
     UnivariateElementSelected,
     UnivariateFactorSelected,
+    UnivariateFactorsProgress,
   } from "../../../modules/state";
-  import type { ElementType, FactorType } from "../../../modules/state";
+  import type { FactorType } from "../../../modules/state";
 
   const select = (fac: FactorType) => {
     $UnivariateFactorSelected = fac;
@@ -21,6 +23,7 @@
 
   $: ele = $UnivariateElementSelected;
   $: factors = ele ? $UnivariateFactors[`${ele.section}-${ele.code}`] || [] : [];
+  $: progress = ele ? $UnivariateFactorsProgress[`${ele.section}-${ele.code}`] || 0 : 0;
 </script>
 
 <main>
@@ -28,6 +31,7 @@
     <div class="search"><Magnifier /><input type="text" /></div>
   {/if}
   <div class="list" on:scroll={scrollHandler}>
+    <ProgressBar {progress} />
     {#each factors as fac}
       <button
         class="list__ele"
@@ -38,11 +42,15 @@
         <div class="list__ele__name">{fac.name}</div>
       </button>
     {:else}
-      <div class="list-blank">{$Text.ElementsListBlank}</div>
+      {#if $UnivariateElementSelected}
+        <ProgressBar {progress} />
+      {:else}
+        <div class="list-blank">{$Text.ElementsListBlank}</div>
+      {/if}
     {/each}
   </div>
   {#if !scrolled && factors.length > 4}
-    <div class="scroll-guide">스크롤하여 더보기</div>
+    <div class="scroll-guide">{$Text.ScrollMore}</div>
   {/if}
 </main>
 

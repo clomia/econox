@@ -46,7 +46,7 @@
     {/each}
   </div>
   {#if !scrolled && $UnivariateElements.length > 4}
-    <div class="scroll-guide">스크롤하여 더보기</div>
+    <div class="scroll-guide">{$Text.ScrollMore}</div>
   {/if}
 </main>
 

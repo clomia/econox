@@ -1,6 +1,7 @@
+import type { NumberFormat } from "libphonenumber-js";
 import { api } from "../../../modules/request";
 import { Lang } from "../../../modules/state";
-import { UnivariateElements, UnivariateFactors, UnivariateElementsLoaded } from "../../../modules/state";
+import { UnivariateElements, UnivariateFactors, UnivariateElementsLoaded, UnivariateFactorsProgress } from "../../../modules/state";
 import type { ElementType, FactorType } from "../../../modules/state";
 
 /**
@@ -60,20 +61,21 @@ export const setElements = async () => {
 export const setFactors = async (ele: ElementType) => {
     let lang: string = "en";
     let univariateFactors: { [key: string]: FactorType[]; } = {};
+    let univariateFactorsProgress: { [key: string]: number; } = {};
 
     const unsubscribe1 = Lang.subscribe((v: string) => { lang = v; });
-    const unsubscribe2 = UnivariateFactors.subscribe(
-        (v: { [key: string]: FactorType[]; }) => { univariateFactors = v; }
-    );
+    const unsubscribe2 = UnivariateFactors.subscribe((v) => { univariateFactors = v; });
+    const unsubscribe3 = UnivariateFactorsProgress.subscribe((v) => { univariateFactorsProgress = v; });
 
     const elementKey = `${ele.section}-${ele.code}`;
     if (elementKey in univariateFactors) {
         unsubscribe1(); // 이미 세팅이 된 경우 아무런 동작 안함
         unsubscribe2();
+        unsubscribe3();
         return;
     }
 
-    let page = 1;
+    let page = 0;
     const accumulated: FactorType[] = [];
     while (true) {
         const resp = await api.member.get("/feature/factors", {
@@ -81,18 +83,22 @@ export const setFactors = async (ele: ElementType) => {
                 "element_code": ele.code,
                 "element_section": ele.section,
                 "lang": lang,
-                "page": page++,
+                "page": ++page, // 현재 페이지를 알아야 하므로 전위 연산 사용
             }
         });
-        const factors = resp.data as FactorType[];
-        if (factors.length === 0) {
+        const factors: FactorType[] = resp.data["factors"];
+        const totalPages: number = resp.data["pages"];
+
+        accumulated.push(...factors);
+        UnivariateFactors.set({ ...univariateFactors, [elementKey]: accumulated });
+        UnivariateFactorsProgress.set({ ...univariateFactorsProgress, [elementKey]: page / totalPages });
+
+        if (totalPages === page) { // 현재 페이지가 마지막이면 종료
             break;
-        } else {
-            accumulated.push(...factors);
-            UnivariateFactors.set({ ...univariateFactors, [elementKey]: accumulated });
         }
     };
 
     unsubscribe1();
     unsubscribe2();
+    unsubscribe3();
 };

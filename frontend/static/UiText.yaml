@@ -354,6 +354,9 @@ ElementsListBlank:
 NewsGetFailed:
   en: "Failed to retrieve news"
   ko: "뉴스를 가져오지 못했습니다"
+ScrollMore:
+  en: "Scroll Down for More"
+  ko: "스크롤하여 더보기"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

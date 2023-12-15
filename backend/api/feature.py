@@ -1,10 +1,11 @@
 """ /api/data """
 import asyncio
+from math import ceil
 from typing import Literal
 
 import psycopg
 from pydantic import constr
-from fastapi import HTTPException
+from fastapi import HTTPException, Query
 
 from backend import db
 from backend.data import fmp, world_bank
@@ -104,16 +105,20 @@ async def get_element_from_user(lang: str, user=router.basic.user):
 
 @router.basic.get("/factors")
 async def get_factor_from_element(
-    element_code: str, element_section: str, lang: str, page: int = 1
+    element_code: str,
+    element_section: str,
+    lang: str = Query(..., min_length=2, max_length=2),  # ISO Alpha-2 (2글자만 허용)
+    page: int = Query(1, gt=0),  # 1 이상만 허용
 ):
     """
     - Element에 속한 펙터들을 가져옵니다.
     - lang: 응답 데이터의 언어 (ISO 639-1)
     - page: 가져올 페이지 지정
-        - 페이지당 5개의 펙터를 포함하며 범위를 벗어나면 빈 배열을 응답합니다.
+        - 페이지당 20개의 펙터를 포함하며 범위를 벗어나면 빈 배열을 응답합니다.
+    - response: 총 페이지 갯수와 펙터 배열을 응답합니다.
     """
 
-    per_page = 5
+    per_page = 20
     page_offset = (page - 1) * per_page
 
     async def translate(factor: dict):
@@ -162,9 +167,11 @@ async def get_factor_from_element(
         for factor in all_factors:
             if (factor["section"]["code"], factor["code"]) in db_factors:
                 target.append(factor)
-        target = target[page_offset : page_offset + per_page]
+        target_page = target[page_offset : page_offset + per_page]
         # translate 할 수 있는 횟수에 한계가 있으므로 pagenation 해야 함
-        return await asyncio.gather(*[translate(factor) for factor in target])
+        pages = ceil(len(target) / per_page)
+        factors = await asyncio.gather(*[translate(factor) for factor in target_page])
+        return {"factors": factors, "pages": pages}
 
     # ==================== DB 셋업 시작 ====================
     # 필요한 Element와 Factor들이 모두 있도록 한 후 연결합니다. 약 10초 소요됩니다.
@@ -216,4 +223,6 @@ async def get_factor_from_element(
     ).exec()
     # ==================== DB 셋업 종료 ====================
     target = all_factors[page_offset : page_offset + per_page]
-    return await asyncio.gather(*[translate(factor) for factor in target])
+    pages = ceil(len(all_factors) / per_page)
+    factors = await asyncio.gather(*[translate(factor) for factor in target])
+    return {"factors": factors, "pages": pages}

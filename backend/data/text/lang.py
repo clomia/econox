@@ -26,7 +26,10 @@ for name, glossary in glossaries_json.items():
 
 
 class DeeplCache:
-    """Redis를 백엔드로 사용합니다"""
+    """
+    - Redis를 백엔드로 사용합니다
+    - 최대한 부하를 줄이기 위해 aiocache 안쓰고 커스텀해서 사용
+    """
 
     expire = 360 * 24 * 30  # 30일
     cache = redis.Redis(**REDIS_CONFIG)

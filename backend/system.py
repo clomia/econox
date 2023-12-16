@@ -101,8 +101,8 @@ redis_connection_pool = redis.BlockingConnectionPool(
     # 로컬 맥북에서 돌리는 Redis 서버는 200개 연결 정도만 감당 가능함,
     max_connections=200 if is_local else 1300,
     host=SECRETS["RADIS_HOST"],
-    timeout=10,  # 커넥션 풀 진입 대기 타임아웃
-    socket_timeout=5,  # 쿼리 요청 타임아웃
+    timeout=20,  # 커넥션 풀 진입 대기 타임아웃
+    socket_timeout=10,  # 쿼리 요청 타임아웃
     socket_connect_timeout=5,  # 첫 연결에 대한 타임아웃
 )
 

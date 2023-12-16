@@ -95,14 +95,17 @@ if is_local:
 # https://aws.amazon.com/ko/blogs/database/best-practices-redis-clients-and-amazon-elasticache-for-redis/
 # 위 문서에 따르면 한 노드당 최대 65,000개의 연결을 감당할 수 있다고 한다.
 # ECS 컨테이너가 최대 50개 뜬다고 했을 때 max_connections이 1300이어야 65,000을 넘기지 않을 수 있다
-max_connections = 200 if is_local else 1300  # 로컬 맥북에서 돌리는 Redis 서버는 200개 연결 정도만 감당 가능함
-redis_connection_pool = redis.BlockingConnectionPool(max_connections, timeout=5)
+redis_connection_pool = redis.BlockingConnectionPool(
+    host=SECRETS["RADIS_HOST"],
+    # 로컬 맥북에서 돌리는 Redis 서버는 200개 연결 정도만 감당 가능함,
+    max_connections=200 if is_local else 1300,
+    timeout=10,  # 커넥션 풀 진입각 대기 타임아웃
+    socket_connect_timeout=5,
+    socket_timeout=5,  # timeout 지정 안해주면 영원히 블로킹될 수 있다
+)
 
 REDIS_CONFIG = {  # 사용법: redis.Redis(**REDIS_CONFIG)
-    "host": SECRETS["RADIS_HOST"],
     "decode_responses": True,
-    "socket_connect_timeout": 5,
-    "socket_timeout": 5,  # timeout 지정 안해주면 영원히 블로킹될 수 있다
     "connection_pool": redis_connection_pool,
     "ssl": True if not is_local else False,  # AWS ElastiCache는 SSL이 필수다.
 }  # (참고): aiocached에 Redis 백엔드가 있으나 ssl 매개변수를 지원하지 않으므로 쓰기 어렵다

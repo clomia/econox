@@ -14,8 +14,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 import psutil
 import boto3
+import aiocache
 import redis.asyncio as redis
-from aiocache import RedisCache
 
 
 # ==================== LOGGING ====================
@@ -185,7 +185,7 @@ class Idempotent:
         return wrapper
 
 
-class ElasticRedisCache(RedisCache):
+class ElasticRedisCache(aiocache.RedisCache):
     """
     - AWS ElastiCache와의 호환성이 구현된 aiocache의 RedisCache 자식 클래스
     - 사용법 @cached(cache=ElasticRedisCache , ...)

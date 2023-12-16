@@ -46,7 +46,8 @@ class DeeplCache:
 
     async def get(self, key: str):
         value = await self.cache.get(self.cache_key(key))
-        return value
+        # Redis가 Bytes문자열을 줄때가 있음...
+        return value.decode("utf-8") if isinstance(value, bytes) else value
 
 
 async def translate(text: str, to_lang: str, *, from_lang: str = None) -> str:

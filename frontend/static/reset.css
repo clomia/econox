@@ -178,6 +178,7 @@ select {
 /* 스크롤바 스타일 일관되게 지정 */
 ::-webkit-scrollbar {
     width: 0.4rem;
+    height: 0.4rem;
 }
 
 ::-webkit-scrollbar-thumb {

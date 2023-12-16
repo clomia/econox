@@ -1,8 +1,15 @@
-import type { NumberFormat } from "libphonenumber-js";
 import { api } from "../../../modules/request";
 import { Lang } from "../../../modules/state";
-import { UnivariateElements, UnivariateFactors, UnivariateElementsLoaded, UnivariateFactorsProgress } from "../../../modules/state";
+import {
+    UnivariateNote,
+    UnivariateElements,
+    UnivariateFactors,
+    UnivariateElementsLoaded,
+    UnivariateElementSelected,
+    UnivariateFactorsProgress,
+} from "../../../modules/state";
 import type { ElementType, FactorType } from "../../../modules/state";
+import PasswordButton from "../../account/PasswordButton.svelte";
 
 /**
  * 요소를 제거합니다.   
@@ -10,26 +17,52 @@ import type { ElementType, FactorType } from "../../../modules/state";
  * 백엔드가 삭제에 실패한 경우 해당 요소를 다시 삽입하여 동기화 한 후 에러를 던집니다.  
  */
 export const deleteElement = async (code: string, section: string) => {
-    let view: ElementType[] = [];
-    const unsubscribe = UnivariateElements.subscribe((currentList) => {
-        view = currentList;
+    let univariateNote: string = "";
+    let univariateElements: ElementType[] = [];
+    let univariateElementSelected: ElementType = {
+        code: "",
+        section: "",
+        name: "",
+        note: "",
+        update_time: undefined,
+    };
+
+    const unsubscribe1 = UnivariateElements.subscribe((currentList) => {
+        univariateElements = currentList;
     });
-    const target = view.find(ele => ele.code === code && ele.section === section);
+    const unsubscribe2 = UnivariateElementSelected.subscribe((selected) => {
+        if (selected) {
+            univariateElementSelected = selected;
+        }
+    });
+    const unsubscribe3 = UnivariateNote.subscribe((selected) => {
+        univariateNote = selected;
+    });
+
+    const target = univariateElements.find(ele => ele.code === code && ele.section === section);
     if (!target) {
         throw new Error("Element does not exists");
     }
-    UnivariateElements.set(view.filter(ele => ele !== target));
+    if (target.code === univariateElementSelected.code && target.section === univariateElementSelected.section) {
+        UnivariateElementSelected.set(null);
+    }
+    if (target.note === univariateNote) {
+        UnivariateNote.set("");
+    }
+    UnivariateElements.set(univariateElements.filter(ele => ele !== target));
     try {
         await api.member.delete("/feature/user/element", { params: { code, section } });
     } catch (error) {
-        view.push(target); // 실패시 다시 삽입 후 올바르게 정렬
-        view.sort(
+        univariateElements.push(target); // 실패시 다시 삽입 후 올바르게 정렬
+        univariateElements.sort(
             (e1, e2) => new Date(e2.update_time as string).getTime() - new Date(e1.update_time as string).getTime()
         );
-        UnivariateElements.set(view);
+        UnivariateElements.set(univariateElements);
         throw error;
     }
-    unsubscribe();
+    unsubscribe1();
+    unsubscribe2();
+    unsubscribe3();
 };
 
 /**

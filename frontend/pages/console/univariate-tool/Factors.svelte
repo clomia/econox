@@ -1,7 +1,7 @@
 <script lang="ts">
   import Magnifier from "../../../assets/icon/Magnifier.svelte";
   import ProgressBar from "../../../components/ProgressBar.svelte";
-  import CircleDotLoader from "../../../assets/animation/CircleDotLoader.svelte";
+  import RippleLoader from "../../../assets/animation/RippleLoader.svelte";
   import { Text } from "../../../modules/state";
   import {
     UnivariateNote,
@@ -17,11 +17,6 @@
     $UnivariateNote = fac.note;
   };
 
-  let scrolled = false;
-  const scrollHandler = () => {
-    scrolled = true;
-  };
-
   $: ele = $UnivariateElementSelected;
   $: factors = ele ? $UnivariateFactors[`${ele.section}-${ele.code}`] || [] : [];
   $: progress = ele ? $UnivariateFactorsProgress[`${ele.section}-${ele.code}`] || 0 : 0;
@@ -31,13 +26,7 @@
   {#if factors.length}
     <div class="search"><Magnifier /><input type="text" /></div>
   {/if}
-  {#if 0 < progress && progress < 1}
-    <div class="progress">
-      <div class="progress__bar"><ProgressBar {progress} /></div>
-      <div class="progress__percent">{(progress * 100).toFixed(0)}%</div>
-    </div>
-  {/if}
-  <div class="list" on:scroll={scrollHandler}>
+  <div class="list">
     {#each factors as fac}
       <button
         class="list__ele"
@@ -49,13 +38,14 @@
       </button>
     {/each}
   </div>
-  {#if progress === 0 && ele}
-    <CircleDotLoader />
+  {#if 0 < progress && progress < 1}
+    <div class="progress">
+      <div class="progress__bar"><ProgressBar {progress} /></div>
+    </div>
+  {:else if progress === 0 && ele}
+    <div class="loader"><RippleLoader /></div>
   {:else if progress === 0 && !ele}
     <div class="list-blank">{$Text.ElementsListBlank}</div>
-  {/if}
-  {#if !scrolled && factors.length > 4}
-    <div class="scroll-guide">{$Text.ScrollMore}</div>
   {/if}
 </main>
 
@@ -116,31 +106,23 @@
   .list__ele__name {
     color: var(--white);
   }
-  .scroll-guide {
-    position: absolute;
-    bottom: 0;
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    align-items: start;
-    color: var(--white);
-    background-color: rgba(0, 0, 0, 0.2);
-    padding: 0.15rem 0;
-  }
   .progress {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 1rem;
   }
   .progress__bar {
-    width: 80%;
+    width: 93%;
+    padding-bottom: 1rem;
   }
-  .progress__percent {
+  .loader {
+    position: absolute;
     display: flex;
-    justify-content: center;
+    width: 100%;
+    height: 100%;
     align-items: center;
-    margin-left: 1rem;
-    color: var(--white);
+    justify-content: center;
+    bottom: 0;
+    left: 0;
   }
 </style>

@@ -22,7 +22,7 @@
 
   .progress {
     background: rgba(255, 255, 255, 0.3);
-    padding: 0.35rem;
+    padding: 0.1rem;
     transition: width 0.5s ease;
   }
 </style>

@@ -137,7 +137,7 @@ export const PacketInfo = writable<PacketInfoType>({
 export const UnivariateNote = writable("");
 export const UnivariateElements = writable<ElementType[]>([]);
 export const UnivariateElementsLoaded = writable(false);
-export const UnivariateElementSelected = writable<ElementType>();
+export const UnivariateElementSelected = writable<ElementType | null>(null); // 선택안한 경우 null
 // 키는 Element의 "{section}-{code}" 입니다.
 export const UnivariateFactors = writable<{ [key: string]: FactorType[]; }>({});
 export const UnivariateFactorsProgress = writable<{ [key: string]: number; }>({});

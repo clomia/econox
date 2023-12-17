@@ -92,16 +92,14 @@ if is_local:
     SECRETS["RADIS_HOST"] = "localhost"
 
 # 일반 커넥션 풀은 최대 연결 초과시 예외를 반환하지만 BlockingConnectionPool은 기다리면서 진입각을 본다.
-# https://aws.amazon.com/ko/blogs/database/best-practices-redis-clients-and-amazon-elasticache-for-redis/
-# 위 문서에 따르면 한 노드당 최대 65,000개의 연결을 감당할 수 있다고 한다.
-# ECS 컨테이너가 최대 50개 뜬다고 했을 때 max_connections이 1300이어야 65,000을 넘기지 않을 수 있다
 redis_connection_pool = redis.BlockingConnectionPool(
     # AWS ElastiCache는 SSL이 필수다. 로컬에서는 SSL 쓸 수 없다.
     connection_class=redis.SSLConnection if not is_local else redis.Connection,
-    # 로컬 맥북에서 돌리는 Redis 서버는 200개 연결 정도만 감당 가능함,
     max_connections=200 if is_local else 1300,
     host=SECRETS["RADIS_HOST"],
     timeout=20,  # 커넥션 풀 진입 대기 타임아웃
+    socket_timeout=10,  # 쿼리 요청 타임아웃
+    socket_connect_timeout=5,  # 첫 연결에 대한 타임아웃
 )
 
 REDIS_CONFIG = {  # 사용법: redis.Redis(**REDIS_CONFIG)
@@ -192,5 +190,5 @@ class ElasticRedisCache(aiocache.RedisCache):
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, timeout=None, **kwargs)
         self.client = redis.Redis(**REDIS_CONFIG | {"decode_responses": False})

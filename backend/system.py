@@ -102,8 +102,6 @@ redis_connection_pool = redis.BlockingConnectionPool(
     max_connections=200 if is_local else 1300,
     host=SECRETS["RADIS_HOST"],
     timeout=20,  # 커넥션 풀 진입 대기 타임아웃
-    socket_timeout=10,  # 쿼리 요청 타임아웃
-    socket_connect_timeout=5,  # 첫 연결에 대한 타임아웃
 )
 
 REDIS_CONFIG = {  # 사용법: redis.Redis(**REDIS_CONFIG)

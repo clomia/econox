@@ -91,6 +91,7 @@ is_local = bool(os.getenv("IS_LOCAL"))
 if is_local:
     SECRETS["RADIS_HOST"] = "localhost"
 
+
 # 일반 커넥션 풀은 최대 연결 초과시 예외를 반환하지만 BlockingConnectionPool은 기다리면서 진입각을 본다.
 redis_connection_pool = redis.BlockingConnectionPool(
     # AWS ElastiCache는 SSL이 필수다. 로컬에서는 SSL 쓸 수 없다.
@@ -98,8 +99,6 @@ redis_connection_pool = redis.BlockingConnectionPool(
     max_connections=200 if is_local else 1300,
     host=SECRETS["RADIS_HOST"],
     timeout=20,  # 커넥션 풀 진입 대기 타임아웃
-    socket_timeout=10,  # 쿼리 요청 타임아웃
-    socket_connect_timeout=5,  # 첫 연결에 대한 타임아웃
 )
 
 REDIS_CONFIG = {  # 사용법: redis.Redis(**REDIS_CONFIG)

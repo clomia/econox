@@ -18,7 +18,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from backend import db
 from backend.math import utcstr2datetime
-from backend.system import SECRETS, log
+from backend.system import SECRETS, log, ElasticRedisCache
 
 T = TypeVar("T")
 
@@ -306,7 +306,8 @@ class WorldBankAPI:
     BASE_URL = "http://api.worldbank.org/v2"
     countries = None
 
-    async def pagenation_api_call(self, endpoint: str, params: dict = {}) -> list:
+    @classmethod
+    async def pagenation_api_call(cls, endpoint: str, params: dict = {}) -> list:
         """pagenation을 통해 모든 배열 응답을 모아서 반환합니다."""
         timeout = 20
         all_data = []
@@ -322,7 +323,7 @@ class WorldBankAPI:
 
                 async def request():
                     resp = await client.get(
-                        f"{self.BASE_URL}/{endpoint}",
+                        f"{cls.BASE_URL}/{endpoint}",
                         params=params,
                     )
                     resp.raise_for_status()
@@ -343,41 +344,49 @@ class WorldBankAPI:
                     break
         return all_data
 
-    async def api_call(self, endpoint: str, params: dict = {}) -> dict | list:
-        """단순히  API 요청 후 응답 반환"""
+    @classmethod
+    async def api_call(cls, endpoint: str, params: dict = {}) -> dict | list:
+        """단순히 API 요청 후 응답 반환"""
         params["format"] = "json"
         async with httpx.AsyncClient() as client:
-            resp = await client.get(f"{self.BASE_URL}/{endpoint}", params=params)
+            resp = await client.get(f"{cls.BASE_URL}/{endpoint}", params=params)
             resp.raise_for_status()
             return resp.json()
 
-    @cached(ttl=12 * 360)  # 이건 상위 객체에서 zarr 파일로 캐싱됨
-    async def get_data(self, indicator: str, country: str) -> list:
-        data = await self.pagenation_api_call(
-            f"country/{country}/indicator/{indicator}"
-        )
+    @classmethod  # 이건 상위 객체에서 zarr 파일로 캐싱됨
+    async def get_data(cls, indicator: str, country: str) -> list:
+        """feature의 시계열 데이터 수집"""
+        data = await cls.pagenation_api_call(f"country/{country}/indicator/{indicator}")
         return data
 
-    @cached()  # 메타정보는 영구 캐싱
-    async def get_indicator(self, indicator: str) -> dict:
-        request = partial(self.api_call, f"indicator/{indicator}")
+    @classmethod  # 이렇게 해야 캐싱이 전역적으로 적용됨
+    @cached(cache=ElasticRedisCache)  # WorldBank API는 공공인 만큼 불안정하므로 요청량을 최대한 줄여야 함
+    async def get_indicator(cls, indicator: str) -> dict:
+        """Factor에 대한 설명"""
+        request = partial(cls.api_call, f"indicator/{indicator}")
         try:
             return (await pooling(request, exceptions=Exception))[1][0]
         except IndexError:
             return {}
 
-    # self.countries 속성을 통해 API 호출을 캐싱하므로 별도의 캐싱 불필요
-    async def search_countries(self, query: str) -> list:
-        if not self.countries:
-            self.countries = await self.pagenation_api_call("countries")
-        pattern = re.compile(query, re.IGNORECASE)
-        return [
-            country for country in self.countries if pattern.search(country["name"])
-        ]
+    @classmethod
+    @cached(cache=ElasticRedisCache)  # Redis는 키,값 최대 용량이 512MB로 매우 커서 괜찮음
+    async def _get_countries(cls):
+        """World Bank에 정의된 모든 국가 배열 받기"""
+        return await cls.pagenation_api_call("countries")
 
-    @cached()  # 메타정보는 영구 캐싱
-    async def get_country(self, code: str) -> dict:
-        request = partial(self.api_call, f"country/{code}")
+    @classmethod
+    async def search_countries(cls, query: str) -> list:
+        """Element 검색"""
+        countries = await cls._get_countries()
+        pattern = re.compile(query, re.IGNORECASE)
+        return [country for country in countries if pattern.search(country["name"])]
+
+    @classmethod
+    @cached(cache=ElasticRedisCache)
+    async def get_country(cls, code: str) -> dict:
+        """Element에 대한 설명"""
+        request = partial(cls.api_call, f"country/{code}")
         try:
             return (await pooling(request, exceptions=Exception))[1][0]
         except IndexError:

@@ -44,12 +44,16 @@ async def paypal_payment_webhook(event: dict = Body(...)):
             )
             return {"message": "Apply success"}
         plan = await PayPalAPI(f"/v1/billing/plans/{subscription['plan_id']}").get()
-        user = await db.SQL(
-            "SELECT * FROM users WHERE paypal_subscription_id={subscription_id} LIMIT 1",
-            params={"subscription_id": subscription_id},
-            fetch="one",
-        ).exec()
-        insert_sql = db.InsertSQL(
+        user = await pooling(  # 유저 생성이 완료되기 전에 요청을 수신했을 때를 대비한 풀링
+            db.SQL(
+                "SELECT * FROM users WHERE paypal_subscription_id={sid} LIMIT 1",
+                params={"sid": subscription_id},
+                fetch="one",
+            ).exec,
+            inspecter=lambda db_user: db_user is not None,
+            timeout=10,
+        )  # 계속 시도했는데 해당하는 유저가 없는 경우 AssertionError
+        await db.InsertSQL(
             "paypal_billings",
             user_id=user["id"],
             transaction_id=event["resource"]["id"],
@@ -57,10 +61,7 @@ async def paypal_payment_webhook(event: dict = Body(...)):
             order_name=plan["name"],
             total_amount=float(event["resource"]["amount"]["total"]),
             fee_amount=float(event["resource"]["transaction_fee"]["value"]),
-        )
-        await pooling(  # 유저 생성이 완료되기 전에 요청을 수신했을 때를 대비한 풀링
-            insert_sql.exec, exceptions=psycopg.errors.NotNullViolation, timeout=30
-        )
+        ).exec()
         next_billing_time = subscription["billing_info"]["next_billing_time"]
         await db.SQL(
             """
@@ -80,7 +81,7 @@ async def paypal_payment_webhook(event: dict = Body(...)):
             "맴버십 비용 청구 완료 [Paypal]: "
             f"User(Email: {user['email']}, Membership: {user['membership']})"
         )
-    except psycopg.errors.NotNullViolation:
+    except AssertionError:
         subscription_id = event["resource"]["billing_agreement_id"]
         await PayPalAPI(f"/v1/billing/subscriptions/{subscription_id}/suspend").post(
             {"reason": "User that does not exist in Econox"}

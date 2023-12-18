@@ -233,6 +233,7 @@ async def search(text: str, limit: int = 8) -> List[Symbol]:
     - text: 검색 문자열
         - 다국어 가능!
     - limit: 검색 갯수 제한 (검색 부하량 조절을 위한 대략적인 펙터)
+        - Redis 캐싱이 엮여있으므로 512MB라는 제한을 생각해서 적절한 제한을 주어야 한다.
     - 검색어와 일치하는 symbol이 가장 앞으로 오고 나머지는 거래량이 큰게 앞으로 오도록 정렬되어 반환됩니다.
     - 검색 결과가 없으면 빈 리스트를 반환합니다.
     """
@@ -316,7 +317,7 @@ async def cond_search(
         ("exchange", exchange),
         ("limit", limit),
     )
-    resp = await FmpAPI(cache=True).get("api/v3/stock-screener", **params)
+    resp = await FmpAPI(cache=False).get("api/v3/stock-screener", **params)
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
@@ -387,13 +388,13 @@ async def list_all() -> List[Symbol]:
     - 주의: 4분 이상 소요됨.
     - 리스트 길이: 약 7만개
     """
-    resp = await FmpAPI(cache=True).get("api/v3/stock/list")
+    resp = await FmpAPI(cache=False).get("api/v3/stock/list")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_cot() -> List[Symbol]:
     """api/v4/commitment_of_traders_report/list"""
-    resp = await FmpAPI(cache=True).get("api/v4/commitment_of_traders_report/list")
+    resp = await FmpAPI(cache=False).get("api/v4/commitment_of_traders_report/list")
     return await asyncio.gather(*(Symbol(ele["trading_symbol"]).load() for ele in resp))
 
 
@@ -403,65 +404,65 @@ async def list_tradable() -> List[Symbol]:
     - 주의: 2분 이상 소요됨.
     - 리스트 길이: 약 5만 3천개
     """
-    resp = await FmpAPI(cache=True).get("api/v3/available-traded/list")
+    resp = await FmpAPI(cache=False).get("api/v3/available-traded/list")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_etf() -> List[Symbol]:
     """api/v3/etf/list"""
-    resp = await FmpAPI(cache=True).get("api/v3/etf/list")
+    resp = await FmpAPI(cache=False).get("api/v3/etf/list")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_sp500() -> List[Symbol]:
     """api/v3/sp500_constituent"""
-    resp = await FmpAPI(cache=True).get("api/v3/sp500_constituent")
+    resp = await FmpAPI(cache=False).get("api/v3/sp500_constituent")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_nasdaq() -> List[Symbol]:
     """api/v3/nasdaq_constituent"""
-    resp = await FmpAPI(cache=True).get("api/v3/nasdaq_constituent")
+    resp = await FmpAPI(cache=False).get("api/v3/nasdaq_constituent")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_dowjones() -> List[Symbol]:
     """api/v3/dowjones_constituent"""
-    resp = await FmpAPI(cache=True).get("api/v3/dowjones_constituent")
+    resp = await FmpAPI(cache=False).get("api/v3/dowjones_constituent")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_index() -> List[Symbol]:
     """api/v3/symbol/available-indexes"""
-    resp = await FmpAPI(cache=True).get("api/v3/symbol/available-indexes")
+    resp = await FmpAPI(cache=False).get("api/v3/symbol/available-indexes")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_euronext() -> List[Symbol]:
     """api/v3/symbol/available-euronext"""
-    resp = await FmpAPI(cache=True).get("api/v3/symbol/available-euronext")
+    resp = await FmpAPI(cache=False).get("api/v3/symbol/available-euronext")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_tsx() -> List[Symbol]:
     """api/v3/symbol/available-tsx"""
-    resp = await FmpAPI(cache=True).get("api/v3/symbol/available-tsx")
+    resp = await FmpAPI(cache=False).get("api/v3/symbol/available-tsx")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_crypto() -> List[Symbol]:
     """api/v3/symbol/available-cryptocurrencies"""
-    resp = await FmpAPI(cache=True).get("api/v3/symbol/available-cryptocurrencies")
+    resp = await FmpAPI(cache=False).get("api/v3/symbol/available-cryptocurrencies")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_forex() -> List[Symbol]:
     """api/v3/symbol/available-forex-currency-pairs"""
-    resp = await FmpAPI(cache=True).get("api/v3/symbol/available-forex-currency-pairs")
+    resp = await FmpAPI(cache=False).get("api/v3/symbol/available-forex-currency-pairs")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))
 
 
 async def list_commodity() -> List[Symbol]:
     """api/v3/symbol/available-commodities"""
-    resp = await FmpAPI(cache=True).get("api/v3/symbol/available-commodities")
+    resp = await FmpAPI(cache=False).get("api/v3/symbol/available-commodities")
     return await asyncio.gather(*(Symbol(ele["symbol"]).load() for ele in resp))

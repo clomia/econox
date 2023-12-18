@@ -18,7 +18,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from backend import db
 from backend.math import utcstr2datetime
-from backend.system import SECRETS, log, ElasticRedisCache
+from backend.system import ElasticRedisCache, SECRETS, log
 
 T = TypeVar("T")
 
@@ -268,6 +268,10 @@ class FmpAPI:
     timeout = 600
 
     def __init__(self, cache: bool):
+        """
+        - 대규모 데이터 수신은 캐싱을 사용할 수 없습니다. (최대 512MB)
+        - 핵심 시계열 데이터는 별도의 xarray기반 파일 캐싱을 사용하세요
+        """
         self.cache = cache
 
     async def get(self, path, **params) -> dict | list:
@@ -293,7 +297,7 @@ class FmpAPI:
         return resp.json() if resp.content else {}
 
     @classmethod
-    @cached(ttl=12 * 360)
+    @cached(cache=ElasticRedisCache, ttl=12 * 360)
     async def _request_use_caching(cls, path, **params):
         return await cls._request(path, **params)
 
@@ -355,7 +359,10 @@ class WorldBankAPI:
 
     @classmethod  # 이건 상위 객체에서 zarr 파일로 캐싱됨
     async def get_data(cls, indicator: str, country: str) -> list:
-        """feature의 시계열 데이터 수집"""
+        """
+        - feature의 시계열 데이터 수집
+        - 용량이 커서 캐싱을 하지 않습니다 Xarray기반 파일 캐싱을 사용하세요
+        """
         data = await cls.pagenation_api_call(f"country/{country}/indicator/{indicator}")
         return data
 

@@ -6,12 +6,13 @@ from aiocache import cached
 from backend.http import APIRouter
 from backend.math import datetime2utcstr
 from backend.data import fmp, world_bank
+from backend.system import ElasticRedisCache
 
 router = APIRouter("data")
 
 
 @router.basic.get("/elements")
-@cached(ttl=24 * 360)  # 실시간성이 없는 검색이므로 캐싱
+@cached(cache=ElasticRedisCache, ttl=24 * 360)  # 실시간성이 없는 검색이므로 캐싱
 async def search_symbols_and_countries(query: str, lang: str):
     """
     - 검색어(자연어)로 국가를 포함하는 시계열 요소들을 검색합니다.

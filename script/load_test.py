@@ -32,7 +32,7 @@ with httpx.Client(base_url=host) as client:
         cognito_token = resp.json()["cognito_token"]
     except Exception as e:
         api_count["failure"] += 1
-        log("[인증 토큰 발급 실패] 이메일과 비밀번호가 잘못되었습니다!")
+        log("인증 토큰 발급 실패")
         raise e
     else:
         api_count["sucess"] += 1
@@ -42,7 +42,7 @@ token = f"Bearer {cognito_token}"
 
 async def get(path, params: dict = {}) -> dict | list:
     async with httpx.AsyncClient(
-        base_url=host, headers={"Authorization": token}
+        base_url=host, headers={"Authorization": token}, timeout=None
     ) as client:
         try:
             resp = await client.get(path, params=params)
@@ -58,7 +58,7 @@ async def get(path, params: dict = {}) -> dict | list:
 
 async def post(path, payload: dict, params: dict = {}) -> dict | list:
     async with httpx.AsyncClient(
-        base_url=host, headers={"Authorization": token}
+        base_url=host, headers={"Authorization": token}, timeout=None
     ) as client:
         try:
             resp = await client.post(path, json=payload, params=params)
@@ -144,6 +144,7 @@ async def tesk_all(lang: str, search_queries: list, univariate_tool_count: int =
     await asyncio.gather(
         asyncio.gather(*[test_search_tool(query, lang) for query in search_queries]),
         *[test_univariate_tool(lang) for _ in range(univariate_tool_count)],
+        return_exceptions=True,  # 예외 발생해도 멈추지 않도록
     )
     spend = time.time() - start
     log(

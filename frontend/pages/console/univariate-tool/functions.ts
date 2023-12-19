@@ -90,7 +90,12 @@ export const setFactors = async (ele: ElementType) => {
         accumulated.push(...factors);
         // UnivariateFactors, UnivariateFactorsProgress는 실시간성을 띄므로 최신의 상태를 참조하도록 해야 한다.
         UnivariateFactors.set({ ...get(UnivariateFactors), [elementKey]: accumulated });
-        UnivariateFactorsProgress.set({ ...get(UnivariateFactorsProgress), [elementKey]: page / totalPages });
+        let currentProgress = page / totalPages;
+        const beforeProgress = get(UnivariateFactorsProgress)[elementKey];
+        if (currentProgress < beforeProgress) { // 가끔 진행률이 줄어드는 현상에 대한 대처
+            currentProgress = beforeProgress; // 이 문제는 로직은 잘 작동하나 병렬 처리에 따른 안정성 이슈라고 생각됨
+        } // 스토어를 Factor마다 나눠보기도 했는데 고쳐지지 않았음, 더 복잡해지기만 함
+        UnivariateFactorsProgress.set({ ...get(UnivariateFactorsProgress), [elementKey]: currentProgress });
 
         if (totalPages === page) { // 현재 페이지가 마지막이면 종료
             break;

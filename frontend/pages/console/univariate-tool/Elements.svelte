@@ -1,9 +1,17 @@
 <script lang="ts">
+  import { derived } from "svelte/store";
+
   import Magnifier from "../../../assets/icon/Magnifier.svelte";
   import MinusIcon from "../../../assets/icon/MinusIcon.svelte";
+  import Check from "../../../assets/icon/Check.svelte";
   import { deleteElement, setFactors } from "./functions";
   import { Text, CountryCodeMap } from "../../../modules/state";
-  import { UnivariateElements, UnivariateElementSelected, UnivariateNote } from "../../../modules/state";
+  import {
+    UnivariateElements,
+    UnivariateElementSelected,
+    UnivariateNote,
+    UnivariateFactorsProgress,
+  } from "../../../modules/state";
   import type { ElementType } from "../../../modules/state";
 
   const select = async (ele: ElementType) => {
@@ -16,6 +24,18 @@
   const scrollHandler = () => {
     scrolled = true;
   };
+
+  const Progress = derived(
+    [UnivariateElements, UnivariateFactorsProgress],
+    ([$UnivariateElements, $UnivariateFactorsProgress]) => {
+      const progressObj: { [key: string]: number } = {};
+      $UnivariateElements.forEach((ele) => {
+        const key = `${ele.section}-${ele.code}`;
+        progressObj[key] = $UnivariateFactorsProgress[key] || 0;
+      });
+      return progressObj;
+    },
+  );
 </script>
 
 <main>
@@ -24,6 +44,7 @@
   {/if}
   <div class="list" on:scroll={scrollHandler}>
     {#each $UnivariateElements as ele}
+      {@const progress = $Progress[`${ele.section}-${ele.code}`]}
       <button
         class="list__ele"
         on:click={() => select(ele)}
@@ -36,6 +57,13 @@
             {@const code = $CountryCodeMap[ele.code].toLowerCase()}
             <img src={`https://flagcdn.com/w40/${code}.png`} alt={ele.name} width="30px" />
           {/if}
+          <span class="progress">
+            {#if 0 < progress && progress < 1}
+              {Math.round(progress * 100)}%
+            {:else if progress === 1}
+              <Check />
+            {/if}
+          </span>
         </div>
         <button class="list__ele__del-btn" on:click={() => deleteElement(ele.code, ele.section)}>
           <MinusIcon size={1.2} />
@@ -106,6 +134,11 @@
   }
   .list__ele__name {
     color: var(--white);
+  }
+  .progress {
+    color: white;
+    opacity: 0.3;
+    margin-left: 0.2rem;
   }
   .list__ele__del-btn {
     width: 2rem;

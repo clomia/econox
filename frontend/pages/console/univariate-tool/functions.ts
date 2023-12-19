@@ -1,14 +1,14 @@
-import { get } from "svelte/store";
+import { get, writable } from "svelte/store";
 
 import { api } from "../../../modules/request";
 import { Lang } from "../../../modules/state";
 import {
     UnivariateNote,
     UnivariateElements,
-    UnivariateFactors,
     UnivariateElementsLoaded,
-    UnivariateElementSelected,
+    UnivariateFactors,
     UnivariateFactorsProgress,
+    UnivariateElementSelected,
 } from "../../../modules/state";
 import type { ElementType, FactorType } from "../../../modules/state";
 

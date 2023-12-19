@@ -150,16 +150,17 @@ async def get_factor_from_element(
         element = await world_bank.Country(element_code).load()
     all_factors = element.factors()
 
-    query = """
+    sql = db.SQL(
+        """
         SELECT f.*
         FROM elements e
         INNER JOIN elements_factors ef ON e.id = ef.element_id
         INNER JOIN factors f ON ef.factor_id = f.id
-        WHERE e.code = {code} AND e.section = {section}
-    """
-    fetched = await db.SQL(
-        query, params={"code": element_code, "section": element_section}, fetch="all"
-    ).exec()
+        WHERE e.code = {code} AND e.section = {section} """,
+        params={"code": element_code, "section": element_section},
+        fetch="all",
+    )
+    fetched = await sql.exec()
 
     if fetched:  # 해당하는 펙터만 정제해서 응답
         target = []

@@ -1,11 +1,10 @@
 import { writable } from "svelte/store";
-import type { Writable } from "svelte/store";
 import type { UiText } from "../static/UiText";
 // * 1. writeable 객체 변수명은 CamelCase로 짓는다. 값 변수명은 snake_case로 짓는다.
 // * 2. 모든 타입은 뒤에 Type을 붙인다. writeable을 CamalCase로 쓰니까, 겹치지 않도록
 
+export const defaultObject: any = (defaultValue: any) => new Proxy({}, { get: () => defaultValue });
 // ============= 필요한 타입 정의 =============
-export const defaultObject: any = (defaultValue: string) => new Proxy({}, { get: () => defaultValue });
 
 export interface UserDetailType {
     id: string;
@@ -82,8 +81,8 @@ export interface PacketInfoType {
 // ============= 전역적으로 사용되는 상태들 =============
 
 export const Lang = writable("en");
-export const Text: Writable<UiText> = writable(defaultObject(""));
-export const UserInfo: Writable<UserDetailType> = writable({  // 로그인 되었다면 GET /api/user 응답 데이터가 들어옴
+export const Text = writable<UiText>(defaultObject(""));
+export const UserInfo = writable<UserDetailType>({  // 로그인 되었다면 GET /api/user 응답 데이터가 들어옴
     id: "",
     name: "",
     email: "",

@@ -214,7 +214,8 @@ async def cognito_token_refresh(
     except (
         cognito.exceptions.NotAuthorizedException,
         cognito.exceptions.UserNotFoundException,
-    ):
+    ) as e:
+        print(f"[임시 디버깅을 위한 로그] 토큰 재발급 실패: {e}")
         raise HTTPException(status_code=401, detail="Invalid token")
     id_token = result["AuthenticationResult"]["IdToken"]
     access_token = result["AuthenticationResult"]["AccessToken"]

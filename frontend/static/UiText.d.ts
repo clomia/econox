@@ -126,4 +126,5 @@ export interface UiText {
     f_MembershipChangeComplete: "Your membership has been changed from {oldMembership} to {newMembership}. Due to the price difference, your next billing date has been adjusted from {oldBillingDate} to {newBillingDate}." | "맴버십이 {oldMembership}에서 {newMembership}(으)로 변경되었으며, 차액이 적용되어 다음 결제 날짜가 {oldBillingDate} 에서 {newBillingDate} 로 조정되었습니다.";
     f_MembershipChangeComplete_Benefit: "Your membership has been updated from {oldMembership} to {newMembership}" | "맴버십이 {oldMembership}에서 {newMembership}(으)로 변경되었습니다";
     f_DataSearchError: "An unexpected issue occurred while searching for the search term '{query}'. Please try again" | "검색어 '{query}'를 검색하는 과정에서 예기치 못한 문제가 발생하였습니다. 다시 시도해주세요";
+    f_FactorLoadingInfo: "Collecting factors for {element}..." | "{element}에 대한 펙터를 수집중입니다...";
 }

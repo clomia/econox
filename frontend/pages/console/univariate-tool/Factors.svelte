@@ -1,15 +1,17 @@
 <script lang="ts">
+  import { get } from "svelte/store";
   import Magnifier from "../../../assets/icon/Magnifier.svelte";
   import ProgressBar from "../../../components/ProgressBar.svelte";
   import RippleLoader from "../../../assets/animation/RippleLoader.svelte";
   import { Text } from "../../../modules/state";
   import {
     UnivariateNote,
-    UnivariateFactors,
     UnivariateElementSelected,
     UnivariateFactorSelected,
+    UnivariateFactors,
     UnivariateFactorsProgress,
   } from "../../../modules/state";
+  import { format } from "../../../modules/functions";
   import type { FactorType } from "../../../modules/state";
 
   const select = (fac: FactorType) => {
@@ -44,6 +46,7 @@
     </div>
   {:else if progress === 0 && ele}
     <div class="loader"><RippleLoader /></div>
+    <div class="load-info">{format($Text.f_FactorLoadingInfo, { element: ele.code })}</div>
   {:else if progress === 0 && !ele}
     <div class="list-blank">{$Text.ElementsListBlank}</div>
   {/if}
@@ -124,5 +127,17 @@
     justify-content: center;
     bottom: 0;
     left: 0;
+  }
+  .load-info {
+    position: absolute;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    bottom: 0;
+    left: 0;
+    padding-bottom: 9rem;
+    color: var(--white);
   }
 </style>

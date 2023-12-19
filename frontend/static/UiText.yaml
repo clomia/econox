@@ -387,3 +387,6 @@ f_MembershipChangeComplete_Benefit:
 f_DataSearchError:
   en: "An unexpected issue occurred while searching for the search term '{query}'. Please try again"
   ko: "검색어 '{query}'를 검색하는 과정에서 예기치 못한 문제가 발생하였습니다. 다시 시도해주세요"
+f_FactorLoadingInfo:
+  en: "Collecting factors for {element}..."
+  ko: "{element}에 대한 펙터를 수집중입니다..."

@@ -1,4 +1,6 @@
-import { loadUiText } from '../modules/uiText';
+import { get } from 'svelte/store';
+
+import { Text } from './state';
 import { api } from '../modules/request';
 
 async function loadPaypalScript(clientId: string): Promise<void> {
@@ -65,7 +67,7 @@ export const paypalWidget = async ({
         alignItems: 'center',
         background: 'linear-gradient(to bottom, #3b3c3f, #263c42'
     });
-    const { text } = await loadUiText();
+    const text = get(Text);
     const closeButton = document.createElement('button');
     closeButton.innerText = text.Close;
     Object.assign(closeButton.style, {

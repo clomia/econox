@@ -1,11 +1,11 @@
 import axios from "axios";
 import { onMount } from "svelte";
+import { get } from "svelte/store";
 import { navigate } from "svelte-routing";
 import { api } from "./request";
-import { Text, UserInfo, Lang, UnivariateElements, CountryCodeMap } from "./state";
+import { Text, UserInfo, Lang, CountryCodeMap } from "./state";
 import { loadUiText } from "./uiText";
 import { settingObjectStore } from "./_storage";
-import type { UserDetailType } from "./state";
 
 export const defaultSwalStyle = {
     width: "25rem",
@@ -121,10 +121,8 @@ export const verify = ({
     },
     failRedirect = "/"
 }: VerificationArgs = { conds: {} }) => {
-    let userInfo: UserDetailType;
-    UserInfo.subscribe(info => { userInfo = info; });
-
     onMount(() => {
+        const userInfo = get(UserInfo);
         const failureConditions = [
             login !== null && login !== Boolean(userInfo.id),
             membership !== null && membership !== userInfo.membership,

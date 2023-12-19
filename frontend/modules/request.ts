@@ -1,10 +1,11 @@
 import axios from "axios";
 import * as jwt from "jsonwebtoken";
 import Swal from "sweetalert2";
+import { get } from 'svelte/store';
 
+import { Text } from './state';
 import { settingObjectStore } from "./_storage";
 import { logout, defaultSwalStyle } from "./functions";
-import { loadUiText } from "./uiText";
 
 import type { JwtPayload } from "jsonwebtoken";
 import type { AxiosError, InternalAxiosRequestConfig } from "axios";
@@ -37,7 +38,7 @@ const tokenInsert = async (config: InternalAxiosRequestConfig) => {
         if (isJwtExpired(idToken) || isJwtExpired(accessToken)) {
             const response = await api.public.post("/auth/refresh-cognito-token", { cognito_refresh_token: cognitoRefreshToken });
             cognitoToken = response.data["cognito_token"];
-            settingObjectStore.put("cognitoToken", cognitoToken);
+            await settingObjectStore.put("cognitoToken", cognitoToken);
         }
         config.headers["Authorization"] = `Bearer ${cognitoToken}`;
     }
@@ -52,7 +53,7 @@ const authenticationFailureHandler = async (error: AxiosError) => {
 };
 
 const permissionFailureHandler = async (error: AxiosError) => {
-    const { text } = await loadUiText();
+    const text = get(Text);
     switch (error.response?.status) {
         case 401:
             return await logout();

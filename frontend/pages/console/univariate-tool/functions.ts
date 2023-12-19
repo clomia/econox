@@ -1,3 +1,5 @@
+import { get } from "svelte/store";
+
 import { api } from "../../../modules/request";
 import { Lang } from "../../../modules/state";
 import {
@@ -9,7 +11,6 @@ import {
     UnivariateFactorsProgress,
 } from "../../../modules/state";
 import type { ElementType, FactorType } from "../../../modules/state";
-import PasswordButton from "../../account/PasswordButton.svelte";
 
 /**
  * 요소를 제거합니다.   
@@ -17,52 +18,31 @@ import PasswordButton from "../../account/PasswordButton.svelte";
  * 백엔드가 삭제에 실패한 경우 해당 요소를 다시 삽입하여 동기화 한 후 에러를 던집니다.  
  */
 export const deleteElement = async (code: string, section: string) => {
-    let univariateNote: string = "";
-    let univariateElements: ElementType[] = [];
-    let univariateElementSelected: ElementType = {
-        code: "",
-        section: "",
-        name: "",
-        note: "",
-        update_time: undefined,
-    };
-
-    const unsubscribe1 = UnivariateElements.subscribe((currentList) => {
-        univariateElements = currentList;
-    });
-    const unsubscribe2 = UnivariateElementSelected.subscribe((selected) => {
-        if (selected) {
-            univariateElementSelected = selected;
-        }
-    });
-    const unsubscribe3 = UnivariateNote.subscribe((selected) => {
-        univariateNote = selected;
-    });
+    const univariateNote = get(UnivariateNote);
+    const univariateElements = get(UnivariateElements);
+    const univariateElementSelected = get(UnivariateElementSelected);
 
     const target = univariateElements.find(ele => ele.code === code && ele.section === section);
     if (!target) {
         throw new Error("Element does not exists");
     }
-    if (target.code === univariateElementSelected.code && target.section === univariateElementSelected.section) {
-        UnivariateElementSelected.set(null);
+    if (univariateElementSelected && target.code === univariateElementSelected.code && target.section === univariateElementSelected.section) {
+        UnivariateElementSelected.set(null); // 선택된 경우 선택 해제
     }
     if (target.note === univariateNote) {
-        UnivariateNote.set("");
+        UnivariateNote.set(""); // 노트 대상자인 경우 노트 지우기
     }
-    UnivariateElements.set(univariateElements.filter(ele => ele !== target));
+    UnivariateElements.set(univariateElements.filter(ele => ele !== target)); // 배열에서 요소 제거
     try {
         await api.member.delete("/feature/user/element", { params: { code, section } });
     } catch (error) {
-        univariateElements.push(target); // 실패시 다시 삽입 후 올바르게 정렬
-        univariateElements.sort(
+        univariateElements.push(target);
+        univariateElements.sort( // 실패시 다시 삽입 후 올바르게 정렬
             (e1, e2) => new Date(e2.update_time as string).getTime() - new Date(e1.update_time as string).getTime()
         );
         UnivariateElements.set(univariateElements);
         throw error;
     }
-    unsubscribe1();
-    unsubscribe2();
-    unsubscribe3();
 };
 
 /**
@@ -70,42 +50,27 @@ export const deleteElement = async (code: string, section: string) => {
  * 이 함수가 실행된 이후 UnivariateElements를 통해 데이터에 접근 가능해집니다.
  */
 export const setElements = async () => {
-    let lang: string = "en";
-    let univariateElementsLoaded: boolean = false;
-    const unsubscribe1 = Lang.subscribe((v: string) => { lang = v; });
-    const unsubscribe2 = UnivariateElementsLoaded.subscribe((v: boolean) => { univariateElementsLoaded = v; });
+    const lang = get(Lang);
+    const univariateElementsLoaded = get(UnivariateElementsLoaded);
 
     if (!univariateElementsLoaded) {
-        const univariateElements = await api.member.get("/feature/user/elements", { params: { lang } });
-        UnivariateElements.set(univariateElements.data);
+        const resp = await api.member.get("/feature/user/elements", { params: { lang } });
+        UnivariateElements.set(resp.data);
         UnivariateElementsLoaded.set(true);
     }
-
-    unsubscribe1();
-    unsubscribe2();
 };
 
 /**
  * Element에 대한 Factor를 UnivariateFactors를 세팅합니다. 이미 세팅된 경우 아무런 동작을 하지 않습니다.  
  * 이 함수가 실행된 이후 UnivariateFactors를 통해 Element에 대한 Factor들에 접근할 수 있습니다.  
- * 이 함수는 오래걸리니 await을 통해 대기하지 말고 UnivariateFactors를 통해 결과를 스트리밍 받으세요.
  * @param ele Factor를 가져올 Element
  */
 export const setFactors = async (ele: ElementType) => {
-    let lang: string = "en";
-    let univariateFactors: { [key: string]: FactorType[]; } = {};
-    let univariateFactorsProgress: { [key: string]: number; } = {};
-
-    const unsubscribe1 = Lang.subscribe((v: string) => { lang = v; });
-    const unsubscribe2 = UnivariateFactors.subscribe((v) => { univariateFactors = v; });
-    const unsubscribe3 = UnivariateFactorsProgress.subscribe((v) => { univariateFactorsProgress = v; });
+    const lang = get(Lang);
 
     const elementKey = `${ele.section}-${ele.code}`;
-    if (elementKey in univariateFactors) {
-        unsubscribe1(); // 이미 세팅이 된 경우 아무런 동작 안함
-        unsubscribe2();
-        unsubscribe3();
-        return;
+    if (elementKey in get(UnivariateFactors)) {
+        return; // 이미 세팅이 된 경우 아무런 동작 안함
     }
 
     let page = 0;
@@ -123,15 +88,12 @@ export const setFactors = async (ele: ElementType) => {
         const totalPages: number = resp.data["pages"];
 
         accumulated.push(...factors);
-        UnivariateFactors.set({ ...univariateFactors, [elementKey]: accumulated });
-        UnivariateFactorsProgress.set({ ...univariateFactorsProgress, [elementKey]: page / totalPages });
+        // UnivariateFactors, UnivariateFactorsProgress는 실시간성을 띄므로 최신의 상태를 참조하도록 해야 한다.
+        UnivariateFactors.set({ ...get(UnivariateFactors), [elementKey]: accumulated });
+        UnivariateFactorsProgress.set({ ...get(UnivariateFactorsProgress), [elementKey]: page / totalPages });
 
         if (totalPages === page) { // 현재 페이지가 마지막이면 종료
             break;
         }
     };
-
-    unsubscribe1();
-    unsubscribe2();
-    unsubscribe3();
 };

@@ -6,13 +6,13 @@ from aiocache import cached
 from backend.http import APIRouter
 from backend.math import datetime2utcstr
 from backend.data import fmp, world_bank
-from backend.system import ElasticRedisCache
+from backend.system import ElasticRedisCache, CacheTTL, log
 
 router = APIRouter("data")
 
 
 @router.basic.get("/elements")
-@cached(cache=ElasticRedisCache, ttl=24 * 360)  # 실시간성이 없는 검색이므로 캐싱
+@cached(cache=ElasticRedisCache, ttl=CacheTTL.MID)  # 실시간성이 없는 검색이므로 캐싱
 async def search_symbols_and_countries(query: str, lang: str):
     """
     - 검색어(자연어)로 국가를 포함하는 시계열 요소들을 검색합니다.
@@ -31,9 +31,15 @@ async def search_symbols_and_countries(query: str, lang: str):
         }
 
     symbol_objects, country_objects = await asyncio.gather(
-        fmp.search(query), world_bank.search(query)
-    )
-    symbols, countries = await asyncio.gather(
+        fmp.search(query), world_bank.search(query), return_exceptions=True
+    )  # search 메서드는 API 요청이 매우 많으므로 실패할때를 대비해야 한다.
+    if isinstance(symbol_objects, Exception):
+        log.error(f"FMP 검색에 실패했습니다. 빈 배열로 대체합니다. Exception: {symbol_objects}")
+        symbol_objects = []
+    if isinstance(country_objects, Exception):
+        log.error(f"World Bank 검색에 실패했습니다. 빈 배열로 대체합니다. Exception: {symbol_objects}")
+        country_objects = []
+    symbols, countries = await asyncio.gather(  # 이건 단순한 번역이라 괜찮음
         asyncio.gather(*[parsing(sym) for sym in symbol_objects]),
         asyncio.gather(*[parsing(ctry) for ctry in country_objects]),
     )

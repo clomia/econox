@@ -5,7 +5,7 @@ from typing import List
 from aiocache import cached
 
 from backend.http import WorldBankAPI
-from backend.system import ElasticRedisCache
+from backend.system import ElasticRedisCache, CacheTTL
 from backend.data.text import Multilingual, translate
 from backend.data.world_bank.data_class import *
 
@@ -70,7 +70,7 @@ class Country:
         self.is_valid = self.info["name"] and self.info["note"]
         return self
 
-    @cached(cache=ElasticRedisCache)
+    @cached(cache=ElasticRedisCache, ttl=CacheTTL.MAX)
     async def get_info(self):
         if info := (await self.api.get_country(self.code)):
             name = info.get("name")

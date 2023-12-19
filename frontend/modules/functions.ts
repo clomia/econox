@@ -33,7 +33,6 @@ export const defaultToastStyle = {
 /**
  * 페이지가 처음 로드될 때 한번 작동되는 함수입니다.
  * 이 함수가 완료된 후, 컴포넌트가 실행됩니다.
- * @return value - 저장할 객체
  */
 export const init = async () => {
     // ========== www 서브도메인을 붙이도록 강제합니다. ==========

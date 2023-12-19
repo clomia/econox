@@ -9,7 +9,7 @@ import httpx
 import redis.asyncio as redis
 
 from backend.http import pooling
-from backend.system import SECRETS, REDIS_CONFIG
+from backend.system import SECRETS, REDIS_CONFIG, CacheTTL
 
 # - 번역 용어집: 인공지능 번역의 불완전한 부분을 보완하는데 사용됩니다.
 # - 이 디렉토리에 {출발어}-{목적어}.json 파일로 용어집을 생성하세요 (언어 표기는 ISO 639-1 사용)
@@ -31,7 +31,7 @@ class DeeplCache:
     - 최대한 부하를 줄이기 위해 aiocache 안쓰고 커스텀해서 사용
     """
 
-    expire = 360 * 24 * 30  # 30일
+    expire = CacheTTL.MAX
     cache = redis.Redis(**REDIS_CONFIG)
 
     def __init__(self, to_lang: str, from_lang: str = None):

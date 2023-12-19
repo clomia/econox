@@ -9,7 +9,7 @@ import pycountry
 from aiocache import cached
 
 from backend.http import FmpAPI
-from backend.system import ElasticRedisCache
+from backend.system import ElasticRedisCache, CacheTTL
 from backend.data.fmp import data_metaclass
 from backend.data.text import Multilingual, translate
 
@@ -135,7 +135,7 @@ class Symbol:
         self.is_valid = self.info["name"] and self.info["note"]
         return self
 
-    @cached(cache=ElasticRedisCache)
+    @cached(cache=ElasticRedisCache, ttl=CacheTTL.MAX)
     async def get_info(self):
         """
         - name과 note정보를 수집해서 정제한 뒤 반환합니다.

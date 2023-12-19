@@ -18,7 +18,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from backend import db
 from backend.math import utcstr2datetime
-from backend.system import ElasticRedisCache, SECRETS, log
+from backend.system import ElasticRedisCache, CacheTTL, SECRETS, log
 
 T = TypeVar("T")
 
@@ -297,7 +297,7 @@ class FmpAPI:
         return resp.json() if resp.content else {}
 
     @classmethod
-    @cached(cache=ElasticRedisCache, ttl=12 * 360)
+    @cached(cache=ElasticRedisCache, ttl=CacheTTL.MIN)
     async def _request_use_caching(cls, path, **params):
         return await cls._request(path, **params)
 
@@ -366,8 +366,8 @@ class WorldBankAPI:
         data = await cls.pagenation_api_call(f"country/{country}/indicator/{indicator}")
         return data
 
-    @classmethod  # 이렇게 해야 캐싱이 전역적으로 적용됨
-    @cached(cache=ElasticRedisCache)  # WorldBank API는 공공인 만큼 불안정하므로 요청량을 최대한 줄여야 함
+    @classmethod
+    @cached(cache=ElasticRedisCache, ttl=CacheTTL.MID)
     async def get_indicator(cls, indicator: str) -> dict:
         """Factor에 대한 설명"""
         request = partial(cls.api_call, f"indicator/{indicator}")
@@ -377,7 +377,7 @@ class WorldBankAPI:
             return {}
 
     @classmethod
-    @cached(cache=ElasticRedisCache)  # Redis는 키,값 최대 용량이 512MB로 매우 커서 괜찮음
+    @cached(cache=ElasticRedisCache, ttl=CacheTTL.MAX)
     async def _get_countries(cls):
         """World Bank에 정의된 모든 국가 배열 받기"""
         return await cls.pagenation_api_call("countries")
@@ -390,7 +390,7 @@ class WorldBankAPI:
         return [country for country in countries if pattern.search(country["name"])]
 
     @classmethod
-    @cached(cache=ElasticRedisCache)
+    @cached(cache=ElasticRedisCache, ttl=CacheTTL.MID)
     async def get_country(cls, code: str) -> dict:
         """Element에 대한 설명"""
         request = partial(cls.api_call, f"country/{code}")

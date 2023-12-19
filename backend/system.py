@@ -62,6 +62,22 @@ EFS_VOLUME_PATH = ROOT_PATH / "efs-volume"
 
 S3_BUCKET_NAME = "econox-storage"
 SECRET_MANAGER_NAME = "econox-secret"
+
+
+class CacheTTL:
+    """
+    - MIN: 하루
+    - MID: 한달
+    - MAX: 반년
+    ---
+    - 돈, 시간 위험성 면에서 고비용인 작업을 캐싱하세요.
+    """
+
+    MIN = 24 * 360  # 1일
+    MID = 30 * 24 * 360  # 1달 (거의 영구)
+    MAX = 180 * 24 * 360  # 0.5년 (완전 영구)
+
+
 # ==================== SETTINGS ====================
 MEMBERSHIP = {
     "basic": {

@@ -20,11 +20,6 @@
     await setFactors(ele);
   };
 
-  let scrolled = false;
-  const scrollHandler = () => {
-    scrolled = true;
-  };
-
   const Progress = derived(
     [UnivariateElements, UnivariateFactorsProgress],
     ([$UnivariateElements, $UnivariateFactorsProgress]) => {
@@ -42,7 +37,7 @@
   {#if $UnivariateElements.length}
     <div class="search"><Magnifier /> <input type="text" /></div>
   {/if}
-  <div class="list" on:scroll={scrollHandler}>
+  <div class="list">
     {#each $UnivariateElements as ele}
       {@const progress = $Progress[`${ele.section}-${ele.code}`]}
       <button
@@ -80,14 +75,10 @@
       <div class="list-blank">{$Text.ElementsListBlank}</div>
     {/each}
   </div>
-  {#if !scrolled && $UnivariateElements.length > 4}
-    <div class="scroll-guide">{$Text.ScrollMore}</div>
-  {/if}
 </main>
 
 <style>
   main {
-    border-bottom: thin solid rgba(255, 255, 255, 0.2);
     position: relative;
   }
   .list-blank {
@@ -162,16 +153,5 @@
     background-color: rgba(255, 255, 255, 0.1);
     cursor: pointer;
     opacity: 1;
-  }
-  .scroll-guide {
-    position: absolute;
-    bottom: 0;
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    align-items: start;
-    color: var(--white);
-    background-color: rgba(0, 0, 0, 0.2);
-    padding: 0.15rem 0;
   }
 </style>

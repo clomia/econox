@@ -1,21 +1,20 @@
 <script lang="ts">
-  import CircleDotLoader from "../../../assets/animation/CircleDotLoader.svelte";
+  import RippleLoader from "../../../assets/animation/RippleLoader.svelte";
   import Elements from "./Elements.svelte";
   import Factors from "./Factors.svelte";
   import { setElements } from "./functions";
+  import { Text } from "../../../modules/state";
 
   const setElementsPromise = setElements();
 </script>
 
 <main>
   {#await setElementsPromise}
-    <div class="loading">
-      <div><CircleDotLoader /></div>
-    </div>
+    <div class="loading"><RippleLoader /></div>
   {:then}
     <div class="element-selector"><Elements /></div>
-    <div class="factor-selector"><Factors /></div>
   {/await}
+  <div class="factor-selector"><Factors /></div>
 </main>
 
 <style>
@@ -26,10 +25,13 @@
     box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.5);
   }
   .loading {
-    width: 100%;
-    height: 10rem;
+    height: 12.87rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-bottom: thin solid rgba(255, 255, 255, 0.2);
+  }
+  .element-selector {
+    border-bottom: thin solid rgba(255, 255, 255, 0.2);
   }
 </style>

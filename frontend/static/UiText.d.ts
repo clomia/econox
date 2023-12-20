@@ -114,6 +114,8 @@ export interface UiText {
     ElementNewsNotFound: "No related news found" | "관련 뉴스가 없습니다";
     ElementNewsNotSupported: "News is not supported for this item" | "뉴스가 지원되지 않는 항목입니다";
     ElementsListBlank: "The list is empty. Add elements through search to populate it." | "리스트가 비어있습니다. 검색을 통해 요소를 추가하세요.";
+    ElementsListLoading: "Loading the list..." | "리스트를 불러오는 중입니다...";
+    FactorsListBlank: "No elements selected. Please choose an element from the list." | "선택된 요소가 없습니다. 리스트에서 요소를 선택하세요.";
     NewsGetFailed: "Failed to retrieve news" | "뉴스를 가져오지 못했습니다";
     ScrollMore: "Scroll Down for More" | "스크롤하여 더보기";
     ServerOverload: "Due to server overload, we are unable to process your request at the moment.  We are currently expanding our server capacity. Please try again shortly." | "서버 과부하로 인해 요청을 처리할 수 없습니다.  현재 서버 용량을 확장하고 있습니다. 잠시 후 다시 시도해주세요.";

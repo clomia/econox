@@ -107,7 +107,7 @@ async def exec(
             )["SecretString"]
         )["password"]
         log.info("[DB] 암호 변경 감지. Secrets Manager로부터 암호를 업데이트합니다.")
-        return exec(*sql, dbname, _retry=True)  # 재시도
+        return await exec(*sql, dbname, _retry=True)  # 재시도
 
 
 class SQL:

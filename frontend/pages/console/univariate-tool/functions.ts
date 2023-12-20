@@ -23,7 +23,7 @@ export const deleteElement = async (code: string, section: string) => {
   const univariateElementSelected = get(UnivariateElementSelected);
 
   const target = univariateElements.find(
-    (ele) => ele.code === code && ele.section === section,
+    (ele) => ele.code === code && ele.section === section
   );
   if (!target) {
     throw new Error("Element does not exists");
@@ -49,7 +49,7 @@ export const deleteElement = async (code: string, section: string) => {
       // 실패시 다시 삽입 후 올바르게 정렬
       (e1, e2) =>
         new Date(e2.update_time as string).getTime() -
-        new Date(e1.update_time as string).getTime(),
+        new Date(e1.update_time as string).getTime()
     );
     UnivariateElements.set(univariateElements);
     throw error;

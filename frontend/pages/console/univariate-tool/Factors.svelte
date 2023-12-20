@@ -54,16 +54,18 @@
       {format($Text.f_FactorLoadingInfo, { element: ele.code })}
     </div>
   {:else if progress === 0 && !ele}
-    <div class="list-blank">{$Text.ElementsListBlank}</div>
+    <div class="list-blank">{$Text.FactorsListBlank}</div>
   {/if}
 </main>
 
 <style>
   main {
-    border-bottom: thin solid rgba(255, 255, 255, 0.2);
     position: relative;
   }
   .list-blank {
+    position: absolute;
+    bottom: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     display: flex;

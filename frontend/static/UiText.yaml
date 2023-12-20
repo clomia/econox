@@ -357,6 +357,13 @@ NewsGetFailed:
 ScrollMore:
   en: "Scroll Down for More"
   ko: "스크롤하여 더보기"
+ServerOverload:
+  en: >
+    Due to server overload, we are unable to process your request at the moment. 
+    We are currently expanding our server capacity. Please try again shortly.
+  ko: >
+    서버 과부하로 인해 요청을 처리할 수 없습니다. 
+    현재 서버 용량을 확장하고 있습니다. 잠시 후 다시 시도해주세요.
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

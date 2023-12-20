@@ -8,7 +8,7 @@ import { settingObjectStore } from "./_storage";
 import { logout, defaultSwalStyle } from "./functions";
 
 import type { JwtPayload } from "jsonwebtoken";
-import type { Axios, AxiosError, InternalAxiosRequestConfig } from "axios";
+import type { AxiosError, InternalAxiosRequestConfig } from "axios";
 
 export const apiHostPath = window.location.origin + "/api";
 export const api = {
@@ -78,7 +78,7 @@ const tokenInsert = async (config: InternalAxiosRequestConfig) => {
  * 토큰 갱신요청 혹은 갱신 후 재요청이 인증 실패하면 로그아웃됩니다.
  */
 const retryWithTokenRefresh = async (
-  originalRequest: InternalAxiosRequestConfig,
+  originalRequest: InternalAxiosRequestConfig
 ) => {
   try {
     const tokenRefreshedRequest = await tokenInsert(originalRequest); // 토큰 갱신 요청
@@ -91,7 +91,36 @@ const retryWithTokenRefresh = async (
   }
 };
 
+/**
+ * - 에러 원인이 서버 과부화인지 판별하고 서버 과부화인 경우 안내 위젯과 함께 계정 페이지로 리디렉션 시킵니다.
+ * - 계정 페이지가 서버 부하가 가장 적으므로 피신처로 쓸건데, 이것도 안되면 다른 방법이 없음
+ * - 에러 원인이 서버 과부화가 아닌 경우 아무런 행동도 하지 않습니다.
+ */
+const serverOverloadHandler = async (error: AxiosError) => {
+  if (error.response) {
+    const resp = error.response;
+    if (resp.status === 502 || resp.status === 504) {
+      try {
+        JSON.parse(resp.data as any);
+      } catch {
+        // 응답 코드가 502혹은 504이며 본문이 JSON이 아닙니다.
+        const text = get(Text);
+        await Swal.fire({
+          ...defaultSwalStyle,
+          width: "30rem",
+          icon: "info",
+          showDenyButton: false,
+          title: text.ServerOverload,
+          confirmButtonText: text.Ok,
+        });
+        return window.location.replace(window.location.origin + "/account");
+      }
+    }
+  }
+};
+
 const authenticationFailureHandler = async (error: AxiosError) => {
+  await serverOverloadHandler(error);
   if (error.response?.status === 401) {
     const originalRequest = error.config as InternalAxiosRequestConfig;
     return await retryWithTokenRefresh(originalRequest);
@@ -101,6 +130,7 @@ const authenticationFailureHandler = async (error: AxiosError) => {
 };
 
 const permissionFailureHandler = async (error: AxiosError) => {
+  await serverOverloadHandler(error);
   const text = get(Text);
   switch (error.response?.status) {
     case 401:

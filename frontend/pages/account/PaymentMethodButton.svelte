@@ -1,7 +1,10 @@
 <script lang="ts">
   import Swal from "sweetalert2";
   import CircleLoader from "../../assets/animation/CircleLoader.svelte";
-  import { paymentMethodString, defaultSwalStyle } from "../../modules/functions";
+  import {
+    paymentMethodString,
+    defaultSwalStyle,
+  } from "../../modules/functions";
   import { api } from "../../modules/request";
   import { paypalWidget } from "../../modules/paypal";
   import { UserInfo, Text } from "../../modules/state";
@@ -14,7 +17,8 @@
   };
 
   // 아래 변수는 트랜젝션 내역 여부 확인에도 사용함 currentBilling이 없으면 undefined이니까
-  const currentBillingMethod: string | undefined = $UserInfo["billing"]["transactions"][0]?.["method"];
+  const currentBillingMethod: string | undefined =
+    $UserInfo["billing"]["transactions"][0]?.["method"];
   const nextBillingDate = new Date($UserInfo["next_billing_date"]);
   const currentDate = new Date();
   const todayIsNextBillingDate =
@@ -28,7 +32,10 @@
    * @returns 결제정보 수정 가능 여부
    */
   const billingChangeAvailableCheck = async (): Promise<boolean> => {
-    if ($UserInfo["billing"]["currency"] === "USD" && $UserInfo["billing"]["registered"]) {
+    if (
+      $UserInfo["billing"]["currency"] === "USD" &&
+      $UserInfo["billing"]["registered"]
+    ) {
       // PayPal 결제수단이 성공적으로 등록된 유저
       if (todayIsNextBillingDate) {
         // 오늘이 결제 예정일인 경우 변경 불가함 (웹훅 딜레이 길어서 위험함)
@@ -103,7 +110,9 @@
 
   let currentBillingMethodString: string;
   if ($UserInfo["billing"]["transactions"][0]) {
-    currentBillingMethodString = paymentMethodString($UserInfo["billing"]["method"]);
+    currentBillingMethodString = paymentMethodString(
+      $UserInfo["billing"]["method"]
+    );
   } else {
     if ($UserInfo["billing"]["registered"]) {
       currentBillingMethodString = $Text.PaymentMethod_Waiting;
@@ -113,7 +122,8 @@
   }
 
   // 위젯이 떠있거나 로딩중일 때 스크롤 잠구기
-  $: document.body.style.overflow = loading || tosspaymentsWidgetOn ? "hidden" : "";
+  $: document.body.style.overflow =
+    loading || tosspaymentsWidgetOn ? "hidden" : "";
 
   // tosspayments
   let cardNumber = "";
@@ -208,19 +218,34 @@
       <section class="card-detail">
         <label class="card-detail__expiry">
           <span>{$Text.ExpiryDate}</span>
-          <input type="text" bind:value={expiryDate} on:input={expiryDateHandler} placeholder="MM / YY" />
+          <input
+            type="text"
+            bind:value={expiryDate}
+            on:input={expiryDateHandler}
+            placeholder="MM / YY"
+          />
         </label>
         <label class="card-detail__type">
           <span>{$Text.CardType}</span>
           <button
             type="button"
-            on:click={() => (cardType = cardType === "personal" ? "business" : "personal")}
+            on:click={() =>
+              (cardType = cardType === "personal" ? "business" : "personal")}
           >
-            <div class="card-detail__type__toggle" style={cardType === "personal" ? "left:0" : "left:50%"} />
-            <div class="card-detail__type__text" style="{cardType === 'personal' ? 'color: white' : ''};">
+            <div
+              class="card-detail__type__toggle"
+              style={cardType === "personal" ? "left:0" : "left:50%"}
+            />
+            <div
+              class="card-detail__type__text"
+              style="{cardType === 'personal' ? 'color: white' : ''};"
+            >
               {$Text.Card_Personal}
             </div>
-            <div class="card-detail__type__text" style="{cardType === 'business' ? 'color: white' : ''};">
+            <div
+              class="card-detail__type__text"
+              style="{cardType === 'business' ? 'color: white' : ''};"
+            >
               {$Text.Card_Business}
             </div>
           </button>
@@ -228,7 +253,11 @@
       </section>
       <section class="owner-id">
         <label>
-          <span>{cardType === "personal" ? $Text.BirthDate : $Text.BusinessNumber}</span>
+          <span
+            >{cardType === "personal"
+              ? $Text.BirthDate
+              : $Text.BusinessNumber}</span
+          >
           <input
             type="text"
             bind:value={ownerId}
@@ -240,10 +269,14 @@
       </section>
       <div class="message">{message}</div>
       <div class="form-buttons">
-        <button class="form-buttons__button" type="button" on:click={() => (tosspaymentsWidgetOn = false)}
-          >{$Text.Cancel}</button
+        <button
+          class="form-buttons__button"
+          type="button"
+          on:click={() => (tosspaymentsWidgetOn = false)}>{$Text.Cancel}</button
         >
-        <button class="form-buttons__button" type="submit">{$Text.Submit}</button>
+        <button class="form-buttons__button" type="submit"
+          >{$Text.Submit}</button
+        >
       </div>
     </form>
   </div>

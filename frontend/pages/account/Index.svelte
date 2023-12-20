@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { format, logout, timeString, paymentMethodString, verify } from "../../modules/functions";
+  import {
+    format,
+    logout,
+    timeString,
+    paymentMethodString,
+    verify,
+  } from "../../modules/functions";
   import { Text, UserInfo } from "../../modules/state";
   import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
   import NameButton from "./NameButton.svelte";
@@ -14,7 +20,8 @@
    *  언어에 맞게 금액을 표현하는 문자열을 변환
    */
   const amountString = (amount: number): string => {
-    const str = $UserInfo["billing"]["currency"] === "KRW" ? $Text.f_KRW : $Text.f_USD;
+    const str =
+      $UserInfo["billing"]["currency"] === "KRW" ? $Text.f_KRW : $Text.f_USD;
     return format(str, { v: amount });
   };
 
@@ -83,7 +90,8 @@
       <button
         class="billing__toggle"
         style={paymentListToggle ? "transform: rotate(180deg)" : ""}
-        on:click={() => (paymentListToggle = !paymentListToggle)}><ToggleArrow /></button
+        on:click={() => (paymentListToggle = !paymentListToggle)}
+        ><ToggleArrow /></button
       >
     {:else}
       <div style="height: 3rem;" />

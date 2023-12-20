@@ -20,7 +20,9 @@
   const phoneConfirm = async (event: SubmitEvent) => {
     message = "";
     const form = event.target as HTMLFormElement;
-    const callingCode = getCountryCallingCode(form.countryCode.value as CountryCode);
+    const callingCode = getCountryCallingCode(
+      form.countryCode.value as CountryCode
+    );
     const phone = `+${callingCode}${phoneNumber}`;
     if (!phoneNumber) {
       message = $Text.PleaseEnterPhoneNumber;

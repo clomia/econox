@@ -84,12 +84,12 @@ time,
 mark,
 audio,
 video {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-size: 100%;
-    font: inherit;
-    vertical-align: baseline;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
 }
 
 /* HTML5 display-role reset for older browsers */
@@ -104,102 +104,102 @@ hgroup,
 menu,
 nav,
 section {
-    display: block;
+  display: block;
 }
 
 body {
-    line-height: 1;
+  line-height: 1;
 }
 
 ol,
 ul {
-    list-style: none;
+  list-style: none;
 }
 
 blockquote,
 q {
-    quotes: none;
+  quotes: none;
 }
 
 blockquote:before,
 blockquote:after,
 q:before,
 q:after {
-    content: '';
-    content: none;
+  content: "";
+  content: none;
 }
 
 table {
-    border-collapse: collapse;
-    border-spacing: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
 /* 기본 스타일을 제거합니다. */
 *,
 *::before,
 *::after {
-    margin: 0;
-    padding: 0;
-    border: none;
-    font-size: 100%;
-    font-family: inherit;
-    vertical-align: baseline;
-    box-sizing: border-box;
-    outline: none;
-    background: transparent;
+  margin: 0;
+  padding: 0;
+  border: none;
+  font-size: 100%;
+  font-family: inherit;
+  vertical-align: baseline;
+  box-sizing: border-box;
+  outline: none;
+  background: transparent;
 }
 
 /* select 요소에 드롭다운 화살표 제거 */
 /* Firefox */
 select::-moz-focus-inner {
-    border-style: none;
-    padding: 0;
+  border-style: none;
+  padding: 0;
 }
 
 /* Chrome, Safari, Edge, Opera */
 select::-webkit-inner-spin-button,
 select::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* Chrome, Firefox, Safari, Edge */
 select {
-    appearance: none;
-    /* 표준 속성 */
-    -webkit-appearance: none;
-    /* Webkit 브라우저용 */
-    -moz-appearance: none;
-    /* Firefox 브라우저용 */
-    background: transparent;
-    /* 화살표가 사라진 후 배경을 투명하게 만듦 */
+  appearance: none;
+  /* 표준 속성 */
+  -webkit-appearance: none;
+  /* Webkit 브라우저용 */
+  -moz-appearance: none;
+  /* Firefox 브라우저용 */
+  background: transparent;
+  /* 화살표가 사라진 후 배경을 투명하게 만듦 */
 }
 
 /* 스크롤바 스타일 일관되게 지정 */
 ::-webkit-scrollbar {
-    width: 0.4rem;
-    height: 0.4rem;
+  width: 0.4rem;
+  height: 0.4rem;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #494953;
-    border-radius: 9999px;
+  background-color: #494953;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #6d6d74;
+  background-color: #6d6d74;
 }
 
 ::-webkit-scrollbar-track {
-    background-color: transparent;
+  background-color: transparent;
 }
 
 ::-webkit-scrollbar-button,
 ::-webkit-scrollbar-corner {
-    display: none;
+  display: none;
 }
 
 body::-webkit-scrollbar-track {
-    background-color: #1F282B;
-    /* 메인 스크롤바는 배경색과 최대한 비슷하도록 트랙 색상 지정 */
+  background-color: #1f282b;
+  /* 메인 스크롤바는 배경색과 최대한 비슷하도록 트랙 색상 지정 */
 }

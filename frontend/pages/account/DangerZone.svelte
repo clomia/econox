@@ -26,7 +26,8 @@
   let tosspaymentsWidgetOn = false;
   let loading = false; // 로딩중일 때 스크롤 잠구기
   // 위젯이 떠있거나 로딩중일 때 스크롤 잠구기
-  $: document.body.style.overflow = loading || tosspaymentsWidgetOn ? "hidden" : "";
+  $: document.body.style.overflow =
+    loading || tosspaymentsWidgetOn ? "hidden" : "";
 
   // tosspayments
   let cardNumber = "";
@@ -214,19 +215,34 @@
       <section class="card-detail">
         <label class="card-detail__expiry">
           <span>{$Text.ExpiryDate}</span>
-          <input type="text" bind:value={expiryDate} on:input={expiryDateHandler} placeholder="MM / YY" />
+          <input
+            type="text"
+            bind:value={expiryDate}
+            on:input={expiryDateHandler}
+            placeholder="MM / YY"
+          />
         </label>
         <label class="card-detail__type">
           <span>{$Text.CardType}</span>
           <button
             type="button"
-            on:click={() => (cardType = cardType === "personal" ? "business" : "personal")}
+            on:click={() =>
+              (cardType = cardType === "personal" ? "business" : "personal")}
           >
-            <div class="card-detail__type__toggle" style={cardType === "personal" ? "left:0" : "left:50%"} />
-            <div class="card-detail__type__text" style="{cardType === 'personal' ? 'color: white' : ''};">
+            <div
+              class="card-detail__type__toggle"
+              style={cardType === "personal" ? "left:0" : "left:50%"}
+            />
+            <div
+              class="card-detail__type__text"
+              style="{cardType === 'personal' ? 'color: white' : ''};"
+            >
               {$Text.Card_Personal}
             </div>
-            <div class="card-detail__type__text" style="{cardType === 'business' ? 'color: white' : ''};">
+            <div
+              class="card-detail__type__text"
+              style="{cardType === 'business' ? 'color: white' : ''};"
+            >
               {$Text.Card_Business}
             </div>
           </button>
@@ -234,7 +250,11 @@
       </section>
       <section class="owner-id">
         <label>
-          <span>{cardType === "personal" ? $Text.BirthDate : $Text.BusinessNumber}</span>
+          <span
+            >{cardType === "personal"
+              ? $Text.BirthDate
+              : $Text.BusinessNumber}</span
+          >
           <input
             type="text"
             bind:value={ownerId}
@@ -246,10 +266,14 @@
       </section>
       <div class="message">{message}</div>
       <div class="form-buttons">
-        <button class="form-buttons__button" type="button" on:click={() => (tosspaymentsWidgetOn = false)}
-          >{$Text.Cancel}</button
+        <button
+          class="form-buttons__button"
+          type="button"
+          on:click={() => (tosspaymentsWidgetOn = false)}>{$Text.Cancel}</button
         >
-        <button class="form-buttons__button" type="submit">{$Text.Submit}</button>
+        <button class="form-buttons__button" type="submit"
+          >{$Text.Submit}</button
+        >
       </div>
     </form>
   </div>

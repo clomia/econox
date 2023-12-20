@@ -36,18 +36,30 @@
   </div>
   <div class="animation02">
     <div class="rhombus_box">
-      <span class="rhombus_item_wrapper rhombus_item01_wrapper"><span class="rhombus_item" /></span>
-      <span class="rhombus_item_wrapper rhombus_item02_wrapper"><span class="rhombus_item" /></span>
+      <span class="rhombus_item_wrapper rhombus_item01_wrapper"
+        ><span class="rhombus_item" /></span
+      >
+      <span class="rhombus_item_wrapper rhombus_item02_wrapper"
+        ><span class="rhombus_item" /></span
+      >
     </div>
     <div class="double_content">
       <div class="double_wrapper02 dotted02">
         <div class="dotted_hide">
-          <div class="double_wrapper01 dotted01"><span class="dotted_right" /></div>
+          <div class="double_wrapper01 dotted01">
+            <span class="dotted_right" />
+          </div>
         </div>
       </div>
-      <div class="double_wrapper02 white02"><div class="double_wrapper01 white01" /></div>
-      <div class="double_wrapper02 gray02"><div class="double_wrapper01 gray01" /></div>
-      <div class="double_wrapper02 orange02"><div class="double_wrapper01 orange01" /></div>
+      <div class="double_wrapper02 white02">
+        <div class="double_wrapper01 white01" />
+      </div>
+      <div class="double_wrapper02 gray02">
+        <div class="double_wrapper01 gray01" />
+      </div>
+      <div class="double_wrapper02 orange02">
+        <div class="double_wrapper01 orange01" />
+      </div>
     </div>
     <div class="name">
       <span class="clomia">clomia</span>

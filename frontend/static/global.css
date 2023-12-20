@@ -1,45 +1,45 @@
 @import "reset.css";
 
 :root {
-	--white: rgba(255, 255, 255, 0.75);
-	--border-white: rgba(255, 255, 255, 0.5);
-	--background: linear-gradient(to top, #202123, #1f3036);
-	--widget-background: linear-gradient(to top, #2e2f32, rgb(32, 49, 55));
+  --white: rgba(255, 255, 255, 0.75);
+  --border-white: rgba(255, 255, 255, 0.5);
+  --background: linear-gradient(to top, #202123, #1f3036);
+  --widget-background: linear-gradient(to top, #2e2f32, rgb(32, 49, 55));
 }
 
 html,
 body {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	width: 100%;
-	min-height: 100vh;
-	padding-bottom: 3rem;
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 16px;
-	line-height: 1.5;
-	background: var(--background);
-	position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  padding-bottom: 3rem;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  background: var(--background);
+  position: relative;
 }
 
 .swal2-title {
-	text-align: center !important;
-	font-size: 1rem;
-	font-weight: normal;
+  text-align: center !important;
+  font-size: 1rem;
+  font-weight: normal;
 }
 
 .swal2-input {
-	border-color: var(--white);
-	font-size: 1rem;
-	text-align: center;
-	color: var(--white);
+  border-color: var(--white);
+  font-size: 1rem;
+  text-align: center;
+  color: var(--white);
 }
 
 .swal2-input:focus {
-	outline: none;
-	box-shadow: none;
+  outline: none;
+  box-shadow: none;
 }
 
 .swal2-input::placeholder {
-	opacity: 0.5;
+  opacity: 0.5;
 }

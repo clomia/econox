@@ -19,7 +19,8 @@
   let animationEnd = false;
   let sucessBtn: HTMLButtonElement;
 
-  const sucessRedirect = () => window.location.replace(window.location.origin + "/console");
+  const sucessRedirect = () =>
+    window.location.replace(window.location.origin + "/console");
   onMount(async () => {
     response = api.public.post("/user", {
       email: $InputResult.email,
@@ -36,7 +37,11 @@
       password: $InputResult.password,
     });
     const authResult = (await loginPromise).data;
-    login(authResult["cognito_token"], authResult["cognito_refresh_token"], false);
+    login(
+      authResult["cognito_token"],
+      authResult["cognito_refresh_token"],
+      false
+    );
     setInterval(() => {
       timeout -= 1;
       if (timeout <= 0) {
@@ -97,10 +102,14 @@
       <div class="sucess__message">{sucessMessage(data)}</div>
       <section class="sucess">
         <div class="sucess__wellcome"><Wellcome /></div>
-        <div class="sucess_login-timer">{format($Text.f_AutoLoginTimer, { time: timeout })}</div>
+        <div class="sucess_login-timer">
+          {format($Text.f_AutoLoginTimer, { time: timeout })}
+        </div>
         {#await loginPromise then}
           {#if animationEnd}
-            <button bind:this={sucessBtn} on:click={sucessRedirect}>{$Text.Login}</button>
+            <button bind:this={sucessBtn} on:click={sucessRedirect}
+              >{$Text.Login}</button
+            >
           {/if}
         {/await}
       </section>

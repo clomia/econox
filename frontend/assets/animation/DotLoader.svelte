@@ -42,7 +42,8 @@
     width: var(--d);
     height: var(--d);
     border-radius: 50%;
-    animation: a var(--t) calc(((var(--i) + var(--o, 0)) / var(--n) - 1) * var(--t)) infinite;
+    animation: a var(--t)
+      calc(((var(--i) + var(--o, 0)) / var(--n) - 1) * var(--t)) infinite;
   }
 
   .dot:after {

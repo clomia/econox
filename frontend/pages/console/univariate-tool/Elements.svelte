@@ -34,7 +34,7 @@
         progressObj[key] = $UnivariateFactorsProgress[key] || 0;
       });
       return progressObj;
-    },
+    }
   );
 </script>
 
@@ -55,7 +55,11 @@
           {ele.name}
           {#if ele.section === "country" && $CountryCodeMap}
             {@const code = $CountryCodeMap[ele.code].toLowerCase()}
-            <img src={`https://flagcdn.com/w40/${code}.png`} alt={ele.name} width="30px" />
+            <img
+              src={`https://flagcdn.com/w40/${code}.png`}
+              alt={ele.name}
+              width="30px"
+            />
           {/if}
           <span class="progress">
             {#if 0 < progress && progress < 1}
@@ -65,7 +69,10 @@
             {/if}
           </span>
         </div>
-        <button class="list__ele__del-btn" on:click={() => deleteElement(ele.code, ele.section)}>
+        <button
+          class="list__ele__del-btn"
+          on:click={() => deleteElement(ele.code, ele.section)}
+        >
           <MinusIcon size={1.2} />
         </button>
       </button>

@@ -71,16 +71,34 @@
   <section class="card-detail">
     <label class="card-detail__expiry">
       <span>{$Text.ExpiryDate}</span>
-      <input type="text" bind:value={expiryDate} on:input={expiryDateHandler} placeholder="MM / YY" />
+      <input
+        type="text"
+        bind:value={expiryDate}
+        on:input={expiryDateHandler}
+        placeholder="MM / YY"
+      />
     </label>
     <label class="card-detail__type">
       <span>{$Text.CardType}</span>
-      <button type="button" on:click={() => (cardType = cardType === "personal" ? "business" : "personal")}>
-        <div class="card-detail__type__toggle" style={cardType === "personal" ? "left:0" : "left:50%"} />
-        <div class="card-detail__type__text" style="{cardType === 'personal' ? 'color: white' : ''};">
+      <button
+        type="button"
+        on:click={() =>
+          (cardType = cardType === "personal" ? "business" : "personal")}
+      >
+        <div
+          class="card-detail__type__toggle"
+          style={cardType === "personal" ? "left:0" : "left:50%"}
+        />
+        <div
+          class="card-detail__type__text"
+          style="{cardType === 'personal' ? 'color: white' : ''};"
+        >
           {$Text.Card_Personal}
         </div>
-        <div class="card-detail__type__text" style="{cardType === 'business' ? 'color: white' : ''};">
+        <div
+          class="card-detail__type__text"
+          style="{cardType === 'business' ? 'color: white' : ''};"
+        >
           {$Text.Card_Business}
         </div>
       </button>
@@ -88,7 +106,11 @@
   </section>
   <section class="owner-id">
     <label>
-      <span>{cardType === "personal" ? $Text.BirthDate : $Text.BusinessNumber}</span>
+      <span
+        >{cardType === "personal"
+          ? $Text.BirthDate
+          : $Text.BusinessNumber}</span
+      >
       <input
         type="text"
         bind:value={ownerId}

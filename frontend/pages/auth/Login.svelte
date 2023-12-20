@@ -51,7 +51,11 @@
       input: "text",
       text: $Text.ForgotPassword_EnterEmail,
       preConfirm: async (email: string) => {
-        if (!email || email.split("@").length !== 2 || email.split(".").length < 2) {
+        if (
+          !email ||
+          email.split("@").length !== 2 ||
+          email.split(".").length < 2
+        ) {
           Swal.showValidationMessage($Text.InvalidInput);
           return;
         }
@@ -73,7 +77,9 @@
     if (!enteredEmail) {
       return;
     }
-    const manual = format($Text.f_ForgotPassword_EnterNewPassword, { email: enteredEmail });
+    const manual = format($Text.f_ForgotPassword_EnterNewPassword, {
+      email: enteredEmail,
+    });
     await Swal.fire({
       ...SwalStyle,
       html: `
@@ -82,8 +88,12 @@
                 <input type="password" id="swal-input2" class="swal2-input" placeholder="${$Text.NewPassword}">`,
       focusConfirm: false,
       preConfirm: async () => {
-        const confirmCode = (document.getElementById("swal-input1") as HTMLInputElement).value;
-        const newPassword = (document.getElementById("swal-input2") as HTMLInputElement).value;
+        const confirmCode = (
+          document.getElementById("swal-input1") as HTMLInputElement
+        ).value;
+        const newPassword = (
+          document.getElementById("swal-input2") as HTMLInputElement
+        ).value;
         if (newPassword.length < 6) {
           Swal.showValidationMessage($Text.IncorrectPasswordLength);
           return;
@@ -126,14 +136,25 @@
   <section>
     <label>
       <span>{$Text.Email}</span>
-      <input bind:this={emailInput} type="text" name="email" autocomplete="email" />
+      <input
+        bind:this={emailInput}
+        type="text"
+        name="email"
+        autocomplete="email"
+      />
     </label>
   </section>
   <section>
     <label>
       <span>{$Text.Password}</span>
-      <input class="password-input" type="password" name="password" autocomplete="current-password" />
-      <button on:click={resetPassword} type="button" class="reset-password-btn">{$Text.ForgotPassword}</button
+      <input
+        class="password-input"
+        type="password"
+        name="password"
+        autocomplete="current-password"
+      />
+      <button on:click={resetPassword} type="button" class="reset-password-btn"
+        >{$Text.ForgotPassword}</button
       >
     </label>
   </section>

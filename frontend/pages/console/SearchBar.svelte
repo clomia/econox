@@ -1,7 +1,12 @@
 <script lang="ts">
   import Swal from "sweetalert2";
   import { fade } from "svelte/transition";
-  import { Packets, News, CountryCodeMap, PacketInfo } from "../../modules/state";
+  import {
+    Packets,
+    News,
+    CountryCodeMap,
+    PacketInfo,
+  } from "../../modules/state";
   import Magnifier from "../../assets/icon/Magnifier.svelte";
   import PlusIcon from "../../assets/icon/PlusIcon.svelte";
   import MinusIcon from "../../assets/icon/MinusIcon.svelte";
@@ -41,7 +46,7 @@
    */
   const univariateDelete = (element: ElementType) => {
     const target = $UnivariateElements.find(
-      (ele) => ele.code === element.code && ele.section === element.section,
+      (ele) => ele.code === element.code && ele.section === element.section
     );
     if (!target) {
       throw new Error("Element does not exists");
@@ -61,11 +66,17 @@
       Object.entries(requests).map(([key, action]) => {
         const [code, section] = key.split("|");
         if (action === "append") {
-          return api.member.post("/feature/user/element", {}, { params: { code, section } });
+          return api.member.post(
+            "/feature/user/element",
+            {},
+            { params: { code, section } }
+          );
         } else if (action === "delete") {
-          return api.member.delete("/feature/user/element", { params: { code, section } });
+          return api.member.delete("/feature/user/element", {
+            params: { code, section },
+          });
         }
-      }),
+      })
     );
   };
 
@@ -99,7 +110,9 @@
     const initialPacket = { query, loading: true, resp: null };
     $Packets = [initialPacket, ...$Packets.slice(0, 3)];
     try {
-      const resp = await api.member.get("/data/elements", { params: { query, lang: $Lang } });
+      const resp = await api.member.get("/data/elements", {
+        params: { query, lang: $Lang },
+      });
       const updatedPacket = { query, loading: false, resp: resp.data };
       const index = $Packets.findIndex((p) => p.query === query && p.loading);
       if (index !== -1) {
@@ -107,7 +120,9 @@
       }
 
       // symbols 타입만 뉴스 가져올 수 있음
-      const loadingFrame = Object.fromEntries(resp.data.symbols.map((ele: any) => [ele.code, null]));
+      const loadingFrame = Object.fromEntries(
+        resp.data.symbols.map((ele: any) => [ele.code, null])
+      );
       $News = { ...$News, ...loadingFrame }; // 값이 null인 경우 로딩중
 
       const newsData = await Promise.all(
@@ -123,7 +138,7 @@
           } catch {
             return [ele.code, false];
           }
-        }),
+        })
       ); // 값이 []인 경우 뉴스 없음
       $News = { ...$News, ...Object.fromEntries(newsData) };
     } catch {
@@ -205,7 +220,10 @@
             <div in:fade class="folder-icon"><NoFolder /></div>
           </button>
         {:else}
-          <button class="packet__result" on:click={() => onPacketInfo(query, resp)}>
+          <button
+            class="packet__result"
+            on:click={() => onPacketInfo(query, resp)}
+          >
             <div in:fade class="folder-icon"><Folder /></div>
           </button>
         {/if}
@@ -230,7 +248,8 @@
       <div class="packet-info__list">
         {#each $PacketInfo.elements as element}
           {@const isInUnivariateList = !!$UnivariateElements.find(
-            (ele) => ele.code === element.code && ele.section === element.section,
+            (ele) =>
+              ele.code === element.code && ele.section === element.section
           )}
           <button
             class="packet-info__list__ele"
@@ -242,13 +261,19 @@
               {element.name}
               {#if element.section === "country" && $CountryCodeMap}
                 {@const code = $CountryCodeMap[element.code].toLowerCase()}
-                <img src={`https://flagcdn.com/w40/${code}.png`} alt={element.name} width="30px" />
+                <img
+                  src={`https://flagcdn.com/w40/${code}.png`}
+                  alt={element.name}
+                  width="30px"
+                />
               {/if}
             </div>
             <button
               class="packet-info__list__ele__add-btn"
               on:click={() => {
-                isInUnivariateList ? univariateDelete(element) : univariateAppend(element);
+                isInUnivariateList
+                  ? univariateDelete(element)
+                  : univariateAppend(element);
               }}
             >
               {#if isInUnivariateList}
@@ -275,7 +300,9 @@
           {:else if $News[selectedElement.code] === false}
             <div class="packet-info__news__null">{$Text.NewsGetFailed}</div>
           {:else if $News[selectedElement.code].length === 0}
-            <div class="packet-info__news__null">{$Text.ElementNewsNotFound}</div>
+            <div class="packet-info__news__null">
+              {$Text.ElementNewsNotFound}
+            </div>
           {:else}
             {#each $News[selectedElement.code] as newsElement}
               <div class="packet-info__news__ele">
@@ -307,8 +334,14 @@
                       >
                         <ToggleArrow size={0.6} />
                       </button>
-                      <a href={newsElement.src} target="_blank" rel="noopener noreferrer">
-                        <div class="packet-info__news__ele__body__buttons__href">
+                      <a
+                        href={newsElement.src}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <div
+                          class="packet-info__news__ele__body__buttons__href"
+                        >
                           <OpenLink />
                         </div>
                       </a>
@@ -319,7 +352,9 @@
             {/each}
           {/if}
         {:else}
-          <div class="packet-info__news__null">{$Text.ElementNewsNotSupported}</div>
+          <div class="packet-info__news__null">
+            {$Text.ElementNewsNotSupported}
+          </div>
         {/if}
       </div>
     </section>

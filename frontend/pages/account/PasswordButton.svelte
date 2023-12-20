@@ -24,7 +24,9 @@
           return;
         }
         try {
-          await api.public.post("/auth/send-password-reset-code", { email: $UserInfo["email"] });
+          await api.public.post("/auth/send-password-reset-code", {
+            email: $UserInfo["email"],
+          });
           newPassword = input;
         } catch (error: any) {
           const e = error as AxiosError;

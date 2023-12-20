@@ -2,7 +2,7 @@
 Econox:
   en: "Econox"
   ko: "에코녹스"
-FeatureHub: 
+FeatureHub:
   en: "Feature Hub"
   ko: "피처 허브"
 Console:
@@ -27,7 +27,7 @@ Password:
   en: "Password"
   ko: "비밀번호"
 RetypePassword:
-  en: "Retype password" 
+  en: "Retype password"
   ko: "비밀번호 확인"
 LoginInfoIncorrect:
   en: "Email or password is incorrect"
@@ -44,10 +44,10 @@ Close:
 Submit:
   en: "Submit"
   ko: "확인"
-RetypePasswordMismatch: 
+RetypePasswordMismatch:
   en: "Passwords do not match"
   ko: "비밀번호가 일치하지 않습니다"
-UserAlreadyExists:  
+UserAlreadyExists:
   en: "This email is already registered"
   ko: "이미 가입되어있는 이메일입니다"
 IncorrectPasswordLength:
@@ -93,7 +93,7 @@ BasicPlanDescription:
   en: >
     Discover causality by comparing time-series from global markets, economies, and corporate data. 
     Grasp the macroeconomy at a glance and gain crucial investment insights.
-  ko: > 
+  ko: >
     전세계 금융시장, 국가경제, 기업데이터 시계열을 비교해서 선후관계를 발견하세요. 
     거시경제를 한눈에 파악하고 투자에 필요한 통찰을 얻을 수 있습니다.
 ProfessionalPlan:
@@ -108,7 +108,7 @@ ProfessionalPlanWonPrice:
 ProfessionalPlanDescription:
   en: "Download all data without any limits!"
   ko: "모든 데이터를 무제한으로 다운로드 할 수 있습니다!"
-PhoneConfirmReason: 
+PhoneConfirmReason:
   en: "Phone verification is required to determine if you are eligible for the new member benefits"
   ko: "최초 회원가입 혜택 대상자 여부를 확인하기 위해 전화번호 인증이 필요합니다"
 EnterPhoneNumber:
@@ -120,7 +120,7 @@ SendVerificationCode:
 Country:
   en: "Country"
   ko: "국가"
-PhoneConfirmCodeSendFailed: 
+PhoneConfirmCodeSendFailed:
   en: "Failed to send verification code. Please check if the phone number entered is correct"
   ko: "인증번호 전송에 실패하였습니다. 입력한 전화번호가 올바른지 확인해주세요"
 PleaseEnterPhoneNumber:
@@ -129,22 +129,22 @@ PleaseEnterPhoneNumber:
 PleaseEnterPhoneConfirmCode:
   en: "Please enter the verification code sent via text message"
   ko: "문자 메세지로 전송된 인증코드를 입력해주세요"
-InsufficientInput: 
+InsufficientInput:
   en: "There are missing values"
   ko: "누락된 값이 있습니다"
-EmailInputIncorrect: 
+EmailInputIncorrect:
   en: "Unable to proceed with email verification. Please enter a valid email"
   ko: "이메일 인증을 진행할 수 없습니다. 올바른 이메일을 입력해주세요"
 TooManyRequests:
   en: "Too many requests detected. Please try again later"
   ko: "너무 많은 요청이 감지되었습니다. 나중에 다시 시도하세요"
-ConfirmCodeSended: 
+ConfirmCodeSended:
   en: "Verification code has been sent"
   ko: "인증 코드가 전송되었습니다"
 SignupComplete:
   en: "Signup is complete"
   ko: "회원가입이 완료되었습니다"
-BenefitExplanation: 
+BenefitExplanation:
   en: >
     Enjoy your first month of membership for free as part of our new member benefits! 
     After that, you'll be asked to enter your payment details, and your monthly subscription fee will apply
@@ -154,7 +154,7 @@ BenefitExplanation:
 EmailConfirmIncompleted:
   en: "Email verification is not yet completed"
   ko: "이메일 인증이 완료되지 않았습니다"
-UnusualSignupRequest: 
+UnusualSignupRequest:
   en: "This is not a valid signup request"
   ko: "정상적인 회원가입 요청이 아닙니다"
 EmailFormatIncorrect:
@@ -163,10 +163,10 @@ EmailFormatIncorrect:
 ResendConfirmCode:
   en: "Resend Code"
   ko: "코드 재전송"
-NoBenefitPleasePayment: 
+NoBenefitPleasePayment:
   en: "You are not eligible for the new member benefits. Please enter your payment information"
   ko: "첫 회원가입 혜택 대상자가 아닙니다. 결제 정보를 입력해주세요"
-PaymentInfoIncorrect: 
+PaymentInfoIncorrect:
   en: "The payment information is not valid. Please re-enter"
   ko: "결제 정보가 올바르지 않습니다 다시 입력해주세요"
 CreditCardNumber:
@@ -190,7 +190,7 @@ BirthDate:
 BusinessNumber:
   en: "Business Number"
   ko: "사업자등록번호"
-ClickLogin_for_SignupComplete: 
+ClickLogin_for_SignupComplete:
   en: "Click the 'Login' button to complete your signup"
   ko: "로그인 버튼을 눌러 회원가입을 완료하세요"
 Name:
@@ -283,7 +283,7 @@ StopBillingComplete: # 이건 알람
 BillingActivationComplete:
   en: "Billing is activated"
   ko: "결제가 활성화되었습니다"
-AccountDeactiveScheduled:  # 이건 상태글
+AccountDeactiveScheduled: # 이건 상태글
   en: "Billing has been paused. Your account will be deactivated on the next billing date"
   ko: "결제가 정지되었습니다. 다음 결제일에 계정이 비활성화됩니다"
 BillingActivation:
@@ -298,7 +298,7 @@ DeleteAccount:
 AccountStatusActive:
   en: "Account status: Active"
   ko: "계정 상태가 정상입니다"
-AccountStatusDeactive: 
+AccountStatusDeactive:
   en: "Account status: Deactive"
   ko: "계정이 비활성 상태입니다"
 ConnotStopPayment:

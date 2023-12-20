@@ -13,14 +13,22 @@
   };
 
   $: styles = {
-    login: `border-bottom-color: ${$Toggle.login ? color.activate : color.deactivate}`,
-    signup: `border-bottom-color: ${$Toggle.signup ? color.activate : color.deactivate}`,
+    login: `border-bottom-color: ${
+      $Toggle.login ? color.activate : color.deactivate
+    }`,
+    signup: `border-bottom-color: ${
+      $Toggle.signup ? color.activate : color.deactivate
+    }`,
   };
 </script>
 
 <div class="toggle">
-  <button on:click={() => select("login")} style={styles.login}>{$Text.Login}</button>
-  <button on:click={() => select("signup")} style={styles.signup}>{$Text.Signup}</button>
+  <button on:click={() => select("login")} style={styles.login}
+    >{$Text.Login}</button
+  >
+  <button on:click={() => select("signup")} style={styles.signup}
+    >{$Text.Signup}</button
+  >
 </div>
 
 <style>

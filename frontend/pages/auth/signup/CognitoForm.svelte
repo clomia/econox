@@ -73,13 +73,23 @@
   <section>
     <label>
       <span>{$Text.Password}</span>
-      <input class="password-input" type="password" name="password" autocomplete="off" />
+      <input
+        class="password-input"
+        type="password"
+        name="password"
+        autocomplete="off"
+      />
     </label>
   </section>
   <section>
     <label>
       <span>{$Text.RetypePassword}</span>
-      <input class="password-input" type="password" name="retypePassword" autocomplete="off" />
+      <input
+        class="password-input"
+        type="password"
+        name="retypePassword"
+        autocomplete="off"
+      />
     </label>
   </section>
   {#await response}<CircleDotLoader />{/await}

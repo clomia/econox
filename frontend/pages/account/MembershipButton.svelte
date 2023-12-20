@@ -2,7 +2,12 @@
   import Swal from "sweetalert2";
   import CircleDotLoader from "../../assets/animation/CircleDotLoader.svelte";
   import { paypalWidget } from "../../modules/paypal";
-  import { format, defaultSwalStyle, timeString, defaultToastStyle } from "../../modules/functions";
+  import {
+    format,
+    defaultSwalStyle,
+    timeString,
+    defaultToastStyle,
+  } from "../../modules/functions";
   import { api } from "../../modules/request";
   import { Text, UserInfo } from "../../modules/state";
 
@@ -21,7 +26,8 @@
   };
 
   // 아래 변수는 트랜젝션 내역 여부 확인에도 사용함 currentBilling이 없으면 undefined이니까
-  const currentBillingMethod: string | undefined = $UserInfo["billing"]["transactions"][0]?.["method"];
+  const currentBillingMethod: string | undefined =
+    $UserInfo["billing"]["transactions"][0]?.["method"];
   const nextBillingDate = new Date($UserInfo["next_billing_date"]);
   const currentDate = new Date();
   const todayIsNextBillingDate =
@@ -35,7 +41,10 @@
    * @returns 결제정보 수정 가능 여부
    */
   const billingChangeAvailableCheck = async (): Promise<boolean> => {
-    if ($UserInfo["billing"]["currency"] === "USD" && $UserInfo["billing"]["registered"]) {
+    if (
+      $UserInfo["billing"]["currency"] === "USD" &&
+      $UserInfo["billing"]["registered"]
+    ) {
       // PayPal 결제수단이 성공적으로 등록된 유저
       if (todayIsNextBillingDate) {
         // 오늘이 결제 예정일인 경우 변경 불가함 (웹훅 딜레이 길어서 위험함)
@@ -62,7 +71,10 @@
     return false;
   };
 
-  const requestProcess = async (target: "basic" | "professional", body: object) => {
+  const requestProcess = async (
+    target: "basic" | "professional",
+    body: object
+  ) => {
     try {
       membershipChangeLoader = true;
       const resp = await api.private.patch("/user/membership", body);
@@ -124,12 +136,18 @@
       const available = await billingChangeAvailableCheck();
       if (!available) {
         return;
-      } else if ($UserInfo["billing"]["currency"] === "USD" && $UserInfo["billing"]["registered"]) {
+      } else if (
+        $UserInfo["billing"]["currency"] === "USD" &&
+        $UserInfo["billing"]["registered"]
+      ) {
         // -> PayPal!
         membershipChangeLoader = true;
-        const resp = await api.private.get("/paypal/membership-change-subscription-start-time", {
-          params: { new_membership: target },
-        });
+        const resp = await api.private.get(
+          "/paypal/membership-change-subscription-start-time",
+          {
+            params: { new_membership: target },
+          }
+        );
         const startTime: string = resp.data["adjusted_next_billing"];
         await paypalWidget({
           planName: target,
@@ -183,10 +201,13 @@
 
       <button
         class="membership-options__professional"
-        class:membership-options__current={$UserInfo["membership"] === "professional"}
+        class:membership-options__current={$UserInfo["membership"] ===
+          "professional"}
         on:click={membershipChange("professional")}
       >
-        <div class="membership-options__professional__title">{$Text.ProfessionalPlan}</div>
+        <div class="membership-options__professional__title">
+          {$Text.ProfessionalPlan}
+        </div>
         <div class="membership-options__professional__price">
           {#if $UserInfo["billing"]["currency"] === "KRW"}
             {$Text.ProfessionalPlanWonPrice}
@@ -197,10 +218,13 @@
         <p>{$Text.ProfessionalPlanDescription}</p>
       </button>
       {#if membershipChangeLoader}
-        <div style="position: absolute; bottom: -0.7rem;"><CircleDotLoader /></div>
+        <div style="position: absolute; bottom: -0.7rem;">
+          <CircleDotLoader />
+        </div>
       {:else}
-        <button class="membership-options__cancel" on:click={() => (membershipWidgetOn = false)}
-          >{$Text.Cancel}</button
+        <button
+          class="membership-options__cancel"
+          on:click={() => (membershipWidgetOn = false)}>{$Text.Cancel}</button
         >
       {/if}
     </main>

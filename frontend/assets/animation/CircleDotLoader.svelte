@@ -37,7 +37,8 @@
     position: relative;
     height: calc(var(--dot-size) * var(--center-size) * 1px);
     width: calc(var(--dot-size) * var(--center-size) * 1px);
-    animation: turn calc(var(--speed) * 20s) calc(var(--speed) * -2s) infinite linear;
+    animation: turn calc(var(--speed) * 20s) calc(var(--speed) * -2s) infinite
+      linear;
     transform: scale(var(--scale));
   }
 
@@ -60,7 +61,8 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) rotate(calc((360 / 8) * var(--index) * 1deg))
+    transform: translate(-50%, -50%)
+      rotate(calc((360 / 8) * var(--index) * 1deg))
       translate(0, calc(var(--dot-size) * var(--radius) * 1px));
   }
 

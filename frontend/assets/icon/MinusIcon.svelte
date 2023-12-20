@@ -2,7 +2,11 @@
   export let size = 1;
 </script>
 
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 167 9" style="width: {size}rem;">
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 167 9"
+  style="width: {size}rem;"
+>
   <defs>
     <style>
       .cls-1 {

@@ -18,7 +18,12 @@
   if ($PhoneConfirmTimeLimit === -1) {
     $PhoneConfirmTimeLimit = 180;
   }
-  onMount(() => setInterval(() => $PhoneConfirmTimeLimit > 0 && $PhoneConfirmTimeLimit--, 1000));
+  onMount(() =>
+    setInterval(
+      () => $PhoneConfirmTimeLimit > 0 && $PhoneConfirmTimeLimit--,
+      1000
+    )
+  );
 
   const statusMessages = (statusCode: number | undefined) => {
     switch (statusCode) {
@@ -34,7 +39,9 @@
   };
 
   $: placeHolder =
-    $PhoneConfirmTimeLimit > 0 ? secondToString($PhoneConfirmTimeLimit) : $Text.ConfirmCodeExpired;
+    $PhoneConfirmTimeLimit > 0
+      ? secondToString($PhoneConfirmTimeLimit)
+      : $Text.ConfirmCodeExpired;
 
   const codeConfirmation = async (event: SubmitEvent) => {
     message = "";
@@ -55,7 +62,8 @@
       });
       response = Promise.all([phoneConfirm, reregistrationConfirm]);
       const [, reregistrationConfirmResponse] = await response;
-      const reregistration: boolean = reregistrationConfirmResponse.data.reregistration; // 재등록 여부
+      const reregistration: boolean =
+        reregistrationConfirmResponse.data.reregistration; // 재등록 여부
       $Reregistration = reregistration;
       dispatch("complete");
     } catch (error: any) {
@@ -81,7 +89,12 @@
   <section>
     <label>
       <span>{$InputPhoneNumber}</span>
-      <input type="text" name="code" placeholder={placeHolder} autocomplete="off" />
+      <input
+        type="text"
+        name="code"
+        placeholder={placeHolder}
+        autocomplete="off"
+      />
     </label>
   </section>
   {#await response}<CircleDotLoader />{/await}
@@ -89,7 +102,9 @@
   {#if !(response instanceof Promise)}
     <div>{message}</div>
     <div class="buttons">
-      <button type="button" on:click={resendCode}>{$Text.ResendConfirmCode}</button>
+      <button type="button" on:click={resendCode}
+        >{$Text.ResendConfirmCode}</button
+      >
       <button type="submit">{$Text.Next}</button>
     </div>
   {/if}

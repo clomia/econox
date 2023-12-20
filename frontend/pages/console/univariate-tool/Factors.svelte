@@ -20,8 +20,12 @@
   };
 
   $: ele = $UnivariateElementSelected;
-  $: factors = ele ? $UnivariateFactors[`${ele.section}-${ele.code}`] || [] : [];
-  $: progress = ele ? $UnivariateFactorsProgress[`${ele.section}-${ele.code}`] || 0 : 0;
+  $: factors = ele
+    ? $UnivariateFactors[`${ele.section}-${ele.code}`] || []
+    : [];
+  $: progress = ele
+    ? $UnivariateFactorsProgress[`${ele.section}-${ele.code}`] || 0
+    : 0;
 </script>
 
 <main>
@@ -46,7 +50,9 @@
     </div>
   {:else if progress === 0 && ele}
     <div class="loader"><RippleLoader /></div>
-    <div class="load-info">{format($Text.f_FactorLoadingInfo, { element: ele.code })}</div>
+    <div class="load-info">
+      {format($Text.f_FactorLoadingInfo, { element: ele.code })}
+    </div>
   {:else if progress === 0 && !ele}
     <div class="list-blank">{$Text.ElementsListBlank}</div>
   {/if}

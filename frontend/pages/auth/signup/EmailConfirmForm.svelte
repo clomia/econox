@@ -31,10 +31,17 @@
     }
   };
 
-  onMount(() => setInterval(() => $EmailConfirmTimeLimit > 0 && $EmailConfirmTimeLimit--, 1000));
+  onMount(() =>
+    setInterval(
+      () => $EmailConfirmTimeLimit > 0 && $EmailConfirmTimeLimit--,
+      1000
+    )
+  );
 
   $: placeHolder =
-    $EmailConfirmTimeLimit > 0 ? secondToString($EmailConfirmTimeLimit) : $Text.ConfirmCodeExpired;
+    $EmailConfirmTimeLimit > 0
+      ? secondToString($EmailConfirmTimeLimit)
+      : $Text.ConfirmCodeExpired;
 
   const codeConfirmation = async (event: SubmitEvent) => {
     message = "";
@@ -74,14 +81,21 @@
   <section>
     <label>
       <span>{$InputResult.email}</span>
-      <input type="text" name="code" placeholder={placeHolder} autocomplete="off" />
+      <input
+        type="text"
+        name="code"
+        placeholder={placeHolder}
+        autocomplete="off"
+      />
     </label>
   </section>
   {#await response}<CircleDotLoader />{/await}
   {#if !(response instanceof Promise)}
     <div>{message}</div>
     <div class="buttons">
-      <button type="button" on:click={resendCode}>{$Text.ResendConfirmCode}</button>
+      <button type="button" on:click={resendCode}
+        >{$Text.ResendConfirmCode}</button
+      >
       <button type="submit">{$Text.Next}</button>
     </div>
   {/if}

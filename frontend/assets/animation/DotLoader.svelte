@@ -1,5 +1,5 @@
 <script>
-  let n = 6;
+  export let n = 6;
 </script>
 
 <main>

@@ -85,6 +85,10 @@ export const setFactors = async (ele: ElementType) => {
   if (elementKey in get(UnivariateFactors)) {
     return; // 이미 세팅이 된 경우 아무런 동작 안함
   }
+  UnivariateFactorsProgress.set({
+    ...get(UnivariateFactorsProgress),
+    [elementKey]: 0, // 로딩이 시작되었다는 표시
+  });
 
   let page = 0;
   const accumulated: FactorType[] = [];

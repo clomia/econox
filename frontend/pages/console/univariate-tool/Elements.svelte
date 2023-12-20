@@ -39,7 +39,8 @@
   {/if}
   <div class="list">
     {#each $UnivariateElements as ele}
-      {@const progress = $Progress[`${ele.section}-${ele.code}`]}
+      {@const key = `${ele.section}-${ele.code}`}
+      {@const progress = $Progress[key]}
       <button
         class="list__ele"
         on:click={() => select(ele)}
@@ -59,6 +60,8 @@
           <span class="progress">
             {#if 0 < progress && progress < 1}
               {Math.round(progress * 100)}%
+            {:else if $UnivariateFactorsProgress[key] === 0}
+              0%
             {:else if progress === 1}
               <Check />
             {/if}

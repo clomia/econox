@@ -3,7 +3,6 @@
   import Elements from "./Elements.svelte";
   import Factors from "./Factors.svelte";
   import { setElements } from "./functions";
-  import { Text } from "../../../modules/state";
 
   const setElementsPromise = setElements();
 </script>

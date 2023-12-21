@@ -188,10 +188,63 @@ export const paymentMethodString = (str: string): string => {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
 
+interface FeatureType {
+  code: string;
+  section: string;
+  [key: string]: any;
+}
+
 /**
  * 객체의 code 속성과 section이 일치하는지 여부를 반환합니다.
  * Element, Factor 객체를 비교할 때 쓰세요
  */
-export const isSame = (a: any, b: any) => {
+export const isSame = (a: FeatureType, b: FeatureType) => {
   return a.code === b.code && a.section === b.section;
+};
+
+const calculateQueryRatio = (str: string, query: string) => {
+  const matches =
+    str.toLowerCase().match(new RegExp(query.toLowerCase(), "g")) || [];
+  return (matches.length * query.length) / str.length;
+};
+
+/**
+ * 쿼리가 포함된 요소가 앞에 오도록 배열을 정렬합니다.
+ */
+export const simpleQuerySort = (arr: string[], query: string): string[] => {
+  return arr.sort(
+    (a, b) => calculateQueryRatio(b, query) - calculateQueryRatio(a, query)
+  );
+};
+
+/**
+ * 쿼리와 일치하는 요소가 앞에 오도록 배열을 정렬합니다.
+ */
+export const querySort = (arr: string[], query: string): string[] => {
+  const lcQuery = query.toLowerCase();
+
+  const charOccur = (str: string) => {
+    let count = 0;
+    let tempStr = str.toLowerCase();
+    lcQuery.split("").forEach((char) => {
+      while (tempStr.includes(char)) {
+        tempStr = tempStr.replace(char, "");
+        count++;
+      }
+    });
+    return count;
+  };
+
+  return arr.sort((a, b) => {
+    const aRatio = calculateQueryRatio(a, query);
+    const bRatio = calculateQueryRatio(b, query);
+    const aOccur = charOccur(a);
+    const bOccur = charOccur(b);
+
+    if (aOccur === 0 && bOccur === 0) {
+      return bRatio - aRatio;
+    }
+
+    return bOccur !== aOccur ? bOccur - aOccur : bRatio - aRatio;
+  });
 };

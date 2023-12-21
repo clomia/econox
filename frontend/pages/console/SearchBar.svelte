@@ -305,50 +305,46 @@
             </div>
           {:else}
             {#each $News[selectedElement.code] as newsElement}
-              <div class="packet-info__news__ele">
-                <button
+              <button
+                class="packet-info__news__ele"
+                on:click={() => (newsElement.isOpen = !newsElement.isOpen)}
+              >
+                <div
                   class="packet-info__news__ele__head"
-                  on:click={() => (newsElement.isOpen = true)}
-                  class:news-ele-no-hover={newsElement.isOpen}
+                  class:display-none={newsElement.isOpen}
                 >
-                  <div
-                    class="packet-info__news__ele__head__title"
-                    class:opened-news-title={newsElement.isOpen}
-                  >
+                  <div class="packet-info__news__ele__head__title">
                     {newsElement.title}
                   </div>
-                  <div class="packet-info__news__ele__head__date">
+                  <div
+                    class="packet-info__news__ele__head__date"
+                    class:display-none={newsElement.isOpen}
+                  >
                     {timeString(newsElement.date)}
                   </div>
-                </button>
+                </div>
                 {#if newsElement.isOpen}
                   <div class="packet-info__news__ele__body">
                     <div class="packet-info__news__ele__body__content">
                       {newsElement.content}
                     </div>
                     <div class="packet-info__news__ele__body__buttons">
-                      <div style="width: 25px;" />
-                      <button
-                        class="packet-info__news__ele__body__buttons__close"
-                        on:click={() => (newsElement.isOpen = false)}
-                      >
-                        <ToggleArrow size={0.6} />
-                      </button>
                       <a
                         href={newsElement.src}
                         target="_blank"
                         rel="noopener noreferrer"
+                        style="text-decoration: none;"
                       >
                         <div
                           class="packet-info__news__ele__body__buttons__href"
                         >
-                          <OpenLink />
+                          자세히 보기
                         </div>
                       </a>
                     </div>
                   </div>
                 {/if}
-              </div>
+              </button>
             {/each}
           {/if}
         {:else}
@@ -482,10 +478,6 @@
     background-color: rgba(255, 255, 255, 0.2);
     cursor: pointer;
   }
-
-  .opened-news-title {
-    font-size: 1.1rem;
-  }
   .packet-info__news {
     margin: 0 3rem;
     padding: 1rem 0;
@@ -514,8 +506,12 @@
     color: var(--white);
   }
   .packet-info__news__ele {
-    border-bottom: thin solid rgba(255, 255, 255, 0.2);
     color: var(--white);
+    width: 100%;
+  }
+  .packet-info__news__ele:hover {
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.05);
   }
   .packet-info__news__ele__head {
     width: 100%;
@@ -523,14 +519,6 @@
     flex-direction: column;
     color: var(--white);
     padding: 0.7rem;
-  }
-  .packet-info__news__ele__head:hover {
-    cursor: pointer;
-    background-color: rgba(255, 255, 255, 0.15);
-  }
-  .news-ele-no-hover {
-    cursor: default !important;
-    background-color: transparent !important;
   }
   .packet-info__news__ele__head__title {
     text-align: start;
@@ -541,29 +529,28 @@
     color: rgba(255, 255, 255, 0.4);
     margin-top: 0.35rem;
   }
-  .packet-info__news__ele__body {
-    padding: 0.7rem;
-    padding-top: 0;
+  .packet-info__news__ele__body__content {
+    text-align: start;
+    padding-top: 0.7rem;
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
   }
   .packet-info__news__ele__body__buttons {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 0.4rem;
-  }
-  .packet-info__news__ele__body__buttons__close {
-    opacity: 0.4;
-    transform: rotateZ(180deg);
+    justify-content: flex-end;
+    margin-bottom: 0.7rem;
   }
   .packet-info__news__ele__body__buttons__href {
     opacity: 0.4;
+    margin-right: 1rem;
+    margin-top: 0.3rem;
+    color: white;
   }
-  .packet-info__news__ele__body__buttons__close:hover,
   .packet-info__news__ele__body__buttons__href:hover {
     cursor: pointer;
-    opacity: 1;
+    opacity: 0.7;
+    text-decoration: underline;
   }
-
   .packet-info {
     width: 44rem;
     min-height: 31rem;
@@ -610,7 +597,6 @@
     display: flex;
     align-items: center;
     padding: 0.5rem 0;
-    border-radius: 0.35rem;
     border: thin solid rgba(255, 255, 255, 0);
     position: relative;
   }
@@ -647,16 +633,16 @@
     cursor: pointer;
     opacity: 1;
   }
-
   .packet-info__repr {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0 3rem;
     margin-top: 1rem;
-    border-top: thin solid rgba(255, 255, 255, 0.1);
-    border-bottom: thin solid rgba(255, 255, 255, 0.1);
-    padding: 0.7rem 0;
+    border-top: thin solid rgba(255, 255, 255, 0.2);
+    border-bottom: thin solid rgba(255, 255, 255, 0.2);
+    padding-top: 0.7rem;
+    padding-bottom: 1rem;
     text-align: justify;
     text-justify: inter-word;
   }
@@ -669,5 +655,8 @@
     padding: 0 1rem;
     padding-top: 1rem;
     white-space: pre-line;
+  }
+  .display-none {
+    display: none;
   }
 </style>

@@ -45,6 +45,7 @@
         class="list__ele"
         on:click={() => select(ele)}
         class:selected={$UnivariateElementSelected === ele}
+        class:list__ele_with_scroll={$UnivariateElements.length >= 4}
       >
         <div class="list__ele__code">{ele.code}</div>
         <div class="list__ele__name">
@@ -115,9 +116,11 @@
     display: flex;
     align-items: center;
     padding: 0.5rem 0;
-    border-radius: 0.35rem;
     border: thin solid rgba(255, 255, 255, 0);
     position: relative;
+  }
+  .list__ele_with_scroll {
+    width: 98%;
   }
   .list__ele.selected {
     border-color: rgba(255, 255, 255, 0.2);

@@ -93,7 +93,7 @@ export const logout = async () => {
 export const login = async (
   cognitoToken: string,
   cognitoRefreshToken: string,
-  reload: boolean = true,
+  reload: boolean = true
 ) => {
   await Promise.all([
     settingObjectStore.put("cognitoToken", cognitoToken),
@@ -126,7 +126,7 @@ export const verify = (
   {
     conds: { login = null, membership = null, billingOk = null },
     failRedirect = "/",
-  }: VerificationArgs = { conds: {} },
+  }: VerificationArgs = { conds: {} }
 ) => {
   onMount(() => {
     const userInfo = get(UserInfo);
@@ -186,4 +186,12 @@ export const paymentMethodString = (str: string): string => {
     return str.match(/.{1,4}/g)?.join(" ") || "";
   }
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};
+
+/**
+ * 객체의 code 속성과 section이 일치하는지 여부를 반환합니다.
+ * Element, Factor 객체를 비교할 때 쓰세요
+ */
+export const isSame = (a: any, b: any) => {
+  return a.code === b.code && a.section === b.section;
 };

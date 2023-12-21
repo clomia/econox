@@ -18,7 +18,7 @@
   import Megaphone from "../../assets/icon/Megaphone.svelte";
   import { api } from "../../modules/request";
   import { Text, Lang, UnivariateElements } from "../../modules/state";
-  import { defaultSwalStyle, format } from "../../modules/functions";
+  import { defaultSwalStyle, format, isSame } from "../../modules/functions";
   import CloseButton from "../../components/CloseButton.svelte";
   import type { ElementType, RespPacketType } from "../../modules/state";
 
@@ -43,9 +43,7 @@
    * 단변량 요소 삭제 요청을 저장합니다.
    */
   const univariateDelete = (element: ElementType) => {
-    const target = $UnivariateElements.find(
-      (ele) => ele.code === element.code && ele.section === element.section
-    );
+    const target = $UnivariateElements.find((ele) => isSame(ele, element));
     if (!target) {
       throw new Error("Element does not exists");
     }
@@ -245,9 +243,8 @@
       </div>
       <div class="packet-info__list">
         {#each $PacketInfo.elements as element}
-          {@const isInUnivariateList = !!$UnivariateElements.find(
-            (ele) =>
-              ele.code === element.code && ele.section === element.section
+          {@const isInUnivariateList = !!$UnivariateElements.find((ele) =>
+            isSame(ele, element)
           )}
           <button
             class="packet-info__list__ele"

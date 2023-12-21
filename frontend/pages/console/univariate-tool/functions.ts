@@ -1,4 +1,4 @@
-import { get, writable } from "svelte/store";
+import { get } from "svelte/store";
 
 import { api } from "../../../modules/request";
 import { Lang } from "../../../modules/state";
@@ -10,6 +10,7 @@ import {
   UnivariateFactorsProgress,
   UnivariateElementSelected,
 } from "../../../modules/state";
+import { isSame } from "../../../modules/functions";
 import type { ElementType, FactorType } from "../../../modules/state";
 
 /**
@@ -28,11 +29,7 @@ export const deleteElement = async (code: string, section: string) => {
   if (!target) {
     throw new Error("Element does not exists");
   }
-  if (
-    univariateElementSelected &&
-    target.code === univariateElementSelected.code &&
-    target.section === univariateElementSelected.section
-  ) {
+  if (univariateElementSelected && isSame(target, univariateElementSelected)) {
     UnivariateElementSelected.set(null); // 선택된 경우 선택 해제
   }
   if (target.note === univariateNote) {
@@ -123,6 +120,10 @@ export const setFactors = async (ele: ElementType) => {
 
     if (totalPages === page) {
       // 현재 페이지가 마지막이면 종료
+      break;
+    }
+    if (!get(UnivariateElements).some((_e) => isSame(_e, ele))) {
+      // Element가 리스트에서 제거된 경우 종료
       break;
     }
   }

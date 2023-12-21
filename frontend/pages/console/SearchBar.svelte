@@ -11,12 +11,10 @@
   import PlusIcon from "../../assets/icon/PlusIcon.svelte";
   import MinusIcon from "../../assets/icon/MinusIcon.svelte";
   import DotLoader from "../../assets/animation/DotLoader.svelte";
-  import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
   import TextLoader from "../../assets/animation/TextLoader.svelte";
   import CircleArrow from "../../assets/icon/CircleArrow.svelte";
   import Folder from "../../assets/icon/Folder.svelte";
   import NoFolder from "../../assets/icon/NoFolder.svelte";
-  import OpenLink from "../../assets/icon/OpenLink.svelte";
   import Megaphone from "../../assets/icon/Megaphone.svelte";
   import { api } from "../../modules/request";
   import { Text, Lang, UnivariateElements } from "../../modules/state";
@@ -338,7 +336,7 @@
                         <div
                           class="packet-info__news__ele__body__buttons__href"
                         >
-                          자세히 보기
+                          {$Text.ReadMore}
                         </div>
                       </a>
                     </div>
@@ -643,8 +641,6 @@
     border-bottom: thin solid rgba(255, 255, 255, 0.2);
     padding-top: 0.7rem;
     padding-bottom: 1rem;
-    text-align: justify;
-    text-justify: inter-word;
   }
   .packet-info__repr__name {
     color: var(--white);

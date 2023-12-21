@@ -367,6 +367,9 @@ ServerOverload:
   ko: >
     서버 과부하로 인해 요청을 처리할 수 없습니다. 
     현재 서버 용량을 확장하고 있습니다. 잠시 후 다시 시도해주세요.
+ReadMore:
+  en: "Read More"
+  ko: "자세히 보기"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

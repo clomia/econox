@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { get } from "svelte/store";
   import Magnifier from "../../../assets/icon/Magnifier.svelte";
   import ProgressBar from "../../../components/ProgressBar.svelte";
   import RippleLoader from "../../../assets/animation/RippleLoader.svelte";
@@ -35,12 +34,12 @@
   <div class="list">
     {#each factors as fac}
       <button
-        class="list__ele"
+        class="list__fac"
         on:click={() => select(fac)}
         class:selected={$UnivariateFactorSelected === fac}
       >
-        <div class="list__ele__code">{fac.code}</div>
-        <div class="list__ele__name">{fac.name}</div>
+        <div class="list__fac__code">{fac.code}</div>
+        <div class="list__fac__name">{fac.name}</div>
       </button>
     {/each}
   </div>
@@ -91,7 +90,7 @@
     height: 10.78rem;
     overflow: auto;
   }
-  .list__ele {
+  .list__fac {
     width: 100%;
     display: flex;
     align-items: center;
@@ -100,21 +99,21 @@
     border: thin solid rgba(255, 255, 255, 0);
     position: relative;
   }
-  .list__ele.selected {
+  .list__fac.selected {
     border-color: rgba(255, 255, 255, 0.2);
   }
-  .list__ele:hover {
+  .list__fac:hover {
     background-color: rgba(255, 255, 255, 0.07);
     cursor: pointer;
   }
-  .list__ele__code {
+  .list__fac__code {
     padding: 0.2rem 0.4rem;
     border-radius: 0.2rem;
     margin: 0 0.5rem;
     color: var(--white);
     background-color: rgba(255, 255, 255, 0.2);
   }
-  .list__ele__name {
+  .list__fac__name {
     color: var(--white);
   }
   .progress {

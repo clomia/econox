@@ -11,6 +11,7 @@
     UnivariateFactorsProgress,
   } from "../../../modules/state";
   import { format } from "../../../modules/functions";
+  import { attrQuerySort } from "./functions";
   import type { FactorType } from "../../../modules/state";
 
   const select = (fac: FactorType) => {
@@ -25,11 +26,40 @@
   $: progress = ele
     ? $UnivariateFactorsProgress[`${ele.section}-${ele.code}`] || 0
     : 0;
+
+  let query = "";
+  let attr = "name";
+  let view: any[] = [];
+
+  $: if (query) {
+    view = attrQuerySort(factors, query, attr);
+  } else {
+    view = factors;
+  }
+  $: attrBtnText = attr === "name" ? $Text.Name : $Text.Section;
+
+  const searchAttrChange = () => {
+    if (attr === "name") {
+      attr = "section";
+    } else {
+      attr = "name";
+    }
+  };
+  const searchEventHandler = (event: any) => {
+    const inputElement = event.target as HTMLInputElement;
+    query = inputElement.value;
+  };
 </script>
 
 <main>
   {#if factors.length}
-    <div class="search"><Magnifier /><input type="text" /></div>
+    <div class="search">
+      <Magnifier />
+      <button class="search__attr-btn" on:click={searchAttrChange}
+        >{attrBtnText}</button
+      >
+      <input class="search__input" type="text" on:input={searchEventHandler} />
+    </div>
   {/if}
   <div class="list">
     {#each factors as fac}
@@ -38,7 +68,7 @@
         on:click={() => select(fac)}
         class:selected={$UnivariateFactorSelected === fac}
       >
-        <div class="list__fac__code">{fac.code}</div>
+        <div class="list__fac__section">{fac.section.name}</div>
         <div class="list__fac__name">{fac.name}</div>
       </button>
     {/each}
@@ -79,11 +109,22 @@
     height: 2.6rem;
     border-bottom: thin solid rgba(255, 255, 255, 0.2);
   }
-  .search input {
+  .search__input {
     height: 100%;
     margin-left: 0.7rem;
-    width: 90%;
+    width: 83%;
     color: var(--white);
+  }
+  .search__attr-btn {
+    margin-left: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.2rem;
+    background-color: rgba(255, 255, 255, 0.08);
+    color: var(--white);
+  }
+  .search__attr-btn:hover {
+    background-color: rgba(255, 255, 255, 0.18);
+    cursor: pointer;
   }
   .list {
     margin: 1rem;
@@ -106,7 +147,7 @@
     background-color: rgba(255, 255, 255, 0.07);
     cursor: pointer;
   }
-  .list__fac__code {
+  .list__fac__section {
     padding: 0.2rem 0.4rem;
     border-radius: 0.2rem;
     margin: 0 0.5rem;

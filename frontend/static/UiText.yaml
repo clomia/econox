@@ -373,6 +373,9 @@ ReadMore:
 Code:
   en: "Code"
   ko: "코드"
+Section:
+  en: "Section"
+  ko: "섹션"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

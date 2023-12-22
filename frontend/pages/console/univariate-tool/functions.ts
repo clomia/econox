@@ -130,22 +130,19 @@ export const setFactors = async (ele: ElementType) => {
   }
 };
 
-interface NamedFeatureType extends FeatureType {
-  name: string;
-}
-
 export const attrQuerySort = (
-  arr: NamedFeatureType[],
+  arr: any[],
   query: string,
   attrKey: string
-): NamedFeatureType[] => {
+): any[] => {
   const _arr = [...arr];
-  const result: NamedFeatureType[] = [];
+  const result: any[] = [];
 
   const sortedAttrs = querySort(
     _arr.map((feature) => feature[attrKey]),
     query
   );
+  console.log(sortedAttrs);
 
   sortedAttrs.forEach((attr) => {
     const index = _arr.findIndex((feature) => feature[attrKey] === attr);

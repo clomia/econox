@@ -188,7 +188,7 @@ export const paymentMethodString = (str: string): string => {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
 
-interface FeatureType {
+export interface FeatureType {
   code: string;
   section: string;
   [key: string]: any;
@@ -202,49 +202,48 @@ export const isSame = (a: FeatureType, b: FeatureType) => {
   return a.code === b.code && a.section === b.section;
 };
 
-const calculateQueryRatio = (str: string, query: string) => {
+/**
+ * 문자열에 쿼리가 포함된 비율
+ */
+export const calculateQueryRatio = (str: string, query: string) => {
   const matches =
     str.toLowerCase().match(new RegExp(query.toLowerCase(), "g")) || [];
   return (matches.length * query.length) / str.length;
 };
 
 /**
- * 쿼리가 포함된 요소가 앞에 오도록 배열을 정렬합니다.
+ * 문자열과 쿼리끼리 문자가 겹치는 횟수
  */
-export const simpleQuerySort = (arr: string[], query: string): string[] => {
-  return arr.sort(
-    (a, b) => calculateQueryRatio(b, query) - calculateQueryRatio(a, query)
-  );
+export const charOccur = (str: string, query: string) => {
+  const lcQuery = query.toLowerCase();
+  let count = 0;
+  let tempStr = str.toLowerCase();
+  lcQuery.split("").forEach((char) => {
+    while (tempStr.includes(char)) {
+      tempStr = tempStr.replace(char, "");
+      count++;
+    }
+  });
+  return count;
 };
 
 /**
  * 쿼리와 일치하는 요소가 앞에 오도록 배열을 정렬합니다.
  */
 export const querySort = (arr: string[], query: string): string[] => {
-  const lcQuery = query.toLowerCase();
-
-  const charOccur = (str: string) => {
-    let count = 0;
-    let tempStr = str.toLowerCase();
-    lcQuery.split("").forEach((char) => {
-      while (tempStr.includes(char)) {
-        tempStr = tempStr.replace(char, "");
-        count++;
-      }
-    });
-    return count;
-  };
-
   return arr.sort((a, b) => {
     const aRatio = calculateQueryRatio(a, query);
     const bRatio = calculateQueryRatio(b, query);
-    const aOccur = charOccur(a);
-    const bOccur = charOccur(b);
+    const aOccur = charOccur(a, query);
+    const bOccur = charOccur(b, query);
 
-    if (aOccur === 0 && bOccur === 0) {
-      return bRatio - aRatio;
+    // 먼저 calculateQueryRatio 결과가 둘 다 0인지 확인
+    if (aRatio === 0 && bRatio === 0) {
+      // 둘 다 0이라면 charOccur 결과에 따라 정렬
+      return bOccur - aOccur;
     }
 
-    return bOccur !== aOccur ? bOccur - aOccur : bRatio - aRatio;
+    // 그렇지 않으면 기존의 로직대로 ratio를 이용하여 정렬
+    return bRatio - aRatio;
   });
 };

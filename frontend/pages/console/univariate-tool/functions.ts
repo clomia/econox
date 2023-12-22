@@ -10,7 +10,8 @@ import {
   UnivariateFactorsProgress,
   UnivariateElementSelected,
 } from "../../../modules/state";
-import { isSame, querySort, simpleQuerySort } from "../../../modules/functions";
+import { isSame, querySort } from "../../../modules/functions";
+import type { FeatureType } from "../../../modules/functions";
 import type { ElementType, FactorType } from "../../../modules/state";
 
 /**
@@ -129,57 +130,29 @@ export const setFactors = async (ele: ElementType) => {
   }
 };
 
-interface FeatureType {
-  section: string;
+interface NamedFeatureType extends FeatureType {
   name: string;
-  [key: string]: any;
 }
 
-export const sortBySectionName = (
-  features: FeatureType[],
-  query: string
-): FeatureType[] => {
-  // 먼저 section을 기준으로 simpleQuerySort를 사용하여 임시 정렬
-  const sectionsSorted = simpleQuerySort(
-    features.map((f) => f.section),
+export const attrQuerySort = (
+  arr: NamedFeatureType[],
+  query: string,
+  attrKey: string
+): NamedFeatureType[] => {
+  const _arr = [...arr];
+  const result: NamedFeatureType[] = [];
+
+  const sortedAttrs = querySort(
+    _arr.map((feature) => feature[attrKey]),
     query
   );
 
-  // 정렬된 section을 기반으로 원본 features 배열 재구성
-  const featuresSortedBySection = sectionsSorted.map(
-    (sortedSection) => features.find((f) => f.section === sortedSection)!
-  );
-
-  let lastSection = "";
-  let tempFeatures: FeatureType[] = [];
-  const sortedFeatures: FeatureType[] = [];
-
-  // 정렬된 features 배열을 순회하면서 동일 section의 요소들을 모음
-  featuresSortedBySection.forEach((feature) => {
-    if (feature.section !== lastSection && tempFeatures.length > 0) {
-      // 동일 section의 요소들에 대해 name 기준으로 querySort 수행
-      sortedFeatures.push(
-        ...querySort(
-          tempFeatures.map((f) => f.name),
-          query
-        ).map((sortedName) => tempFeatures.find((f) => f.name === sortedName)!)
-      );
-      tempFeatures = [];
+  sortedAttrs.forEach((attr) => {
+    const index = _arr.findIndex((feature) => feature[attrKey] === attr);
+    if (index !== -1) {
+      result.push(_arr[index]);
+      _arr.splice(index, 1);
     }
-
-    tempFeatures.push(feature);
-    lastSection = feature.section;
   });
-
-  // 마지막 section에 대한 처리
-  if (tempFeatures.length > 0) {
-    sortedFeatures.push(
-      ...querySort(
-        tempFeatures.map((f) => f.name),
-        query
-      ).map((sortedName) => tempFeatures.find((f) => f.name === sortedName)!)
-    );
-  }
-
-  return sortedFeatures;
+  return result;
 };

@@ -4,7 +4,7 @@
   import Magnifier from "../../../assets/icon/Magnifier.svelte";
   import MinusIcon from "../../../assets/icon/MinusIcon.svelte";
   import Check from "../../../assets/icon/Check.svelte";
-  import { deleteElement, setFactors } from "./functions";
+  import { deleteElement, setFactors, attrQuerySort } from "./functions";
   import { Text, CountryCodeMap } from "../../../modules/state";
   import {
     UnivariateElements,
@@ -31,21 +31,36 @@
       return progressObj;
     }
   );
+
+  let query = "";
+  let view: any[] = [];
+  $: if (query) {
+    view = attrQuerySort($UnivariateElements, query, "name");
+  } else {
+    view = $UnivariateElements;
+  }
+  const searchEventHandler = (event: any) => {
+    const inputElement = event.target as HTMLInputElement;
+    query = inputElement.value;
+  };
 </script>
 
 <main>
   {#if $UnivariateElements.length}
-    <div class="search"><Magnifier /> <input type="text" /></div>
+    <div class="search">
+      <Magnifier />
+      <input type="text" on:input={searchEventHandler} />
+    </div>
   {/if}
   <div class="list">
-    {#each $UnivariateElements as ele}
+    {#each view as ele}
       {@const key = `${ele.section}-${ele.code}`}
       {@const progress = $Progress[key]}
       <button
         class="list__ele"
         on:click={() => select(ele)}
         class:selected={$UnivariateElementSelected === ele}
-        class:list__ele_with_scroll={$UnivariateElements.length >= 4}
+        class:list__ele_with_scroll={view.length >= 4}
       >
         <div class="list__ele__code">{ele.code}</div>
         <div class="list__ele__name">

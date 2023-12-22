@@ -370,6 +370,9 @@ ServerOverload:
 ReadMore:
   en: "Read More"
   ko: "자세히 보기"
+Code:
+  en: "Code"
+  ko: "코드"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

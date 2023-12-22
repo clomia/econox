@@ -119,6 +119,7 @@ export interface UiText {
     ScrollMore: "Scroll Down for More" | "스크롤하여 더보기";
     ServerOverload: "Due to server overload, we are unable to process your request at the moment.  We are currently expanding our server capacity. Please try again shortly." | "서버 과부하로 인해 요청을 처리할 수 없습니다.  현재 서버 용량을 확장하고 있습니다. 잠시 후 다시 시도해주세요.";
     ReadMore: "Read More" | "자세히 보기";
+    Code: "Code" | "코드";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

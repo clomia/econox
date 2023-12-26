@@ -1,0 +1,3506 @@
+{
+  "InstitutionalStockOwnership": {
+    "setting": {
+      "name": "Institutional Stock Ownership",
+      "note": "Provides institutional ownership data for specified stocks, including holdings, investment changes, and position details",
+      "metaclass": "ClientMeta",
+      "api": "api/v4/institutional-ownership/symbol-ownership",
+      "symbol_in_query": true,
+      "params": {
+        "includeCurrentQuarter": "false"
+      }
+    },
+    "investorsHolding": {
+      "factor": "investorsHolding",
+      "name": "Investors Holding",
+      "note": "The number of shares held by institutions"
+    },
+    "lastInvestorsHolding": {
+      "factor": "lastInvestorsHolding",
+      "name": "Number of 13F Shares",
+      "note": "The number of shares as reported in the 13F filings"
+    },
+    "investorsHoldingChange": {
+      "factor": "investorsHoldingChange",
+      "name": "Total Invested",
+      "note": "Total amount invested by institutions in the stock."
+    },
+    "numberOf13Fshares": {
+      "factor": "numberOf13Fshares",
+      "name": "numberOf13Fshares",
+      "note": "all open interest"
+    },
+    "lastNumberOf13Fshares": {
+      "factor": "lastNumberOf13Fshares",
+      "name": "lastNumberOf13Fshares",
+      "note": "all open interest"
+    },
+    "numberOf13FsharesChange": {
+      "factor": "numberOf13FsharesChange",
+      "name": "numberOf13FsharesChange",
+      "note": "all open interest"
+    },
+    "totalInvested": {
+      "factor": "totalInvested",
+      "name": "totalInvested",
+      "note": "all open interest"
+    },
+    "lastTotalInvested": {
+      "factor": "lastTotalInvested",
+      "name": "lastTotalInvested",
+      "note": "all open interest"
+    },
+    "totalInvestedChange": {
+      "factor": "totalInvestedChange",
+      "name": "totalInvestedChange",
+      "note": "all open interest"
+    },
+    "ownershipPercent": {
+      "factor": "ownershipPercent",
+      "name": "ownershipPercent",
+      "note": "all open interest"
+    },
+    "lastOwnershipPercent": {
+      "factor": "lastOwnershipPercent",
+      "name": "lastOwnershipPercent",
+      "note": "all open interest"
+    },
+    "ownershipPercentChange": {
+      "factor": "ownershipPercentChange",
+      "name": "ownershipPercentChange",
+      "note": "all open interest"
+    },
+    "newPositions": {
+      "factor": "newPositions",
+      "name": "newPositions",
+      "note": "all open interest"
+    },
+    "lastNewPositions": {
+      "factor": "lastNewPositions",
+      "name": "lastNewPositions",
+      "note": "all open interest"
+    },
+    "newPositionsChange": {
+      "factor": "newPositionsChange",
+      "name": "newPositionsChange",
+      "note": "all open interest"
+    },
+    "increasedPositions": {
+      "factor": "increasedPositions",
+      "name": "increasedPositions",
+      "note": "all open interest"
+    },
+    "lastIncreasedPositions": {
+      "factor": "lastIncreasedPositions",
+      "name": "lastIncreasedPositions",
+      "note": "all open interest"
+    },
+    "increasedPositionsChange": {
+      "factor": "increasedPositionsChange",
+      "name": "increasedPositionsChange",
+      "note": "all open interest"
+    },
+    "closedPositions": {
+      "factor": "closedPositions",
+      "name": "closedPositions",
+      "note": "all open interest"
+    },
+    "lastClosedPositions": {
+      "factor": "lastClosedPositions",
+      "name": "lastClosedPositions",
+      "note": "all open interest"
+    },
+    "closedPositionsChange": {
+      "factor": "closedPositionsChange",
+      "name": "closedPositionsChange",
+      "note": "all open interest"
+    },
+    "reducedPositions": {
+      "factor": "reducedPositions",
+      "name": "reducedPositions",
+      "note": "all open interest"
+    },
+    "lastReducedPositions": {
+      "factor": "lastReducedPositions",
+      "name": "lastReducedPositions",
+      "note": "all open interest"
+    },
+    "reducedPositionsChange": {
+      "factor": "reducedPositionsChange",
+      "name": "reducedPositionsChange",
+      "note": "all open interest"
+    },
+    "totalCalls": {
+      "factor": "totalCalls",
+      "name": "totalCalls",
+      "note": "all open interest"
+    },
+    "lastTotalCalls": {
+      "factor": "lastTotalCalls",
+      "name": "lastTotalCalls",
+      "note": "all open interest"
+    },
+    "totalCallsChange": {
+      "factor": "totalCallsChange",
+      "name": "totalCallsChange",
+      "note": "all open interest"
+    },
+    "totalPuts": {
+      "factor": "totalPuts",
+      "name": "totalPuts",
+      "note": "all open interest"
+    },
+    "lastTotalPuts": {
+      "factor": "lastTotalPuts",
+      "name": "lastTotalPuts",
+      "note": "all open interest"
+    },
+    "totalPutsChange": {
+      "factor": "totalPutsChange",
+      "name": "totalPutsChange",
+      "note": "all open interest"
+    },
+    "putCallRatio": {
+      "factor": "putCallRatio",
+      "name": "putCallRatio",
+      "note": "all open interest"
+    },
+    "lastPutCallRatio": {
+      "factor": "lastPutCallRatio",
+      "name": "lastPutCallRatio",
+      "note": "all open interest"
+    },
+    "putCallRatioChange": {
+      "factor": "putCallRatioChange",
+      "name": "putCallRatioChange",
+      "note": "all open interest"
+    }
+  },
+  "HistoricalDividends": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "HistoricalPriceFullMeta",
+      "api": "api/v3/historical-price-full/stock_dividend"
+    },
+    "adjDividend": {
+      "factor": "adjDividend",
+      "name": "adjDividend",
+      "note": "all open interest"
+    },
+    "dividend": {
+      "factor": "dividend",
+      "name": "dividend",
+      "note": "all open interest"
+    }
+  },
+  "AdvancedLeveredDiscountedCashFlow": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v4/advanced_levered_discounted_cash_flow",
+      "t_key": "year",
+      "symbol_in_query": true
+    },
+    "revenue": {
+      "factor": "revenue",
+      "name": "revenue",
+      "note": "all open interest"
+    },
+    "revenuePercentage": {
+      "factor": "revenuePercentage",
+      "name": "revenuePercentage",
+      "note": "all open interest"
+    },
+    "capitalExpenditure": {
+      "factor": "capitalExpenditure",
+      "name": "capitalExpenditure",
+      "note": "all open interest"
+    },
+    "capitalExpenditurePercentage": {
+      "factor": "capitalExpenditurePercentage",
+      "name": "capitalExpenditurePercentage",
+      "note": "all open interest"
+    },
+    "price": {
+      "factor": "price",
+      "name": "price",
+      "note": "all open interest"
+    },
+    "beta": {
+      "factor": "beta",
+      "name": "beta",
+      "note": "all open interest"
+    },
+    "dilutedSharesOutstanding": {
+      "factor": "dilutedSharesOutstanding",
+      "name": "dilutedSharesOutstanding",
+      "note": "all open interest"
+    },
+    "costofDebt": {
+      "factor": "costofDebt",
+      "name": "costofDebt",
+      "note": "all open interest"
+    },
+    "taxRate": {
+      "factor": "taxRate",
+      "name": "taxRate",
+      "note": "all open interest"
+    },
+    "afterTaxCostOfDebt": {
+      "factor": "afterTaxCostOfDebt",
+      "name": "afterTaxCostOfDebt",
+      "note": "all open interest"
+    },
+    "riskFreeRate": {
+      "factor": "riskFreeRate",
+      "name": "riskFreeRate",
+      "note": "all open interest"
+    },
+    "marketRiskPremium": {
+      "factor": "marketRiskPremium",
+      "name": "marketRiskPremium",
+      "note": "all open interest"
+    },
+    "costOfEquity": {
+      "factor": "costOfEquity",
+      "name": "costOfEquity",
+      "note": "all open interest"
+    },
+    "totalDebt": {
+      "factor": "totalDebt",
+      "name": "totalDebt",
+      "note": "all open interest"
+    },
+    "totalEquity": {
+      "factor": "totalEquity",
+      "name": "totalEquity",
+      "note": "all open interest"
+    },
+    "totalCapital": {
+      "factor": "totalCapital",
+      "name": "totalCapital",
+      "note": "all open interest"
+    },
+    "debtWeighting": {
+      "factor": "debtWeighting",
+      "name": "debtWeighting",
+      "note": "all open interest"
+    },
+    "equityWeighting": {
+      "factor": "equityWeighting",
+      "name": "equityWeighting",
+      "note": "all open interest"
+    },
+    "wacc": {
+      "factor": "wacc",
+      "name": "wacc",
+      "note": "all open interest"
+    },
+    "operatingCashFlow": {
+      "factor": "operatingCashFlow",
+      "name": "operatingCashFlow",
+      "note": "all open interest"
+    },
+    "pvLfcf": {
+      "factor": "pvLfcf",
+      "name": "pvLfcf",
+      "note": "all open interest"
+    },
+    "sumPvLfcf": {
+      "factor": "sumPvLfcf",
+      "name": "sumPvLfcf",
+      "note": "all open interest"
+    },
+    "longTermGrowthRate": {
+      "factor": "longTermGrowthRate",
+      "name": "longTermGrowthRate",
+      "note": "all open interest"
+    },
+    "freeCashFlow": {
+      "factor": "freeCashFlow",
+      "name": "freeCashFlow",
+      "note": "all open interest"
+    },
+    "terminalValue": {
+      "factor": "terminalValue",
+      "name": "terminalValue",
+      "note": "all open interest"
+    },
+    "presentTerminalValue": {
+      "factor": "presentTerminalValue",
+      "name": "presentTerminalValue",
+      "note": "all open interest"
+    },
+    "enterpriseValue": {
+      "factor": "enterpriseValue",
+      "name": "enterpriseValue",
+      "note": "all open interest"
+    },
+    "netDebt": {
+      "factor": "netDebt",
+      "name": "netDebt",
+      "note": "all open interest"
+    },
+    "equityValue": {
+      "factor": "equityValue",
+      "name": "equityValue",
+      "note": "all open interest"
+    },
+    "equityValuePerShare": {
+      "factor": "equityValuePerShare",
+      "name": "equityValuePerShare",
+      "note": "all open interest"
+    },
+    "freeCashFlowT1": {
+      "factor": "freeCashFlowT1",
+      "name": "freeCashFlowT1",
+      "note": "all open interest"
+    },
+    "operatingCashFlowPercentage": {
+      "factor": "operatingCashFlowPercentage",
+      "name": "operatingCashFlowPercentage",
+      "note": "all open interest"
+    }
+  },
+  "AdvancedDiscountedCashFlow": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v4/advanced_discounted_cash_flow",
+      "t_key": "year",
+      "symbol_in_query": true
+    },
+    "revenue": {
+      "factor": "revenue",
+      "name": "revenue",
+      "note": "all open interest"
+    },
+    "revenuePercentage": {
+      "factor": "revenuePercentage",
+      "name": "revenuePercentage",
+      "note": "all open interest"
+    },
+    "ebitda": {
+      "factor": "ebitda",
+      "name": "ebitda",
+      "note": "all open interest"
+    },
+    "ebitdaPercentage": {
+      "factor": "ebitdaPercentage",
+      "name": "ebitdaPercentage",
+      "note": "all open interest"
+    },
+    "ebit": {
+      "factor": "ebit",
+      "name": "ebit",
+      "note": "all open interest"
+    },
+    "ebitPercentage": {
+      "factor": "ebitPercentage",
+      "name": "ebitPercentage",
+      "note": "all open interest"
+    },
+    "depreciation": {
+      "factor": "depreciation",
+      "name": "depreciation",
+      "note": "all open interest"
+    },
+    "depreciationPercentage": {
+      "factor": "depreciationPercentage",
+      "name": "depreciationPercentage",
+      "note": "all open interest"
+    },
+    "totalCash": {
+      "factor": "totalCash",
+      "name": "totalCash",
+      "note": "all open interest"
+    },
+    "totalCashPercentage": {
+      "factor": "totalCashPercentage",
+      "name": "totalCashPercentage",
+      "note": "all open interest"
+    },
+    "receivables": {
+      "factor": "receivables",
+      "name": "receivables",
+      "note": "all open interest"
+    },
+    "receivablesPercentage": {
+      "factor": "receivablesPercentage",
+      "name": "receivablesPercentage",
+      "note": "all open interest"
+    },
+    "inventories": {
+      "factor": "inventories",
+      "name": "inventories",
+      "note": "all open interest"
+    },
+    "inventoriesPercentage": {
+      "factor": "inventoriesPercentage",
+      "name": "inventoriesPercentage",
+      "note": "all open interest"
+    },
+    "payable": {
+      "factor": "payable",
+      "name": "payable",
+      "note": "all open interest"
+    },
+    "payablePercentage": {
+      "factor": "payablePercentage",
+      "name": "payablePercentage",
+      "note": "all open interest"
+    },
+    "capitalExpenditure": {
+      "factor": "capitalExpenditure",
+      "name": "capitalExpenditure",
+      "note": "all open interest"
+    },
+    "capitalExpenditurePercentage": {
+      "factor": "capitalExpenditurePercentage",
+      "name": "capitalExpenditurePercentage",
+      "note": "all open interest"
+    },
+    "price": {
+      "factor": "price",
+      "name": "price",
+      "note": "all open interest"
+    },
+    "beta": {
+      "factor": "beta",
+      "name": "beta",
+      "note": "all open interest"
+    },
+    "dilutedSharesOutstanding": {
+      "factor": "dilutedSharesOutstanding",
+      "name": "dilutedSharesOutstanding",
+      "note": "all open interest"
+    },
+    "costofDebt": {
+      "factor": "costofDebt",
+      "name": "costofDebt",
+      "note": "all open interest"
+    },
+    "taxRate": {
+      "factor": "taxRate",
+      "name": "taxRate",
+      "note": "all open interest"
+    },
+    "afterTaxCostOfDebt": {
+      "factor": "afterTaxCostOfDebt",
+      "name": "afterTaxCostOfDebt",
+      "note": "all open interest"
+    },
+    "riskFreeRate": {
+      "factor": "riskFreeRate",
+      "name": "riskFreeRate",
+      "note": "all open interest"
+    },
+    "marketRiskPremium": {
+      "factor": "marketRiskPremium",
+      "name": "marketRiskPremium",
+      "note": "all open interest"
+    },
+    "costOfEquity": {
+      "factor": "costOfEquity",
+      "name": "costOfEquity",
+      "note": "all open interest"
+    },
+    "totalDebt": {
+      "factor": "totalDebt",
+      "name": "totalDebt",
+      "note": "all open interest"
+    },
+    "totalEquity": {
+      "factor": "totalEquity",
+      "name": "totalEquity",
+      "note": "all open interest"
+    },
+    "totalCapital": {
+      "factor": "totalCapital",
+      "name": "totalCapital",
+      "note": "all open interest"
+    },
+    "debtWeighting": {
+      "factor": "debtWeighting",
+      "name": "debtWeighting",
+      "note": "all open interest"
+    },
+    "equityWeighting": {
+      "factor": "equityWeighting",
+      "name": "equityWeighting",
+      "note": "all open interest"
+    },
+    "wacc": {
+      "factor": "wacc",
+      "name": "wacc",
+      "note": "all open interest"
+    },
+    "taxRateCash": {
+      "factor": "taxRateCash",
+      "name": "taxRateCash",
+      "note": "all open interest"
+    },
+    "ebiat": {
+      "factor": "ebiat",
+      "name": "ebiat",
+      "note": "all open interest"
+    },
+    "ufcf": {
+      "factor": "ufcf",
+      "name": "ufcf",
+      "note": "all open interest"
+    },
+    "sumPvUfcf": {
+      "factor": "sumPvUfcf",
+      "name": "sumPvUfcf",
+      "note": "all open interest"
+    },
+    "longTermGrowthRate": {
+      "factor": "longTermGrowthRate",
+      "name": "longTermGrowthRate",
+      "note": "all open interest"
+    },
+    "terminalValue": {
+      "factor": "terminalValue",
+      "name": "terminalValue",
+      "note": "all open interest"
+    },
+    "presentTerminalValue": {
+      "factor": "presentTerminalValue",
+      "name": "presentTerminalValue",
+      "note": "all open interest"
+    },
+    "enterpriseValue": {
+      "factor": "enterpriseValue",
+      "name": "enterpriseValue",
+      "note": "all open interest"
+    },
+    "netDebt": {
+      "factor": "netDebt",
+      "name": "netDebt",
+      "note": "all open interest"
+    },
+    "equityValue": {
+      "factor": "equityValue",
+      "name": "equityValue",
+      "note": "all open interest"
+    },
+    "equityValuePerShare": {
+      "factor": "equityValuePerShare",
+      "name": "equityValuePerShare",
+      "note": "all open interest"
+    },
+    "freeCashFlowT1": {
+      "factor": "freeCashFlowT1",
+      "name": "freeCashFlowT1",
+      "note": "all open interest"
+    }
+  },
+  "MarketCapitalization": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v3/historical-market-capitalization"
+    },
+    "market_cap": {
+      "factor": "marketCap",
+      "name": "marketCap",
+      "note": "all open interest"
+    }
+  },
+  "EsgScore": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v4/esg-environmental-social-governance-data",
+      "symbol_in_query": true
+    },
+    "name1": {
+      "factor": "environmentalScore",
+      "name": "environmentalScore",
+      "note": "all open interest"
+    },
+    "name2": {
+      "factor": "socialScore",
+      "name": "socialScore",
+      "note": "all open interest"
+    },
+    "name3": {
+      "factor": "governanceScore",
+      "name": "governanceScore",
+      "note": "all open interest"
+    },
+    "name4": {
+      "factor": "ESGScore",
+      "name": "ESGScore",
+      "note": "all open interest"
+    }
+  },
+  "CotReportAnalysis": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v4/commitment_of_traders_report_analysis"
+    },
+    "name1": {
+      "factor": "currentLongMarketSituation",
+      "name": "currentLongMarketSituation",
+      "note": "all open interest"
+    },
+    "name2": {
+      "factor": "currentShortMarketSituation",
+      "name": "currentShortMarketSituation",
+      "note": "all open interest"
+    },
+    "name3": {
+      "factor": "previousLongMarketSituation",
+      "name": "previousLongMarketSituation",
+      "note": "all open interest"
+    },
+    "name4": {
+      "factor": "previousShortMarketSituation",
+      "name": "previousShortMarketSituation",
+      "note": "all open interest"
+    },
+    "name5": {
+      "factor": "netPostion",
+      "name": "netPostion",
+      "note": "all open interest"
+    },
+    "name6": {
+      "factor": "previousNetPosition",
+      "name": "previousNetPosition",
+      "note": "all open interest"
+    },
+    "name7": {
+      "factor": "changeInNetPosition",
+      "name": "changeInNetPosition",
+      "note": "all open interest"
+    }
+  },
+  "CotReport": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v4/commitment_of_traders_report"
+    },
+    "oi_all": {
+      "factor": "open_interest_all",
+      "name": "open_interest_all",
+      "note": "all open interest"
+    },
+    "nc_pos_long_all": {
+      "factor": "noncomm_positions_long_all",
+      "name": "noncomm_positions_long_all",
+      "note": "all open interest"
+    },
+    "nc_pos_short_all": {
+      "factor": "noncomm_positions_short_all",
+      "name": "noncomm_positions_short_all",
+      "note": "all open interest"
+    },
+    "nc_pos_spread_all": {
+      "factor": "noncomm_postions_spread_all",
+      "name": "noncomm_postions_spread_all",
+      "note": "all open interest"
+    },
+    "c_pos_long_all": {
+      "factor": "comm_positions_long_all",
+      "name": "comm_positions_long_all",
+      "note": "all open interest"
+    },
+    "c_pos_short_all": {
+      "factor": "comm_positions_short_all",
+      "name": "comm_positions_short_all",
+      "note": "all open interest"
+    },
+    "tr_pos_long_all": {
+      "factor": "tot_rept_positions_long_all",
+      "name": "tot_rept_positions_long_all",
+      "note": "all open interest"
+    },
+    "tr_pos_short_all": {
+      "factor": "tot_rept_positions_short_all",
+      "name": "tot_rept_positions_short_all",
+      "note": "all open interest"
+    },
+    "nr_pos_long_all": {
+      "factor": "nonrept_positions_long_all",
+      "name": "nonrept_positions_long_all",
+      "note": "all open interest"
+    },
+    "nr_pos_short_all": {
+      "factor": "nonrept_positions_short_all",
+      "name": "nonrept_positions_short_all",
+      "note": "all open interest"
+    },
+    "oi_old": {
+      "factor": "open_interest_old",
+      "name": "open_interest_old",
+      "note": "all open interest"
+    },
+    "nc_pos_long_old": {
+      "factor": "noncomm_positions_long_old",
+      "name": "noncomm_positions_long_old",
+      "note": "all open interest"
+    },
+    "nc_pos_short_old": {
+      "factor": "noncomm_positions_short_old",
+      "name": "noncomm_positions_short_old",
+      "note": "all open interest"
+    },
+    "nc_pos_spread_old": {
+      "factor": "noncomm_positions_spread_old",
+      "name": "noncomm_positions_spread_old",
+      "note": "all open interest"
+    },
+    "c_pos_long_old": {
+      "factor": "comm_positions_long_old",
+      "name": "comm_positions_long_old",
+      "note": "all open interest"
+    },
+    "c_pos_short_old": {
+      "factor": "comm_positions_short_old",
+      "name": "comm_positions_short_old",
+      "note": "all open interest"
+    },
+    "tr_pos_long_old": {
+      "factor": "tot_rept_positions_long_old",
+      "name": "tot_rept_positions_long_old",
+      "note": "all open interest"
+    },
+    "tr_pos_short_old": {
+      "factor": "tot_rept_positions_short_old",
+      "name": "tot_rept_positions_short_old",
+      "note": "all open interest"
+    },
+    "nr_pos_long_old": {
+      "factor": "nonrept_positions_long_old",
+      "name": "nonrept_positions_long_old",
+      "note": "all open interest"
+    },
+    "nr_pos_short_old": {
+      "factor": "nonrept_positions_short_old",
+      "name": "nonrept_positions_short_old",
+      "note": "all open interest"
+    },
+    "oi_other": {
+      "factor": "open_interest_other",
+      "name": "open_interest_other",
+      "note": "all open interest"
+    },
+    "nc_pos_long_other": {
+      "factor": "noncomm_positions_long_other",
+      "name": "noncomm_positions_long_other",
+      "note": "all open interest"
+    },
+    "nc_pos_short_other": {
+      "factor": "noncomm_positions_short_other",
+      "name": "noncomm_positions_short_other",
+      "note": "all open interest"
+    },
+    "nc_pos_spread_other": {
+      "factor": "noncomm_positions_spread_other",
+      "name": "noncomm_positions_spread_other",
+      "note": "all open interest"
+    },
+    "c_pos_long_other": {
+      "factor": "comm_positions_long_other",
+      "name": "comm_positions_long_other",
+      "note": "all open interest"
+    },
+    "c_pos_short_other": {
+      "factor": "comm_positions_short_other",
+      "name": "comm_positions_short_other",
+      "note": "all open interest"
+    },
+    "tr_pos_long_other": {
+      "factor": "tot_rept_positions_long_other",
+      "name": "tot_rept_positions_long_other",
+      "note": "all open interest"
+    },
+    "tr_pos_short_other": {
+      "factor": "tot_rept_positions_short_other",
+      "name": "tot_rept_positions_short_other",
+      "note": "all open interest"
+    },
+    "nr_pos_long_other": {
+      "factor": "nonrept_positions_long_other",
+      "name": "nonrept_positions_long_other",
+      "note": "all open interest"
+    },
+    "nr_pos_short_other": {
+      "factor": "nonrept_positions_short_other",
+      "name": "nonrept_positions_short_other",
+      "note": "all open interest"
+    },
+    "chg_oi_all": {
+      "factor": "change_in_open_interest_all",
+      "name": "change_in_open_interest_all",
+      "note": "all open interest"
+    },
+    "chg_nc_long_all": {
+      "factor": "change_in_noncomm_long_all",
+      "name": "change_in_noncomm_long_all",
+      "note": "all open interest"
+    },
+    "chg_nc_short_all": {
+      "factor": "change_in_noncomm_short_all",
+      "name": "change_in_noncomm_short_all",
+      "note": "all open interest"
+    },
+    "chg_nc_spread_all": {
+      "factor": "change_in_noncomm_spead_all",
+      "name": "change_in_noncomm_spead_all",
+      "note": "all open interest"
+    },
+    "chg_c_long_all": {
+      "factor": "change_in_comm_long_all",
+      "name": "change_in_comm_long_all",
+      "note": "all open interest"
+    },
+    "chg_c_short_all": {
+      "factor": "change_in_comm_short_all",
+      "name": "change_in_comm_short_all",
+      "note": "all open interest"
+    },
+    "chg_tr_long_all": {
+      "factor": "change_in_tot_rept_long_all",
+      "name": "change_in_tot_rept_long_all",
+      "note": "all open interest"
+    },
+    "chg_tr_short_all": {
+      "factor": "change_in_tot_rept_short_all",
+      "name": "change_in_tot_rept_short_all",
+      "note": "all open interest"
+    },
+    "chg_nr_long_all": {
+      "factor": "change_in_nonrept_long_all",
+      "name": "change_in_nonrept_long_all",
+      "note": "all open interest"
+    },
+    "chg_nr_short_all": {
+      "factor": "change_in_nonrept_short_all",
+      "name": "change_in_nonrept_short_all",
+      "note": "all open interest"
+    },
+    "pct_oi_all": {
+      "factor": "pct_of_open_interest_all",
+      "name": "pct_of_open_interest_all",
+      "note": "all open interest"
+    },
+    "pct_nc_long_all": {
+      "factor": "pct_of_oi_noncomm_long_all",
+      "name": "pct_of_oi_noncomm_long_all",
+      "note": "all open interest"
+    },
+    "pct_nc_short_all": {
+      "factor": "pct_of_oi_noncomm_short_all",
+      "name": "pct_of_oi_noncomm_short_all",
+      "note": "all open interest"
+    },
+    "pct_nc_spread_all": {
+      "factor": "pct_of_oi_noncomm_spread_all",
+      "name": "pct_of_oi_noncomm_spread_all",
+      "note": "all open interest"
+    },
+    "pct_c_long_all": {
+      "factor": "pct_of_oi_comm_long_all",
+      "name": "pct_of_oi_comm_long_all",
+      "note": "all open interest"
+    },
+    "pct_c_short_all": {
+      "factor": "pct_of_oi_comm_short_all",
+      "name": "pct_of_oi_comm_short_all",
+      "note": "all open interest"
+    },
+    "pct_tr_long_all": {
+      "factor": "pct_of_oi_tot_rept_long_all",
+      "name": "pct_of_oi_tot_rept_long_all",
+      "note": "all open interest"
+    },
+    "pct_tr_short_all": {
+      "factor": "pct_of_oi_tot_rept_short_all",
+      "name": "pct_of_oi_tot_rept_short_all",
+      "note": "all open interest"
+    },
+    "pct_nr_long_all": {
+      "factor": "pct_of_oi_nonrept_long_all",
+      "name": "pct_of_oi_nonrept_long_all",
+      "note": "all open interest"
+    },
+    "pct_nr_short_all": {
+      "factor": "pct_of_oi_nonrept_short_all",
+      "name": "pct_of_oi_nonrept_short_all",
+      "note": "all open interest"
+    },
+    "pct_oi_ol": {
+      "factor": "pct_of_open_interest_ol",
+      "name": "pct_of_open_interest_ol",
+      "note": "all open interest"
+    },
+    "pct_nc_long_ol": {
+      "factor": "pct_of_oi_noncomm_long_ol",
+      "name": "pct_of_oi_noncomm_long_ol",
+      "note": "all open interest"
+    },
+    "pct_nc_short_ol": {
+      "factor": "pct_of_oi_noncomm_short_ol",
+      "name": "pct_of_oi_noncomm_short_ol",
+      "note": "all open interest"
+    },
+    "pct_nc_spread_ol": {
+      "factor": "pct_of_oi_noncomm_spread_ol",
+      "name": "pct_of_oi_noncomm_spread_ol",
+      "note": "all open interest"
+    },
+    "pct_c_long_ol": {
+      "factor": "pct_of_oi_comm_long_ol",
+      "name": "pct_of_oi_comm_long_ol",
+      "note": "all open interest"
+    },
+    "pct_c_short_ol": {
+      "factor": "pct_of_oi_comm_short_ol",
+      "name": "pct_of_oi_comm_short_ol",
+      "note": "all open interest"
+    },
+    "pct_tr_long_ol": {
+      "factor": "pct_of_oi_tot_rept_long_ol",
+      "name": "pct_of_oi_tot_rept_long_ol",
+      "note": "all open interest"
+    },
+    "pct_tr_short_ol": {
+      "factor": "pct_of_oi_tot_rept_short_ol",
+      "name": "pct_of_oi_tot_rept_short_ol",
+      "note": "all open interest"
+    },
+    "pct_nr_long_ol": {
+      "factor": "pct_of_oi_nonrept_long_ol",
+      "name": "pct_of_oi_nonrept_long_ol",
+      "note": "all open interest"
+    },
+    "pct_nr_short_ol": {
+      "factor": "pct_of_oi_nonrept_short_ol",
+      "name": "pct_of_oi_nonrept_short_ol",
+      "note": "all open interest"
+    },
+    "pct_oi_other": {
+      "factor": "pct_of_open_interest_other",
+      "name": "pct_of_open_interest_other",
+      "note": "all open interest"
+    },
+    "pct_nc_long_other": {
+      "factor": "pct_of_oi_noncomm_long_other",
+      "name": "pct_of_oi_noncomm_long_other",
+      "note": "all open interest"
+    },
+    "pct_nc_short_other": {
+      "factor": "pct_of_oi_noncomm_short_other",
+      "name": "pct_of_oi_noncomm_short_other",
+      "note": "all open interest"
+    },
+    "pct_nc_spread_other": {
+      "factor": "pct_of_oi_noncomm_spread_other",
+      "name": "pct_of_oi_noncomm_spread_other",
+      "note": "all open interest"
+    },
+    "pct_c_long_other": {
+      "factor": "pct_of_oi_comm_long_other",
+      "name": "pct_of_oi_comm_long_other",
+      "note": "all open interest"
+    },
+    "pct_c_short_other": {
+      "factor": "pct_of_oi_comm_short_other",
+      "name": "pct_of_oi_comm_short_other",
+      "note": "all open interest"
+    },
+    "pct_tr_long_other": {
+      "factor": "pct_of_oi_tot_rept_long_other",
+      "name": "pct_of_oi_tot_rept_long_other",
+      "note": "all open interest"
+    },
+    "pct_tr_short_other": {
+      "factor": "pct_of_oi_tot_rept_short_other",
+      "name": "pct_of_oi_tot_rept_short_other",
+      "note": "all open interest"
+    },
+    "pct_nr_long_other": {
+      "factor": "pct_of_oi_nonrept_long_other",
+      "name": "pct_of_oi_nonrept_long_other",
+      "note": "all open interest"
+    },
+    "pct_nr_short_other": {
+      "factor": "pct_of_oi_nonrept_short_other",
+      "name": "pct_of_oi_nonrept_short_other",
+      "note": "all open interest"
+    },
+    "traders_total_all": {
+      "factor": "traders_tot_all",
+      "name": "traders_tot_all",
+      "note": "all open interest"
+    },
+    "traders_noncomm_long_all": {
+      "factor": "traders_noncomm_long_all",
+      "name": "traders_noncomm_long_all",
+      "note": "all open interest"
+    },
+    "traders_noncomm_short_all": {
+      "factor": "traders_noncomm_short_all",
+      "name": "traders_noncomm_short_all",
+      "note": "all open interest"
+    },
+    "traders_noncomm_spread_all": {
+      "factor": "traders_noncomm_spread_all",
+      "name": "traders_noncomm_spread_all",
+      "note": "all open interest"
+    },
+    "traders_comm_long_all": {
+      "factor": "traders_comm_long_all",
+      "name": "traders_comm_long_all",
+      "note": "all open interest"
+    },
+    "traders_comm_short_all": {
+      "factor": "traders_comm_short_all",
+      "name": "traders_comm_short_all",
+      "note": "all open interest"
+    },
+    "traders_total_reportable_long_all": {
+      "factor": "traders_tot_rept_long_all",
+      "name": "traders_tot_rept_long_all",
+      "note": "all open interest"
+    },
+    "traders_total_reportable_short_all": {
+      "factor": "traders_tot_rept_short_all",
+      "name": "traders_tot_rept_short_all",
+      "note": "all open interest"
+    },
+    "traders_total_ol": {
+      "factor": "traders_tot_ol",
+      "name": "traders_tot_ol",
+      "note": "all open interest"
+    },
+    "traders_noncomm_long_ol": {
+      "factor": "traders_noncomm_long_ol",
+      "name": "traders_noncomm_long_ol",
+      "note": "all open interest"
+    },
+    "traders_noncomm_short_ol": {
+      "factor": "traders_noncomm_short_ol",
+      "name": "traders_noncomm_short_ol",
+      "note": "all open interest"
+    },
+    "traders_noncomm_spread_ol": {
+      "factor": "traders_noncomm_spead_ol",
+      "name": "traders_noncomm_spead_ol",
+      "note": "all open interest"
+    },
+    "traders_comm_long_ol": {
+      "factor": "traders_comm_long_ol",
+      "name": "traders_comm_long_ol",
+      "note": "all open interest"
+    },
+    "traders_comm_short_ol": {
+      "factor": "traders_comm_short_ol",
+      "name": "traders_comm_short_ol",
+      "note": "all open interest"
+    },
+    "traders_total_reportable_long_ol": {
+      "factor": "traders_tot_rept_long_ol",
+      "name": "traders_tot_rept_long_ol",
+      "note": "all open interest"
+    },
+    "traders_total_reportable_short_ol": {
+      "factor": "traders_tot_rept_short_ol",
+      "name": "traders_tot_rept_short_ol",
+      "note": "all open interest"
+    },
+    "traders_total_other": {
+      "factor": "traders_tot_other",
+      "name": "traders_tot_other",
+      "note": "all open interest"
+    },
+    "traders_noncomm_long_other": {
+      "factor": "traders_noncomm_long_other",
+      "name": "traders_noncomm_long_other",
+      "note": "all open interest"
+    },
+    "traders_noncomm_short_other": {
+      "factor": "traders_noncomm_short_other",
+      "name": "traders_noncomm_short_other",
+      "note": "all open interest"
+    },
+    "traders_noncomm_spread_other": {
+      "factor": "traders_noncomm_spread_other",
+      "name": "traders_noncomm_spread_other",
+      "note": "all open interest"
+    },
+    "traders_comm_long_other": {
+      "factor": "traders_comm_long_other",
+      "name": "traders_comm_long_other",
+      "note": "all open interest"
+    },
+    "traders_comm_short_other": {
+      "factor": "traders_comm_short_other",
+      "name": "traders_comm_short_other",
+      "note": "all open interest"
+    },
+    "traders_total_reportable_long_other": {
+      "factor": "traders_tot_rept_long_other",
+      "name": "traders_tot_rept_long_other",
+      "note": "all open interest"
+    },
+    "traders_total_reportable_short_other": {
+      "factor": "traders_tot_rept_short_other",
+      "name": "traders_tot_rept_short_other",
+      "note": "all open interest"
+    },
+    "conc_gross_le_4_tdr_long_all": {
+      "factor": "conc_gross_le_4_tdr_long_all",
+      "name": "conc_gross_le_4_tdr_long_all",
+      "note": "all open interest"
+    },
+    "conc_gross_le_4_tdr_short_all": {
+      "factor": "conc_gross_le_4_tdr_short_all",
+      "name": "conc_gross_le_4_tdr_short_all",
+      "note": "all open interest"
+    },
+    "conc_gross_le_8_tdr_long_all": {
+      "factor": "conc_gross_le_8_tdr_long_all",
+      "name": "conc_gross_le_8_tdr_long_all",
+      "note": "all open interest"
+    },
+    "conc_gross_le_8_tdr_short_all": {
+      "factor": "conc_gross_le_8_tdr_short_all",
+      "name": "conc_gross_le_8_tdr_short_all",
+      "note": "all open interest"
+    },
+    "conc_net_le_4_tdr_long_all": {
+      "factor": "conc_net_le_4_tdr_long_all",
+      "name": "conc_net_le_4_tdr_long_all",
+      "note": "all open interest"
+    },
+    "conc_net_le_4_tdr_short_all": {
+      "factor": "conc_net_le_4_tdr_short_all",
+      "name": "conc_net_le_4_tdr_short_all",
+      "note": "all open interest"
+    },
+    "conc_net_le_8_tdr_long_all": {
+      "factor": "conc_net_le_8_tdr_long_all",
+      "name": "conc_net_le_8_tdr_long_all",
+      "note": "all open interest"
+    },
+    "conc_net_le_8_tdr_short_all": {
+      "factor": "conc_net_le_8_tdr_short_all",
+      "name": "conc_net_le_8_tdr_short_all",
+      "note": "all open interest"
+    },
+    "conc_gross_le_4_tdr_long_ol": {
+      "factor": "conc_gross_le_4_tdr_long_ol",
+      "name": "conc_gross_le_4_tdr_long_ol",
+      "note": "all open interest"
+    },
+    "conc_gross_le_4_tdr_short_ol": {
+      "factor": "conc_gross_le_4_tdr_short_ol",
+      "name": "conc_gross_le_4_tdr_short_ol",
+      "note": "all open interest"
+    },
+    "conc_gross_le_8_tdr_long_ol": {
+      "factor": "conc_gross_le_8_tdr_long_ol",
+      "name": "conc_gross_le_8_tdr_long_ol",
+      "note": "all open interest"
+    },
+    "conc_gross_le_8_tdr_short_ol": {
+      "factor": "conc_gross_le_8_tdr_short_ol",
+      "name": "conc_gross_le_8_tdr_short_ol",
+      "note": "all open interest"
+    },
+    "conc_net_le_4_tdr_long_ol": {
+      "factor": "conc_net_le_4_tdr_long_ol",
+      "name": "conc_net_le_4_tdr_long_ol",
+      "note": "all open interest"
+    },
+    "conc_net_le_4_tdr_short_ol": {
+      "factor": "conc_net_le_4_tdr_short_ol",
+      "name": "conc_net_le_4_tdr_short_ol",
+      "note": "all open interest"
+    },
+    "conc_net_le_8_tdr_long_ol": {
+      "factor": "conc_net_le_8_tdr_long_ol",
+      "name": "conc_net_le_8_tdr_long_ol",
+      "note": "all open interest"
+    },
+    "conc_net_le_8_tdr_short_ol": {
+      "factor": "conc_net_le_8_tdr_short_ol",
+      "name": "conc_net_le_8_tdr_short_ol",
+      "note": "all open interest"
+    },
+    "conc_gross_le_4_tdr_long_other": {
+      "factor": "conc_gross_le_4_tdr_long_other",
+      "name": "conc_gross_le_4_tdr_long_other",
+      "note": "all open interest"
+    },
+    "conc_gross_le_4_tdr_short_other": {
+      "factor": "conc_gross_le_4_tdr_short_other",
+      "name": "conc_gross_le_4_tdr_short_other",
+      "note": "all open interest"
+    },
+    "conc_gross_le_8_tdr_long_other": {
+      "factor": "conc_gross_le_8_tdr_long_other",
+      "name": "conc_gross_le_8_tdr_long_other",
+      "note": "all open interest"
+    },
+    "conc_gross_le_8_tdr_short_other": {
+      "factor": "conc_gross_le_8_tdr_short_other",
+      "name": "conc_gross_le_8_tdr_short_other",
+      "note": "all open interest"
+    },
+    "conc_net_le_4_tdr_long_other": {
+      "factor": "conc_net_le_4_tdr_long_other",
+      "name": "conc_net_le_4_tdr_long_other",
+      "note": "all open interest"
+    },
+    "conc_net_le_4_tdr_short_other": {
+      "factor": "conc_net_le_4_tdr_short_other",
+      "name": "conc_net_le_4_tdr_short_other",
+      "note": "all open interest"
+    },
+    "conc_net_le_8_tdr_long_other": {
+      "factor": "conc_net_le_8_tdr_long_other",
+      "name": "conc_net_le_8_tdr_long_other",
+      "note": "all open interest"
+    },
+    "conc_net_le_8_tdr_short_other": {
+      "factor": "conc_net_le_8_tdr_short_other",
+      "name": "conc_net_le_8_tdr_short_other",
+      "note": "all open interest"
+    }
+  },
+  "EarningsCalendar": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v3/historical/earning_calendar"
+    },
+    "eps": {
+      "factor": "eps",
+      "name": "eps",
+      "note": "all open interest"
+    },
+    "eps_estimated": {
+      "factor": "epsEstimated",
+      "name": "epsEstimated",
+      "note": "all open interest"
+    },
+    "revenue": {
+      "factor": "revenue",
+      "name": "revenue",
+      "note": "all open interest"
+    },
+    "revenue_estimated": {
+      "factor": "revenueEstimated",
+      "name": "revenueEstimated",
+      "note": "all open interest"
+    }
+  },
+  "CashFlowStatement": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v3/cash-flow-statement",
+      "params": {
+        "period": "quarter"
+      }
+    },
+    "net_income": {
+      "factor": "netIncome",
+      "name": "netIncome",
+      "note": "all open interest"
+    },
+    "dep_and_amort": {
+      "factor": "depreciationAndAmortization",
+      "name": "depreciationAndAmortization",
+      "note": "all open interest"
+    },
+    "def_inc_tax": {
+      "factor": "deferredIncomeTax",
+      "name": "deferredIncomeTax",
+      "note": "all open interest"
+    },
+    "stk_based_comp": {
+      "factor": "stockBasedCompensation",
+      "name": "stockBasedCompensation",
+      "note": "all open interest"
+    },
+    "chg_in_work_cap": {
+      "factor": "changeInWorkingCapital",
+      "name": "changeInWorkingCapital",
+      "note": "all open interest"
+    },
+    "acc_receivables": {
+      "factor": "accountsReceivables",
+      "name": "accountsReceivables",
+      "note": "all open interest"
+    },
+    "inventory": {
+      "factor": "inventory",
+      "name": "inventory",
+      "note": "all open interest"
+    },
+    "acc_payables": {
+      "factor": "accountsPayables",
+      "name": "accountsPayables",
+      "note": "all open interest"
+    },
+    "other_work_cap": {
+      "factor": "otherWorkingCapital",
+      "name": "otherWorkingCapital",
+      "note": "all open interest"
+    },
+    "other_non_cash_items": {
+      "factor": "otherNonCashItems",
+      "name": "otherNonCashItems",
+      "note": "all open interest"
+    },
+    "net_cash_prov_by_op_act": {
+      "factor": "netCashProvidedByOperatingActivities",
+      "name": "netCashProvidedByOperatingActivities",
+      "note": "all open interest"
+    },
+    "inv_in_prop_plant_equip": {
+      "factor": "investmentsInPropertyPlantAndEquipment",
+      "name": "investmentsInPropertyPlantAndEquipment",
+      "note": "all open interest"
+    },
+    "acquisitions_net": {
+      "factor": "acquisitionsNet",
+      "name": "acquisitionsNet",
+      "note": "all open interest"
+    },
+    "purch_of_inv": {
+      "factor": "purchasesOfInvestments",
+      "name": "purchasesOfInvestments",
+      "note": "all open interest"
+    },
+    "sales_mat_of_inv": {
+      "factor": "salesMaturitiesOfInvestments",
+      "name": "salesMaturitiesOfInvestments",
+      "note": "all open interest"
+    },
+    "other_inv_act": {
+      "factor": "otherInvestingActivites",
+      "name": "otherInvestingActivites",
+      "note": "all open interest"
+    },
+    "net_cash_used_for_inv_act": {
+      "factor": "netCashUsedForInvestingActivites",
+      "name": "netCashUsedForInvestingActivites",
+      "note": "all open interest"
+    },
+    "debt_repayment": {
+      "factor": "debtRepayment",
+      "name": "debtRepayment",
+      "note": "all open interest"
+    },
+    "common_stock_issued": {
+      "factor": "commonStockIssued",
+      "name": "commonStockIssued",
+      "note": "all open interest"
+    },
+    "common_stock_repurchased": {
+      "factor": "commonStockRepurchased",
+      "name": "commonStockRepurchased",
+      "note": "all open interest"
+    },
+    "dividends_paid": {
+      "factor": "dividendsPaid",
+      "name": "dividendsPaid",
+      "note": "all open interest"
+    },
+    "other_fin_act": {
+      "factor": "otherFinancingActivites",
+      "name": "otherFinancingActivites",
+      "note": "all open interest"
+    },
+    "net_cash_used_prov_by_fin_act": {
+      "factor": "netCashUsedProvidedByFinancingActivities",
+      "name": "netCashUsedProvidedByFinancingActivities",
+      "note": "all open interest"
+    },
+    "eff_of_forex_chg_on_cash": {
+      "factor": "effectOfForexChangesOnCash",
+      "name": "effectOfForexChangesOnCash",
+      "note": "all open interest"
+    },
+    "net_chg_in_cash": {
+      "factor": "netChangeInCash",
+      "name": "netChangeInCash",
+      "note": "all open interest"
+    },
+    "cash_at_end_of_period": {
+      "factor": "cashAtEndOfPeriod",
+      "name": "cashAtEndOfPeriod",
+      "note": "all open interest"
+    },
+    "cash_at_beg_of_period": {
+      "factor": "cashAtBeginningOfPeriod",
+      "name": "cashAtBeginningOfPeriod",
+      "note": "all open interest"
+    },
+    "op_cash_flow": {
+      "factor": "operatingCashFlow",
+      "name": "operatingCashFlow",
+      "note": "all open interest"
+    },
+    "cap_expend": {
+      "factor": "capitalExpenditure",
+      "name": "capitalExpenditure",
+      "note": "all open interest"
+    },
+    "free_cash_flow": {
+      "factor": "freeCashFlow",
+      "name": "freeCashFlow",
+      "note": "all open interest"
+    }
+  },
+  "BalanceSheetStatement": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v3/balance-sheet-statement",
+      "params": {
+        "period": "quarter"
+      }
+    },
+    "cash_equivalents": {
+      "factor": "cashAndCashEquivalents",
+      "name": "cashAndCashEquivalents",
+      "note": "all open interest"
+    },
+    "short_term_inv": {
+      "factor": "shortTermInvestments",
+      "name": "shortTermInvestments",
+      "note": "all open interest"
+    },
+    "cash_short_term_inv": {
+      "factor": "cashAndShortTermInvestments",
+      "name": "cashAndShortTermInvestments",
+      "note": "all open interest"
+    },
+    "net_receivables": {
+      "factor": "netReceivables",
+      "name": "netReceivables",
+      "note": "all open interest"
+    },
+    "inventory": {
+      "factor": "inventory",
+      "name": "inventory",
+      "note": "all open interest"
+    },
+    "other_current_assets": {
+      "factor": "otherCurrentAssets",
+      "name": "otherCurrentAssets",
+      "note": "all open interest"
+    },
+    "total_current_assets": {
+      "factor": "totalCurrentAssets",
+      "name": "totalCurrentAssets",
+      "note": "all open interest"
+    },
+    "ppe_net": {
+      "factor": "propertyPlantEquipmentNet",
+      "name": "propertyPlantEquipmentNet",
+      "note": "all open interest"
+    },
+    "goodwill": {
+      "factor": "goodwill",
+      "name": "goodwill",
+      "note": "all open interest"
+    },
+    "intangible_assets": {
+      "factor": "intangibleAssets",
+      "name": "intangibleAssets",
+      "note": "all open interest"
+    },
+    "goodwill_intang_assets": {
+      "factor": "goodwillAndIntangibleAssets",
+      "name": "goodwillAndIntangibleAssets",
+      "note": "all open interest"
+    },
+    "long_term_inv": {
+      "factor": "longTermInvestments",
+      "name": "longTermInvestments",
+      "note": "all open interest"
+    },
+    "tax_assets": {
+      "factor": "taxAssets",
+      "name": "taxAssets",
+      "note": "all open interest"
+    },
+    "other_non_current_assets": {
+      "factor": "otherNonCurrentAssets",
+      "name": "otherNonCurrentAssets",
+      "note": "all open interest"
+    },
+    "total_non_current_assets": {
+      "factor": "totalNonCurrentAssets",
+      "name": "totalNonCurrentAssets",
+      "note": "all open interest"
+    },
+    "other_assets": {
+      "factor": "otherAssets",
+      "name": "otherAssets",
+      "note": "all open interest"
+    },
+    "total_assets": {
+      "factor": "totalAssets",
+      "name": "totalAssets",
+      "note": "all open interest"
+    },
+    "account_payables": {
+      "factor": "accountPayables",
+      "name": "accountPayables",
+      "note": "all open interest"
+    },
+    "short_term_debt": {
+      "factor": "shortTermDebt",
+      "name": "shortTermDebt",
+      "note": "all open interest"
+    },
+    "tax_payables": {
+      "factor": "taxPayables",
+      "name": "taxPayables",
+      "note": "all open interest"
+    },
+    "def_rev": {
+      "factor": "deferredRevenue",
+      "name": "deferredRevenue",
+      "note": "all open interest"
+    },
+    "oth_cur_liab": {
+      "factor": "otherCurrentLiabilities",
+      "name": "otherCurrentLiabilities",
+      "note": "all open interest"
+    },
+    "tot_cur_liab": {
+      "factor": "totalCurrentLiabilities",
+      "name": "totalCurrentLiabilities",
+      "note": "all open interest"
+    },
+    "long_debt": {
+      "factor": "longTermDebt",
+      "name": "longTermDebt",
+      "note": "all open interest"
+    },
+    "def_rev_nc": {
+      "factor": "deferredRevenueNonCurrent",
+      "name": "deferredRevenueNonCurrent",
+      "note": "all open interest"
+    },
+    "def_tax_liab_nc": {
+      "factor": "deferredTaxLiabilitiesNonCurrent",
+      "name": "deferredTaxLiabilitiesNonCurrent",
+      "note": "all open interest"
+    },
+    "oth_nc_liab": {
+      "factor": "otherNonCurrentLiabilities",
+      "name": "otherNonCurrentLiabilities",
+      "note": "all open interest"
+    },
+    "tot_nc_liab": {
+      "factor": "totalNonCurrentLiabilities",
+      "name": "totalNonCurrentLiabilities",
+      "note": "all open interest"
+    },
+    "oth_liab": {
+      "factor": "otherLiabilities",
+      "name": "otherLiabilities",
+      "note": "all open interest"
+    },
+    "cap_lease_obl": {
+      "factor": "capitalLeaseObligations",
+      "name": "capitalLeaseObligations",
+      "note": "all open interest"
+    },
+    "tot_liab": {
+      "factor": "totalLiabilities",
+      "name": "totalLiabilities",
+      "note": "all open interest"
+    },
+    "pref_stock": {
+      "factor": "preferredStock",
+      "name": "preferredStock",
+      "note": "all open interest"
+    },
+    "com_stock": {
+      "factor": "commonStock",
+      "name": "commonStock",
+      "note": "all open interest"
+    },
+    "ret_earn": {
+      "factor": "retainedEarnings",
+      "name": "retainedEarnings",
+      "note": "all open interest"
+    },
+    "acc_oth_comp_inc_loss": {
+      "factor": "accumulatedOtherComprehensiveIncomeLoss",
+      "name": "accumulatedOtherComprehensiveIncomeLoss",
+      "note": "all open interest"
+    },
+    "oth_tot_stk_eq": {
+      "factor": "othertotalStockholdersEquity",
+      "name": "othertotalStockholdersEquity",
+      "note": "all open interest"
+    },
+    "tot_stk_eq": {
+      "factor": "totalStockholdersEquity",
+      "name": "totalStockholdersEquity",
+      "note": "all open interest"
+    },
+    "tot_eq": {
+      "factor": "totalEquity",
+      "name": "totalEquity",
+      "note": "all open interest"
+    },
+    "tot_liab_stk_eq": {
+      "factor": "totalLiabilitiesAndStockholdersEquity",
+      "name": "totalLiabilitiesAndStockholdersEquity",
+      "note": "all open interest"
+    },
+    "min_inter": {
+      "factor": "minorityInterest",
+      "name": "minorityInterest",
+      "note": "all open interest"
+    },
+    "tot_liab_eq": {
+      "factor": "totalLiabilitiesAndTotalEquity",
+      "name": "totalLiabilitiesAndTotalEquity",
+      "note": "all open interest"
+    },
+    "tot_inv": {
+      "factor": "totalInvestments",
+      "name": "totalInvestments",
+      "note": "all open interest"
+    },
+    "tot_debt": {
+      "factor": "totalDebt",
+      "name": "totalDebt",
+      "note": "all open interest"
+    },
+    "net_debt": {
+      "factor": "netDebt",
+      "name": "netDebt",
+      "note": "all open interest"
+    }
+  },
+  "IncomeStatement": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v3/income-statement",
+      "params": {
+        "period": "quarter"
+      }
+    },
+    "revenue": {
+      "factor": "revenue",
+      "name": "revenue",
+      "note": "all open interest"
+    },
+    "cost_of_revenue": {
+      "factor": "costOfRevenue",
+      "name": "costOfRevenue",
+      "note": "all open interest"
+    },
+    "gross_profit": {
+      "factor": "grossProfit",
+      "name": "grossProfit",
+      "note": "all open interest"
+    },
+    "gross_profit_ratio": {
+      "factor": "grossProfitRatio",
+      "name": "grossProfitRatio",
+      "note": "all open interest"
+    },
+    "rnd_expenses": {
+      "factor": "researchAndDevelopmentExpenses",
+      "name": "researchAndDevelopmentExpenses",
+      "note": "all open interest"
+    },
+    "ga_expenses": {
+      "factor": "generalAndAdministrativeExpenses",
+      "name": "generalAndAdministrativeExpenses",
+      "note": "all open interest"
+    },
+    "sm_expenses": {
+      "factor": "sellingAndMarketingExpenses",
+      "name": "sellingAndMarketingExpenses",
+      "note": "all open interest"
+    },
+    "sga_expenses": {
+      "factor": "sellingGeneralAndAdministrativeExpenses",
+      "name": "sellingGeneralAndAdministrativeExpenses",
+      "note": "all open interest"
+    },
+    "other_expenses": {
+      "factor": "otherExpenses",
+      "name": "otherExpenses",
+      "note": "all open interest"
+    },
+    "operating_expenses": {
+      "factor": "operatingExpenses",
+      "name": "operatingExpenses",
+      "note": "all open interest"
+    },
+    "total_costs": {
+      "factor": "costAndExpenses",
+      "name": "costAndExpenses",
+      "note": "all open interest"
+    },
+    "interest_income": {
+      "factor": "interestIncome",
+      "name": "interestIncome",
+      "note": "all open interest"
+    },
+    "interestExpense": {
+      "factor": "interestExpense",
+      "name": "interestExpense",
+      "note": "all open interest"
+    },
+    "depr_amort": {
+      "factor": "depreciationAndAmortization",
+      "name": "depreciationAndAmortization",
+      "note": "all open interest"
+    },
+    "ebitda": {
+      "factor": "ebitda",
+      "name": "ebitda",
+      "note": "all open interest"
+    },
+    "ebitda_ratio": {
+      "factor": "ebitdaratio",
+      "name": "ebitdaratio",
+      "note": "all open interest"
+    },
+    "operating_income": {
+      "factor": "operatingIncome",
+      "name": "operatingIncome",
+      "note": "all open interest"
+    },
+    "operating_income_ratio": {
+      "factor": "operatingIncomeRatio",
+      "name": "operatingIncomeRatio",
+      "note": "all open interest"
+    },
+    "other_income_expenses": {
+      "factor": "totalOtherIncomeExpensesNet",
+      "name": "totalOtherIncomeExpensesNet",
+      "note": "all open interest"
+    },
+    "pre_tax_income": {
+      "factor": "incomeBeforeTax",
+      "name": "incomeBeforeTax",
+      "note": "all open interest"
+    },
+    "pre_tax_income_ratio": {
+      "factor": "incomeBeforeTaxRatio",
+      "name": "incomeBeforeTaxRatio",
+      "note": "all open interest"
+    },
+    "tax_expense": {
+      "factor": "incomeTaxExpense",
+      "name": "incomeTaxExpense",
+      "note": "all open interest"
+    },
+    "net_income": {
+      "factor": "netIncome",
+      "name": "netIncome",
+      "note": "all open interest"
+    },
+    "net_income_ratio": {
+      "factor": "netIncomeRatio",
+      "name": "netIncomeRatio",
+      "note": "all open interest"
+    },
+    "eps": {
+      "factor": "eps",
+      "name": "eps",
+      "note": "all open interest"
+    },
+    "eps_diluted": {
+      "factor": "epsdiluted",
+      "name": "epsdiluted",
+      "note": "all open interest"
+    },
+    "avg_shares_out": {
+      "factor": "weightedAverageShsOut",
+      "name": "weightedAverageShsOut",
+      "note": "all open interest"
+    },
+    "avg_shares_out_dil": {
+      "factor": "weightedAverageShsOutDil",
+      "name": "weightedAverageShsOutDil",
+      "note": "all open interest"
+    }
+  },
+  "FinancialRatios": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v3/ratios",
+      "params": {
+        "period": "quarter"
+      }
+    },
+    "cur_ratio": {
+      "factor": "currentRatio",
+      "name": "currentRatio",
+      "note": "all open interest"
+    },
+    "quickRatio": {
+      "factor": "quickRatio",
+      "name": "quickRatio",
+      "note": "all open interest"
+    },
+    "cashRatio": {
+      "factor": "cashRatio",
+      "name": "cashRatio",
+      "note": "all open interest"
+    },
+    "days_sales_out": {
+      "factor": "daysOfSalesOutstanding",
+      "name": "daysOfSalesOutstanding",
+      "note": "all open interest"
+    },
+    "days_inv_out": {
+      "factor": "daysOfInventoryOutstanding",
+      "name": "daysOfInventoryOutstanding",
+      "note": "all open interest"
+    },
+    "op_cycle": {
+      "factor": "operatingCycle",
+      "name": "operatingCycle",
+      "note": "all open interest"
+    },
+    "days_pay_out": {
+      "factor": "daysOfPayablesOutstanding",
+      "name": "daysOfPayablesOutstanding",
+      "note": "all open interest"
+    },
+    "cash_conv_cycle": {
+      "factor": "cashConversionCycle",
+      "name": "cashConversionCycle",
+      "note": "all open interest"
+    },
+    "gross_profit_margin": {
+      "factor": "grossProfitMargin",
+      "name": "grossProfitMargin",
+      "note": "all open interest"
+    },
+    "op_profit_margin": {
+      "factor": "operatingProfitMargin",
+      "name": "operatingProfitMargin",
+      "note": "all open interest"
+    },
+    "pretax_profit_margin": {
+      "factor": "pretaxProfitMargin",
+      "name": "pretaxProfitMargin",
+      "note": "all open interest"
+    },
+    "net_profit_margin": {
+      "factor": "netProfitMargin",
+      "name": "netProfitMargin",
+      "note": "all open interest"
+    },
+    "eff_tax_rate": {
+      "factor": "effectiveTaxRate",
+      "name": "effectiveTaxRate",
+      "note": "all open interest"
+    },
+    "return_on_assets": {
+      "factor": "returnOnAssets",
+      "name": "returnOnAssets",
+      "note": "all open interest"
+    },
+    "return_on_equity": {
+      "factor": "returnOnEquity",
+      "name": "returnOnEquity",
+      "note": "all open interest"
+    },
+    "return_on_cap_empl": {
+      "factor": "returnOnCapitalEmployed",
+      "name": "returnOnCapitalEmployed",
+      "note": "all open interest"
+    },
+    "net_inc_per_ebt": {
+      "factor": "netIncomePerEBT",
+      "name": "netIncomePerEBT",
+      "note": "all open interest"
+    },
+    "ebt_per_ebit": {
+      "factor": "ebtPerEbit",
+      "name": "ebtPerEbit",
+      "note": "all open interest"
+    },
+    "ebit_per_rev": {
+      "factor": "ebitPerRevenue",
+      "name": "ebitPerRevenue",
+      "note": "all open interest"
+    },
+    "debt_ratio": {
+      "factor": "debtRatio",
+      "name": "debtRatio",
+      "note": "all open interest"
+    },
+    "debt_equity_ratio": {
+      "factor": "debtEquityRatio",
+      "name": "debtEquityRatio",
+      "note": "all open interest"
+    },
+    "long_debt_to_cap": {
+      "factor": "longTermDebtToCapitalization",
+      "name": "longTermDebtToCapitalization",
+      "note": "all open interest"
+    },
+    "total_debt_to_cap": {
+      "factor": "totalDebtToCapitalization",
+      "name": "totalDebtToCapitalization",
+      "note": "all open interest"
+    },
+    "interest_coverage": {
+      "factor": "interestCoverage",
+      "name": "interestCoverage",
+      "note": "all open interest"
+    },
+    "cash_flow_to_debt": {
+      "factor": "cashFlowToDebtRatio",
+      "name": "cashFlowToDebtRatio",
+      "note": "all open interest"
+    },
+    "equity_multiplier": {
+      "factor": "companyEquityMultiplier",
+      "name": "companyEquityMultiplier",
+      "note": "all open interest"
+    },
+    "receivables_turnover": {
+      "factor": "receivablesTurnover",
+      "name": "receivablesTurnover",
+      "note": "all open interest"
+    },
+    "payables_turnover": {
+      "factor": "payablesTurnover",
+      "name": "payablesTurnover",
+      "note": "all open interest"
+    },
+    "inventory_turnover": {
+      "factor": "inventoryTurnover",
+      "name": "inventoryTurnover",
+      "note": "all open interest"
+    },
+    "fixed_asset_turnover": {
+      "factor": "fixedAssetTurnover",
+      "name": "fixedAssetTurnover",
+      "note": "all open interest"
+    },
+    "asset_turnover": {
+      "factor": "assetTurnover",
+      "name": "assetTurnover",
+      "note": "all open interest"
+    },
+    "op_cash_flow_per_share": {
+      "factor": "operatingCashFlowPerShare",
+      "name": "operatingCashFlowPerShare",
+      "note": "all open interest"
+    },
+    "free_cash_flow_per_share": {
+      "factor": "freeCashFlowPerShare",
+      "name": "freeCashFlowPerShare",
+      "note": "all open interest"
+    },
+    "cash_per_share": {
+      "factor": "cashPerShare",
+      "name": "cashPerShare",
+      "note": "all open interest"
+    },
+    "payout_ratio": {
+      "factor": "payoutRatio",
+      "name": "payoutRatio",
+      "note": "all open interest"
+    },
+    "op_cash_flow_sales_ratio": {
+      "factor": "operatingCashFlowSalesRatio",
+      "name": "operatingCashFlowSalesRatio",
+      "note": "all open interest"
+    },
+    "free_to_op_cash_flow_ratio": {
+      "factor": "freeCashFlowOperatingCashFlowRatio",
+      "name": "freeCashFlowOperatingCashFlowRatio",
+      "note": "all open interest"
+    },
+    "cash_flow_coverage_ratio": {
+      "factor": "cashFlowCoverageRatios",
+      "name": "cashFlowCoverageRatios",
+      "note": "all open interest"
+    },
+    "short_term_coverage_ratio": {
+      "factor": "shortTermCoverageRatios",
+      "name": "shortTermCoverageRatios",
+      "note": "all open interest"
+    },
+    "capex_coverage_ratio": {
+      "factor": "capitalExpenditureCoverageRatio",
+      "name": "capitalExpenditureCoverageRatio",
+      "note": "all open interest"
+    },
+    "div_capex_coverage_ratio": {
+      "factor": "dividendPaidAndCapexCoverageRatio",
+      "name": "dividendPaidAndCapexCoverageRatio",
+      "note": "all open interest"
+    },
+    "dividend_payout_ratio": {
+      "factor": "dividendPayoutRatio",
+      "name": "dividendPayoutRatio",
+      "note": "all open interest"
+    },
+    "price_bookvalue_ratio": {
+      "factor": "priceBookValueRatio",
+      "name": "priceBookValueRatio",
+      "note": "all open interest"
+    },
+    "price_book_ratio": {
+      "factor": "priceToBookRatio",
+      "name": "priceToBookRatio",
+      "note": "all open interest"
+    },
+    "price_to_sales_ratio": {
+      "factor": "priceToSalesRatio",
+      "name": "priceToSalesRatio",
+      "note": "all open interest"
+    },
+    "price_earnings_ratio": {
+      "factor": "priceEarningsRatio",
+      "name": "priceEarningsRatio",
+      "note": "all open interest"
+    },
+    "price_free_cash_flow_ratio": {
+      "factor": "priceToFreeCashFlowsRatio",
+      "name": "priceToFreeCashFlowsRatio",
+      "note": "all open interest"
+    },
+    "price_op_cash_flow_ratio": {
+      "factor": "priceToOperatingCashFlowsRatio",
+      "name": "priceToOperatingCashFlowsRatio",
+      "note": "all open interest"
+    },
+    "price_cash_flow_ratio": {
+      "factor": "priceCashFlowRatio",
+      "name": "priceCashFlowRatio",
+      "note": "all open interest"
+    },
+    "peg_ratio": {
+      "factor": "priceEarningsToGrowthRatio",
+      "name": "priceEarningsToGrowthRatio",
+      "note": "all open interest"
+    },
+    "price_sales_ratio": {
+      "factor": "priceSalesRatio",
+      "name": "priceSalesRatio",
+      "note": "all open interest"
+    },
+    "dividend_yield": {
+      "factor": "dividendYield",
+      "name": "dividendYield",
+      "note": "all open interest"
+    },
+    "ev_multiple": {
+      "factor": "enterpriseValueMultiple",
+      "name": "enterpriseValueMultiple",
+      "note": "all open interest"
+    },
+    "price_fair_value_ratio": {
+      "factor": "priceFairValue",
+      "name": "priceFairValue",
+      "note": "all open interest"
+    }
+  },
+  "CashFlowStatementGrowth": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v3/cash-flow-statement-growth",
+      "params": {
+        "period": "quarter"
+      }
+    },
+    "net_inc_gr": {
+      "factor": "growthNetIncome",
+      "name": "growthNetIncome",
+      "note": "all open interest"
+    },
+    "dep_amort_gr": {
+      "factor": "growthDepreciationAndAmortization",
+      "name": "growthDepreciationAndAmortization",
+      "note": "all open interest"
+    },
+    "def_inc_tax_gr": {
+      "factor": "growthDeferredIncomeTax",
+      "name": "growthDeferredIncomeTax",
+      "note": "all open interest"
+    },
+    "stk_bas_comp_gr": {
+      "factor": "growthStockBasedCompensation",
+      "name": "growthStockBasedCompensation",
+      "note": "all open interest"
+    },
+    "ch_wrk_cap_gr": {
+      "factor": "growthChangeInWorkingCapital",
+      "name": "growthChangeInWorkingCapital",
+      "note": "all open interest"
+    },
+    "acc_rec_gr": {
+      "factor": "growthAccountsReceivables",
+      "name": "growthAccountsReceivables",
+      "note": "all open interest"
+    },
+    "inv_gr": {
+      "factor": "growthInventory",
+      "name": "growthInventory",
+      "note": "all open interest"
+    },
+    "acc_pay_gr": {
+      "factor": "growthAccountsPayables",
+      "name": "growthAccountsPayables",
+      "note": "all open interest"
+    },
+    "oth_wrk_cap_gr": {
+      "factor": "growthOtherWorkingCapital",
+      "name": "growthOtherWorkingCapital",
+      "note": "all open interest"
+    },
+    "oth_non_cash_it_gr": {
+      "factor": "growthOtherNonCashItems",
+      "name": "growthOtherNonCashItems",
+      "note": "all open interest"
+    },
+    "op_cash_growth": {
+      "factor": "growthNetCashProvidedByOperatingActivites",
+      "name": "growthNetCashProvidedByOperatingActivites",
+      "note": "all open interest"
+    },
+    "caip_growth": {
+      "factor": "growthInvestmentsInPropertyPlantAndEquipment",
+      "name": "growthInvestmentsInPropertyPlantAndEquipment",
+      "note": "all open interest"
+    },
+    "acquisition_growth": {
+      "factor": "growthAcquisitionsNet",
+      "name": "growthAcquisitionsNet",
+      "note": "all open interest"
+    },
+    "investment_buy_growth": {
+      "factor": "growthPurchasesOfInvestments",
+      "name": "growthPurchasesOfInvestments",
+      "note": "all open interest"
+    },
+    "investment_sell_growth": {
+      "factor": "growthSalesMaturitiesOfInvestments",
+      "name": "growthSalesMaturitiesOfInvestments",
+      "note": "all open interest"
+    },
+    "other_inv_act_growth": {
+      "factor": "growthOtherInvestingActivites",
+      "name": "growthOtherInvestingActivites",
+      "note": "all open interest"
+    },
+    "inv_cash_growth": {
+      "factor": "growthNetCashUsedForInvestingActivites",
+      "name": "growthNetCashUsedForInvestingActivites",
+      "note": "all open interest"
+    },
+    "debt_repay_growth": {
+      "factor": "growthDebtRepayment",
+      "name": "growthDebtRepayment",
+      "note": "all open interest"
+    },
+    "stock_issued_growth": {
+      "factor": "growthCommonStockIssued",
+      "name": "growthCommonStockIssued",
+      "note": "all open interest"
+    },
+    "stock_buyback_growth": {
+      "factor": "growthCommonStockRepurchased",
+      "name": "growthCommonStockRepurchased",
+      "note": "all open interest"
+    },
+    "dividend_growth": {
+      "factor": "growthDividendsPaid",
+      "name": "growthDividendsPaid",
+      "note": "all open interest"
+    },
+    "other_fin_act_growth": {
+      "factor": "growthOtherFinancingActivites",
+      "name": "growthOtherFinancingActivites",
+      "note": "all open interest"
+    },
+    "fin_cash_growth": {
+      "factor": "growthNetCashUsedProvidedByFinancingActivities",
+      "name": "growthNetCashUsedProvidedByFinancingActivities",
+      "note": "all open interest"
+    },
+    "forex_effect_growth": {
+      "factor": "growthEffectOfForexChangesOnCash",
+      "name": "growthEffectOfForexChangesOnCash",
+      "note": "all open interest"
+    },
+    "net_cash_change_growth": {
+      "factor": "growthNetChangeInCash",
+      "name": "growthNetChangeInCash",
+      "note": "all open interest"
+    },
+    "end_cash_growth": {
+      "factor": "growthCashAtEndOfPeriod",
+      "name": "growthCashAtEndOfPeriod",
+      "note": "all open interest"
+    },
+    "begin_cash_growth": {
+      "factor": "growthCashAtBeginningOfPeriod",
+      "name": "growthCashAtBeginningOfPeriod",
+      "note": "all open interest"
+    },
+    "op_cash_flow_growth": {
+      "factor": "growthOperatingCashFlow",
+      "name": "growthOperatingCashFlow",
+      "note": "all open interest"
+    },
+    "capex_growth": {
+      "factor": "growthCapitalExpenditure",
+      "name": "growthCapitalExpenditure",
+      "note": "all open interest"
+    },
+    "free_cash_flow_growth": {
+      "factor": "growthFreeCashFlow",
+      "name": "growthFreeCashFlow",
+      "note": "all open interest"
+    }
+  },
+  "BalanceSheetStatementGrowth": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v3/balance-sheet-statement-growth",
+      "params": {
+        "period": "quarter"
+      }
+    },
+    "cash_and_equiv_growth": {
+      "factor": "growthCashAndCashEquivalents",
+      "name": "growthCashAndCashEquivalents",
+      "note": "all open interest"
+    },
+    "short_term_inv_growth": {
+      "factor": "growthShortTermInvestments",
+      "name": "growthShortTermInvestments",
+      "note": "all open interest"
+    },
+    "cash_and_short_term_inv_growth": {
+      "factor": "growthCashAndShortTermInvestments",
+      "name": "growthCashAndShortTermInvestments",
+      "note": "all open interest"
+    },
+    "net_receivables_growth": {
+      "factor": "growthNetReceivables",
+      "name": "growthNetReceivables",
+      "note": "all open interest"
+    },
+    "inventory_growth": {
+      "factor": "growthInventory",
+      "name": "growthInventory",
+      "note": "all open interest"
+    },
+    "other_current_assets_growth": {
+      "factor": "growthOtherCurrentAssets",
+      "name": "growthOtherCurrentAssets",
+      "note": "all open interest"
+    },
+    "total_current_assets_growth": {
+      "factor": "growthTotalCurrentAssets",
+      "name": "growthTotalCurrentAssets",
+      "note": "all open interest"
+    },
+    "ppe_net_growth": {
+      "factor": "growthPropertyPlantEquipmentNet",
+      "name": "growthPropertyPlantEquipmentNet",
+      "note": "all open interest"
+    },
+    "goodwill_growth": {
+      "factor": "growthGoodwill",
+      "name": "growthGoodwill",
+      "note": "all open interest"
+    },
+    "intangible_assets_growth": {
+      "factor": "growthIntangibleAssets",
+      "name": "growthIntangibleAssets",
+      "note": "all open interest"
+    },
+    "goodwill_intangible_assets_growth": {
+      "factor": "growthGoodwillAndIntangibleAssets",
+      "name": "growthGoodwillAndIntangibleAssets",
+      "note": "all open interest"
+    },
+    "long_term_investments_growth": {
+      "factor": "growthLongTermInvestments",
+      "name": "growthLongTermInvestments",
+      "note": "all open interest"
+    },
+    "tax_assets_growth": {
+      "factor": "growthTaxAssets",
+      "name": "growthTaxAssets",
+      "note": "all open interest"
+    },
+    "other_non_current_assets_growth": {
+      "factor": "growthOtherNonCurrentAssets",
+      "name": "growthOtherNonCurrentAssets",
+      "note": "all open interest"
+    },
+    "total_non_current_assets_growth": {
+      "factor": "growthTotalNonCurrentAssets",
+      "name": "growthTotalNonCurrentAssets",
+      "note": "all open interest"
+    },
+    "other_assets_growth": {
+      "factor": "growthOtherAssets",
+      "name": "growthOtherAssets",
+      "note": "all open interest"
+    },
+    "total_assets_growth": {
+      "factor": "growthTotalAssets",
+      "name": "growthTotalAssets",
+      "note": "all open interest"
+    },
+    "account_payables_growth": {
+      "factor": "growthAccountPayables",
+      "name": "growthAccountPayables",
+      "note": "all open interest"
+    },
+    "short_term_debt_growth": {
+      "factor": "growthShortTermDebt",
+      "name": "growthShortTermDebt",
+      "note": "all open interest"
+    },
+    "tax_payables_growth": {
+      "factor": "growthTaxPayables",
+      "name": "growthTaxPayables",
+      "note": "all open interest"
+    },
+    "def_revenue_gr": {
+      "factor": "growthDeferredRevenue",
+      "name": "growthDeferredRevenue",
+      "note": "all open interest"
+    },
+    "oth_cur_liab_gr": {
+      "factor": "growthOtherCurrentLiabilities",
+      "name": "growthOtherCurrentLiabilities",
+      "note": "all open interest"
+    },
+    "tot_cur_liab_gr": {
+      "factor": "growthTotalCurrentLiabilities",
+      "name": "growthTotalCurrentLiabilities",
+      "note": "all open interest"
+    },
+    "long_term_debt_gr": {
+      "factor": "growthLongTermDebt",
+      "name": "growthLongTermDebt",
+      "note": "all open interest"
+    },
+    "def_rev_non_cur_gr": {
+      "factor": "growthDeferredRevenueNonCurrent",
+      "name": "growthDeferredRevenueNonCurrent",
+      "note": "all open interest"
+    },
+    "def_tax_liab_non_cur_gr": {
+      "factor": "growthDeferrredTaxLiabilitiesNonCurrent",
+      "name": "growthDeferrredTaxLiabilitiesNonCurrent",
+      "note": "all open interest"
+    },
+    "oth_non_cur_liab_gr": {
+      "factor": "growthOtherNonCurrentLiabilities",
+      "name": "growthOtherNonCurrentLiabilities",
+      "note": "all open interest"
+    },
+    "tot_non_cur_liab_gr": {
+      "factor": "growthTotalNonCurrentLiabilities",
+      "name": "growthTotalNonCurrentLiabilities",
+      "note": "all open interest"
+    },
+    "oth_liab_gr": {
+      "factor": "growthOtherLiabilities",
+      "name": "growthOtherLiabilities",
+      "note": "all open interest"
+    },
+    "tot_liab_gr": {
+      "factor": "growthTotalLiabilities",
+      "name": "growthTotalLiabilities",
+      "note": "all open interest"
+    },
+    "com_stock_gr": {
+      "factor": "growthCommonStock",
+      "name": "growthCommonStock",
+      "note": "all open interest"
+    },
+    "ret_earn_gr": {
+      "factor": "growthRetainedEarnings",
+      "name": "growthRetainedEarnings",
+      "note": "all open interest"
+    },
+    "acc_oth_comp_inc_loss_gr": {
+      "factor": "growthAccumulatedOtherComprehensiveIncomeLoss",
+      "name": "growthAccumulatedOtherComprehensiveIncomeLoss",
+      "note": "all open interest"
+    },
+    "oth_tot_stk_eq_gr": {
+      "factor": "growthOthertotalStockholdersEquity",
+      "name": "growthOthertotalStockholdersEquity",
+      "note": "all open interest"
+    },
+    "tot_stk_eq_gr": {
+      "factor": "growthTotalStockholdersEquity",
+      "name": "growthTotalStockholdersEquity",
+      "note": "all open interest"
+    },
+    "tot_liab_stk_eq_gr": {
+      "factor": "growthTotalLiabilitiesAndStockholdersEquity",
+      "name": "growthTotalLiabilitiesAndStockholdersEquity",
+      "note": "all open interest"
+    },
+    "tot_invest_gr": {
+      "factor": "growthTotalInvestments",
+      "name": "growthTotalInvestments",
+      "note": "all open interest"
+    },
+    "tot_debt_gr": {
+      "factor": "growthTotalDebt",
+      "name": "growthTotalDebt",
+      "note": "all open interest"
+    },
+    "net_debt_gr": {
+      "factor": "growthNetDebt",
+      "name": "growthNetDebt",
+      "note": "all open interest"
+    }
+  },
+  "IncomeStatementGrowth": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v3/income-statement-growth",
+      "params": {
+        "period": "quarter"
+      }
+    },
+    "rev_growth": {
+      "factor": "growthRevenue",
+      "name": "growthRevenue",
+      "note": "all open interest"
+    },
+    "cost_of_rev_growth": {
+      "factor": "growthCostOfRevenue",
+      "name": "growthCostOfRevenue",
+      "note": "all open interest"
+    },
+    "gross_profit_growth": {
+      "factor": "growthGrossProfit",
+      "name": "growthGrossProfit",
+      "note": "all open interest"
+    },
+    "gross_profit_ratio_growth": {
+      "factor": "growthGrossProfitRatio",
+      "name": "growthGrossProfitRatio",
+      "note": "all open interest"
+    },
+    "rd_exp_growth": {
+      "factor": "growthResearchAndDevelopmentExpenses",
+      "name": "growthResearchAndDevelopmentExpenses",
+      "note": "all open interest"
+    },
+    "gen_admin_exp_growth": {
+      "factor": "growthGeneralAndAdministrativeExpenses",
+      "name": "growthGeneralAndAdministrativeExpenses",
+      "note": "all open interest"
+    },
+    "sell_mkt_exp_growth": {
+      "factor": "growthSellingAndMarketingExpenses",
+      "name": "growthSellingAndMarketingExpenses",
+      "note": "all open interest"
+    },
+    "other_exp_growth": {
+      "factor": "growthOtherExpenses",
+      "name": "growthOtherExpenses",
+      "note": "all open interest"
+    },
+    "op_exp_growth": {
+      "factor": "growthOperatingExpenses",
+      "name": "growthOperatingExpenses",
+      "note": "all open interest"
+    },
+    "cost_exp_growth": {
+      "factor": "growthCostAndExpenses",
+      "name": "growthCostAndExpenses",
+      "note": "all open interest"
+    },
+    "interest_exp_growth": {
+      "factor": "growthInterestExpense",
+      "name": "growthInterestExpense",
+      "note": "all open interest"
+    },
+    "dep_amort_growth": {
+      "factor": "growthDepreciationAndAmortization",
+      "name": "growthDepreciationAndAmortization",
+      "note": "all open interest"
+    },
+    "ebitda_growth": {
+      "factor": "growthEBITDA",
+      "name": "growthEBITDA",
+      "note": "all open interest"
+    },
+    "ebitda_ratio_growth": {
+      "factor": "growthEBITDARatio",
+      "name": "growthEBITDARatio",
+      "note": "all open interest"
+    },
+    "op_income_growth": {
+      "factor": "growthOperatingIncome",
+      "name": "growthOperatingIncome",
+      "note": "all open interest"
+    },
+    "op_income_ratio_growth": {
+      "factor": "growthOperatingIncomeRatio",
+      "name": "growthOperatingIncomeRatio",
+      "note": "all open interest"
+    },
+    "other_inc_exp_net_growth": {
+      "factor": "growthTotalOtherIncomeExpensesNet",
+      "name": "growthTotalOtherIncomeExpensesNet",
+      "note": "all open interest"
+    },
+    "income_bfr_tax_growth": {
+      "factor": "growthIncomeBeforeTax",
+      "name": "growthIncomeBeforeTax",
+      "note": "all open interest"
+    },
+    "income_bfr_tax_ratio_growth": {
+      "factor": "growthIncomeBeforeTaxRatio",
+      "name": "growthIncomeBeforeTaxRatio",
+      "note": "all open interest"
+    },
+    "income_tax_exp_growth": {
+      "factor": "growthIncomeTaxExpense",
+      "name": "growthIncomeTaxExpense",
+      "note": "all open interest"
+    },
+    "net_income_growth": {
+      "factor": "growthNetIncome",
+      "name": "growthNetIncome",
+      "note": "all open interest"
+    },
+    "net_income_ratio_growth": {
+      "factor": "growthNetIncomeRatio",
+      "name": "growthNetIncomeRatio",
+      "note": "all open interest"
+    },
+    "eps_growth": {
+      "factor": "growthEPS",
+      "name": "growthEPS",
+      "note": "all open interest"
+    },
+    "eps_diluted_growth": {
+      "factor": "growthEPSDiluted",
+      "name": "growthEPSDiluted",
+      "note": "all open interest"
+    },
+    "avg_shares_out_growth": {
+      "factor": "growthWeightedAverageShsOut",
+      "name": "growthWeightedAverageShsOut",
+      "note": "all open interest"
+    },
+    "avg_shares_out_dil_growth": {
+      "factor": "growthWeightedAverageShsOutDil",
+      "name": "growthWeightedAverageShsOutDil",
+      "note": "all open interest"
+    }
+  },
+  "FinancialGrowth": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v3/financial-growth",
+      "params": {
+        "period": "quarter"
+      }
+    },
+    "rev_growth": {
+      "factor": "revenueGrowth",
+      "name": "revenueGrowth",
+      "note": "all open interest"
+    },
+    "gross_profit_growth": {
+      "factor": "grossProfitGrowth",
+      "name": "grossProfitGrowth",
+      "note": "all open interest"
+    },
+    "ebit_growth": {
+      "factor": "ebitgrowth",
+      "name": "ebitgrowth",
+      "note": "all open interest"
+    },
+    "op_income_growth": {
+      "factor": "operatingIncomeGrowth",
+      "name": "operatingIncomeGrowth",
+      "note": "all open interest"
+    },
+    "net_income_growth": {
+      "factor": "netIncomeGrowth",
+      "name": "netIncomeGrowth",
+      "note": "all open interest"
+    },
+    "eps_growth": {
+      "factor": "epsgrowth",
+      "name": "epsgrowth",
+      "note": "all open interest"
+    },
+    "eps_diluted_growth": {
+      "factor": "epsdilutedGrowth",
+      "name": "epsdilutedGrowth",
+      "note": "all open interest"
+    },
+    "avg_shares_growth": {
+      "factor": "weightedAverageSharesGrowth",
+      "name": "weightedAverageSharesGrowth",
+      "note": "all open interest"
+    },
+    "avg_shares_diluted_growth": {
+      "factor": "weightedAverageSharesDilutedGrowth",
+      "name": "weightedAverageSharesDilutedGrowth",
+      "note": "all open interest"
+    },
+    "div_per_share_growth": {
+      "factor": "dividendsperShareGrowth",
+      "name": "dividendsperShareGrowth",
+      "note": "all open interest"
+    },
+    "op_cash_flow_growth": {
+      "factor": "operatingCashFlowGrowth",
+      "name": "operatingCashFlowGrowth",
+      "note": "all open interest"
+    },
+    "free_cash_flow_growth": {
+      "factor": "freeCashFlowGrowth",
+      "name": "freeCashFlowGrowth",
+      "note": "all open interest"
+    },
+    "ten_y_rev_growth_per_share": {
+      "factor": "tenYRevenueGrowthPerShare",
+      "name": "tenYRevenueGrowthPerShare",
+      "note": "all open interest"
+    },
+    "five_y_rev_growth_per_share": {
+      "factor": "fiveYRevenueGrowthPerShare",
+      "name": "fiveYRevenueGrowthPerShare",
+      "note": "all open interest"
+    },
+    "three_y_rev_growth_per_share": {
+      "factor": "threeYRevenueGrowthPerShare",
+      "name": "threeYRevenueGrowthPerShare",
+      "note": "all open interest"
+    },
+    "ten_y_op_cf_growth_per_share": {
+      "factor": "tenYOperatingCFGrowthPerShare",
+      "name": "tenYOperatingCFGrowthPerShare",
+      "note": "all open interest"
+    },
+    "five_y_op_cf_growth_per_share": {
+      "factor": "fiveYOperatingCFGrowthPerShare",
+      "name": "fiveYOperatingCFGrowthPerShare",
+      "note": "all open interest"
+    },
+    "three_y_op_cf_growth_per_share": {
+      "factor": "threeYOperatingCFGrowthPerShare",
+      "name": "threeYOperatingCFGrowthPerShare",
+      "note": "all open interest"
+    },
+    "ten_y_net_income_growth_per_share": {
+      "factor": "tenYNetIncomeGrowthPerShare",
+      "name": "tenYNetIncomeGrowthPerShare",
+      "note": "all open interest"
+    },
+    "five_y_net_income_growth_per_share": {
+      "factor": "fiveYNetIncomeGrowthPerShare",
+      "name": "fiveYNetIncomeGrowthPerShare",
+      "note": "all open interest"
+    },
+    "three_y_net_income_growth_per_share": {
+      "factor": "threeYNetIncomeGrowthPerShare",
+      "name": "threeYNetIncomeGrowthPerShare",
+      "note": "all open interest"
+    },
+    "ten_y_shareholders_equity_growth_per_share": {
+      "factor": "tenYShareholdersEquityGrowthPerShare",
+      "name": "tenYShareholdersEquityGrowthPerShare",
+      "note": "all open interest"
+    },
+    "five_y_shareholders_equity_growth_per_share": {
+      "factor": "fiveYShareholdersEquityGrowthPerShare",
+      "name": "fiveYShareholdersEquityGrowthPerShare",
+      "note": "all open interest"
+    },
+    "three_y_shareholders_equity_growth_per_share": {
+      "factor": "threeYShareholdersEquityGrowthPerShare",
+      "name": "threeYShareholdersEquityGrowthPerShare",
+      "note": "all open interest"
+    },
+    "ten_y_div_per_share_growth_per_share": {
+      "factor": "tenYDividendperShareGrowthPerShare",
+      "name": "tenYDividendperShareGrowthPerShare",
+      "note": "all open interest"
+    },
+    "five_y_div_per_share_growth_per_share": {
+      "factor": "fiveYDividendperShareGrowthPerShare",
+      "name": "fiveYDividendperShareGrowthPerShare",
+      "note": "all open interest"
+    },
+    "three_y_div_per_share_growth_per_share": {
+      "factor": "threeYDividendperShareGrowthPerShare",
+      "name": "threeYDividendperShareGrowthPerShare",
+      "note": "all open interest"
+    },
+    "receivables_growth": {
+      "factor": "receivablesGrowth",
+      "name": "receivablesGrowth",
+      "note": "all open interest"
+    },
+    "inventory_growth": {
+      "factor": "inventoryGrowth",
+      "name": "inventoryGrowth",
+      "note": "all open interest"
+    },
+    "asset_growth": {
+      "factor": "assetGrowth",
+      "name": "assetGrowth",
+      "note": "all open interest"
+    },
+    "book_value_per_share_growth": {
+      "factor": "bookValueperShareGrowth",
+      "name": "bookValueperShareGrowth",
+      "note": "all open interest"
+    },
+    "debt_growth": {
+      "factor": "debtGrowth",
+      "name": "debtGrowth",
+      "note": "all open interest"
+    },
+    "rd_expense_growth": {
+      "factor": "rdexpenseGrowth",
+      "name": "rdexpenseGrowth",
+      "note": "all open interest"
+    },
+    "sga_expenses_growth": {
+      "factor": "sgaexpensesGrowth",
+      "name": "sgaexpensesGrowth",
+      "note": "all open interest"
+    }
+  },
+  "AnalystEstimates": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v3/analyst-estimates",
+      "params": {
+        "period": "quarter"
+      }
+    },
+    "revenue_low": {
+      "factor": "estimatedRevenueLow",
+      "name": "estimatedRevenueLow",
+      "note": "all open interest"
+    },
+    "revenue_high": {
+      "factor": "estimatedRevenueHigh",
+      "name": "estimatedRevenueHigh",
+      "note": "all open interest"
+    },
+    "revenue_avg": {
+      "factor": "estimatedRevenueAvg",
+      "name": "estimatedRevenueAvg",
+      "note": "all open interest"
+    },
+    "ebitda_low": {
+      "factor": "estimatedEbitdaLow",
+      "name": "estimatedEbitdaLow",
+      "note": "all open interest"
+    },
+    "ebitda_high": {
+      "factor": "estimatedEbitdaHigh",
+      "name": "estimatedEbitdaHigh",
+      "note": "all open interest"
+    },
+    "ebitda_avg": {
+      "factor": "estimatedEbitdaAvg",
+      "name": "estimatedEbitdaAvg",
+      "note": "all open interest"
+    },
+    "ebit_low": {
+      "factor": "estimatedEbitLow",
+      "name": "estimatedEbitLow",
+      "note": "all open interest"
+    },
+    "ebit_high": {
+      "factor": "estimatedEbitHigh",
+      "name": "estimatedEbitHigh",
+      "note": "all open interest"
+    },
+    "ebit_avg": {
+      "factor": "estimatedEbitAvg",
+      "name": "estimatedEbitAvg",
+      "note": "all open interest"
+    },
+    "net_income_low": {
+      "factor": "estimatedNetIncomeLow",
+      "name": "estimatedNetIncomeLow",
+      "note": "all open interest"
+    },
+    "net_income_high": {
+      "factor": "estimatedNetIncomeHigh",
+      "name": "estimatedNetIncomeHigh",
+      "note": "all open interest"
+    },
+    "net_income_avg": {
+      "factor": "estimatedNetIncomeAvg",
+      "name": "estimatedNetIncomeAvg",
+      "note": "all open interest"
+    },
+    "sga_expense_low": {
+      "factor": "estimatedSgaExpenseLow",
+      "name": "estimatedSgaExpenseLow",
+      "note": "all open interest"
+    },
+    "sga_expense_high": {
+      "factor": "estimatedSgaExpenseHigh",
+      "name": "estimatedSgaExpenseHigh",
+      "note": "all open interest"
+    },
+    "sga_expense_avg": {
+      "factor": "estimatedSgaExpenseAvg",
+      "name": "estimatedSgaExpenseAvg",
+      "note": "all open interest"
+    },
+    "eps_avg": {
+      "factor": "estimatedEpsAvg",
+      "name": "estimatedEpsAvg",
+      "note": "all open interest"
+    },
+    "eps_high": {
+      "factor": "estimatedEpsHigh",
+      "name": "estimatedEpsHigh",
+      "note": "all open interest"
+    },
+    "eps_low": {
+      "factor": "estimatedEpsLow",
+      "name": "estimatedEpsLow",
+      "note": "all open interest"
+    }
+  },
+  "ReportedIncomeStatements": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v3/income-statement-as-reported"
+    },
+    "cost_goods_services": {
+      "factor": "costofgoodsandservicessold",
+      "name": "costofgoodsandservicessold",
+      "note": "all open interest"
+    },
+    "net_income": {
+      "factor": "netincomeloss",
+      "name": "netincomeloss",
+      "note": "all open interest"
+    },
+    "rd_expense": {
+      "factor": "researchanddevelopmentexpense",
+      "name": "researchanddevelopmentexpense",
+      "note": "all open interest"
+    },
+    "gross_profit": {
+      "factor": "grossprofit",
+      "name": "grossprofit",
+      "note": "all open interest"
+    },
+    "aoci_reclass_sec": {
+      "factor": "othercomprehensiveincomelossreclassificationadjustmentfromaociforsaleofsecuritiesnetoftax",
+      "name": "othercomprehensiveincomelossreclassificationadjustmentfromaociforsaleofsecuritiesnetoftax",
+      "note": "all open interest"
+    },
+    "aoci_afs_sec_adj": {
+      "factor": "othercomprehensiveincomelossavailableforsalesecuritiesadjustmentnetoftax",
+      "name": "othercomprehensiveincomelossavailableforsalesecuritiesadjustmentnetoftax",
+      "note": "all open interest"
+    },
+    "aoci_deriv_gain_loss": {
+      "factor": "othercomprehensiveincomelossderivativeinstrumentgainlossbeforereclassificationaftertax",
+      "name": "othercomprehensiveincomelossderivativeinstrumentgainlossbeforereclassificationaftertax",
+      "note": "all open interest"
+    },
+    "aoci_forex_adj": {
+      "factor": "othercomprehensiveincomelossforeigncurrencytransactionandtranslationadjustmentnetoftax",
+      "name": "othercomprehensiveincomelossforeigncurrencytransactionandtranslationadjustmentnetoftax",
+      "note": "all open interest"
+    },
+    "avg_diluted_shares": {
+      "factor": "weightedaveragenumberofdilutedsharesoutstanding",
+      "name": "weightedaveragenumberofdilutedsharesoutstanding",
+      "note": "all open interest"
+    },
+    "avg_basic_shares": {
+      "factor": "weightedaveragenumberofsharesoutstandingbasic",
+      "name": "weightedaveragenumberofsharesoutstandingbasic",
+      "note": "all open interest"
+    },
+    "op_income_loss": {
+      "factor": "operatingincomeloss",
+      "name": "operatingincomeloss",
+      "note": "all open interest"
+    },
+    "non_op_income_exp": {
+      "factor": "nonoperatingincomeexpense",
+      "name": "nonoperatingincomeexpense",
+      "note": "all open interest"
+    },
+    "income_loss_pre_tax": {
+      "factor": "incomelossfromcontinuingoperationsbeforeincometaxesextraordinaryitemsnoncontrollinginterest",
+      "name": "incomelossfromcontinuingoperationsbeforeincometaxesextraordinaryitemsnoncontrollinginterest",
+      "note": "all open interest"
+    },
+    "eps_basic": {
+      "factor": "earningspersharebasic",
+      "name": "earningspersharebasic",
+      "note": "all open interest"
+    },
+    "tax_exp_benefit": {
+      "factor": "incometaxexpensebenefit",
+      "name": "incometaxexpensebenefit",
+      "note": "all open interest"
+    },
+    "aoci_unrealized_gl": {
+      "factor": "othercomprehensiveincomeunrealizedholdinggainlossonsecuritiesarisingduringperiodnetoftax",
+      "name": "othercomprehensiveincomeunrealizedholdinggainlossonsecuritiesarisingduringperiodnetoftax",
+      "note": "all open interest"
+    },
+    "revenue_ex_tax": {
+      "factor": "revenuefromcontractwithcustomerexcludingassessedtax",
+      "name": "revenuefromcontractwithcustomerexcludingassessedtax",
+      "note": "all open interest"
+    },
+    "eps_diluted": {
+      "factor": "earningspersharediluted",
+      "name": "earningspersharediluted",
+      "note": "all open interest"
+    },
+    "op_expenses": {
+      "factor": "operatingexpenses",
+      "name": "operatingexpenses",
+      "note": "all open interest"
+    },
+    "aoci_deriv_post_reclass": {
+      "factor": "othercomprehensiveincomelossderivativeinstrumentgainlossafterreclassificationandtax",
+      "name": "othercomprehensiveincomelossderivativeinstrumentgainlossafterreclassificationandtax",
+      "note": "all open interest"
+    },
+    "sga_expense": {
+      "factor": "sellinggeneralandadministrativeexpense",
+      "name": "sellinggeneralandadministrativeexpense",
+      "note": "all open interest"
+    },
+    "aoci_deriv_reclass_post_tax": {
+      "factor": "othercomprehensiveincomelossderivativeinstrumentgainlossreclassificationaftertax",
+      "name": "othercomprehensiveincomelossderivativeinstrumentgainlossreclassificationaftertax",
+      "note": "all open interest"
+    },
+    "aoci_loss_parent": {
+      "factor": "othercomprehensiveincomelossnetoftaxportionattributabletoparent",
+      "name": "othercomprehensiveincomelossnetoftaxportionattributabletoparent",
+      "note": "all open interest"
+    },
+    "comp_income_post_tax": {
+      "factor": "comprehensiveincomenetoftax",
+      "name": "comprehensiveincomenetoftax",
+      "note": "all open interest"
+    }
+  },
+  "CompanyRating": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v3/historical-rating"
+    },
+    "score": {
+      "factor": "ratingScore",
+      "name": "ratingScore",
+      "note": "all open interest"
+    },
+    "dcf_score": {
+      "factor": "ratingDetailsDCFScore",
+      "name": "ratingDetailsDCFScore",
+      "note": "all open interest"
+    },
+    "roe_score": {
+      "factor": "ratingDetailsROEScore",
+      "name": "ratingDetailsROEScore",
+      "note": "all open interest"
+    },
+    "roa_score": {
+      "factor": "ratingDetailsROAScore",
+      "name": "ratingDetailsROAScore",
+      "note": "all open interest"
+    },
+    "de_score": {
+      "factor": "ratingDetailsDEScore",
+      "name": "ratingDetailsDEScore",
+      "note": "all open interest"
+    },
+    "pe_score": {
+      "factor": "ratingDetailsPEScore",
+      "name": "ratingDetailsPEScore",
+      "note": "all open interest"
+    },
+    "pb_score": {
+      "factor": "ratingDetailsPBScore",
+      "name": "ratingDetailsPBScore",
+      "note": "all open interest"
+    }
+  },
+  "DiscountedCashFlow": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v3/historical-daily-discounted-cash-flow"
+    },
+    "dcf": {
+      "factor": "dcf",
+      "name": "dcf",
+      "note": "all open interest"
+    }
+  },
+  "NumberOfEmployees": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v4/historical/employee_count",
+      "t_key": "periodOfReport",
+      "symbol_in_query": true
+    },
+    "employee_count": {
+      "factor": "employeeCount",
+      "name": "employeeCount",
+      "note": "all open interest"
+    }
+  },
+  "CompanyKeyMetrics": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v3/key-metrics",
+      "params": {
+        "period": "quarter"
+      }
+    },
+    "sps": {
+      "factor": "revenuePerShare",
+      "name": "revenuePerShare",
+      "note": "all open interest"
+    },
+    "eps": {
+      "factor": "netIncomePerShare",
+      "name": "netIncomePerShare",
+      "note": "all open interest"
+    },
+    "operating_cfps": {
+      "factor": "operatingCashFlowPerShare",
+      "name": "operatingCashFlowPerShare",
+      "note": "all open interest"
+    },
+    "free_cfps": {
+      "factor": "freeCashFlowPerShare",
+      "name": "freeCashFlowPerShare",
+      "note": "all open interest"
+    },
+    "cps": {
+      "factor": "cashPerShare",
+      "name": "cashPerShare",
+      "note": "all open interest"
+    },
+    "bps": {
+      "factor": "bookValuePerShare",
+      "name": "bookValuePerShare",
+      "note": "all open interest"
+    },
+    "tangible_bps": {
+      "factor": "tangibleBookValuePerShare",
+      "name": "tangibleBookValuePerShare",
+      "note": "all open interest"
+    },
+    "shareholders_equity_per_share": {
+      "factor": "shareholdersEquityPerShare",
+      "name": "shareholdersEquityPerShare",
+      "note": "all open interest"
+    },
+    "interest_debt_per_share": {
+      "factor": "interestDebtPerShare",
+      "name": "interestDebtPerShare",
+      "note": "all open interest"
+    },
+    "market_cap": {
+      "factor": "marketCap",
+      "name": "marketCap",
+      "note": "all open interest"
+    },
+    "enterprise_value": {
+      "factor": "enterpriseValue",
+      "name": "enterpriseValue",
+      "note": "all open interest"
+    },
+    "per": {
+      "factor": "peRatio",
+      "name": "peRatio",
+      "note": "all open interest"
+    },
+    "psr": {
+      "factor": "priceToSalesRatio",
+      "name": "priceToSalesRatio",
+      "note": "all open interest"
+    },
+    "operating_pcr": {
+      "factor": "pocfratio",
+      "name": "pocfratio",
+      "note": "all open interest"
+    },
+    "free_pcr": {
+      "factor": "pfcfRatio",
+      "name": "pfcfRatio",
+      "note": "all open interest"
+    },
+    "pbr": {
+      "factor": "pbRatio",
+      "name": "pbRatio",
+      "note": "all open interest"
+    },
+    "tangible_pbr": {
+      "factor": "ptbRatio",
+      "name": "ptbRatio",
+      "note": "all open interest"
+    },
+    "ev_to_sales": {
+      "factor": "evToSales",
+      "name": "evToSales",
+      "note": "all open interest"
+    },
+    "ev_to_ebitda": {
+      "factor": "enterpriseValueOverEBITDA",
+      "name": "enterpriseValueOverEBITDA",
+      "note": "all open interest"
+    },
+    "ev_to_operating_cash_flow": {
+      "factor": "evToOperatingCashFlow",
+      "name": "evToOperatingCashFlow",
+      "note": "all open interest"
+    },
+    "ev_to_free_cash_flow": {
+      "factor": "evToFreeCashFlow",
+      "name": "evToFreeCashFlow",
+      "note": "all open interest"
+    },
+    "earnings_yield": {
+      "factor": "earningsYield",
+      "name": "earningsYield",
+      "note": "all open interest"
+    },
+    "free_cash_flow_yield": {
+      "factor": "freeCashFlowYield",
+      "name": "freeCashFlowYield",
+      "note": "all open interest"
+    },
+    "debt_to_equity": {
+      "factor": "debtToEquity",
+      "name": "debtToEquity",
+      "note": "all open interest"
+    },
+    "debt_to_assets": {
+      "factor": "debtToAssets",
+      "name": "debtToAssets",
+      "note": "all open interest"
+    },
+    "net_debt_to_ebtida": {
+      "factor": "netDebtToEBITDA",
+      "name": "netDebtToEBITDA",
+      "note": "all open interest"
+    },
+    "current_ratio": {
+      "factor": "currentRatio",
+      "name": "currentRatio",
+      "note": "all open interest"
+    },
+    "interest_coverage": {
+      "factor": "interestCoverage",
+      "name": "interestCoverage",
+      "note": "all open interest"
+    },
+    "income_quality": {
+      "factor": "incomeQuality",
+      "name": "incomeQuality",
+      "note": "all open interest"
+    },
+    "dividend_yield": {
+      "factor": "dividendYield",
+      "name": "dividendYield",
+      "note": "all open interest"
+    },
+    "payout_ratio": {
+      "factor": "payoutRatio",
+      "name": "payoutRatio",
+      "note": "all open interest"
+    },
+    "sales_admin_to_revenue": {
+      "factor": "salesGeneralAndAdministrativeToRevenue",
+      "name": "salesGeneralAndAdministrativeToRevenue",
+      "note": "all open interest"
+    },
+    "research_dev_to_revenue": {
+      "factor": "researchAndDdevelopementToRevenue",
+      "name": "researchAndDdevelopementToRevenue",
+      "note": "all open interest"
+    },
+    "intangibles_to_assets": {
+      "factor": "intangiblesToTotalAssets",
+      "name": "intangiblesToTotalAssets",
+      "note": "all open interest"
+    },
+    "capex_to_operating_cash_flow": {
+      "factor": "capexToOperatingCashFlow",
+      "name": "capexToOperatingCashFlow",
+      "note": "all open interest"
+    },
+    "capex_to_revenue": {
+      "factor": "capexToRevenue",
+      "name": "capexToRevenue",
+      "note": "all open interest"
+    },
+    "capex_to_depreciation": {
+      "factor": "capexToDepreciation",
+      "name": "capexToDepreciation",
+      "note": "all open interest"
+    },
+    "stock_based_compensation_to_revenue": {
+      "factor": "stockBasedCompensationToRevenue",
+      "name": "stockBasedCompensationToRevenue",
+      "note": "all open interest"
+    },
+    "graham_num": {
+      "factor": "grahamNumber",
+      "name": "grahamNumber",
+      "note": "all open interest"
+    },
+    "roic": {
+      "factor": "roic",
+      "name": "roic",
+      "note": "all open interest"
+    },
+    "return_on_tangible_assets": {
+      "factor": "returnOnTangibleAssets",
+      "name": "returnOnTangibleAssets",
+      "note": "all open interest"
+    },
+    "graham_netnet": {
+      "factor": "grahamNetNet",
+      "name": "grahamNetNet",
+      "note": "all open interest"
+    },
+    "working_capital": {
+      "factor": "workingCapital",
+      "name": "workingCapital",
+      "note": "all open interest"
+    },
+    "tangible_asset_value": {
+      "factor": "tangibleAssetValue",
+      "name": "tangibleAssetValue",
+      "note": "all open interest"
+    },
+    "ncav": {
+      "factor": "netCurrentAssetValue",
+      "name": "netCurrentAssetValue",
+      "note": "all open interest"
+    },
+    "invested_capital": {
+      "factor": "investedCapital",
+      "name": "investedCapital",
+      "note": "all open interest"
+    },
+    "average_receivables": {
+      "factor": "averageReceivables",
+      "name": "averageReceivables",
+      "note": "all open interest"
+    },
+    "average_payables": {
+      "factor": "averagePayables",
+      "name": "averagePayables",
+      "note": "all open interest"
+    },
+    "average_inventory": {
+      "factor": "averageInventory",
+      "name": "averageInventory",
+      "note": "all open interest"
+    },
+    "days_sales_outstanding": {
+      "factor": "daysSalesOutstanding",
+      "name": "daysSalesOutstanding",
+      "note": "all open interest"
+    },
+    "days_payables_outstanding": {
+      "factor": "daysPayablesOutstanding",
+      "name": "daysPayablesOutstanding",
+      "note": "all open interest"
+    },
+    "days_of_inventory_on_hand": {
+      "factor": "daysOfInventoryOnHand",
+      "name": "daysOfInventoryOnHand",
+      "note": "all open interest"
+    },
+    "receivables_turnover": {
+      "factor": "receivablesTurnover",
+      "name": "receivablesTurnover",
+      "note": "all open interest"
+    },
+    "payables_turnover": {
+      "factor": "payablesTurnover",
+      "name": "payablesTurnover",
+      "note": "all open interest"
+    },
+    "inventory_turnover": {
+      "factor": "inventoryTurnover",
+      "name": "inventoryTurnover",
+      "note": "all open interest"
+    },
+    "roe": {
+      "factor": "roe",
+      "name": "roe",
+      "note": "all open interest"
+    },
+    "capex_per_share": {
+      "factor": "capexPerShare",
+      "name": "capexPerShare",
+      "note": "all open interest"
+    }
+  },
+  "CompanyEnterpriseValue": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "ClientMeta",
+      "api": "api/v3/enterprise-values",
+      "params": {
+        "period": "quarter"
+      }
+    },
+    "stock_price": {
+      "factor": "stockPrice",
+      "name": "stockPrice",
+      "note": "all open interest"
+    },
+    "shares_num": {
+      "factor": "numberOfShares",
+      "name": "numberOfShares",
+      "note": "all open interest"
+    },
+    "market_cap": {
+      "factor": "marketCapitalization",
+      "name": "marketCapitalization",
+      "note": "all open interest"
+    },
+    "cash_minus": {
+      "factor": "minusCashAndCashEquivalents",
+      "name": "minusCashAndCashEquivalents",
+      "note": "all open interest"
+    },
+    "new_debt": {
+      "factor": "addTotalDebt",
+      "name": "addTotalDebt",
+      "note": "all open interest"
+    },
+    "enterprise_value": {
+      "factor": "enterpriseValue",
+      "name": "enterpriseValue",
+      "note": "all open interest"
+    }
+  },
+  "HistoricalPrice": {
+    "setting": {
+      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "metaclass": "HistoricalPriceFullMeta",
+      "api": "api/v3/historical-price-full"
+    },
+    "adj_close": {
+      "factor": "adjClose",
+      "name": "adjusted closing price",
+      "note": "all open interest"
+    },
+    "low": {
+      "factor": "low",
+      "name": "low",
+      "note": "all open interest"
+    },
+    "high": {
+      "factor": "high",
+      "name": "high",
+      "note": "all open interest"
+    },
+    "change": {
+      "factor": "change",
+      "name": "change",
+      "note": "all open interest"
+    },
+    "change_percent": {
+      "factor": "changePercent",
+      "name": "changePercent",
+      "note": "all open interest"
+    },
+    "vwap": {
+      "factor": "vwap",
+      "name": "vwap",
+      "note": "all open interest"
+    },
+    "volume": {
+      "factor": "volume",
+      "name": "volume",
+      "note": "all open interest"
+    }
+  }
+}

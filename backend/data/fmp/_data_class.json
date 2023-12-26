@@ -2,7 +2,7 @@
   "InstitutionalStockOwnership": {
     "setting": {
       "name": "Institutional Stock Ownership",
-      "note": "Provides institutional ownership data for specified stocks, including holdings, investment changes, and position details",
+      "note": "Provides data on stock holdings by institutional investors.",
       "metaclass": "ClientMeta",
       "api": "api/v4/institutional-ownership/symbol-ownership",
       "symbol_in_query": true,
@@ -13,167 +13,167 @@
     "investorsHolding": {
       "factor": "investorsHolding",
       "name": "Investors Holding",
-      "note": "The number of shares held by institutions"
+      "note": "The total number of shares held by institutional investors."
     },
     "lastInvestorsHolding": {
       "factor": "lastInvestorsHolding",
-      "name": "Number of 13F Shares",
-      "note": "The number of shares as reported in the 13F filings"
+      "name": "Last Investors Holding",
+      "note": "The number of shares held by institutional investors in the previous reporting period."
     },
     "investorsHoldingChange": {
       "factor": "investorsHoldingChange",
-      "name": "Total Invested",
-      "note": "Total amount invested by institutions in the stock."
+      "name": "Investors Holding Change",
+      "note": "The change in the number of shares held by institutional investors compared to the last reporting period."
     },
     "numberOf13Fshares": {
       "factor": "numberOf13Fshares",
-      "name": "numberOf13Fshares",
-      "note": "all open interest"
+      "name": "Number of 13F Shares",
+      "note": "The number of shares reported in the latest 13F filings, indicating institutional holdings."
     },
     "lastNumberOf13Fshares": {
       "factor": "lastNumberOf13Fshares",
-      "name": "lastNumberOf13Fshares",
-      "note": "all open interest"
+      "name": "Last Number of 13F Shares",
+      "note": "The number of shares reported in the previous 13F filings, providing historical insight into institutional holdings."
     },
     "numberOf13FsharesChange": {
       "factor": "numberOf13FsharesChange",
-      "name": "numberOf13FsharesChange",
-      "note": "all open interest"
+      "name": "Number of 13F Shares Change",
+      "note": "The change in the number of shares reported in 13F filings compared to the previous period, indicating shifts in institutional holdings."
     },
     "totalInvested": {
       "factor": "totalInvested",
-      "name": "totalInvested",
-      "note": "all open interest"
+      "name": "Total Invested",
+      "note": "The total monetary value invested by institutional investors in the stock."
     },
     "lastTotalInvested": {
       "factor": "lastTotalInvested",
-      "name": "lastTotalInvested",
-      "note": "all open interest"
+      "name": "Last Total Invested",
+      "note": "The total monetary value invested by institutional investors in the stock during the previous reporting period."
     },
     "totalInvestedChange": {
       "factor": "totalInvestedChange",
-      "name": "totalInvestedChange",
-      "note": "all open interest"
+      "name": "Total Invested Change",
+      "note": "The change in the total monetary value invested by institutional investors compared to the last reporting period."
     },
     "ownershipPercent": {
       "factor": "ownershipPercent",
-      "name": "ownershipPercent",
-      "note": "all open interest"
+      "name": "Ownership Percent",
+      "note": "The percentage of the company's stock owned by institutional investors."
     },
     "lastOwnershipPercent": {
       "factor": "lastOwnershipPercent",
-      "name": "lastOwnershipPercent",
-      "note": "all open interest"
+      "name": "Last Ownership Percent",
+      "note": "The percentage of the company's stock owned by institutional investors in the previous reporting period."
     },
     "ownershipPercentChange": {
       "factor": "ownershipPercentChange",
-      "name": "ownershipPercentChange",
-      "note": "all open interest"
+      "name": "Ownership Percent Change",
+      "note": "The change in the percentage of the company's stock owned by institutional investors compared to the last reporting period."
     },
     "newPositions": {
       "factor": "newPositions",
-      "name": "newPositions",
-      "note": "all open interest"
+      "name": "New Positions",
+      "note": "The number of new stock positions acquired by institutional investors in the current reporting period."
     },
     "lastNewPositions": {
       "factor": "lastNewPositions",
-      "name": "lastNewPositions",
-      "note": "all open interest"
+      "name": "Last New Positions",
+      "note": "The number of new stock positions acquired by institutional investors in the previous reporting period."
     },
     "newPositionsChange": {
       "factor": "newPositionsChange",
-      "name": "newPositionsChange",
-      "note": "all open interest"
+      "name": "New Positions Change",
+      "note": "The change in the number of new positions opened by institutional investors compared to the last reporting period."
     },
     "increasedPositions": {
       "factor": "increasedPositions",
-      "name": "increasedPositions",
-      "note": "all open interest"
+      "name": "Increased Positions",
+      "note": "The number of existing stock positions that institutional investors have increased in the current reporting period."
     },
     "lastIncreasedPositions": {
       "factor": "lastIncreasedPositions",
-      "name": "lastIncreasedPositions",
-      "note": "all open interest"
+      "name": "Last Increased Positions",
+      "note": "The number of existing stock positions that institutional investors had increased in the previous reporting period."
     },
     "increasedPositionsChange": {
       "factor": "increasedPositionsChange",
-      "name": "increasedPositionsChange",
-      "note": "all open interest"
+      "name": "Increased Positions Change",
+      "note": "The change in the number of increased positions by institutional investors compared to the last reporting period."
     },
     "closedPositions": {
       "factor": "closedPositions",
-      "name": "closedPositions",
-      "note": "all open interest"
+      "name": "Closed Positions",
+      "note": "The number of stock positions that institutional investors have closed in the current reporting period."
     },
     "lastClosedPositions": {
       "factor": "lastClosedPositions",
-      "name": "lastClosedPositions",
-      "note": "all open interest"
+      "name": "Last Closed Positions",
+      "note": "The number of stock positions that institutional investors had closed in the previous reporting period."
     },
     "closedPositionsChange": {
       "factor": "closedPositionsChange",
-      "name": "closedPositionsChange",
-      "note": "all open interest"
+      "name": "Closed Positions Change",
+      "note": "The change in the number of closed positions by institutional investors compared to the last reporting period."
     },
     "reducedPositions": {
       "factor": "reducedPositions",
-      "name": "reducedPositions",
-      "note": "all open interest"
+      "name": "Reduced Positions",
+      "note": "The number of stock positions that institutional investors have reduced in the current reporting period."
     },
     "lastReducedPositions": {
       "factor": "lastReducedPositions",
-      "name": "lastReducedPositions",
-      "note": "all open interest"
+      "name": "Last Reduced Positions",
+      "note": "The number of stock positions that institutional investors had reduced in the previous reporting period."
     },
     "reducedPositionsChange": {
       "factor": "reducedPositionsChange",
-      "name": "reducedPositionsChange",
-      "note": "all open interest"
+      "name": "Reduced Positions Change",
+      "note": "The change in the number of reduced positions by institutional investors compared to the last reporting period."
     },
     "totalCalls": {
       "factor": "totalCalls",
-      "name": "totalCalls",
-      "note": "all open interest"
+      "name": "Total Calls",
+      "note": "The total number of call options held by institutional investors in the stock."
     },
     "lastTotalCalls": {
       "factor": "lastTotalCalls",
-      "name": "lastTotalCalls",
-      "note": "all open interest"
+      "name": "Last Total Calls",
+      "note": "The total number of call options held by institutional investors in the stock in the previous reporting period."
     },
     "totalCallsChange": {
       "factor": "totalCallsChange",
-      "name": "totalCallsChange",
-      "note": "all open interest"
+      "name": "Total Calls Change",
+      "note": "The change in the total number of call options held by institutional investors compared to the last reporting period."
     },
     "totalPuts": {
       "factor": "totalPuts",
-      "name": "totalPuts",
-      "note": "all open interest"
+      "name": "Total Puts",
+      "note": "The total number of put options held by institutional investors in the stock."
     },
     "lastTotalPuts": {
       "factor": "lastTotalPuts",
-      "name": "lastTotalPuts",
-      "note": "all open interest"
+      "name": "Last Total Puts",
+      "note": "The total number of put options held by institutional investors in the stock in the previous reporting period."
     },
     "totalPutsChange": {
       "factor": "totalPutsChange",
-      "name": "totalPutsChange",
-      "note": "all open interest"
+      "name": "Total Puts Change",
+      "note": "The change in the total number of put options held by institutional investors compared to the last reporting period."
     },
     "putCallRatio": {
       "factor": "putCallRatio",
-      "name": "putCallRatio",
-      "note": "all open interest"
+      "name": "Put-Call Ratio",
+      "note": "The ratio of the total number of put options to the total number of call options held by institutional investors, indicating market sentiment."
     },
     "lastPutCallRatio": {
       "factor": "lastPutCallRatio",
-      "name": "lastPutCallRatio",
-      "note": "all open interest"
+      "name": "Last Put-Call Ratio",
+      "note": "The ratio of the total number of put options to the total number of call options held by institutional investors in the previous reporting period, reflecting past market sentiment."
     },
     "putCallRatioChange": {
       "factor": "putCallRatioChange",
-      "name": "putCallRatioChange",
-      "note": "all open interest"
+      "name": "Put-Call Ratio Change",
+      "note": "The change in the put-call ratio compared to the last reporting period, indicating shifts in market sentiment among institutional investors."
     }
   },
   "HistoricalDividends": {

@@ -2,7 +2,7 @@
   "InstitutionalStockOwnership": {
     "setting": {
       "name": "Institutional Stock Ownership",
-      "note": "Provides data on stock holdings by institutional investors.",
+      "note": "This section provides data on the share ownership of individual stocks by institutional investors, offering insights into institutional holdings and investment trends.",
       "metaclass": "ClientMeta",
       "api": "api/v4/institutional-ownership/symbol-ownership",
       "symbol_in_query": true,
@@ -13,191 +13,191 @@
     "investorsHolding": {
       "factor": "investorsHolding",
       "name": "Investors Holding",
-      "note": "The total number of shares held by institutional investors."
+      "note": "This factor represents the total number of shares held by institutional investors for a particular stock, reflecting the extent of institutional investment in that stock."
     },
     "lastInvestorsHolding": {
       "factor": "lastInvestorsHolding",
       "name": "Last Investors Holding",
-      "note": "The number of shares held by institutional investors in the previous reporting period."
+      "note": "This factor indicates the previous reporting period's total number of shares held by institutional investors, providing a comparative perspective on institutional holdings."
     },
     "investorsHoldingChange": {
       "factor": "investorsHoldingChange",
       "name": "Investors Holding Change",
-      "note": "The change in the number of shares held by institutional investors compared to the last reporting period."
+      "note": "This factor shows the change in the number of shares held by institutional investors between the current and previous reporting periods, highlighting trends in institutional investment."
     },
     "numberOf13Fshares": {
       "factor": "numberOf13Fshares",
       "name": "Number of 13F Shares",
-      "note": "The number of shares reported in the latest 13F filings, indicating institutional holdings."
+      "note": "This factor represents the number of shares reported in the latest Form 13F filings by institutional investors, offering insight into their declared stock holdings."
     },
     "lastNumberOf13Fshares": {
       "factor": "lastNumberOf13Fshares",
       "name": "Last Number of 13F Shares",
-      "note": "The number of shares reported in the previous 13F filings, providing historical insight into institutional holdings."
+      "note": "This factor shows the number of shares reported in the previous Form 13F filings by institutional investors, allowing for a historical comparison of declared holdings."
     },
     "numberOf13FsharesChange": {
       "factor": "numberOf13FsharesChange",
       "name": "Number of 13F Shares Change",
-      "note": "The change in the number of shares reported in 13F filings compared to the previous period, indicating shifts in institutional holdings."
+      "note": "This factor indicates the change in the number of shares reported in Form 13F filings between the latest and previous periods, reflecting shifts in institutional investors' reported stock holdings."
     },
     "totalInvested": {
       "factor": "totalInvested",
       "name": "Total Invested",
-      "note": "The total monetary value invested by institutional investors in the stock."
+      "note": "This factor indicates the total monetary value invested by institutional investors in a specific stock, representing the overall financial commitment of institutions to that stock."
     },
     "lastTotalInvested": {
       "factor": "lastTotalInvested",
       "name": "Last Total Invested",
-      "note": "The total monetary value invested by institutional investors in the stock during the previous reporting period."
+      "note": "This factor represents the total invested amount by institutional investors in the previous reporting period, allowing for comparison of investment trends over time."
     },
     "totalInvestedChange": {
       "factor": "totalInvestedChange",
       "name": "Total Invested Change",
-      "note": "The change in the total monetary value invested by institutional investors compared to the last reporting period."
+      "note": "This factor shows the change in the total invested amount by institutional investors from the previous to the current reporting period, highlighting the dynamics of institutional investment in the stock."
     },
     "ownershipPercent": {
       "factor": "ownershipPercent",
       "name": "Ownership Percent",
-      "note": "The percentage of the company's stock owned by institutional investors."
+      "note": "This factor reflects the percentage of a company's stock that is owned by institutional investors, indicating the level of institutional involvement in the stock."
     },
     "lastOwnershipPercent": {
       "factor": "lastOwnershipPercent",
       "name": "Last Ownership Percent",
-      "note": "The percentage of the company's stock owned by institutional investors in the previous reporting period."
+      "note": "This factor represents the percentage of stock ownership by institutional investors in the last reporting period, providing a basis for understanding changes in institutional investment patterns."
     },
     "ownershipPercentChange": {
       "factor": "ownershipPercentChange",
       "name": "Ownership Percent Change",
-      "note": "The change in the percentage of the company's stock owned by institutional investors compared to the last reporting period."
+      "note": "This factor indicates the change in the percentage of stock ownership by institutional investors between the current and previous reporting periods, signifying shifts in institutional engagement with the stock."
     },
     "newPositions": {
       "factor": "newPositions",
       "name": "New Positions",
-      "note": "The number of new stock positions acquired by institutional investors in the current reporting period."
+      "note": "This factor denotes the number of new stock positions acquired by institutional investors in the current reporting period, reflecting fresh investments and interest in the stock."
     },
     "lastNewPositions": {
       "factor": "lastNewPositions",
       "name": "Last New Positions",
-      "note": "The number of new stock positions acquired by institutional investors in the previous reporting period."
+      "note": "This factor represents the number of new stock positions institutional investors acquired in the previous reporting period, allowing for a comparison of new investment activities over time."
     },
     "newPositionsChange": {
       "factor": "newPositionsChange",
       "name": "New Positions Change",
-      "note": "The change in the number of new positions opened by institutional investors compared to the last reporting period."
+      "note": "This factor indicates the change in the number of new stock positions acquired by institutional investors between the current and previous reporting periods, highlighting trends in new investments."
     },
     "increasedPositions": {
       "factor": "increasedPositions",
       "name": "Increased Positions",
-      "note": "The number of existing stock positions that institutional investors have increased in the current reporting period."
+      "note": "This factor shows the number of stock positions that institutional investors have increased their holdings in during the current reporting period, signifying a growing interest or confidence in those stocks."
     },
     "lastIncreasedPositions": {
       "factor": "lastIncreasedPositions",
       "name": "Last Increased Positions",
-      "note": "The number of existing stock positions that institutional investors had increased in the previous reporting period."
+      "note": "This factor denotes the number of stock positions that were increased by institutional investors in the last reporting period, offering insights into past investment trends and strategies."
     },
     "increasedPositionsChange": {
       "factor": "increasedPositionsChange",
       "name": "Increased Positions Change",
-      "note": "The change in the number of increased positions by institutional investors compared to the last reporting period."
+      "note": "This factor reflects the change in the number of stock positions that have seen increased investment by institutional investors between the current and previous reporting periods, indicating shifting investment focus or confidence."
     },
     "closedPositions": {
       "factor": "closedPositions",
       "name": "Closed Positions",
-      "note": "The number of stock positions that institutional investors have closed in the current reporting period."
+      "note": "This factor represents the number of stock positions that institutional investors have completely sold off or closed in the current reporting period, indicating a withdrawal of investment from those stocks."
     },
     "lastClosedPositions": {
       "factor": "lastClosedPositions",
       "name": "Last Closed Positions",
-      "note": "The number of stock positions that institutional investors had closed in the previous reporting period."
+      "note": "This factor shows the number of stock positions that were closed by institutional investors in the previous reporting period, providing a historical context for investment withdrawal trends."
     },
     "closedPositionsChange": {
       "factor": "closedPositionsChange",
       "name": "Closed Positions Change",
-      "note": "The change in the number of closed positions by institutional investors compared to the last reporting period."
+      "note": "This factor indicates the change in the number of closed positions by institutional investors between the current and previous reporting periods, highlighting the evolving investment exit strategies."
     },
     "reducedPositions": {
       "factor": "reducedPositions",
       "name": "Reduced Positions",
-      "note": "The number of stock positions that institutional investors have reduced in the current reporting period."
+      "note": "This factor denotes the number of stock positions where institutional investors have decreased their holdings in the current reporting period, signifying a reduced investment or interest in those stocks."
     },
     "lastReducedPositions": {
       "factor": "lastReducedPositions",
       "name": "Last Reduced Positions",
-      "note": "The number of stock positions that institutional investors had reduced in the previous reporting period."
+      "note": "This factor represents the number of stock positions that saw a reduction in investment by institutional investors in the last reporting period, offering insights into changing investment patterns."
     },
     "reducedPositionsChange": {
       "factor": "reducedPositionsChange",
       "name": "Reduced Positions Change",
-      "note": "The change in the number of reduced positions by institutional investors compared to the last reporting period."
+      "note": "This factor reflects the change in the number of stock positions with reduced investment by institutional investors, capturing the shifting focus or confidence between the current and previous reporting periods."
     },
     "totalCalls": {
       "factor": "totalCalls",
       "name": "Total Calls",
-      "note": "The total number of call options held by institutional investors in the stock."
+      "note": "This factor indicates the total number of call options held by institutional investors on the stock, signifying a bullish outlook or strategy for potential price increases."
     },
     "lastTotalCalls": {
       "factor": "lastTotalCalls",
       "name": "Last Total Calls",
-      "note": "The total number of call options held by institutional investors in the stock in the previous reporting period."
+      "note": "This factor shows the total number of call options held by institutional investors in the previous reporting period, allowing for an analysis of trends in bullish option strategies."
     },
     "totalCallsChange": {
       "factor": "totalCallsChange",
       "name": "Total Calls Change",
-      "note": "The change in the total number of call options held by institutional investors compared to the last reporting period."
+      "note": "This factor represents the change in the number of call options held by institutional investors between the current and previous reporting periods, highlighting shifts in bullish market sentiment."
     },
     "totalPuts": {
       "factor": "totalPuts",
       "name": "Total Puts",
-      "note": "The total number of put options held by institutional investors in the stock."
+      "note": "This factor denotes the total number of put options held by institutional investors, indicating a bearish stance or protective strategy against potential stock price declines."
     },
     "lastTotalPuts": {
       "factor": "lastTotalPuts",
       "name": "Last Total Puts",
-      "note": "The total number of put options held by institutional investors in the stock in the previous reporting period."
+      "note": "This factor indicates the total number of put options held by institutional investors in the last reporting period, providing context for changes in bearish or defensive investment approaches."
     },
     "totalPutsChange": {
       "factor": "totalPutsChange",
       "name": "Total Puts Change",
-      "note": "The change in the total number of put options held by institutional investors compared to the last reporting period."
+      "note": "This factor shows the change in the number of put options held by institutional investors from the previous to the current reporting period, reflecting adjustments in bearish or defensive strategies."
     },
     "putCallRatio": {
       "factor": "putCallRatio",
-      "name": "Put-Call Ratio",
-      "note": "The ratio of the total number of put options to the total number of call options held by institutional investors, indicating market sentiment."
+      "name": "Put/Call Ratio",
+      "note": "This factor represents the ratio of put options to call options held by institutional investors, serving as an indicator of overall market sentiment and expectations."
     },
     "lastPutCallRatio": {
       "factor": "lastPutCallRatio",
-      "name": "Last Put-Call Ratio",
-      "note": "The ratio of the total number of put options to the total number of call options held by institutional investors in the previous reporting period, reflecting past market sentiment."
+      "name": "Last Put/Call Ratio",
+      "note": "This factor denotes the put/call ratio from the previous reporting period, offering insights into historical market sentiment and institutional investor expectations."
     },
     "putCallRatioChange": {
       "factor": "putCallRatioChange",
-      "name": "Put-Call Ratio Change",
-      "note": "The change in the put-call ratio compared to the last reporting period, indicating shifts in market sentiment among institutional investors."
+      "name": "Put/Call Ratio Change",
+      "note": "This factor indicates the change in the put/call ratio between the current and previous reporting periods, highlighting shifts in market sentiment and institutional investor outlook."
     }
   },
   "HistoricalDividends": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Historical Dividends",
+      "note": "This section provides a comprehensive list of historical dividend payments for publicly traded companies, including key details like dividend payment dates, ex-dividend dates, and dividend amounts per share. It serves as an essential tool for analyzing dividend payment trends and company financial performance.",
       "metaclass": "HistoricalPriceFullMeta",
       "api": "api/v3/historical-price-full/stock_dividend"
     },
     "adjDividend": {
       "factor": "adjDividend",
-      "name": "adjDividend",
-      "note": "all open interest"
+      "name": "Adjusted Dividend",
+      "note": "This factor represents the adjusted dividend amount, accounting for any changes in the stock such as stock splits, rights offerings, or other corporate actions, to provide a consistent and comparable view of the dividend payouts over time."
     },
     "dividend": {
       "factor": "dividend",
-      "name": "dividend",
-      "note": "all open interest"
+      "name": "Dividend",
+      "note": "This factor indicates the actual dividend amount paid per share for a specific period, offering a direct measure of the return distributed to shareholders from the company's earnings."
     }
   },
   "AdvancedLeveredDiscountedCashFlow": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Advanced Levered Discounted Cash Flow",
+      "note": "This section offers an advanced levered version of the DCF valuation method, providing a detailed and sophisticated approach to estimate a company's value based on projected future cash flows. It takes into account the company's expected cash flows and discount rates to deliver an in-depth financial analysis.",
       "metaclass": "ClientMeta",
       "api": "api/v4/advanced_levered_discounted_cash_flow",
       "t_key": "year",
@@ -205,169 +205,169 @@
     },
     "revenue": {
       "factor": "revenue",
-      "name": "revenue",
-      "note": "all open interest"
+      "name": "Revenue",
+      "note": "This factor represents the total income generated by a company from its business activities, providing a fundamental measure of the company's sales or service effectiveness and market demand."
     },
     "revenuePercentage": {
       "factor": "revenuePercentage",
-      "name": "revenuePercentage",
-      "note": "all open interest"
+      "name": "Revenue Percentage",
+      "note": "This factor indicates the percentage change in revenue over a specified period, offering insights into the company's growth rate and revenue trends over time."
     },
     "capitalExpenditure": {
       "factor": "capitalExpenditure",
-      "name": "capitalExpenditure",
-      "note": "all open interest"
+      "name": "Capital Expenditure",
+      "note": "This factor denotes the company's expenses for acquiring or maintaining fixed assets, such as property, plant, and equipment, highlighting its investment in long-term assets for growth."
     },
     "capitalExpenditurePercentage": {
       "factor": "capitalExpenditurePercentage",
-      "name": "capitalExpenditurePercentage",
-      "note": "all open interest"
+      "name": "Capital Expenditure Percentage",
+      "note": "This factor shows the percentage change in capital expenditure over a given period, reflecting the company's changing investment strategies and priorities in its fixed assets."
     },
     "price": {
       "factor": "price",
-      "name": "price",
-      "note": "all open interest"
+      "name": "Price",
+      "note": "This factor refers to the current stock price of the company, serving as a key indicator of market valuation and investor sentiment."
     },
     "beta": {
       "factor": "beta",
-      "name": "beta",
-      "note": "all open interest"
+      "name": "Beta",
+      "note": "This factor represents the beta coefficient of the stock, indicating its volatility in relation to the overall market, and is used to assess the risk level of the stock relative to market fluctuations."
     },
     "dilutedSharesOutstanding": {
       "factor": "dilutedSharesOutstanding",
-      "name": "dilutedSharesOutstanding",
-      "note": "all open interest"
+      "name": "Diluted Shares Outstanding",
+      "note": "This factor refers to the total number of shares outstanding after accounting for all possible sources of conversion, such as stock options and convertible bonds, providing a more comprehensive picture of the company's equity."
     },
     "costofDebt": {
       "factor": "costofDebt",
-      "name": "costofDebt",
-      "note": "all open interest"
+      "name": "Cost of Debt",
+      "note": "This factor signifies the effective interest rate a company pays on its current debts, offering insights into the financial burden of the company's debt obligations and its efficiency in managing debt costs."
     },
     "taxRate": {
       "factor": "taxRate",
-      "name": "taxRate",
-      "note": "all open interest"
+      "name": "Tax Rate",
+      "note": "This factor represents the percentage of income a company pays in taxes, reflecting its tax burden and effectiveness in tax planning and management."
     },
     "afterTaxCostOfDebt": {
       "factor": "afterTaxCostOfDebt",
-      "name": "afterTaxCostOfDebt",
-      "note": "all open interest"
+      "name": "After Tax Cost of Debt",
+      "note": "This factor indicates the net cost of debt after accounting for tax deductions, showing the actual financial cost of debt considering the tax benefits."
     },
     "riskFreeRate": {
       "factor": "riskFreeRate",
-      "name": "riskFreeRate",
-      "note": "all open interest"
+      "name": "Risk-Free Rate",
+      "note": "This factor denotes the return rate of a risk-free investment, such as government bonds, serving as a baseline for evaluating investment risk and calculating the cost of capital."
     },
     "marketRiskPremium": {
       "factor": "marketRiskPremium",
-      "name": "marketRiskPremium",
-      "note": "all open interest"
+      "name": "Market Risk Premium",
+      "note": "This factor represents the additional return expected by investors for taking on the higher risk of investing in the stock market over a risk-free investment, used in assessing the required return for equity investments."
     },
     "costOfEquity": {
       "factor": "costOfEquity",
-      "name": "costOfEquity",
-      "note": "all open interest"
+      "name": "Cost of Equity",
+      "note": "This factor measures the return rate that shareholders expect for their investment in the company, incorporating the risks associated with equity investment and serving as a crucial component in determining a company's cost of capital."
     },
     "totalDebt": {
       "factor": "totalDebt",
-      "name": "totalDebt",
-      "note": "all open interest"
+      "name": "Total Debt",
+      "note": "This factor represents the aggregate amount of debt (both short-term and long-term) owed by the company, providing insight into the company's financial leverage and debt burden."
     },
     "totalEquity": {
       "factor": "totalEquity",
-      "name": "totalEquity",
-      "note": "all open interest"
+      "name": "Total Equity",
+      "note": "This factor indicates the total value of shareholders' equity in the company, reflecting the residual interest in the company's assets after deducting liabilities, and is a key measure of financial health."
     },
     "totalCapital": {
       "factor": "totalCapital",
-      "name": "totalCapital",
-      "note": "all open interest"
+      "name": "Total Capital",
+      "note": "This factor represents the sum of a company's debt and equity, providing a comprehensive view of the company's total capital structure used for financing its operations and investments."
     },
     "debtWeighting": {
       "factor": "debtWeighting",
-      "name": "debtWeighting",
-      "note": "all open interest"
+      "name": "Debt Weighting",
+      "note": "This factor refers to the proportion of debt in the company's overall capital structure, illustrating the extent to which the company relies on debt financing relative to equity."
     },
     "equityWeighting": {
       "factor": "equityWeighting",
-      "name": "equityWeighting",
-      "note": "all open interest"
+      "name": "Equity Weighting",
+      "note": "This factor denotes the proportion of equity in the company's total capital structure, indicating the relative importance of shareholder equity in financing the company's assets."
     },
     "wacc": {
       "factor": "wacc",
-      "name": "wacc",
-      "note": "all open interest"
+      "name": "Weighted Average Cost of Capital (WACC)",
+      "note": "This factor represents the company's overall cost of capital, accounting for the weighted average of the costs of equity and debt. WACC is a critical financial metric used in discounted cash flow analysis to determine the discount rate for future cash flows."
     },
     "operatingCashFlow": {
       "factor": "operatingCashFlow",
-      "name": "operatingCashFlow",
-      "note": "all open interest"
+      "name": "Operating Cash Flow",
+      "note": "This factor indicates the cash generated from the company's regular business operations, reflecting its ability to generate sufficient cash to maintain and grow its operations."
     },
     "pvLfcf": {
       "factor": "pvLfcf",
-      "name": "pvLfcf",
-      "note": "all open interest"
+      "name": "Present Value of Levered Free Cash Flow",
+      "note": "This factor denotes the present value of the company's projected levered free cash flows, discounted at the WACC. It reflects the value of the company's cash flows after accounting for debt financing costs."
     },
     "sumPvLfcf": {
       "factor": "sumPvLfcf",
-      "name": "sumPvLfcf",
-      "note": "all open interest"
+      "name": "Sum of Present Value of Levered Free Cash Flow",
+      "note": "This factor represents the total present value of all projected levered free cash flows, providing an aggregate measure of the company's value from its future cash generation capabilities."
     },
     "longTermGrowthRate": {
       "factor": "longTermGrowthRate",
-      "name": "longTermGrowthRate",
-      "note": "all open interest"
+      "name": "Long-Term Growth Rate",
+      "note": "This factor signifies the expected annual growth rate of the company's free cash flow in perpetuity, used in calculating the terminal value in DCF analysis."
     },
     "freeCashFlow": {
       "factor": "freeCashFlow",
-      "name": "freeCashFlow",
-      "note": "all open interest"
+      "name": "Free Cash Flow",
+      "note": "This factor measures the cash a company generates after accounting for cash outflows to support operations and maintain its capital assets, offering insight into the company's financial health and profitability."
     },
     "terminalValue": {
       "factor": "terminalValue",
-      "name": "terminalValue",
-      "note": "all open interest"
+      "name": "Terminal Value",
+      "note": "This factor estimates the value of the company's cash flows beyond the forecast period in a discounted cash flow analysis, representing the present value of all future cash flows when a business reaches a stable growth phase."
     },
     "presentTerminalValue": {
       "factor": "presentTerminalValue",
-      "name": "presentTerminalValue",
-      "note": "all open interest"
+      "name": "Present Terminal Value",
+      "note": "This factor indicates the present value of the terminal value, discounting it back to the present day using the weighted average cost of capital, reflecting the long-term value of the company in today's terms."
     },
     "enterpriseValue": {
       "factor": "enterpriseValue",
-      "name": "enterpriseValue",
-      "note": "all open interest"
+      "name": "Enterprise Value",
+      "note": "This factor denotes the total valuation of the company, combining its market capitalization, debt, and cash, to provide a comprehensive measure of the company's overall value."
     },
     "netDebt": {
       "factor": "netDebt",
-      "name": "netDebt",
-      "note": "all open interest"
+      "name": "Net Debt",
+      "note": "This factor represents the company's total debt minus its cash and cash equivalents, indicating the net financial obligations of the company."
     },
     "equityValue": {
       "factor": "equityValue",
-      "name": "equityValue",
-      "note": "all open interest"
+      "name": "Equity Value",
+      "note": "This factor measures the value of the company's equity, calculated as the difference between its enterprise value and net debt, representing the value attributable to shareholders."
     },
     "equityValuePerShare": {
       "factor": "equityValuePerShare",
-      "name": "equityValuePerShare",
-      "note": "all open interest"
+      "name": "Equity Value Per Share",
+      "note": "This factor calculates the value of each outstanding share of the company's stock based on the equity value, providing a per-share valuation metric for investors."
     },
     "freeCashFlowT1": {
       "factor": "freeCashFlowT1",
-      "name": "freeCashFlowT1",
-      "note": "all open interest"
+      "name": "Free Cash Flow T1",
+      "note": "This factor represents the company's projected free cash flow for the first year in the forecast period, serving as a key input in determining the company's future cash flow generation capabilities."
     },
     "operatingCashFlowPercentage": {
       "factor": "operatingCashFlowPercentage",
-      "name": "operatingCashFlowPercentage",
-      "note": "all open interest"
+      "name": "Operating Cash Flow Percentage",
+      "note": "This factor indicates the percentage of the company's operating cash flow relative to its revenue, offering insights into the efficiency of its core business operations and cash management."
     }
   },
   "AdvancedDiscountedCashFlow": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Advanced Discounted Cash Flow",
+      "note": "This section encompasses the advanced application of DCF valuation, integrating capabilities like multiple scenario modeling and diverse valuation methodologies. It empowers investors with tools for a deeper analysis, considering various growth rates and cost structures, and offering flexibility in employing different valuation approaches such as WACC and FCFE.",
       "metaclass": "ClientMeta",
       "api": "api/v4/advanced_discounted_cash_flow",
       "t_key": "year",
@@ -375,228 +375,228 @@
     },
     "revenue": {
       "factor": "revenue",
-      "name": "revenue",
-      "note": "all open interest"
+      "name": "Revenue",
+      "note": "This factor denotes the total income generated by a company from its operations, offering a fundamental gauge of its business scale and market performance."
     },
     "revenuePercentage": {
       "factor": "revenuePercentage",
-      "name": "revenuePercentage",
-      "note": "all open interest"
+      "name": "Revenue Percentage",
+      "note": "This factor measures the percentage change in a company's revenue over a specific period, providing insights into its growth rate and financial trajectory."
     },
     "ebitda": {
       "factor": "ebitda",
-      "name": "ebitda",
-      "note": "all open interest"
+      "name": "EBITDA (Earnings Before Interest, Taxes, Depreciation, and Amortization)",
+      "note": "EBITDA reflects a company's earnings before subtracting interest, taxes, depreciation, and amortization, offering an indicator of its operational efficiency and profitability."
     },
     "ebitdaPercentage": {
       "factor": "ebitdaPercentage",
-      "name": "ebitdaPercentage",
-      "note": "all open interest"
+      "name": "EBITDA Percentage",
+      "note": "This factor shows the percentage change in EBITDA over a period, revealing trends in the company's operational profitability and efficiency."
     },
     "ebit": {
       "factor": "ebit",
-      "name": "ebit",
-      "note": "all open interest"
+      "name": "EBIT (Earnings Before Interest and Taxes)",
+      "note": "EBIT represents a company's earnings before accounting for interest and taxes, providing a clear view of its operational income."
     },
     "ebitPercentage": {
       "factor": "ebitPercentage",
-      "name": "ebitPercentage",
-      "note": "all open interest"
+      "name": "EBIT Percentage",
+      "note": "This factor indicates the percentage change in EBIT over time, highlighting shifts in a company's operational earnings before financial and tax impacts."
     },
     "depreciation": {
       "factor": "depreciation",
-      "name": "depreciation",
-      "note": "all open interest"
+      "name": "Depreciation",
+      "note": "This factor represents the allocation of the cost of assets over their useful life, reflecting the company's accounting for the wear and tear on its physical assets."
     },
     "depreciationPercentage": {
       "factor": "depreciationPercentage",
-      "name": "depreciationPercentage",
-      "note": "all open interest"
+      "name": "Depreciation Percentage",
+      "note": "This factor calculates the percentage change in depreciation over a specified period, indicating how the company's allocation for asset wear and tear varies over time."
     },
     "totalCash": {
       "factor": "totalCash",
-      "name": "totalCash",
-      "note": "all open interest"
+      "name": "Total Cash",
+      "note": "This factor represents the total amount of cash and cash equivalents held by the company, reflecting its liquidity and ability to meet short-term obligations."
     },
     "totalCashPercentage": {
       "factor": "totalCashPercentage",
-      "name": "totalCashPercentage",
-      "note": "all open interest"
+      "name": "Total Cash Percentage",
+      "note": "This factor measures the percentage change in the company's total cash and cash equivalents, providing insights into the variations in its liquidity position."
     },
     "receivables": {
       "factor": "receivables",
-      "name": "receivables",
-      "note": "all open interest"
+      "name": "Receivables",
+      "note": "This factor indicates the total amount of money owed to the company by its customers for goods or services delivered, representing an essential component of its current assets."
     },
     "receivablesPercentage": {
       "factor": "receivablesPercentage",
-      "name": "receivablesPercentage",
-      "note": "all open interest"
+      "name": "Receivables Percentage",
+      "note": "This factor shows the percentage change in the company's receivables over time, shedding light on trends in its credit sales and collection efficiency."
     },
     "inventories": {
       "factor": "inventories",
-      "name": "inventories",
-      "note": "all open interest"
+      "name": "Inventories",
+      "note": "This factor represents the total value of a company's unsold goods and materials held for sale, highlighting an important aspect of its current assets and operational efficiency."
     },
     "inventoriesPercentage": {
       "factor": "inventoriesPercentage",
-      "name": "inventoriesPercentage",
+      "name": "Inventories Percentage",
       "note": "all open interest"
     },
     "payable": {
       "factor": "payable",
-      "name": "payable",
-      "note": "all open interest"
+      "name": "Payable",
+      "note": "This factor indicates the total amount of money the company owes to its suppliers and creditors, representing short-term liabilities arising from operational activities."
     },
     "payablePercentage": {
       "factor": "payablePercentage",
-      "name": "payablePercentage",
-      "note": "all open interest"
+      "name": "Payable Percentage",
+      "note": "This factor shows the percentage change in the company's payable amounts, reflecting shifts in its short-term financial obligations and vendor relationships."
     },
     "capitalExpenditure": {
       "factor": "capitalExpenditure",
-      "name": "capitalExpenditure",
-      "note": "all open interest"
+      "name": "Capital Expenditure",
+      "note": "This factor denotes the company's expenditure on acquiring or maintaining fixed assets, such as property, plant, and equipment, indicating its investment in long-term growth and operational capacity."
     },
     "capitalExpenditurePercentage": {
       "factor": "capitalExpenditurePercentage",
-      "name": "capitalExpenditurePercentage",
-      "note": "all open interest"
+      "name": "Capital Expenditure Percentage",
+      "note": "This factor represents the percentage change in the company's capital expenditure over time, revealing its strategic investment decisions and focus on long-term asset development."
     },
     "price": {
       "factor": "price",
-      "name": "price",
-      "note": "all open interest"
+      "name": "Price",
+      "note": "This factor represents the current market price of the company's stock, reflecting investor sentiment and market valuation of the company."
     },
     "beta": {
       "factor": "beta",
-      "name": "beta",
-      "note": "all open interest"
+      "name": "Beta",
+      "note": "Beta measures the volatility of the company's stock relative to the overall market, indicating the stock's risk level compared to the market average."
     },
     "dilutedSharesOutstanding": {
       "factor": "dilutedSharesOutstanding",
-      "name": "dilutedSharesOutstanding",
-      "note": "all open interest"
+      "name": "Diluted Shares Outstanding",
+      "note": "This factor indicates the total number of shares outstanding, including all convertible securities, options, and warrants, providing a comprehensive view of the company's equity structure."
     },
     "costofDebt": {
       "factor": "costofDebt",
-      "name": "costofDebt",
-      "note": "all open interest"
+      "name": "Cost of Debt",
+      "note": "This factor represents the effective interest rate the company pays on its debts, highlighting the financial cost of its borrowings."
     },
     "taxRate": {
       "factor": "taxRate",
-      "name": "taxRate",
-      "note": "all open interest"
+      "name": "Tax Rate",
+      "note": "This factor denotes the percentage of its earnings that the company pays as taxes, reflecting its tax burden."
     },
     "afterTaxCostOfDebt": {
       "factor": "afterTaxCostOfDebt",
-      "name": "afterTaxCostOfDebt",
-      "note": "all open interest"
+      "name": "After-Tax Cost of Debt",
+      "note": "This factor shows the company's cost of debt after accounting for tax deductions, providing a net view of the financial impact of its debts."
     },
     "riskFreeRate": {
       "factor": "riskFreeRate",
-      "name": "riskFreeRate",
-      "note": "all open interest"
+      "name": "Risk-Free Rate",
+      "note": "This factor represents the return on investments considered virtually risk-free, typically government bonds, serving as a benchmark for evaluating investment risks."
     },
     "marketRiskPremium": {
       "factor": "marketRiskPremium",
-      "name": "marketRiskPremium",
-      "note": "all open interest"
+      "name": "Market Risk Premium",
+      "note": "This factor denotes the additional return expected by investors for bearing the risk of investing in the stock market over a risk-free investment."
     },
     "costOfEquity": {
       "factor": "costOfEquity",
-      "name": "costOfEquity",
-      "note": "all open interest"
+      "name": "Cost of Equity",
+      "note": "This factor measures the return rate that shareholders require for their investment in the company, reflecting the risks associated with equity investment."
     },
     "totalDebt": {
       "factor": "totalDebt",
-      "name": "totalDebt",
-      "note": "all open interest"
+      "name": "Total Debt",
+      "note": "This factor indicates the total amount of debt, including both short-term and long-term liabilities, that the company owes."
     },
     "totalEquity": {
       "factor": "totalEquity",
-      "name": "totalEquity",
-      "note": "all open interest"
+      "name": "Total Equity",
+      "note": "This factor represents the total shareholders' equity in the company, indicating the residual value to shareholders after debts are settled."
     },
     "totalCapital": {
       "factor": "totalCapital",
-      "name": "totalCapital",
-      "note": "all open interest"
+      "name": "Total Capital",
+      "note": "This factor denotes the sum of the company's total debt and equity, illustrating the entire capital available for the company's operations and investments."
     },
     "debtWeighting": {
       "factor": "debtWeighting",
-      "name": "debtWeighting",
-      "note": "all open interest"
+      "name": "Debt Weighting",
+      "note": "This factor shows the proportion of debt in the company's capital structure, indicating how much of the company's capital is financed through borrowing."
     },
     "equityWeighting": {
       "factor": "equityWeighting",
-      "name": "equityWeighting",
-      "note": "all open interest"
+      "name": "Equity Weighting",
+      "note": "This factor reflects the proportion of equity in the company's capital structure, illustrating the extent to which the company is financed through shareholder equity."
     },
     "wacc": {
       "factor": "wacc",
-      "name": "wacc",
-      "note": "all open interest"
+      "name": "WACC (Weighted Average Cost of Capital)",
+      "note": "WACC represents the company's average cost of capital, considering both equity and debt, used as a discount rate in DCF analysis."
     },
     "taxRateCash": {
       "factor": "taxRateCash",
-      "name": "taxRateCash",
-      "note": "all open interest"
+      "name": "Tax Rate Cash",
+      "note": "This factor indicates the effective cash tax rate of the company, representing the actual cash paid for taxes as a proportion of its earnings."
     },
     "ebiat": {
       "factor": "ebiat",
-      "name": "ebiat",
-      "note": "all open interest"
+      "name": "EBIAT (Earnings Before Interest After Taxes)",
+      "note": "EBIAT denotes the company's earnings before interest but after taxes, providing insight into the company's operational profitability excluding financing and tax impacts."
     },
     "ufcf": {
       "factor": "ufcf",
-      "name": "ufcf",
-      "note": "all open interest"
+      "name": "Unlevered Free Cash Flow (UFCF)",
+      "note": "UFCF refers to the company's free cash flow before considering financial leverage, offering a view of its cash earnings irrespective of its capital structure."
     },
     "sumPvUfcf": {
       "factor": "sumPvUfcf",
-      "name": "sumPvUfcf",
-      "note": "all open interest"
+      "name": "Sum of Present Value of Unlevered Free Cash Flow",
+      "note": "This factor calculates the total present value of the company's projected UFCF, discounting it back to present value, to assess the company's value independent of its debt structure."
     },
     "longTermGrowthRate": {
       "factor": "longTermGrowthRate",
-      "name": "longTermGrowthRate",
-      "note": "all open interest"
+      "name": "Long-Term Growth Rate",
+      "note": "This factor estimates the perpetual growth rate of the company's free cash flow, essential for calculating the terminal value in DCF models."
     },
     "terminalValue": {
       "factor": "terminalValue",
-      "name": "terminalValue",
-      "note": "all open interest"
+      "name": "Terminal Value",
+      "note": "Terminal Value represents the value of all future cash flows beyond the forecast period in a DCF analysis, assuming a constant growth rate."
     },
     "presentTerminalValue": {
       "factor": "presentTerminalValue",
-      "name": "presentTerminalValue",
-      "note": "all open interest"
+      "name": "Present Terminal Value",
+      "note": "This factor calculates the present value of the terminal value, discounting it to the present day using the company's WACC."
     },
     "enterpriseValue": {
       "factor": "enterpriseValue",
-      "name": "enterpriseValue",
-      "note": "all open interest"
+      "name": "Enterprise Value",
+      "note": "Enterprise Value is the total valuation of the company, considering its market capitalization, debt, and cash."
     },
     "netDebt": {
       "factor": "netDebt",
-      "name": "netDebt",
-      "note": "all open interest"
+      "name": "Net Debt",
+      "note": "Net Debt signifies the company's total debt minus its cash and cash equivalents, showing its net financial obligations."
     },
     "equityValue": {
       "factor": "equityValue",
-      "name": "equityValue",
-      "note": "all open interest"
+      "name": "Equity Value",
+      "note": "Equity Value is the value attributed to shareholders, calculated as the difference between the enterprise value and net debt."
     },
     "equityValuePerShare": {
       "factor": "equityValuePerShare",
-      "name": "equityValuePerShare",
-      "note": "all open interest"
+      "name": "Equity Value Per Share",
+      "note": "This factor represents the value of each share based on the company's equity value, offering a per-share valuation metric."
     },
     "freeCashFlowT1": {
       "factor": "freeCashFlowT1",
-      "name": "freeCashFlowT1",
-      "note": "all open interest"
+      "name": "Free Cash Flow T1",
+      "note": "Free Cash Flow T1 indicates the projected free cash flow for the first year in the forecast period, used in DCF analysis."
     }
   },
   "MarketCapitalization": {

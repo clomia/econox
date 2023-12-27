@@ -601,21 +601,21 @@
   },
   "MarketCapitalization": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Market Capitalization",
+      "note": "This section provides historical market capitalization data for companies, enabling the analysis of a company's growth and market performance over time. It is a vital tool for investors to track and compare the market value trends of different companies.",
       "metaclass": "ClientMeta",
       "api": "api/v3/historical-market-capitalization"
     },
     "market_cap": {
       "factor": "marketCap",
-      "name": "marketCap",
-      "note": "all open interest"
+      "name": "Market Capitalization",
+      "note": "This factor represents the total market value of a company's outstanding shares, calculated by multiplying the current stock price by the total number of outstanding shares. It reflects the company's size and the market's valuation of its overall worth, providing a key metric for comparing companies within an industry or the broader market."
     }
   },
   "EsgScore": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "ESG Score",
+      "note": "This section provides access to ESG ratings and related data for companies and funds, enabling users to evaluate entities based on their environmental, social, and governance practices. It's a valuable tool for socially responsible investing, helping investors find companies that align with their ESG values.",
       "metaclass": "ClientMeta",
       "api": "api/v4/esg-environmental-social-governance-data",
       "symbol_in_query": true

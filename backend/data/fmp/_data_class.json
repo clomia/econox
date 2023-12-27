@@ -622,664 +622,664 @@
     },
     "name1": {
       "factor": "environmentalScore",
-      "name": "environmentalScore",
-      "note": "all open interest"
+      "name": "Environmental Score",
+      "note": "This factor assesses a company's impact on the environment, including its energy use, waste production, and resource conservation practices. It reflects the company's commitment to environmental sustainability and its performance in managing ecological issues."
     },
     "name2": {
       "factor": "socialScore",
-      "name": "socialScore",
-      "note": "all open interest"
+      "name": "Social Score",
+      "note": "This factor evaluates a company's relationships with its employees, suppliers, customers, and communities. It encompasses aspects like labor practices, human rights, and community development, reflecting the company's social responsibility."
     },
     "name3": {
       "factor": "governanceScore",
-      "name": "governanceScore",
-      "note": "all open interest"
+      "name": "Governance Score",
+      "note": "This factor measures a company's governance practices, including leadership, executive pay, audits, internal controls, and shareholder rights. It indicates how well the company is managed and whether it operates with transparency and integrity."
     },
     "name4": {
       "factor": "ESGScore",
-      "name": "ESGScore",
-      "note": "all open interest"
+      "name": "ESG Score",
+      "note": "This overall score combines the environmental, social, and governance scores, providing a comprehensive assessment of a company's performance across all three ESG criteria. It helps investors evaluate the company's overall commitment to sustainable and responsible business practices."
     }
   },
   "CotReportAnalysis": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "COT Report Analysis",
+      "note": "This section offers in-depth analysis of the Commitment of Traders report, providing valuable insights into market participant behavior, such as net long and short positions, and changes in open interest for specific symbols. It serves as a crucial tool for understanding market sentiment and aiding in informed trading decisions based on comprehensive COT data.",
       "metaclass": "ClientMeta",
       "api": "api/v4/commitment_of_traders_report_analysis"
     },
     "name1": {
       "factor": "currentLongMarketSituation",
-      "name": "currentLongMarketSituation",
-      "note": "all open interest"
+      "name": "Current Long Market Situation",
+      "note": "This factor represents the current total long positions held by market participants for a specific symbol, indicating bullish sentiment or expectation of rising prices."
     },
     "name2": {
       "factor": "currentShortMarketSituation",
-      "name": "currentShortMarketSituation",
-      "note": "all open interest"
+      "name": "Current Short Market Situation",
+      "note": "This factor denotes the current total short positions held by market participants, reflecting bearish sentiment or expectation of declining prices for the symbol."
     },
     "name3": {
       "factor": "previousLongMarketSituation",
-      "name": "previousLongMarketSituation",
-      "note": "all open interest"
+      "name": "Previous Long Market Situation",
+      "note": "This factor shows the total long positions held by market participants for the symbol in the previous reporting period, allowing for comparison of market sentiment over time."
     },
     "name4": {
       "factor": "previousShortMarketSituation",
-      "name": "previousShortMarketSituation",
-      "note": "all open interest"
+      "name": "Previous Short Market Situation",
+      "note": "This factor indicates the total short positions held in the previous reporting period, providing a historical perspective on bearish market sentiment."
     },
     "name5": {
       "factor": "netPostion",
-      "name": "netPostion",
-      "note": "all open interest"
+      "name": "Net Position",
+      "note": "This factor calculates the difference between total long and short positions currently held by market participants, offering an overall view of market sentiment for the symbol."
     },
     "name6": {
       "factor": "previousNetPosition",
-      "name": "previousNetPosition",
-      "note": "all open interest"
+      "name": "Previous Net Position",
+      "note": "This factor represents the net position from the previous reporting period, enabling a comparative analysis of market sentiment changes over time."
     },
     "name7": {
       "factor": "changeInNetPosition",
-      "name": "changeInNetPosition",
-      "note": "all open interest"
+      "name": "Change in Net Position",
+      "note": "This factor measures the change in net position between the current and previous reporting periods, highlighting the dynamics and shifts in overall market sentiment."
     }
   },
   "CotReport": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "COT Report",
+      "note": "This section provides a comprehensive Commitment of Traders report for specific symbols, including detailed information on net long and short positions of various market participants, changes in these positions, open interest, and speculative positioning index. It is a crucial tool for investors to gain an in-depth understanding of market dynamics and make informed trading decisions based on thorough COT analysis.",
       "metaclass": "ClientMeta",
       "api": "api/v4/commitment_of_traders_report"
     },
     "oi_all": {
       "factor": "open_interest_all",
-      "name": "open_interest_all",
-      "note": "all open interest"
+      "name": "Open Interest All",
+      "note": "This factor represents the total number of open contracts for a symbol, indicating the overall activity and interest in the market for that specific asset."
     },
     "nc_pos_long_all": {
       "factor": "noncomm_positions_long_all",
-      "name": "noncomm_positions_long_all",
-      "note": "all open interest"
+      "name": "Non-Commercial Positions Long All",
+      "note": "This factor shows the total long positions held by non-commercial traders, providing insights into the speculative sentiment and bullish expectations of these traders."
     },
     "nc_pos_short_all": {
       "factor": "noncomm_positions_short_all",
-      "name": "noncomm_positions_short_all",
-      "note": "all open interest"
+      "name": "Non-Commercial Positions Short All",
+      "note": "This factor indicates the total short positions held by non-commercial traders, reflecting the bearish sentiment and speculative bets against the market by these traders."
     },
     "nc_pos_spread_all": {
       "factor": "noncomm_postions_spread_all",
-      "name": "noncomm_postions_spread_all",
-      "note": "all open interest"
+      "name": "Non-Commercial Positions Spread All",
+      "note": "This factor denotes the total spread positions held by non-commercial traders, highlighting their strategies that involve holding both long and short positions simultaneously."
     },
     "c_pos_long_all": {
       "factor": "comm_positions_long_all",
-      "name": "comm_positions_long_all",
-      "note": "all open interest"
+      "name": "Commercial Positions Long All",
+      "note": "This factor represents the total long positions held by commercial traders, indicating their bullish market view and expectations based on their business operations and market knowledge."
     },
     "c_pos_short_all": {
       "factor": "comm_positions_short_all",
-      "name": "comm_positions_short_all",
-      "note": "all open interest"
+      "name": "Commercial Positions Short All",
+      "note": "This factor shows the total short positions held by commercial traders, reflecting their bearish market expectations, often based on their commercial interests and market expertise."
     },
     "tr_pos_long_all": {
       "factor": "tot_rept_positions_long_all",
-      "name": "tot_rept_positions_long_all",
-      "note": "all open interest"
+      "name": "Total Reportable Positions Long All",
+      "note": "This factor indicates the total long positions held by reportable traders, encompassing both commercial and non-commercial traders, showcasing the overall bullish sentiment among major market participants."
     },
     "tr_pos_short_all": {
       "factor": "tot_rept_positions_short_all",
-      "name": "tot_rept_positions_short_all",
-      "note": "all open interest"
+      "name": "Total Reportable Positions Short All",
+      "note": "This factor shows the total short positions held by reportable traders, providing insights into the collective bearish sentiment among significant market players."
     },
     "nr_pos_long_all": {
       "factor": "nonrept_positions_long_all",
-      "name": "nonrept_positions_long_all",
-      "note": "all open interest"
+      "name": "Non-Reportable Positions Long All",
+      "note": "This factor represents the total long positions held by non-reportable traders, typically smaller or individual traders, reflecting their bullish market outlook."
     },
     "nr_pos_short_all": {
       "factor": "nonrept_positions_short_all",
-      "name": "nonrept_positions_short_all",
-      "note": "all open interest"
+      "name": "Non-Reportable Positions Short All",
+      "note": "This factor denotes the total short positions held by non-reportable traders, indicating the bearish sentiment among smaller or individual market participants."
     },
     "oi_old": {
       "factor": "open_interest_old",
-      "name": "open_interest_old",
-      "note": "all open interest"
+      "name": "Open Interest Old",
+      "note": "This factor refers to the open interest held in older contracts for a symbol, providing a perspective on the long-term interest and market involvement in these contracts."
     },
     "nc_pos_long_old": {
       "factor": "noncomm_positions_long_old",
-      "name": "noncomm_positions_long_old",
-      "note": "all open interest"
+      "name": "Non-Commercial Positions Long Old",
+      "note": "This factor shows the long positions held by non-commercial traders in older contracts, indicating speculative or investment interest in these longer-duration market positions."
     },
     "nc_pos_short_old": {
       "factor": "noncomm_positions_short_old",
-      "name": "noncomm_positions_short_old",
-      "note": "all open interest"
+      "name": "Non-Commercial Positions Short Old",
+      "note": "This factor represents the short positions held by non-commercial traders in older contracts, reflecting their bearish outlook or speculative bets against these long-duration market positions."
     },
     "nc_pos_spread_old": {
       "factor": "noncomm_positions_spread_old",
-      "name": "noncomm_positions_spread_old",
-      "note": "all open interest"
+      "name": "Non-Commercial Positions Spread Old",
+      "note": "This factor indicates the spread positions held by non-commercial traders in older contracts, showcasing their hedging or diversified strategies over a longer time frame."
     },
     "c_pos_long_old": {
       "factor": "comm_positions_long_old",
-      "name": "comm_positions_long_old",
-      "note": "all open interest"
+      "name": "Commercial Positions Long Old",
+      "note": "This factor shows the long positions held by commercial traders in older contracts, reflecting their bullish market expectations based on long-term business needs or market analysis."
     },
     "c_pos_short_old": {
       "factor": "comm_positions_short_old",
-      "name": "comm_positions_short_old",
-      "note": "all open interest"
+      "name": "Commercial Positions Short Old",
+      "note": "This factor denotes the short positions held by commercial traders in older contracts, indicating their bearish market outlook or hedging strategies against long-term market fluctuations."
     },
     "tr_pos_long_old": {
       "factor": "tot_rept_positions_long_old",
-      "name": "tot_rept_positions_long_old",
-      "note": "all open interest"
+      "name": "Total Reportable Positions Long Old",
+      "note": "This factor represents the total long positions in older contracts held by reportable traders, offering insights into the collective bullish sentiment among major market participants over an extended period."
     },
     "tr_pos_short_old": {
       "factor": "tot_rept_positions_short_old",
-      "name": "tot_rept_positions_short_old",
-      "note": "all open interest"
+      "name": "Total Reportable Positions Short Old",
+      "note": "This factor indicates the total short positions in older contracts held by reportable traders, reflecting the aggregate bearish sentiment among significant traders in the longer-term market."
     },
     "nr_pos_long_old": {
       "factor": "nonrept_positions_long_old",
-      "name": "nonrept_positions_long_old",
-      "note": "all open interest"
+      "name": "Non-Reportable Positions Long Old",
+      "note": "This factor shows the long positions in older contracts held by non-reportable traders, indicating bullish sentiment among smaller or individual traders over a long-term perspective."
     },
     "nr_pos_short_old": {
       "factor": "nonrept_positions_short_old",
-      "name": "nonrept_positions_short_old",
-      "note": "all open interest"
+      "name": "Non-Reportable Positions Short Old",
+      "note": "This factor represents the short positions in older contracts held by non-reportable traders, reflecting bearish sentiment among smaller market participants in the long-term market."
     },
     "oi_other": {
       "factor": "open_interest_other",
-      "name": "open_interest_other",
-      "note": "all open interest"
+      "name": "Open Interest Other",
+      "note": "This factor indicates the open interest in contracts other than the most current or older ones, providing insights into the market activity and interest in mid-term contract durations."
     },
     "nc_pos_long_other": {
       "factor": "noncomm_positions_long_other",
-      "name": "noncomm_positions_long_other",
-      "note": "all open interest"
+      "name": "Non-Commercial Positions Long Other",
+      "note": "This factor shows the long positions held by non-commercial traders in other contracts, representing their speculative or investment interest in mid-duration market positions."
     },
     "nc_pos_short_other": {
       "factor": "noncomm_positions_short_other",
-      "name": "noncomm_positions_short_other",
-      "note": "all open interest"
+      "name": "Non-Commercial Positions Short Other",
+      "note": "This factor denotes the short positions held by non-commercial traders in other contracts, reflecting their bearish or speculative bets against mid-term market positions."
     },
     "nc_pos_spread_other": {
       "factor": "noncomm_positions_spread_other",
-      "name": "noncomm_positions_spread_other",
-      "note": "all open interest"
+      "name": "Non-Commercial Positions Spread Other",
+      "note": "This factor indicates the spread positions held by non-commercial traders in other contracts, highlighting their diversified or hedging strategies for mid-term market exposures."
     },
     "c_pos_long_other": {
       "factor": "comm_positions_long_other",
-      "name": "comm_positions_long_other",
-      "note": "all open interest"
+      "name": "Commercial Positions Long Other",
+      "note": "This factor represents the long positions held by commercial traders in contracts that are neither the most current nor the oldest, indicating their bullish expectations for mid-term market trends based on commercial insights."
     },
     "c_pos_short_other": {
       "factor": "comm_positions_short_other",
-      "name": "comm_positions_short_other",
-      "note": "all open interest"
+      "name": "Commercial Positions Short Other",
+      "note": "This factor shows the short positions held by commercial traders in mid-term contracts, reflecting their bearish outlook or hedging strategies against mid-duration market changes."
     },
     "tr_pos_long_other": {
       "factor": "tot_rept_positions_long_other",
-      "name": "tot_rept_positions_long_other",
-      "note": "all open interest"
+      "name": "Total Reportable Positions Long Other",
+      "note": "This factor indicates the total long positions in mid-term contracts held by reportable traders, encompassing both commercial and non-commercial participants, showing overall bullish sentiment in this time frame."
     },
     "tr_pos_short_other": {
       "factor": "tot_rept_positions_short_other",
-      "name": "tot_rept_positions_short_other",
-      "note": "all open interest"
+      "name": "Total Reportable Positions Short Other",
+      "note": "This factor denotes the total short positions in mid-term contracts held by reportable traders, providing a collective view of bearish sentiment among major market participants in the mid-term market."
     },
     "nr_pos_long_other": {
       "factor": "nonrept_positions_long_other",
-      "name": "nonrept_positions_long_other",
-      "note": "all open interest"
+      "name": "Non-Reportable Positions Long Other",
+      "note": "This factor represents the long positions in mid-term contracts held by non-reportable traders, indicating bullish sentiment among smaller or individual traders in the mid-term market."
     },
     "nr_pos_short_other": {
       "factor": "nonrept_positions_short_other",
-      "name": "nonrept_positions_short_other",
-      "note": "all open interest"
+      "name": "Non-Reportable Positions Short Other",
+      "note": "This factor shows the short positions in mid-term contracts held by non-reportable traders, reflecting bearish sentiment among smaller market participants in this segment of the market."
     },
     "chg_oi_all": {
       "factor": "change_in_open_interest_all",
-      "name": "change_in_open_interest_all",
-      "note": "all open interest"
+      "name": "Change in Open Interest All",
+      "note": "This factor measures the change in the total number of open contracts for a symbol, indicating the recent shift in market activity and trader interest."
     },
     "chg_nc_long_all": {
       "factor": "change_in_noncomm_long_all",
-      "name": "change_in_noncomm_long_all",
-      "note": "all open interest"
+      "name": "Change in Non-Commercial Long All",
+      "note": "This factor shows the recent change in total long positions held by non-commercial traders, highlighting shifts in speculative or investment sentiment among these market participants."
     },
     "chg_nc_short_all": {
       "factor": "change_in_noncomm_short_all",
-      "name": "change_in_noncomm_short_all",
-      "note": "all open interest"
+      "name": "Change in Non-Commercial Short All",
+      "note": "This factor represents the recent change in total short positions held by non-commercial traders, reflecting changes in bearish sentiment or speculative strategies."
     },
     "chg_nc_spread_all": {
       "factor": "change_in_noncomm_spead_all",
-      "name": "change_in_noncomm_spead_all",
-      "note": "all open interest"
+      "name": "Change in Non-Commercial Spread All",
+      "note": "This factor indicates the change in total spread positions held by non-commercial traders, showcasing their recent adjustments in hedging or diversified market strategies."
     },
     "chg_c_long_all": {
       "factor": "change_in_comm_long_all",
-      "name": "change_in_comm_long_all",
-      "note": "all open interest"
+      "name": "Change in Commercial Long All",
+      "note": "This factor denotes the change in total long positions held by commercial traders, signifying recent shifts in market outlook and strategies based on their commercial interests and insights."
     },
     "chg_c_short_all": {
       "factor": "change_in_comm_short_all",
-      "name": "change_in_comm_short_all",
-      "note": "all open interest"
+      "name": "Change in Commercial Short All",
+      "note": "This factor shows the recent change in total short positions held by commercial traders, reflecting their evolving bearish market outlook or adjustments in hedging strategies."
     },
     "chg_tr_long_all": {
       "factor": "change_in_tot_rept_long_all",
-      "name": "change_in_tot_rept_long_all",
-      "note": "all open interest"
+      "name": "Change in Total Reportable Long All",
+      "note": "This factor indicates the recent change in total long positions held by reportable traders, signifying shifts in overall bullish sentiment among major market players."
     },
     "chg_tr_short_all": {
       "factor": "change_in_tot_rept_short_all",
-      "name": "change_in_tot_rept_short_all",
-      "note": "all open interest"
+      "name": "Change in Total Reportable Short All",
+      "note": "This factor represents the recent change in total short positions held by reportable traders, highlighting collective changes in bearish sentiment among significant traders."
     },
     "chg_nr_long_all": {
       "factor": "change_in_nonrept_long_all",
-      "name": "change_in_nonrept_long_all",
-      "note": "all open interest"
+      "name": "Change in Non-Reportable Long All",
+      "note": "This factor measures the recent change in total long positions held by non-reportable traders, offering insights into shifts in bullish sentiment among smaller or individual market participants."
     },
     "chg_nr_short_all": {
       "factor": "change_in_nonrept_short_all",
-      "name": "change_in_nonrept_short_all",
-      "note": "all open interest"
+      "name": "Change in Non-Reportable Short All",
+      "note": "This factor denotes the recent change in total short positions held by non-reportable traders, reflecting changes in bearish sentiment among smaller traders in the market."
     },
     "pct_oi_all": {
       "factor": "pct_of_open_interest_all",
-      "name": "pct_of_open_interest_all",
-      "note": "all open interest"
+      "name": "Percent of Open Interest All",
+      "note": "This factor indicates the percentage of total open interest represented by all contracts for a symbol, providing a proportionate view of market involvement and interest."
     },
     "pct_nc_long_all": {
       "factor": "pct_of_oi_noncomm_long_all",
-      "name": "pct_of_oi_noncomm_long_all",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Commercial Long All",
+      "note": "This factor measures the percentage of total open interest that comprises non-commercial traders' long positions, offering insights into their relative bullish market influence."
     },
     "pct_nc_short_all": {
       "factor": "pct_of_oi_noncomm_short_all",
-      "name": "pct_of_oi_noncomm_short_all",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Commercial Short All",
+      "note": "This factor shows the proportion of total open interest made up of non-commercial traders' short positions, highlighting their impact on bearish market sentiment."
     },
     "pct_nc_spread_all": {
       "factor": "pct_of_oi_noncomm_spread_all",
-      "name": "pct_of_oi_noncomm_spread_all",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Commercial Spread All",
+      "note": "This factor represents the percentage of total open interest consisting of non-commercial traders' spread positions, indicating their contribution to the market's hedging or diversified strategies."
     },
     "pct_c_long_all": {
       "factor": "pct_of_oi_comm_long_all",
-      "name": "pct_of_oi_comm_long_all",
-      "note": "all open interest"
+      "name": "Percent of OI Commercial Long All",
+      "note": "This factor indicates the percentage of total open interest attributed to commercial traders' long positions, reflecting their bullish influence based on commercial interests."
     },
     "pct_c_short_all": {
       "factor": "pct_of_oi_comm_short_all",
-      "name": "pct_of_oi_comm_short_all",
-      "note": "all open interest"
+      "name": "Percent of OI Commercial Short All",
+      "note": "This factor denotes the proportion of total open interest that comprises commercial traders' short positions, offering insights into their bearish market impact based on commercial strategies."
     },
     "pct_tr_long_all": {
       "factor": "pct_of_oi_tot_rept_long_all",
-      "name": "pct_of_oi_tot_rept_long_all",
-      "note": "all open interest"
+      "name": "Percent of OI Total Reportable Long All",
+      "note": "This factor indicates the percentage of total open interest represented by long positions of reportable traders, reflecting their influence on the bullish market outlook."
     },
     "pct_tr_short_all": {
       "factor": "pct_of_oi_tot_rept_short_all",
-      "name": "pct_of_oi_tot_rept_short_all",
-      "note": "all open interest"
+      "name": "Percent of OI Total Reportable Short All",
+      "note": "This factor shows the proportion of total open interest made up by short positions of reportable traders, highlighting their collective impact on bearish market sentiment."
     },
     "pct_nr_long_all": {
       "factor": "pct_of_oi_nonrept_long_all",
-      "name": "pct_of_oi_nonrept_long_all",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Reportable Long All",
+      "note": "This factor measures the percentage of total open interest comprised of long positions held by non-reportable traders, offering insights into their bullish market influence."
     },
     "pct_nr_short_all": {
       "factor": "pct_of_oi_nonrept_short_all",
-      "name": "pct_of_oi_nonrept_short_all",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Reportable Short All",
+      "note": "This factor represents the proportion of total open interest that consists of short positions held by non-reportable traders, reflecting their impact on bearish sentiment in the market."
     },
     "pct_oi_ol": {
       "factor": "pct_of_open_interest_ol",
-      "name": "pct_of_open_interest_ol",
-      "note": "all open interest"
+      "name": "Percent of Open Interest Old",
+      "note": "This factor indicates the percentage of total open interest in older contracts, providing insights into the market's long-term interest and involvement in these positions."
     },
     "pct_nc_long_ol": {
       "factor": "pct_of_oi_noncomm_long_ol",
-      "name": "pct_of_oi_noncomm_long_ol",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Commercial Long Old",
+      "note": "This factor shows the proportion of total open interest in older contracts made up of non-commercial traders' long positions, highlighting their speculative or investment interest over a longer-term horizon."
     },
     "pct_nc_short_ol": {
       "factor": "pct_of_oi_noncomm_short_ol",
-      "name": "pct_of_oi_noncomm_short_ol",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Commercial Short Old",
+      "note": "This factor indicates the percentage of total open interest in older contracts represented by non-commercial traders' short positions, highlighting their bearish expectations over a long-term horizon."
     },
     "pct_nc_spread_ol": {
       "factor": "pct_of_oi_noncomm_spread_ol",
-      "name": "pct_of_oi_noncomm_spread_ol",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Commercial Spread Old",
+      "note": "This factor shows the proportion of total open interest in older contracts made up by non-commercial traders' spread positions, reflecting their hedging or diversified market strategies over time."
     },
     "pct_c_long_ol": {
       "factor": "pct_of_oi_comm_long_ol",
-      "name": "pct_of_oi_comm_long_ol",
-      "note": "all open interest"
+      "name": "Percent of OI Commercial Long Old",
+      "note": "This factor represents the percentage of total open interest in older contracts attributed to commercial traders' long positions, indicating their long-term bullish market strategies based on commercial insights."
     },
     "pct_c_short_ol": {
       "factor": "pct_of_oi_comm_short_ol",
-      "name": "pct_of_oi_comm_short_ol",
-      "note": "all open interest"
+      "name": "Percent of OI Commercial Short Old",
+      "note": "This factor measures the proportion of total open interest in older contracts consisting of commercial traders' short positions, offering insights into their long-term bearish outlook or hedging strategies."
     },
     "pct_tr_long_ol": {
       "factor": "pct_of_oi_tot_rept_long_ol",
-      "name": "pct_of_oi_tot_rept_long_ol",
-      "note": "all open interest"
+      "name": "Percent of OI Total Reportable Long Old",
+      "note": "This factor denotes the percentage of total open interest in older contracts represented by long positions of reportable traders, reflecting their collective influence on long-term bullish market trends."
     },
     "pct_tr_short_ol": {
       "factor": "pct_of_oi_tot_rept_short_ol",
-      "name": "pct_of_oi_tot_rept_short_ol",
-      "note": "all open interest"
+      "name": "Percent of OI Total Reportable Short Old",
+      "note": "This factor indicates the proportion of total open interest in older contracts comprised of short positions of reportable traders, showcasing their collective impact on long-term bearish market sentiment."
     },
     "pct_nr_long_ol": {
       "factor": "pct_of_oi_nonrept_long_ol",
-      "name": "pct_of_oi_nonrept_long_ol",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Reportable Long Old",
+      "note": "This factor measures the percentage of total open interest in older contracts represented by long positions held by non-reportable traders, showing their long-term bullish influence in the market."
     },
     "pct_nr_short_ol": {
       "factor": "pct_of_oi_nonrept_short_ol",
-      "name": "pct_of_oi_nonrept_short_ol",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Reportable Short Old",
+      "note": "This factor indicates the proportion of total open interest in older contracts made up by short positions held by non-reportable traders, reflecting their long-term bearish sentiment."
     },
     "pct_oi_other": {
       "factor": "pct_of_open_interest_other",
-      "name": "pct_of_open_interest_other",
-      "note": "all open interest"
+      "name": "Percent of Open Interest Other",
+      "note": "This factor represents the percentage of total open interest in mid-term contracts, providing insights into market involvement in these intermediate duration positions."
     },
     "pct_nc_long_other": {
       "factor": "pct_of_oi_noncomm_long_other",
-      "name": "pct_of_oi_noncomm_long_other",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Commercial Long Other",
+      "note": "This factor shows the proportion of total open interest in mid-term contracts represented by non-commercial traders' long positions, indicating their speculative bullish expectations for these durations."
     },
     "pct_nc_short_other": {
       "factor": "pct_of_oi_noncomm_short_other",
-      "name": "pct_of_oi_noncomm_short_other",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Commercial Short Other",
+      "note": "This factor measures the percentage of total open interest in mid-term contracts comprising non-commercial traders' short positions, highlighting their bearish outlook or speculative strategies for these periods."
     },
     "pct_nc_spread_other": {
       "factor": "pct_of_oi_noncomm_spread_other",
-      "name": "pct_of_oi_noncomm_spread_other",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Commercial Spread Other",
+      "note": "This factor denotes the proportion of total open interest in mid-term contracts made up by non-commercial traders' spread positions, showcasing their hedging or diversified strategies over intermediate time frames."
     },
     "pct_c_long_other": {
       "factor": "pct_of_oi_comm_long_other",
-      "name": "pct_of_oi_comm_long_other",
-      "note": "all open interest"
+      "name": "Percent of OI Commercial Long Other",
+      "note": "This factor indicates the percentage of total open interest in mid-term contracts represented by commercial traders' long positions, reflecting their bullish market expectations based on commercial interests."
     },
     "pct_c_short_other": {
       "factor": "pct_of_oi_comm_short_other",
-      "name": "pct_of_oi_comm_short_other",
-      "note": "all open interest"
+      "name": "Percent of OI Commercial Short Other",
+      "note": "This factor measures the proportion of total open interest in mid-term contracts comprising commercial traders' short positions, highlighting their bearish outlook based on commercial strategies."
     },
     "pct_tr_long_other": {
       "factor": "pct_of_oi_tot_rept_long_other",
-      "name": "pct_of_oi_tot_rept_long_other",
-      "note": "all open interest"
+      "name": "Percent of OI Total Reportable Long Other",
+      "note": "This factor shows the percentage of total open interest in mid-term contracts represented by long positions of reportable traders, indicating the collective bullish sentiment among major market participants."
     },
     "pct_tr_short_other": {
       "factor": "pct_of_oi_tot_rept_short_other",
-      "name": "pct_of_oi_tot_rept_short_other",
-      "note": "all open interest"
+      "name": "Percent of OI Total Reportable Short Other",
+      "note": "This factor denotes the proportion of total open interest in mid-term contracts made up by short positions of reportable traders, reflecting their aggregate bearish sentiment."
     },
     "pct_nr_long_other": {
       "factor": "pct_of_oi_nonrept_long_other",
-      "name": "pct_of_oi_nonrept_long_other",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Reportable Long Other",
+      "note": "This factor represents the percentage of total open interest in mid-term contracts held by non-reportable traders' long positions, indicating bullish sentiment among smaller or individual market participants."
     },
     "pct_nr_short_other": {
       "factor": "pct_of_oi_nonrept_short_other",
-      "name": "pct_of_oi_nonrept_short_other",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Reportable Short Other",
+      "note": "This factor shows the proportion of total open interest in mid-term contracts comprised of short positions held by non-reportable traders, highlighting bearish sentiment among smaller traders."
     },
     "traders_total_all": {
       "factor": "traders_tot_all",
-      "name": "traders_tot_all",
-      "note": "all open interest"
+      "name": "Traders Total All",
+      "note": "This factor indicates the total number of traders involved in all types of positions (long, short, spread) for a symbol, providing a comprehensive overview of market participant activity."
     },
     "traders_noncomm_long_all": {
       "factor": "traders_noncomm_long_all",
-      "name": "traders_noncomm_long_all",
-      "note": "all open interest"
+      "name": "Traders Non-Commercial Long All",
+      "note": "This factor represents the number of non-commercial traders holding long positions, reflecting the extent of speculative or investment interest among these traders in bullish market strategies."
     },
     "traders_noncomm_short_all": {
       "factor": "traders_noncomm_short_all",
-      "name": "traders_noncomm_short_all",
-      "note": "all open interest"
+      "name": "Traders Non-Commercial Short All",
+      "note": "This factor shows the number of non-commercial traders with short positions, indicating the level of bearish market sentiment or speculative bets among these traders."
     },
     "traders_noncomm_spread_all": {
       "factor": "traders_noncomm_spread_all",
-      "name": "traders_noncomm_spread_all",
-      "note": "all open interest"
+      "name": "Traders Non-Commercial Spread All",
+      "note": "This factor denotes the number of non-commercial traders engaging in spread positions, highlighting their involvement in hedging or diversified market strategies."
     },
     "traders_comm_long_all": {
       "factor": "traders_comm_long_all",
-      "name": "traders_comm_long_all",
-      "note": "all open interest"
+      "name": "Traders Commercial Long All",
+      "note": "This factor indicates the number of commercial traders holding long positions, reflecting their bullish market outlook based on business needs and market analysis."
     },
     "traders_comm_short_all": {
       "factor": "traders_comm_short_all",
-      "name": "traders_comm_short_all",
-      "note": "all open interest"
+      "name": "Traders Commercial Short All",
+      "note": "This factor measures the number of commercial traders with short positions, showing their bearish market expectations or hedging strategies based on commercial interests."
     },
     "traders_total_reportable_long_all": {
       "factor": "traders_tot_rept_long_all",
-      "name": "traders_tot_rept_long_all",
-      "note": "all open interest"
+      "name": "Traders Total Reportable Long All",
+      "note": "This factor represents the total number of reportable traders holding long positions, indicating the level of involvement by major market participants in bullish strategies."
     },
     "traders_total_reportable_short_all": {
       "factor": "traders_tot_rept_short_all",
-      "name": "traders_tot_rept_short_all",
-      "note": "all open interest"
+      "name": "Traders Total Reportable Short All",
+      "note": "This factor shows the total number of reportable traders with short positions, highlighting the collective bearish sentiment among significant traders."
     },
     "traders_total_ol": {
       "factor": "traders_tot_ol",
-      "name": "traders_tot_ol",
-      "note": "all open interest"
+      "name": "Traders Total Old",
+      "note": "This factor indicates the total number of traders involved in older contracts, providing insights into long-term market participant engagement and strategies."
     },
     "traders_noncomm_long_ol": {
       "factor": "traders_noncomm_long_ol",
-      "name": "traders_noncomm_long_ol",
-      "note": "all open interest"
+      "name": "Traders Non-Commercial Long Old",
+      "note": "This factor represents the number of non-commercial traders holding long positions in older contracts, reflecting their speculative or investment interest over a longer-term horizon."
     },
     "traders_noncomm_short_ol": {
       "factor": "traders_noncomm_short_ol",
-      "name": "traders_noncomm_short_ol",
-      "note": "all open interest"
+      "name": "Traders Non-Commercial Short Old",
+      "note": "This factor shows the number of non-commercial traders with short positions in older contracts, indicating their bearish expectations or strategies for long-term market trends."
     },
     "traders_noncomm_spread_ol": {
       "factor": "traders_noncomm_spead_ol",
-      "name": "traders_noncomm_spead_ol",
-      "note": "all open interest"
+      "name": "Traders Non-Commercial Spread Old",
+      "note": "This factor denotes the number of non-commercial traders engaged in spread positions in older contracts, highlighting their long-term hedging or diversified market strategies."
     },
     "traders_comm_long_ol": {
       "factor": "traders_comm_long_ol",
-      "name": "traders_comm_long_ol",
-      "note": "all open interest"
+      "name": "Traders Commercial Long Old",
+      "note": "This factor indicates the number of commercial traders holding long positions in older contracts, reflecting their long-term bullish market strategies based on commercial interests."
     },
     "traders_comm_short_ol": {
       "factor": "traders_comm_short_ol",
-      "name": "traders_comm_short_ol",
-      "note": "all open interest"
+      "name": "Traders Commercial Short Old",
+      "note": "This factor shows the number of commercial traders with short positions in older contracts, highlighting their long-term bearish outlook or hedging strategies."
     },
     "traders_total_reportable_long_ol": {
       "factor": "traders_tot_rept_long_ol",
-      "name": "traders_tot_rept_long_ol",
-      "note": "all open interest"
+      "name": "Traders Total Reportable Long Old",
+      "note": "This factor represents the total number of reportable traders with long positions in older contracts, indicating significant trader involvement in long-term bullish strategies."
     },
     "traders_total_reportable_short_ol": {
       "factor": "traders_tot_rept_short_ol",
-      "name": "traders_tot_rept_short_ol",
-      "note": "all open interest"
+      "name": "Traders Total Reportable Short Old",
+      "note": "This factor denotes the total number of reportable traders with short positions in older contracts, showing collective long-term bearish sentiment among major traders."
     },
     "traders_total_other": {
       "factor": "traders_tot_other",
-      "name": "traders_tot_other",
-      "note": "all open interest"
+      "name": "Traders Total Other",
+      "note": "This factor indicates the total number of traders involved in mid-term contracts, providing insights into the level of market participation in these intermediate duration positions."
     },
     "traders_noncomm_long_other": {
       "factor": "traders_noncomm_long_other",
-      "name": "traders_noncomm_long_other",
-      "note": "all open interest"
+      "name": "Traders Non-Commercial Long Other",
+      "note": "This factor represents the number of non-commercial traders holding long positions in mid-term contracts, reflecting their speculative bullish interest for these periods."
     },
     "traders_noncomm_short_other": {
       "factor": "traders_noncomm_short_other",
-      "name": "traders_noncomm_short_other",
-      "note": "all open interest"
+      "name": "Traders Non-Commercial Short Other",
+      "note": "This factor shows the number of non-commercial traders with short positions in mid-term contracts, indicating their bearish expectations or strategies for these durations."
     },
     "traders_noncomm_spread_other": {
       "factor": "traders_noncomm_spread_other",
-      "name": "traders_noncomm_spread_other",
-      "note": "all open interest"
+      "name": "Traders Non-Commercial Spread Other",
+      "note": "This factor denotes the number of non-commercial traders engaged in spread positions in mid-term contracts, highlighting their hedging or diversified strategies over intermediate time frames."
     },
     "traders_comm_long_other": {
       "factor": "traders_comm_long_other",
-      "name": "traders_comm_long_other",
-      "note": "all open interest"
+      "name": "Traders Commercial Long Other",
+      "note": "This factor represents the number of commercial traders holding long positions in mid-term contracts, indicating their bullish market strategies based on business insights for these durations."
     },
     "traders_comm_short_other": {
       "factor": "traders_comm_short_other",
-      "name": "traders_comm_short_other",
-      "note": "all open interest"
+      "name": "Traders Commercial Short Other",
+      "note": "This factor shows the number of commercial traders with short positions in mid-term contracts, highlighting their bearish outlook or hedging strategies over intermediate time frames."
     },
     "traders_total_reportable_long_other": {
       "factor": "traders_tot_rept_long_other",
-      "name": "traders_tot_rept_long_other",
-      "note": "all open interest"
+      "name": "Traders Total Reportable Long Other",
+      "note": "This factor indicates the total number of reportable traders with long positions in mid-term contracts, reflecting the collective bullish sentiment of major market participants for these periods."
     },
     "traders_total_reportable_short_other": {
       "factor": "traders_tot_rept_short_other",
-      "name": "traders_tot_rept_short_other",
-      "note": "all open interest"
+      "name": "Traders Total Reportable Short Other",
+      "note": "This factor denotes the total number of reportable traders with short positions in mid-term contracts, showing the aggregate bearish sentiment among significant traders for these durations."
     },
     "conc_gross_le_4_tdr_long_all": {
       "factor": "conc_gross_le_4_tdr_long_all",
-      "name": "conc_gross_le_4_tdr_long_all",
-      "note": "all open interest"
+      "name": "Concentration Gross Long (Top 4 Traders) All",
+      "note": "This factor measures the concentration of long positions held by the top four traders, providing insights into the market dominance and influence of major traders on overall bullish sentiment."
     },
     "conc_gross_le_4_tdr_short_all": {
       "factor": "conc_gross_le_4_tdr_short_all",
-      "name": "conc_gross_le_4_tdr_short_all",
-      "note": "all open interest"
+      "name": "Concentration Gross Short (Top 4 Traders) All",
+      "note": "This factor indicates the concentration of short positions held by the top four traders, highlighting the extent of market control and impact of major traders on overall bearish sentiment."
     },
     "conc_gross_le_8_tdr_long_all": {
       "factor": "conc_gross_le_8_tdr_long_all",
-      "name": "conc_gross_le_8_tdr_long_all",
-      "note": "all open interest"
+      "name": "Concentration Gross Long (Top 8 Traders) All",
+      "note": "This factor measures the total long positions held by the top eight traders, providing insights into the concentration and influence of these major traders on the bullish market sentiment."
     },
     "conc_gross_le_8_tdr_short_all": {
       "factor": "conc_gross_le_8_tdr_short_all",
-      "name": "conc_gross_le_8_tdr_short_all",
-      "note": "all open interest"
+      "name": "Concentration Gross Short (Top 8 Traders) All",
+      "note": "This factor indicates the concentration of short positions held by the top eight traders, highlighting the market impact and control exerted by these significant traders on bearish sentiment."
     },
     "conc_net_le_4_tdr_long_all": {
       "factor": "conc_net_le_4_tdr_long_all",
-      "name": "conc_net_le_4_tdr_long_all",
-      "note": "all open interest"
+      "name": "Concentration Net Long (Top 4 Traders) All",
+      "note": "This factor represents the net long position concentration among the top four traders, offering insights into their collective influence and dominance in the market's bullish direction."
     },
     "conc_net_le_4_tdr_short_all": {
       "factor": "conc_net_le_4_tdr_short_all",
-      "name": "conc_net_le_4_tdr_short_all",
-      "note": "all open interest"
+      "name": "Concentration Net Short (Top 4 Traders) All",
+      "note": "This factor shows the net short position concentration among the top four traders, reflecting their collective impact and control over the market's bearish trends."
     },
     "conc_net_le_8_tdr_long_all": {
       "factor": "conc_net_le_8_tdr_long_all",
-      "name": "conc_net_le_8_tdr_long_all",
-      "note": "all open interest"
+      "name": "Concentration Net Long (Top 8 Traders) All",
+      "note": "This factor measures the net long position concentration among the top eight traders, indicating the extent of their combined influence on the overall bullish market direction."
     },
     "conc_net_le_8_tdr_short_all": {
       "factor": "conc_net_le_8_tdr_short_all",
-      "name": "conc_net_le_8_tdr_short_all",
-      "note": "all open interest"
+      "name": "Concentration Net Short (Top 8 Traders) All",
+      "note": "This factor denotes the net short position concentration among the top eight traders, highlighting the magnitude of their collective impact on the market's bearish orientation."
     },
     "conc_gross_le_4_tdr_long_ol": {
       "factor": "conc_gross_le_4_tdr_long_ol",
-      "name": "conc_gross_le_4_tdr_long_ol",
-      "note": "all open interest"
+      "name": "Concentration Gross Long (Top 4 Traders) Old",
+      "note": "This factor indicates the concentration of long positions in older contracts held by the top four traders, showing their dominant influence on long-term bullish market sentiment."
     },
     "conc_gross_le_4_tdr_short_ol": {
       "factor": "conc_gross_le_4_tdr_short_ol",
-      "name": "conc_gross_le_4_tdr_short_ol",
-      "note": "all open interest"
+      "name": "Concentration Gross Short (Top 4 Traders) Old",
+      "note": "This factor shows the concentration of short positions in older contracts held by the top four traders, reflecting their significant impact on long-term bearish market trends."
     },
     "conc_gross_le_8_tdr_long_ol": {
       "factor": "conc_gross_le_8_tdr_long_ol",
-      "name": "conc_gross_le_8_tdr_long_ol",
-      "note": "all open interest"
+      "name": "Concentration Gross Long (Top 8 Traders) Old",
+      "note": "This factor measures the concentration of long positions in older contracts held by the top eight traders, indicating their collective influence on the market's long-term bullish orientation."
     },
     "conc_gross_le_8_tdr_short_ol": {
       "factor": "conc_gross_le_8_tdr_short_ol",
-      "name": "conc_gross_le_8_tdr_short_ol",
-      "note": "all open interest"
+      "name": "Concentration Gross Short (Top 8 Traders) Old",
+      "note": "This factor denotes the concentration of short positions in older contracts held by the top eight traders, highlighting their aggregate impact on the market's long-term bearish direction."
     },
     "conc_net_le_4_tdr_long_ol": {
       "factor": "conc_net_le_4_tdr_long_ol",
-      "name": "conc_net_le_4_tdr_long_ol",
-      "note": "all open interest"
+      "name": "Concentration Net Long (Top 4 Traders) Old",
+      "note": "This factor represents the net long position concentration in older contracts among the top four traders, offering insights into their combined influence over the long-term bullish market trends."
     },
     "conc_net_le_4_tdr_short_ol": {
       "factor": "conc_net_le_4_tdr_short_ol",
-      "name": "conc_net_le_4_tdr_short_ol",
-      "note": "all open interest"
+      "name": "Concentration Net Short (Top 4 Traders) Old",
+      "note": "This factor indicates the net short position concentration in older contracts among the top four traders, reflecting their collective control over the long-term bearish market movements."
     },
     "conc_net_le_8_tdr_long_ol": {
       "factor": "conc_net_le_8_tdr_long_ol",
-      "name": "conc_net_le_8_tdr_long_ol",
-      "note": "all open interest"
+      "name": "Concentration Net Long (Top 8 Traders) Old",
+      "note": "This factor measures the net long position concentration in older contracts among the top eight traders, indicating their collective influence on long-term bullish market trends."
     },
     "conc_net_le_8_tdr_short_ol": {
       "factor": "conc_net_le_8_tdr_short_ol",
-      "name": "conc_net_le_8_tdr_short_ol",
-      "note": "all open interest"
+      "name": "Concentration Net Short (Top 8 Traders) Old",
+      "note": "This factor shows the net short position concentration in older contracts among the top eight traders, reflecting their aggregate impact on long-term bearish market orientations."
     },
     "conc_gross_le_4_tdr_long_other": {
       "factor": "conc_gross_le_4_tdr_long_other",
-      "name": "conc_gross_le_4_tdr_long_other",
-      "note": "all open interest"
+      "name": "Concentration Gross Long (Top 4 Traders) Other",
+      "note": "This factor indicates the concentration of long positions in mid-term contracts held by the top four traders, showing their dominant influence on intermediate-term bullish sentiment."
     },
     "conc_gross_le_4_tdr_short_other": {
       "factor": "conc_gross_le_4_tdr_short_other",
-      "name": "conc_gross_le_4_tdr_short_other",
-      "note": "all open interest"
+      "name": "Concentration Gross Short (Top 4 Traders) Other",
+      "note": "This factor represents the concentration of short positions in mid-term contracts held by the top four traders, reflecting their significant impact on intermediate-term bearish trends."
     },
     "conc_gross_le_8_tdr_long_other": {
       "factor": "conc_gross_le_8_tdr_long_other",
-      "name": "conc_gross_le_8_tdr_long_other",
-      "note": "all open interest"
+      "name": "Concentration Gross Long (Top 8 Traders) Other",
+      "note": "This factor measures the concentration of long positions in mid-term contracts held by the top eight traders, indicating their collective influence on the market's intermediate-term bullish direction."
     },
     "conc_gross_le_8_tdr_short_other": {
       "factor": "conc_gross_le_8_tdr_short_other",
-      "name": "conc_gross_le_8_tdr_short_other",
-      "note": "all open interest"
+      "name": "Concentration Gross Short (Top 8 Traders) Other",
+      "note": "This factor denotes the concentration of short positions in mid-term contracts held by the top eight traders, highlighting their aggregate impact on the market's intermediate-term bearish orientation."
     },
     "conc_net_le_4_tdr_long_other": {
       "factor": "conc_net_le_4_tdr_long_other",
-      "name": "conc_net_le_4_tdr_long_other",
-      "note": "all open interest"
+      "name": "Concentration Net Long (Top 4 Traders) Other",
+      "note": "This factor shows the net long position concentration in mid-term contracts among the top four traders, offering insights into their combined influence over intermediate-term bullish market trends."
     },
     "conc_net_le_4_tdr_short_other": {
       "factor": "conc_net_le_4_tdr_short_other",
-      "name": "conc_net_le_4_tdr_short_other",
-      "note": "all open interest"
+      "name": "Concentration Net Short (Top 4 Traders) Other",
+      "note": "This factor indicates the net short position concentration in mid-term contracts among the top four traders, reflecting their collective control and influence on intermediate-term bearish market trends."
     },
     "conc_net_le_8_tdr_long_other": {
       "factor": "conc_net_le_8_tdr_long_other",
-      "name": "conc_net_le_8_tdr_long_other",
-      "note": "all open interest"
+      "name": "Concentration Net Long (Top 8 Traders) Other",
+      "note": "This factor measures the net long position concentration in mid-term contracts among the top eight traders, showing the aggregate influence of these traders on the market's intermediate-term bullish direction."
     },
     "conc_net_le_8_tdr_short_other": {
       "factor": "conc_net_le_8_tdr_short_other",
-      "name": "conc_net_le_8_tdr_short_other",
-      "note": "all open interest"
+      "name": "Concentration Net Short (Top 8 Traders) Other",
+      "note": "This factor denotes the net short position concentration in mid-term contracts among the top eight traders, highlighting their combined impact on intermediate-term bearish market movements."
     }
   },
   "EarningsCalendar": {

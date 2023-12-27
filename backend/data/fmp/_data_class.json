@@ -1563,149 +1563,149 @@
     },
     "total_assets": {
       "factor": "totalAssets",
-      "name": "totalAssets",
-      "note": "all open interest"
+      "name": "Total Assets",
+      "note": "This factor represents the sum of all assets owned by the company, both current and non-current. It's a key indicator of the company's overall resources and financial strength."
     },
     "account_payables": {
       "factor": "accountPayables",
-      "name": "accountPayables",
-      "note": "all open interest"
+      "name": "Account Payables",
+      "note": "This factor indicates the amount the company owes to its suppliers or creditors for goods and services received but not yet paid for, reflecting its short-term liabilities."
     },
     "short_term_debt": {
       "factor": "shortTermDebt",
-      "name": "shortTermDebt",
-      "note": "all open interest"
+      "name": "Short Term Debt",
+      "note": "This factor shows the company's obligations due within one year, including loans and other borrowings, crucial for assessing its short-term financial obligations and liquidity needs."
     },
     "tax_payables": {
       "factor": "taxPayables",
-      "name": "taxPayables",
-      "note": "all open interest"
+      "name": "Tax Payables",
+      "note": "This factor includes taxes owed to the government that are due in the short term, representing the company's immediate tax liabilities."
     },
     "def_rev": {
       "factor": "deferredRevenue",
-      "name": "deferredRevenue",
-      "note": "all open interest"
+      "name": "Deferred Revenue",
+      "note": "This factor represents income received for goods or services yet to be delivered or performed, indicating obligations the company must fulfill in the future."
     },
     "oth_cur_liab": {
       "factor": "otherCurrentLiabilities",
-      "name": "otherCurrentLiabilities",
-      "note": "all open interest"
+      "name": "Other Current Liabilities",
+      "note": "This factor encompasses various short-term liabilities not specifically categorized, like accrued expenses, reflecting the company's immediate financial obligations."
     },
     "tot_cur_liab": {
       "factor": "totalCurrentLiabilities",
-      "name": "totalCurrentLiabilities",
-      "note": "all open interest"
+      "name": "Total Current Liabilities",
+      "note": "This factor represents the sum of all short-term liabilities, indicating the total amount the company owes within one year, crucial for assessing its short-term financial stability."
     },
     "long_debt": {
       "factor": "longTermDebt",
-      "name": "longTermDebt",
-      "note": "all open interest"
+      "name": "Long Term Debt",
+      "note": "This factor shows the company's obligations that are due beyond one year, including bonds, loans, and other long-term borrowings, key for understanding its long-term financial commitments."
     },
     "def_rev_nc": {
       "factor": "deferredRevenueNonCurrent",
-      "name": "deferredRevenueNonCurrent",
-      "note": "all open interest"
+      "name": "Deferred Revenue Non-Current",
+      "note": "This factor represents income received for goods or services to be delivered in the future, beyond the current accounting period, indicating longer-term obligations and future revenue recognition."
     },
     "def_tax_liab_nc": {
       "factor": "deferredTaxLiabilitiesNonCurrent",
-      "name": "deferredTaxLiabilitiesNonCurrent",
-      "note": "all open interest"
+      "name": "Deferred Tax Liabilities Non-Current",
+      "note": "This factor includes taxes that are accrued but not due in the short term, reflecting the company's long-term tax obligations."
     },
     "oth_nc_liab": {
       "factor": "otherNonCurrentLiabilities",
-      "name": "otherNonCurrentLiabilities",
-      "note": "all open interest"
+      "name": "Other Non-Current Liabilities",
+      "note": "This factor covers various long-term liabilities not specifically listed, like long-term lease obligations, crucial for a complete understanding of the company's long-term financial responsibilities."
     },
     "tot_nc_liab": {
       "factor": "totalNonCurrentLiabilities",
-      "name": "totalNonCurrentLiabilities",
-      "note": "all open interest"
+      "name": "Total Non-Current Liabilities",
+      "note": "This factor indicates the total amount of long-term liabilities, representing the company's financial obligations due beyond one year."
     },
     "oth_liab": {
       "factor": "otherLiabilities",
-      "name": "otherLiabilities",
-      "note": "all open interest"
+      "name": "Other Liabilities",
+      "note": "This factor includes miscellaneous liabilities not classified under current or non-current liabilities, offering a broader view of the company's varied financial obligations."
     },
     "cap_lease_obl": {
       "factor": "capitalLeaseObligations",
-      "name": "capitalLeaseObligations",
-      "note": "all open interest"
+      "name": "Capital Lease Obligations",
+      "note": "This factor indicates the company's long-term commitments under capital leases, reflecting the financial burden of leased assets considered similar to purchased assets in terms of liability."
     },
     "tot_liab": {
       "factor": "totalLiabilities",
-      "name": "totalLiabilities",
-      "note": "all open interest"
+      "name": "Total Liabilities",
+      "note": "This factor represents the sum of all the company's liabilities, both current and non-current, crucial for assessing the total financial obligations and risks."
     },
     "pref_stock": {
       "factor": "preferredStock",
-      "name": "preferredStock",
-      "note": "all open interest"
+      "name": "Preferred Stock",
+      "note": "This factor shows the value of preferred shares issued by the company, representing a type of equity that typically provides dividends before common stocks and has priority over them in asset liquidation."
     },
     "com_stock": {
       "factor": "commonStock",
-      "name": "commonStock",
-      "note": "all open interest"
+      "name": "Common Stock",
+      "note": "This factor represents the value of common shares issued, reflecting the basic equity ownership in the company, often with voting rights and dividends based on company performance."
     },
     "ret_earn": {
       "factor": "retainedEarnings",
-      "name": "retainedEarnings",
-      "note": "all open interest"
+      "name": "Retained Earnings",
+      "note": "This factor indicates the cumulative earnings retained in the company rather than distributed as dividends, essential for understanding reinvestment in the business and growth potential."
     },
     "acc_oth_comp_inc_loss": {
       "factor": "accumulatedOtherComprehensiveIncomeLoss",
-      "name": "accumulatedOtherComprehensiveIncomeLoss",
-      "note": "all open interest"
+      "name": "Accumulated Other Comprehensive Income/Loss",
+      "note": "This factor covers various income, expenses, gains, and losses that are not included in net income, reflecting the company's broader financial performance."
     },
     "oth_tot_stk_eq": {
       "factor": "othertotalStockholdersEquity",
-      "name": "othertotalStockholdersEquity",
-      "note": "all open interest"
+      "name": "Other Total Stockholders' Equity",
+      "note": "This factor encompasses additional elements of stockholders' equity not specifically categorized, contributing to the overall equity value of the company."
     },
     "tot_stk_eq": {
       "factor": "totalStockholdersEquity",
-      "name": "totalStockholdersEquity",
-      "note": "all open interest"
+      "name": "Total Stockholders' Equity",
+      "note": "This factor represents the total equity value held by shareholders, calculated as the difference between total assets and total liabilities, key for assessing the company's net worth and financial health."
     },
     "tot_eq": {
       "factor": "totalEquity",
-      "name": "totalEquity",
-      "note": "all open interest"
+      "name": "Total Equity",
+      "note": "This factor shows the total shareholders' equity, representing the residual interest in the company's assets after deducting liabilities, crucial for understanding the overall value attributable to shareholders."
     },
     "tot_liab_stk_eq": {
       "factor": "totalLiabilitiesAndStockholdersEquity",
-      "name": "totalLiabilitiesAndStockholdersEquity",
-      "note": "all open interest"
+      "name": "Total Liabilities and Stockholders' Equity",
+      "note": "This factor combines the total liabilities with total stockholders' equity, reflecting the company's total financial obligations and the equity financed by shareholders."
     },
     "min_inter": {
       "factor": "minorityInterest",
-      "name": "minorityInterest",
-      "note": "all open interest"
+      "name": "Minority Interest",
+      "note": "This factor represents the portion of subsidiary companies' equity not owned by the parent company, indicating the minority shareholders' stake in the subsidiaries."
     },
     "tot_liab_eq": {
       "factor": "totalLiabilitiesAndTotalEquity",
-      "name": "totalLiabilitiesAndTotalEquity",
-      "note": "all open interest"
+      "name": "Total Liabilities and Total Equity",
+      "note": "This factor sums up all liabilities and equity, providing a comprehensive view of the company's financial structure and total funding sources."
     },
     "tot_inv": {
       "factor": "totalInvestments",
-      "name": "totalInvestments",
-      "note": "all open interest"
+      "name": "Total Investments",
+      "note": "This factor shows the total value of the company's investments, including long-term and short-term investments, crucial for assessing its investment strategy and asset allocation."
     },
     "tot_debt": {
       "factor": "totalDebt",
-      "name": "totalDebt",
-      "note": "all open interest"
+      "name": "Total Debt",
+      "note": "This factor indicates the sum of all the company's debt, both short-term and long-term, essential for evaluating its total debt burden and financial leverage."
     },
     "net_debt": {
       "factor": "netDebt",
-      "name": "netDebt",
-      "note": "all open interest"
+      "name": "Net Debt",
+      "note": "This factor calculates the company's total debt minus its cash and cash equivalents, providing an insight into its net financial obligations and liquidity position."
     }
   },
   "IncomeStatement": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Income Statement",
+      "note": "This section offers real-time access to income statement data for a broad range of entities including public and private companies, and ETFs. The data is instrumental for analyzing a company's profitability, benchmarking against competitors, and identifying business trends.",
       "metaclass": "ClientMeta",
       "api": "api/v3/income-statement",
       "params": {
@@ -1714,149 +1714,149 @@
     },
     "revenue": {
       "factor": "revenue",
-      "name": "revenue",
-      "note": "all open interest"
+      "name": "Revenue",
+      "note": "This factor represents the total income generated from goods sold or services provided, key for assessing the company's primary business activities and market reach."
     },
     "cost_of_revenue": {
       "factor": "costOfRevenue",
-      "name": "costOfRevenue",
-      "note": "all open interest"
+      "name": "Cost of Revenue",
+      "note": "This factor indicates the direct costs attributable to the production of the goods or services sold, essential for understanding the company's production efficiency and cost management."
     },
     "gross_profit": {
       "factor": "grossProfit",
-      "name": "grossProfit",
-      "note": "all open interest"
+      "name": "Gross Profit",
+      "note": "This factor shows the profit a company makes after deducting the costs associated with producing and selling its products or services, crucial for evaluating its profitability and operational performance."
     },
     "gross_profit_ratio": {
       "factor": "grossProfitRatio",
-      "name": "grossProfitRatio",
-      "note": "all open interest"
+      "name": "Gross Profit Ratio",
+      "note": "This factor calculates the ratio of gross profit to revenue, providing insights into the company's profitability and efficiency in its core business operations."
     },
     "rnd_expenses": {
       "factor": "researchAndDevelopmentExpenses",
-      "name": "researchAndDevelopmentExpenses",
-      "note": "all open interest"
+      "name": "Research and Development Expenses",
+      "note": "This factor reflects the company's investment in innovation and development of new products or services, key for understanding its growth potential and commitment to innovation."
     },
     "ga_expenses": {
       "factor": "generalAndAdministrativeExpenses",
-      "name": "generalAndAdministrativeExpenses",
-      "note": "all open interest"
+      "name": "General and Administrative Expenses",
+      "note": "This factor includes overhead costs not directly tied to production, like office expenses, management salaries, and administrative support, indicative of the company's operational efficiency."
     },
     "sm_expenses": {
       "factor": "sellingAndMarketingExpenses",
-      "name": "sellingAndMarketingExpenses",
-      "note": "all open interest"
+      "name": "Selling and Marketing Expenses",
+      "note": "This factor represents the costs associated with sales and marketing activities, essential for evaluating the company's investment in market expansion and customer acquisition."
     },
     "sga_expenses": {
       "factor": "sellingGeneralAndAdministrativeExpenses",
-      "name": "sellingGeneralAndAdministrativeExpenses",
-      "note": "all open interest"
+      "name": "Selling, General, and Administrative Expenses",
+      "note": "This factor combines the expenses related to sales, marketing, and general administration, providing a comprehensive view of the company's overall operational costs."
     },
     "other_expenses": {
       "factor": "otherExpenses",
-      "name": "otherExpenses",
-      "note": "all open interest"
+      "name": "Other Expenses",
+      "note": "This factor includes various expenses not classified under other categories, like legal fees or asset write-downs, essential for a complete understanding of the company's financial obligations."
     },
     "operating_expenses": {
       "factor": "operatingExpenses",
-      "name": "operatingExpenses",
-      "note": "all open interest"
+      "name": "Operating Expenses",
+      "note": "This factor encompasses all expenses related to the company's primary business operations, excluding cost of revenue, crucial for assessing the operational efficiency and cost management."
     },
     "total_costs": {
       "factor": "costAndExpenses",
-      "name": "costAndExpenses",
-      "note": "all open interest"
+      "name": "Cost and Expenses",
+      "note": "This factor represents the total of all costs and expenses, combining cost of revenue with operating expenses, providing an overall view of the company's expenditure in business operations."
     },
     "interest_income": {
       "factor": "interestIncome",
-      "name": "interestIncome",
-      "note": "all open interest"
+      "name": "Interest Income",
+      "note": "This factor indicates income earned from interest-bearing assets like savings accounts or investments, reflecting the company's ability to generate income from its financial assets."
     },
     "interestExpense": {
       "factor": "interestExpense",
-      "name": "interestExpense",
-      "note": "all open interest"
+      "name": "Interest Expense",
+      "note": "This factor shows the cost incurred from interest on borrowed funds, crucial for understanding the company's debt burden and financial leverage."
     },
     "depr_amort": {
       "factor": "depreciationAndAmortization",
-      "name": "depreciationAndAmortization",
-      "note": "all open interest"
+      "name": "Depreciation and Amortization",
+      "note": "This factor reflects the allocation of the cost of tangible and intangible assets over their useful lives, impacting the company's profitability and asset valuation."
     },
     "ebitda": {
       "factor": "ebitda",
-      "name": "ebitda",
-      "note": "all open interest"
+      "name": "EBITDA",
+      "note": "Earnings Before Interest, Taxes, Depreciation, and Amortization - this factor measures the company's operating performance excluding these non-operational expenses, key for comparing profitability across different companies."
     },
     "ebitda_ratio": {
       "factor": "ebitdaratio",
-      "name": "ebitdaratio",
-      "note": "all open interest"
+      "name": "EBITDA Ratio",
+      "note": "This factor calculates the ratio of EBITDA to revenue, providing insights into the company's operational efficiency and profitability before accounting for financial and accounting decisions."
     },
     "operating_income": {
       "factor": "operatingIncome",
-      "name": "operatingIncome",
-      "note": "all open interest"
+      "name": "Operating Income",
+      "note": "This factor shows the profit earned from core business operations after deducting operating expenses, key for assessing the company's operational efficiency and profitability."
     },
     "operating_income_ratio": {
       "factor": "operatingIncomeRatio",
-      "name": "operatingIncomeRatio",
-      "note": "all open interest"
+      "name": "Operating Income Ratio",
+      "note": "This factor calculates the ratio of operating income to revenue, providing insights into how efficiently a company is generating profit from its core business."
     },
     "other_income_expenses": {
       "factor": "totalOtherIncomeExpensesNet",
-      "name": "totalOtherIncomeExpensesNet",
-      "note": "all open interest"
+      "name": "Total Other Income/Expenses Net",
+      "note": "This factor encompasses all other income and expenses not related to core operations, like investment gains or losses, impacting the company's overall financial performance."
     },
     "pre_tax_income": {
       "factor": "incomeBeforeTax",
-      "name": "incomeBeforeTax",
-      "note": "all open interest"
+      "name": "Income Before Tax",
+      "note": "This factor represents the company's earnings before taxation, essential for evaluating its pre-tax profitability and operational effectiveness."
     },
     "pre_tax_income_ratio": {
       "factor": "incomeBeforeTaxRatio",
-      "name": "incomeBeforeTaxRatio",
-      "note": "all open interest"
+      "name": "Income Before Tax Ratio",
+      "note": "This factor calculates the ratio of income before tax to revenue, providing a measure of the company's profitability before tax obligations."
     },
     "tax_expense": {
       "factor": "incomeTaxExpense",
-      "name": "incomeTaxExpense",
-      "note": "all open interest"
+      "name": "Income Tax Expense",
+      "note": "This factor indicates the total tax expense incurred by the company, reflecting its tax liabilities and fiscal responsibilities."
     },
     "net_income": {
       "factor": "netIncome",
-      "name": "netIncome",
-      "note": "all open interest"
+      "name": "Net Income",
+      "note": "This factor represents the company's total earnings after all expenses, including taxes, crucial for assessing its overall profitability and financial health."
     },
     "net_income_ratio": {
       "factor": "netIncomeRatio",
-      "name": "netIncomeRatio",
-      "note": "all open interest"
+      "name": "Net Income Ratio",
+      "note": "This factor calculates the ratio of net income to revenue, offering insights into the company's overall efficiency in generating profit relative to its revenue."
     },
     "eps": {
       "factor": "eps",
-      "name": "eps",
-      "note": "all open interest"
+      "name": "EPS",
+      "note": "Earnings Per Share (EPS) - This factor shows the company's earnings allocated to each outstanding share, a key indicator of profitability and a fundamental driver of stock prices."
     },
     "eps_diluted": {
       "factor": "epsdiluted",
-      "name": "epsdiluted",
-      "note": "all open interest"
+      "name": "EPS Diluted",
+      "note": "Diluted Earnings Per Share - This factor represents the company's earnings per share after including potential dilution from convertible securities, options, or warrants, offering a conservative view of earnings per share."
     },
     "avg_shares_out": {
       "factor": "weightedAverageShsOut",
-      "name": "weightedAverageShsOut",
-      "note": "all open interest"
+      "name": "Weighted Average Shares Outstanding",
+      "note": "This factor indicates the weighted average number of shares outstanding during the reporting period, used in calculating EPS and reflecting changes in share count over time."
     },
     "avg_shares_out_dil": {
       "factor": "weightedAverageShsOutDil",
-      "name": "weightedAverageShsOutDil",
-      "note": "all open interest"
+      "name": "Weighted Average Shares Outstanding (Diluted)",
+      "note": "This factor represents the weighted average number of shares outstanding after accounting for potential dilution effects, crucial for a comprehensive understanding of EPS when all convertible securities are exercised."
     }
   },
   "FinancialRatios": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Financial Ratios",
+      "note": "This section provides access to a wide range of financial ratios, serving as key metrics for data analysis and informed decision-making in the stock market. These ratios are crucial for comprehensively assessing financial outcomes, evaluating organizational effectiveness, and identifying industry leaders. The categorization into profitability, liquidity, solvency, and valuation measurements offers essential insights that empower investors to make informed stock selections and avoid significant losses.",
       "metaclass": "ClientMeta",
       "api": "api/v3/ratios",
       "params": {

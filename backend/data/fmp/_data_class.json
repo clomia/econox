@@ -1284,36 +1284,36 @@
   },
   "EarningsCalendar": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Earnings Calendar",
+      "note": "This section provides a comprehensive list of upcoming and past earnings announcements for publicly traded companies, offering crucial insights into financial performance and outlook. It includes data on earnings dates, estimated EPS, and actual EPS, serving as a vital resource for staying informed about company performances and market trends.",
       "metaclass": "ClientMeta",
       "api": "api/v3/historical/earning_calendar"
     },
     "eps": {
       "factor": "eps",
-      "name": "eps",
-      "note": "all open interest"
+      "name": "EPS",
+      "note": "This factor represents the actual Earnings Per Share (EPS) as reported by the company. It reflects the company's profitability on a per-share basis and is a critical indicator of financial health and performance."
     },
     "eps_estimated": {
       "factor": "epsEstimated",
-      "name": "epsEstimated",
-      "note": "all open interest"
+      "name": "EPS Estimated",
+      "note": "This factor denotes the estimated Earnings Per Share (EPS) before the actual earnings announcement. Analysts' forecasts form these estimates, providing an expectation of the company's financial performance for the period."
     },
     "revenue": {
       "factor": "revenue",
-      "name": "revenue",
-      "note": "all open interest"
+      "name": "Revenue",
+      "note": "This factor shows the actual revenue reported by the company. It indicates the total income generated from business operations, essential for assessing the company's size, market presence, and growth potential."
     },
     "revenue_estimated": {
       "factor": "revenueEstimated",
-      "name": "revenueEstimated",
-      "note": "all open interest"
+      "name": "Revenue Estimated",
+      "note": "This factor represents the estimated revenue anticipated before the actual earnings report. These estimates, often derived from market analysis and forecasts, provide insights into expected company performance and market expectations."
     }
   },
   "CashFlowStatement": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Cash Flow Statement",
+      "note": "This section offers detailed insights into a company's cash flow, highlighting cash inflows and outflows across three main categories: Operating, Investing, and Financing activities. It serves as a crucial tool for investors to assess whether a company is generating profit or incurring losses through its business operations.",
       "metaclass": "ClientMeta",
       "api": "api/v3/cash-flow-statement",
       "params": {
@@ -1322,159 +1322,159 @@
     },
     "net_income": {
       "factor": "netIncome",
-      "name": "netIncome",
-      "note": "all open interest"
+      "name": "Net Income",
+      "note": "This factor represents the company's total earnings after deducting all expenses and taxes. It is a key indicator of the company's profitability."
     },
     "dep_and_amort": {
       "factor": "depreciationAndAmortization",
-      "name": "depreciationAndAmortization",
-      "note": "all open interest"
+      "name": "Depreciation and Amortization",
+      "note": "This factor reflects the allocation of the cost of tangible and intangible assets over their useful lives. It is a non-cash expense that affects the company's net income."
     },
     "def_inc_tax": {
       "factor": "deferredIncomeTax",
-      "name": "deferredIncomeTax",
-      "note": "all open interest"
+      "name": "Deferred Income Tax",
+      "note": "This factor shows changes in deferred income tax, which occurs due to the difference in timing between when taxes are accrued and when they are paid."
     },
     "stk_based_comp": {
       "factor": "stockBasedCompensation",
-      "name": "stockBasedCompensation",
-      "note": "all open interest"
+      "name": "Stock Based Compensation",
+      "note": "This factor accounts for the expenses related to stock options or other forms of stock-based remuneration provided to employees or executives."
     },
     "chg_in_work_cap": {
       "factor": "changeInWorkingCapital",
-      "name": "changeInWorkingCapital",
-      "note": "all open interest"
+      "name": "Change in Working Capital",
+      "note": "This factor indicates the change in working capital, reflecting how much the company invested in short-term assets and liabilities."
     },
     "acc_receivables": {
       "factor": "accountsReceivables",
-      "name": "accountsReceivables",
-      "note": "all open interest"
+      "name": "Accounts Receivables",
+      "note": "This factor represents money owed to the company by customers for goods or services delivered but not yet paid for."
     },
     "inventory": {
       "factor": "inventory",
-      "name": "inventory",
-      "note": "all open interest"
+      "name": "Inventory",
+      "note": "This factor indicates the total value of the company's inventory, including goods available for sale and raw materials used to produce goods."
     },
     "acc_payables": {
       "factor": "accountsPayables",
-      "name": "accountsPayables",
-      "note": "all open interest"
+      "name": "Accounts Payables",
+      "note": "This factor shows the amount the company owes to its suppliers or creditors for goods and services received but not yet paid for."
     },
     "other_work_cap": {
       "factor": "otherWorkingCapital",
-      "name": "otherWorkingCapital",
-      "note": "all open interest"
+      "name": "Other Working Capital",
+      "note": "This factor includes additional elements affecting the company's working capital, like short-term loans and other operational liabilities or assets."
     },
     "other_non_cash_items": {
       "factor": "otherNonCashItems",
-      "name": "otherNonCashItems",
-      "note": "all open interest"
+      "name": "Other Non-Cash Items",
+      "note": "This factor covers various non-cash transactions not specifically listed elsewhere in the cash flow statement, affecting the company's financial position."
     },
     "net_cash_prov_by_op_act": {
       "factor": "netCashProvidedByOperatingActivities",
-      "name": "netCashProvidedByOperatingActivities",
-      "note": "all open interest"
+      "name": "Net Cash Provided by Operating Activities",
+      "note": "This factor shows the net cash generated from the company's core business operations, crucial for understanding its operational efficiency and financial health."
     },
     "inv_in_prop_plant_equip": {
       "factor": "investmentsInPropertyPlantAndEquipment",
-      "name": "investmentsInPropertyPlantAndEquipment",
-      "note": "all open interest"
+      "name": "Investments in Property, Plant, and Equipment",
+      "note": "This factor represents the company's capital expenditures on physical assets like buildings and machinery, indicating its investment in long-term assets."
     },
     "acquisitions_net": {
       "factor": "acquisitionsNet",
-      "name": "acquisitionsNet",
-      "note": "all open interest"
+      "name": "Acquisitions, Net",
+      "note": "This factor includes the net cash used or received in the acquisition or disposition of subsidiaries, businesses, or other significant assets."
     },
     "purch_of_inv": {
       "factor": "purchasesOfInvestments",
-      "name": "purchasesOfInvestments",
-      "note": "all open interest"
+      "name": "Purchases of Investments",
+      "note": "This factor represents the company's investment in securities, stocks, bonds, or other financial assets."
     },
     "sales_mat_of_inv": {
       "factor": "salesMaturitiesOfInvestments",
-      "name": "salesMaturitiesOfInvestments",
-      "note": "all open interest"
+      "name": "Sales/Maturities of Investments",
+      "note": "This factor shows the cash received from selling or maturing investments, indicating the company's cash inflows from its investment portfolio."
     },
     "other_inv_act": {
       "factor": "otherInvestingActivites",
-      "name": "otherInvestingActivites",
-      "note": "all open interest"
+      "name": "Other Investing Activities",
+      "note": "This factor encompasses various other investing activities not classified elsewhere, impacting the company's overall investment strategy and cash flow."
     },
     "net_cash_used_for_inv_act": {
       "factor": "netCashUsedForInvestingActivites",
-      "name": "netCashUsedForInvestingActivites",
-      "note": "all open interest"
+      "name": "Net Cash Used for Investing Activities",
+      "note": "This factor indicates the total cash used in or provided by the company's investing activities, including investments in assets and acquisitions."
     },
     "debt_repayment": {
       "factor": "debtRepayment",
-      "name": "debtRepayment",
-      "note": "all open interest"
+      "name": "Debt Repayment",
+      "note": "This factor shows the amount of money the company has paid to reduce its debt, indicating its financial obligations and strategy for managing liabilities."
     },
     "common_stock_issued": {
       "factor": "commonStockIssued",
-      "name": "commonStockIssued",
-      "note": "all open interest"
+      "name": "Common Stock Issued",
+      "note": "This factor represents the cash received from issuing common stock, reflecting the company's financing activities through equity."
     },
     "common_stock_repurchased": {
       "factor": "commonStockRepurchased",
-      "name": "commonStockRepurchased",
-      "note": "all open interest"
+      "name": "Common Stock Repurchased",
+      "note": "This factor indicates the amount spent on buying back the company's own common stock, often used as a method to return value to shareholders."
     },
     "dividends_paid": {
       "factor": "dividendsPaid",
-      "name": "dividendsPaid",
-      "note": "all open interest"
+      "name": "Dividends Paid",
+      "note": "This factor shows the total dividends paid to shareholders, reflecting the company's profit distribution policy and commitment to returning value to investors."
     },
     "other_fin_act": {
       "factor": "otherFinancingActivites",
-      "name": "otherFinancingActivites",
-      "note": "all open interest"
+      "name": "Other Financing Activities",
+      "note": "This factor encompasses various other financing activities not classified elsewhere, affecting the company's overall financial strategy and cash flow."
     },
     "net_cash_used_prov_by_fin_act": {
       "factor": "netCashUsedProvidedByFinancingActivities",
-      "name": "netCashUsedProvidedByFinancingActivities",
-      "note": "all open interest"
+      "name": "Net Cash Used/Provided by Financing Activities",
+      "note": "This factor represents the net cash flow from financing activities, including debt issuance, equity transactions, and dividends, indicating the company's financial strategy and liquidity position."
     },
     "eff_of_forex_chg_on_cash": {
       "factor": "effectOfForexChangesOnCash",
-      "name": "effectOfForexChangesOnCash",
-      "note": "all open interest"
+      "name": "Effect of Forex Changes on Cash",
+      "note": "This factor shows the impact of foreign exchange rate fluctuations on the company's cash and cash equivalents, reflecting the company's exposure to currency market volatility."
     },
     "net_chg_in_cash": {
       "factor": "netChangeInCash",
-      "name": "netChangeInCash",
-      "note": "all open interest"
+      "name": "Net Change in Cash",
+      "note": "This factor shows the overall net increase or decrease in cash and cash equivalents during the reporting period, reflecting the company's cash flow health."
     },
     "cash_at_end_of_period": {
       "factor": "cashAtEndOfPeriod",
-      "name": "cashAtEndOfPeriod",
-      "note": "all open interest"
+      "name": "Cash at End of Period",
+      "note": "This factor represents the total amount of cash and cash equivalents held by the company at the end of the financial period, indicating its liquidity status."
     },
     "cash_at_beg_of_period": {
       "factor": "cashAtBeginningOfPeriod",
-      "name": "cashAtBeginningOfPeriod",
-      "note": "all open interest"
+      "name": "Cash at Beginning of Period",
+      "note": "This factor indicates the amount of cash and cash equivalents the company had at the beginning of the financial period, serving as a baseline for cash flow analysis."
     },
     "op_cash_flow": {
       "factor": "operatingCashFlow",
-      "name": "operatingCashFlow",
-      "note": "all open interest"
+      "name": "Operating Cash Flow",
+      "note": "This factor measures the cash generated from the company's regular business operations, crucial for evaluating its operational efficiency and ability to generate cash."
     },
     "cap_expend": {
       "factor": "capitalExpenditure",
-      "name": "capitalExpenditure",
-      "note": "all open interest"
+      "name": "Capital Expenditure",
+      "note": "This factor represents the cash spent by the company on acquiring or maintaining physical assets, such as property, plant, and equipment, indicating its investment in maintaining and expanding operations."
     },
     "free_cash_flow": {
       "factor": "freeCashFlow",
-      "name": "freeCashFlow",
-      "note": "all open interest"
+      "name": "Free Cash Flow",
+      "note": "This factor calculates the cash a company generates after accounting for capital expenditures, highlighting the available cash for dividends, debt repayment, or reinvestment in the business."
     }
   },
   "BalanceSheetStatement": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Balance Sheet Statement",
+      "note": "This section provides access to a company's balance sheet, detailing its assets, liabilities, and shareholder equity at a specific point in time. The API covers a broad range of companies and offers real-time data, making it invaluable for evaluating a company's financial stability, understanding its debt and equity structure, and identifying potential financial risks.",
       "metaclass": "ClientMeta",
       "api": "api/v3/balance-sheet-statement",
       "params": {
@@ -1483,83 +1483,83 @@
     },
     "cash_equivalents": {
       "factor": "cashAndCashEquivalents",
-      "name": "cashAndCashEquivalents",
-      "note": "all open interest"
+      "name": "Cash and Cash Equivalents",
+      "note": "This factor shows the total amount of company's cash on hand and liquid assets that can be quickly converted into cash, essential for assessing short-term financial stability."
     },
     "short_term_inv": {
       "factor": "shortTermInvestments",
-      "name": "shortTermInvestments",
-      "note": "all open interest"
+      "name": "Short Term Investments",
+      "note": "This factor represents investments that can be easily liquidated within a year, such as marketable securities, providing insight into the company's short-term investment strategies."
     },
     "cash_short_term_inv": {
       "factor": "cashAndShortTermInvestments",
-      "name": "cashAndShortTermInvestments",
-      "note": "all open interest"
+      "name": "Cash and Short Term Investments",
+      "note": "This factor combines the company's cash and cash equivalents with short-term investments, offering a comprehensive view of its liquid assets."
     },
     "net_receivables": {
       "factor": "netReceivables",
-      "name": "netReceivables",
-      "note": "all open interest"
+      "name": "Net Receivables",
+      "note": "This factor indicates the total amount owed to the company by its customers after accounting for allowances for doubtful accounts, reflecting its credit exposure and income potential."
     },
     "inventory": {
       "factor": "inventory",
-      "name": "inventory",
-      "note": "all open interest"
+      "name": "Inventory",
+      "note": "This factor shows the total value of the company's inventory, including raw materials and finished goods, critical for understanding its supply chain and sales potential."
     },
     "other_current_assets": {
       "factor": "otherCurrentAssets",
-      "name": "otherCurrentAssets",
-      "note": "all open interest"
+      "name": "Other Current Assets",
+      "note": "This factor encompasses all other current assets not specifically listed, like prepaid expenses and short-term deferred assets, contributing to the company's overall liquidity."
     },
     "total_current_assets": {
       "factor": "totalCurrentAssets",
-      "name": "totalCurrentAssets",
-      "note": "all open interest"
+      "name": "Total Current Assets",
+      "note": "This factor represents the sum of all assets that a company expects to convert into cash within one year, crucial for assessing its short-term financial health and operational efficiency."
     },
     "ppe_net": {
       "factor": "propertyPlantEquipmentNet",
-      "name": "propertyPlantEquipmentNet",
-      "note": "all open interest"
+      "name": "Property, Plant, and Equipment Net",
+      "note": "This factor shows the net value of the company's physical assets, such as buildings and machinery, after accounting for depreciation and amortization, vital for evaluating its long-term investment in operations."
     },
     "goodwill": {
       "factor": "goodwill",
-      "name": "goodwill",
-      "note": "all open interest"
+      "name": "Goodwill",
+      "note": "This factor represents the excess value paid over the fair market value of assets during an acquisition, indicating the intangible value derived from brand reputation, customer relations, and other non-physical assets."
     },
     "intangible_assets": {
       "factor": "intangibleAssets",
-      "name": "intangibleAssets",
-      "note": "all open interest"
+      "name": "Intangible Assets",
+      "note": "This factor includes non-physical assets like patents, trademarks, and copyrights, crucial for companies in knowledge-intensive industries, reflecting their intellectual property and market competitiveness."
     },
     "goodwill_intang_assets": {
       "factor": "goodwillAndIntangibleAssets",
-      "name": "goodwillAndIntangibleAssets",
-      "note": "all open interest"
+      "name": "Goodwill and Intangible Assets",
+      "note": "This factor combines both goodwill and intangible assets, showcasing the total value of a company's intangible resources that contribute to its long-term value and market position."
     },
     "long_term_inv": {
       "factor": "longTermInvestments",
-      "name": "longTermInvestments",
-      "note": "all open interest"
+      "name": "Long Term Investments",
+      "note": "This factor represents investments not expected to be liquidated within a year, like bonds, stocks, or real estate, indicating the company's long-term investment strategy and financial planning."
     },
     "tax_assets": {
       "factor": "taxAssets",
-      "name": "taxAssets",
-      "note": "all open interest"
+      "name": "Tax Assets",
+      "note": "This factor includes deferred tax assets, representing potential tax relief or reductions in future tax payments, reflecting the company's tax management strategies and future tax benefits."
     },
     "other_non_current_assets": {
       "factor": "otherNonCurrentAssets",
-      "name": "otherNonCurrentAssets",
-      "note": "all open interest"
+      "name": "Other Non-Current Assets",
+      "note": "This factor encompasses all other long-term assets not classified elsewhere, like long-term prepaid expenses, contributing to the company's overall financial stability and long-term operational resources."
     },
     "total_non_current_assets": {
       "factor": "totalNonCurrentAssets",
-      "name": "totalNonCurrentAssets",
-      "note": "all open interest"
+      "name": "Total Non-Current Assets",
+      "note": "This factor represents the total value of a company's assets not expected to be converted into cash within a year, crucial for understanding its long-term financial health and investment capabilities."
     },
     "other_assets": {
       "factor": "otherAssets",
-      "name": "otherAssets",
-      "note": "all open interest"
+      "name": "Other Assets",
+      "note": "This factor includes various miscellaneous assets not categorized under current or non-current assets, offering a broader view of the company's diversified asset portfolio and resources."
     },
     "total_assets": {
       "factor": "totalAssets",

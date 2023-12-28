@@ -638,7 +638,7 @@
     "name4": {
       "factor": "ESGScore",
       "name": "ESG Score",
-      "note": "This overall score combines the environmental, social, and governance scores, providing a comprehensive assessment of a company's performance across all three ESG criteria. It helps investors evaluate the company's overall commitment to sustainable and responsible business practices."
+      "note": "This score combines the environmental, social, and governance scores, providing a comprehensive assessment of a company's performance across all three ESG criteria. It helps investors evaluate the company's overall commitment to sustainable and responsible business practices."
     }
   },
   "CotReportAnalysis": {
@@ -1855,8 +1855,8 @@
   },
   "FinancialRatios": {
     "setting": {
-      "name": "Financial Ratios",
-      "note": "This section provides access to a wide range of financial ratios, serving as key metrics for data analysis and informed decision-making in the stock market. These ratios are crucial for comprehensively assessing financial outcomes, evaluating organizational effectiveness, and identifying industry leaders. The categorization into profitability, liquidity, solvency, and valuation measurements offers essential insights that empower investors to make informed stock selections and avoid significant losses.",
+      "name": "Financial Ratios Analysis",
+      "note": "This section provides a comprehensive collection of financial ratios to evaluate company performance across various aspects like profitability, liquidity, solvency, and valuation. It aids investors in making informed decisions and identifying trends over time.",
       "metaclass": "ClientMeta",
       "api": "api/v3/ratios",
       "params": {
@@ -1865,279 +1865,279 @@
     },
     "cur_ratio": {
       "factor": "currentRatio",
-      "name": "currentRatio",
-      "note": "all open interest"
+      "name": "Current Ratio",
+      "note": "This factor represents the company's ability to cover its short-term liabilities with its short-term assets, providing insights into its short-term financial health."
     },
     "quickRatio": {
       "factor": "quickRatio",
-      "name": "quickRatio",
-      "note": "all open interest"
+      "name": "Quick Ratio",
+      "note": "This factor measures the company's capacity to meet short-term obligations with its most liquid assets, excluding inventory."
     },
     "cashRatio": {
       "factor": "cashRatio",
-      "name": "cashRatio",
-      "note": "all open interest"
+      "name": "Cash Ratio",
+      "note": "This factor indicates the company's ability to pay off short-term liabilities with its cash and cash equivalents, reflecting immediate liquidity."
     },
     "days_sales_out": {
       "factor": "daysOfSalesOutstanding",
-      "name": "daysOfSalesOutstanding",
-      "note": "all open interest"
+      "name": "Days of Sales Outstanding",
+      "note": "This factor calculates the average number of days that a company takes to collect revenue after a sale has been made, assessing the efficiency of its credit and collection policies."
     },
     "days_inv_out": {
       "factor": "daysOfInventoryOutstanding",
-      "name": "daysOfInventoryOutstanding",
-      "note": "all open interest"
+      "name": "Days of Inventory Outstanding",
+      "note": "This factor measures the average number of days a company holds its inventory before selling it, indicating inventory management efficiency."
     },
     "op_cycle": {
       "factor": "operatingCycle",
-      "name": "operatingCycle",
-      "note": "all open interest"
+      "name": "Operating Cycle",
+      "note": "This factor analyzes the time taken by a company to purchase inventory, sell it, and collect the receivables, representing the efficiency of the company's operations."
     },
     "days_pay_out": {
       "factor": "daysOfPayablesOutstanding",
-      "name": "daysOfPayablesOutstanding",
-      "note": "all open interest"
+      "name": "Days of Payables Outstanding",
+      "note": "This factor determines the average duration a company takes to pay its invoices from suppliers, indicating its payment policy efficiency."
     },
     "cash_conv_cycle": {
       "factor": "cashConversionCycle",
-      "name": "cashConversionCycle",
-      "note": "all open interest"
+      "name": "Cash Conversion Cycle",
+      "note": "This factor measures the time span between when a company pays its suppliers and when it receives cash from sales, reflecting the efficiency of its cash flow management."
     },
     "gross_profit_margin": {
       "factor": "grossProfitMargin",
-      "name": "grossProfitMargin",
-      "note": "all open interest"
+      "name": "Gross Profit Margin",
+      "note": "This factor reflects the percentage of revenue exceeding the cost of goods sold, indicating the efficiency of production and pricing."
     },
     "op_profit_margin": {
       "factor": "operatingProfitMargin",
-      "name": "operatingProfitMargin",
-      "note": "all open interest"
+      "name": "Operating Profit Margin",
+      "note": "This factor measures the percentage of revenue remaining after covering operating expenses, showcasing operational efficiency."
     },
     "pretax_profit_margin": {
       "factor": "pretaxProfitMargin",
-      "name": "pretaxProfitMargin",
-      "note": "all open interest"
+      "name": "Pretax Profit Margin",
+      "note": "This factor indicates the profitability of a company before accounting for taxes, reflecting its earnings capacity."
     },
     "net_profit_margin": {
       "factor": "netProfitMargin",
-      "name": "netProfitMargin",
-      "note": "all open interest"
+      "name": "Net Profit Margin",
+      "note": "This factor assesses the percentage of revenue that remains as profit after all expenses, taxes, and interest, indicating overall profitability."
     },
     "eff_tax_rate": {
       "factor": "effectiveTaxRate",
-      "name": "effectiveTaxRate",
-      "note": "all open interest"
+      "name": "Effective Tax Rate",
+      "note": "This factor calculates the average rate at which a corporation is taxed on its pre-tax profits, indicating its tax burden."
     },
     "return_on_assets": {
       "factor": "returnOnAssets",
-      "name": "returnOnAssets",
-      "note": "all open interest"
+      "name": "Return on Assets",
+      "note": "This factor measures how efficiently a company utilizes its assets to generate profits, reflecting asset management effectiveness."
     },
     "return_on_equity": {
       "factor": "returnOnEquity",
-      "name": "returnOnEquity",
-      "note": "all open interest"
+      "name": "Return on Equity",
+      "note": "This factor assesses a company's ability to generate profits from its shareholders' equity, indicating financial health and profitability."
     },
     "return_on_cap_empl": {
       "factor": "returnOnCapitalEmployed",
-      "name": "returnOnCapitalEmployed",
-      "note": "all open interest"
+      "name": "Return on Capital Employed",
+      "note": "This factor evaluates a company's efficiency in generating profits from its capital employed, offering insights into its overall investment returns."
     },
     "net_inc_per_ebt": {
       "factor": "netIncomePerEBT",
-      "name": "netIncomePerEBT",
-      "note": "all open interest"
+      "name": "Net Income Per EBT",
+      "note": "This factor measures the proportion of earnings before taxes (EBT) that is retained as net income, reflecting a company's tax efficiency and profitability."
     },
     "ebt_per_ebit": {
       "factor": "ebtPerEbit",
-      "name": "ebtPerEbit",
-      "note": "all open interest"
+      "name": "EBT Per EBIT",
+      "note": "This factor indicates the earnings before taxes as a percentage of earnings before interest and taxes, showcasing the impact of interest expenses on profitability."
     },
     "ebit_per_rev": {
       "factor": "ebitPerRevenue",
-      "name": "ebitPerRevenue",
-      "note": "all open interest"
+      "name": "EBIT Per Revenue",
+      "note": "This factor assesses the earnings before interest and taxes as a percentage of total revenue, indicating operational efficiency and profitability."
     },
     "debt_ratio": {
       "factor": "debtRatio",
-      "name": "debtRatio",
-      "note": "all open interest"
+      "name": "Debt Ratio",
+      "note": "This factor calculates a company's total debt as a percentage of its total assets, indicating the degree of leverage and financial risk."
     },
     "debt_equity_ratio": {
       "factor": "debtEquityRatio",
-      "name": "debtEquityRatio",
-      "note": "all open interest"
+      "name": "Debt Equity Ratio",
+      "note": "This factor measures a company's financial leverage by comparing its total liabilities to shareholders' equity, indicating its ability to cover debts with equity."
     },
     "long_debt_to_cap": {
       "factor": "longTermDebtToCapitalization",
-      "name": "longTermDebtToCapitalization",
-      "note": "all open interest"
+      "name": "Long-Term Debt to Capitalization",
+      "note": "This factor assesses the proportion of long-term debt in a company's capital structure, reflecting its reliance on long-term debt for financing."
     },
     "total_debt_to_cap": {
       "factor": "totalDebtToCapitalization",
-      "name": "totalDebtToCapitalization",
-      "note": "all open interest"
+      "name": "Total Debt to Capitalization",
+      "note": "This factor evaluates the total debt as a percentage of the company's capitalization, indicating the overall level of debt in the company's capital structure."
     },
     "interest_coverage": {
       "factor": "interestCoverage",
-      "name": "interestCoverage",
-      "note": "all open interest"
+      "name": "Interest Coverage",
+      "note": "This factor measures a company's ability to pay interest on its outstanding debt, indicating its financial stability and risk of default."
     },
     "cash_flow_to_debt": {
       "factor": "cashFlowToDebtRatio",
-      "name": "cashFlowToDebtRatio",
-      "note": "all open interest"
+      "name": "Cash Flow to Debt Ratio",
+      "note": "This factor assesses a company's ability to cover its total debt with its operating cash flows, reflecting its debt repayment capacity."
     },
     "equity_multiplier": {
       "factor": "companyEquityMultiplier",
-      "name": "companyEquityMultiplier",
-      "note": "all open interest"
+      "name": "Company Equity Multiplier",
+      "note": "This factor gauges the proportion of a company's total assets financed by shareholders' equity, indicating its financial leverage."
     },
     "receivables_turnover": {
       "factor": "receivablesTurnover",
-      "name": "receivablesTurnover",
-      "note": "all open interest"
+      "name": "Receivables Turnover",
+      "note": "This factor calculates how frequently a company collects its average accounts receivable, reflecting the efficiency of its credit policies and cash collection."
     },
     "payables_turnover": {
       "factor": "payablesTurnover",
-      "name": "payablesTurnover",
-      "note": "all open interest"
+      "name": "Payables Turnover",
+      "note": "This factor indicates how often a company pays off its suppliers, providing insights into its short-term liquidity and supplier relationship management."
     },
     "inventory_turnover": {
       "factor": "inventoryTurnover",
-      "name": "inventoryTurnover",
-      "note": "all open interest"
+      "name": "Inventory Turnover",
+      "note": "This factor measures how frequently a company's inventory is sold and replaced over a specific period, indicating efficiency in inventory management."
     },
     "fixed_asset_turnover": {
       "factor": "fixedAssetTurnover",
-      "name": "fixedAssetTurnover",
-      "note": "all open interest"
+      "name": "Fixed Asset Turnover",
+      "note": "This factor evaluates a company's effectiveness in generating net sales from its fixed assets, reflecting asset management and utilization efficiency."
     },
     "asset_turnover": {
       "factor": "assetTurnover",
-      "name": "assetTurnover",
-      "note": "all open interest"
+      "name": "Asset Turnover",
+      "note": "This factor measures how efficiently a company uses its total assets to generate sales revenue, indicating overall operational efficiency."
     },
     "op_cash_flow_per_share": {
       "factor": "operatingCashFlowPerShare",
-      "name": "operatingCashFlowPerShare",
-      "note": "all open interest"
+      "name": "Operating Cash Flow Per Share",
+      "note": "This factor indicates the amount of cash generated from operations per share, providing insights into a company's operational efficiency and profitability."
     },
     "free_cash_flow_per_share": {
       "factor": "freeCashFlowPerShare",
-      "name": "freeCashFlowPerShare",
-      "note": "all open interest"
+      "name": "Free Cash Flow Per Share",
+      "note": "This factor measures the available cash flow per share after accounting for capital expenditures, reflecting the company's financial flexibility and dividend-paying capacity."
     },
     "cash_per_share": {
       "factor": "cashPerShare",
-      "name": "cashPerShare",
-      "note": "all open interest"
+      "name": "Cash Per Share",
+      "note": "This factor represents the amount of cash and cash equivalents available per share, indicating the company's liquidity on a per-share basis."
     },
     "payout_ratio": {
       "factor": "payoutRatio",
-      "name": "payoutRatio",
-      "note": "all open interest"
+      "name": "Payout Ratio",
+      "note": "This factor calculates the proportion of earnings paid out as dividends to shareholders, indicating a company's dividend distribution policy and sustainability."
     },
     "op_cash_flow_sales_ratio": {
       "factor": "operatingCashFlowSalesRatio",
-      "name": "operatingCashFlowSalesRatio",
-      "note": "all open interest"
+      "name": "Operating Cash Flow Sales Ratio",
+      "note": "This factor assesses the ratio of operating cash flow to net sales, reflecting the efficiency of converting sales into actual cash."
     },
     "free_to_op_cash_flow_ratio": {
       "factor": "freeCashFlowOperatingCashFlowRatio",
-      "name": "freeCashFlowOperatingCashFlowRatio",
-      "note": "all open interest"
+      "name": "Free Cash Flow Operating Cash Flow Ratio",
+      "note": "This factor measures the proportion of operating cash flow that remains after capital expenditures, indicating the company's ability to generate cash for growth, debt reduction, and dividends."
     },
     "cash_flow_coverage_ratio": {
       "factor": "cashFlowCoverageRatios",
-      "name": "cashFlowCoverageRatios",
-      "note": "all open interest"
+      "name": "Cash Flow Coverage Ratios",
+      "note": "This factor evaluates a company's ability to cover debt payments, dividends, and capital expenditures with its operating cash flow, indicating overall financial health and stability."
     },
     "short_term_coverage_ratio": {
       "factor": "shortTermCoverageRatios",
-      "name": "shortTermCoverageRatios",
-      "note": "all open interest"
+      "name": "Short Term Coverage Ratios",
+      "note": "This factor measures a company's ability to meet its short-term obligations using its cash flow, providing insights into its short-term financial resilience."
     },
     "capex_coverage_ratio": {
       "factor": "capitalExpenditureCoverageRatio",
-      "name": "capitalExpenditureCoverageRatio",
-      "note": "all open interest"
+      "name": "Capital Expenditure Coverage Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "div_capex_coverage_ratio": {
       "factor": "dividendPaidAndCapexCoverageRatio",
-      "name": "dividendPaidAndCapexCoverageRatio",
-      "note": "all open interest"
+      "name": "Dividend Paid and Capex Coverage Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "dividend_payout_ratio": {
       "factor": "dividendPayoutRatio",
-      "name": "dividendPayoutRatio",
-      "note": "all open interest"
+      "name": "Dividend Payout Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "price_bookvalue_ratio": {
       "factor": "priceBookValueRatio",
-      "name": "priceBookValueRatio",
-      "note": "all open interest"
+      "name": "Price Book Value Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "price_book_ratio": {
       "factor": "priceToBookRatio",
-      "name": "priceToBookRatio",
-      "note": "all open interest"
+      "name": "Price to Book Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "price_to_sales_ratio": {
       "factor": "priceToSalesRatio",
-      "name": "priceToSalesRatio",
-      "note": "all open interest"
+      "name": "Price to Sales Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "price_earnings_ratio": {
       "factor": "priceEarningsRatio",
-      "name": "priceEarningsRatio",
-      "note": "all open interest"
+      "name": "Price Earnings Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "price_free_cash_flow_ratio": {
       "factor": "priceToFreeCashFlowsRatio",
-      "name": "priceToFreeCashFlowsRatio",
-      "note": "all open interest"
+      "name": "Price to Free Cash Flows Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "price_op_cash_flow_ratio": {
       "factor": "priceToOperatingCashFlowsRatio",
-      "name": "priceToOperatingCashFlowsRatio",
-      "note": "all open interest"
+      "name": "Price to Operating Cash Flows Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "price_cash_flow_ratio": {
       "factor": "priceCashFlowRatio",
-      "name": "priceCashFlowRatio",
-      "note": "all open interest"
+      "name": "Price Cash Flow Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "peg_ratio": {
       "factor": "priceEarningsToGrowthRatio",
-      "name": "priceEarningsToGrowthRatio",
-      "note": "all open interest"
+      "name": "Price Earnings to Growth Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "price_sales_ratio": {
       "factor": "priceSalesRatio",
-      "name": "priceSalesRatio",
-      "note": "all open interest"
+      "name": "Price Sales Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "dividend_yield": {
       "factor": "dividendYield",
-      "name": "dividendYield",
-      "note": "all open interest"
+      "name": "Dividend Yield",
+      "note": "ㅁㅁㅁ"
     },
     "ev_multiple": {
       "factor": "enterpriseValueMultiple",
-      "name": "enterpriseValueMultiple",
-      "note": "all open interest"
+      "name": "Enterprise Value Multiple",
+      "note": "ㅁㅁㅁ"
     },
     "price_fair_value_ratio": {
       "factor": "priceFairValue",
-      "name": "priceFairValue",
-      "note": "all open interest"
+      "name": "Price Fair Value",
+      "note": "ㅁㅁㅁ"
     }
   },
   "CashFlowStatementGrowth": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Cash Flow Statement Growth",
+      "note": "This section provides insights into the growth rate of a company's cash flow, indicating how quickly the company's cash flow is expanding or contracting. A positive growth rate signifies increasing cash generation, reflecting financial strength and operational efficiency. In contrast, a negative growth rate suggests higher cash usage than generation, pointing towards potential financial challenges or investment phases.",
       "metaclass": "ClientMeta",
       "api": "api/v3/cash-flow-statement-growth",
       "params": {
@@ -2146,43 +2146,43 @@
     },
     "net_inc_gr": {
       "factor": "growthNetIncome",
-      "name": "growthNetIncome",
-      "note": "all open interest"
+      "name": "Growth in Net Income",
+      "note": "ㅁㅁㅁ"
     },
     "dep_amort_gr": {
       "factor": "growthDepreciationAndAmortization",
-      "name": "growthDepreciationAndAmortization",
-      "note": "all open interest"
+      "name": "Growth in Depreciation and Amortization",
+      "note": "ㅁㅁㅁ"
     },
     "def_inc_tax_gr": {
       "factor": "growthDeferredIncomeTax",
-      "name": "growthDeferredIncomeTax",
-      "note": "all open interest"
+      "name": "Growth in Deferred Income Tax",
+      "note": "ㅁㅁㅁ"
     },
     "stk_bas_comp_gr": {
       "factor": "growthStockBasedCompensation",
-      "name": "growthStockBasedCompensation",
-      "note": "all open interest"
+      "name": "Growth in Stock-Based Compensation",
+      "note": "ㅁㅁㅁ"
     },
     "ch_wrk_cap_gr": {
       "factor": "growthChangeInWorkingCapital",
-      "name": "growthChangeInWorkingCapital",
-      "note": "all open interest"
+      "name": "Growth in Change in Working Capital",
+      "note": "ㅁㅁㅁ"
     },
     "acc_rec_gr": {
       "factor": "growthAccountsReceivables",
-      "name": "growthAccountsReceivables",
-      "note": "all open interest"
+      "name": "Growth in Accounts Receivables",
+      "note": "ㅁㅁㅁ"
     },
     "inv_gr": {
       "factor": "growthInventory",
-      "name": "growthInventory",
-      "note": "all open interest"
+      "name": "Growth in Inventory",
+      "note": "ㅁㅁㅁ"
     },
     "acc_pay_gr": {
       "factor": "growthAccountsPayables",
-      "name": "growthAccountsPayables",
-      "note": "all open interest"
+      "name": "Growth in Accounts Payables",
+      "note": "ㅁㅁㅁ"
     },
     "oth_wrk_cap_gr": {
       "factor": "growthOtherWorkingCapital",

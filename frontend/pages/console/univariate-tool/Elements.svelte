@@ -148,7 +148,9 @@
   }
   .list {
     margin: 1rem;
-    height: 10.78rem;
+    /* 최소 4개 ~ 쵀대 6개 */
+    min-height: 10.78rem;
+    max-height: 16rem;
     overflow: auto;
   }
   .list__ele {

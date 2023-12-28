@@ -128,7 +128,8 @@
   }
   .list {
     margin: 1rem;
-    height: 10.78rem;
+    min-height: 10.78rem;
+    max-height: 16rem;
     overflow: auto;
   }
   .list__fac {

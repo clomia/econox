@@ -3449,7 +3449,7 @@
   },
   "HistoricalPrice": {
     "setting": {
-      "name": "Historical Stock Price Data",
+      "name": "Stock Price Data",
       "note": "This section provides historical daily stock price data, including open, high, low, and close prices, as well as adjusted close prices and volume. It's crucial for analyzing stock price trends, identifying patterns, and determining support and resistance levels.",
       "metaclass": "HistoricalPriceFullMeta",
       "api": "api/v3/historical-price-full"

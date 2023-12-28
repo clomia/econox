@@ -3362,54 +3362,54 @@
     },
     "average_inventory": {
       "factor": "averageInventory",
-      "name": "averageInventory",
-      "note": "all open interest"
+      "name": "Average Inventory",
+      "note": "This factor calculates the average inventory held by the company, indicating how the company manages its stock and inventory levels."
     },
     "days_sales_outstanding": {
       "factor": "daysSalesOutstanding",
-      "name": "daysSalesOutstanding",
-      "note": "all open interest"
+      "name": "Days Sales Outstanding",
+      "note": "This factor measures the average number of days it takes for the company to collect payments after a sale, indicating the efficiency of its credit and collections processes."
     },
     "days_payables_outstanding": {
       "factor": "daysPayablesOutstanding",
-      "name": "daysPayablesOutstanding",
-      "note": "all open interest"
+      "name": "Days Payables Outstanding",
+      "note": "This factor assesses the average duration the company takes to pay its suppliers, reflecting its management of payables and cash flow."
     },
     "days_of_inventory_on_hand": {
       "factor": "daysOfInventoryOnHand",
-      "name": "daysOfInventoryOnHand",
-      "note": "all open interest"
+      "name": "Days of Inventory on Hand",
+      "note": "This factor indicates the average number of days the company's inventory remains unsold, showing the efficiency of inventory management and sales."
     },
     "receivables_turnover": {
       "factor": "receivablesTurnover",
-      "name": "receivablesTurnover",
-      "note": "all open interest"
+      "name": "Receivables Turnover",
+      "note": "This factor measures the rate at which the company collects its receivables, indicating the efficiency of its credit policies and customer payment patterns."
     },
     "payables_turnover": {
       "factor": "payablesTurnover",
-      "name": "payablesTurnover",
-      "note": "all open interest"
+      "name": "Payables Turnover",
+      "note": "This factor assesses the rate at which the company pays its suppliers, providing insights into its payment practices and liquidity management."
     },
     "inventory_turnover": {
       "factor": "inventoryTurnover",
-      "name": "inventoryTurnover",
-      "note": "all open interest"
+      "name": "Inventory Turnover",
+      "note": "This factor evaluates how frequently the company's inventory is sold and replaced over a period, indicating the efficiency of its inventory management and sales performance."
     },
     "roe": {
       "factor": "roe",
-      "name": "roe",
-      "note": "all open interest"
+      "name": "Return on Equity",
+      "note": "This factor measures the return generated on shareholders' equity, indicating the company's effectiveness in generating profits from its shareholders' investments."
     },
     "capex_per_share": {
       "factor": "capexPerShare",
-      "name": "capexPerShare",
-      "note": "all open interest"
+      "name": "CapEx Per Share",
+      "note": "This factor measures the capital expenditures per share, indicating the amount of funds used for acquiring or maintaining physical assets like property, buildings, or equipment relative to each share."
     }
   },
   "CompanyEnterpriseValue": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Company Enterprise Value Data",
+      "note": "This section includes data on a company's enterprise value, representing its total worth incorporating equity, debt, and subtracting liquid assets. It's a crucial metric for assessing the overall value of the company and comparing it with industry peers.",
       "metaclass": "ClientMeta",
       "api": "api/v3/enterprise-values",
       "params": {
@@ -3418,76 +3418,76 @@
     },
     "stock_price": {
       "factor": "stockPrice",
-      "name": "stockPrice",
-      "note": "all open interest"
+      "name": "Stock Price",
+      "note": "This factor represents the current market price of the company's stock, reflecting the public valuation of each share."
     },
     "shares_num": {
       "factor": "numberOfShares",
-      "name": "numberOfShares",
-      "note": "all open interest"
+      "name": "Number of Shares",
+      "note": "This factor indicates the total number of shares outstanding for the company, representing the quantity of stock available in the market."
     },
     "market_cap": {
       "factor": "marketCapitalization",
-      "name": "marketCapitalization",
-      "note": "all open interest"
+      "name": "Market Capitalization",
+      "note": "This factor measures the total market value of the company's outstanding shares, representing the aggregate valuation of the company by the stock market."
     },
     "cash_minus": {
       "factor": "minusCashAndCashEquivalents",
-      "name": "minusCashAndCashEquivalents",
-      "note": "all open interest"
+      "name": "Minus Cash and Cash Equivalents",
+      "note": "This factor subtracts the company's liquid assets, such as cash and cash equivalents, from its overall valuation, refining the assessment of its enterprise value."
     },
     "new_debt": {
       "factor": "addTotalDebt",
-      "name": "addTotalDebt",
-      "note": "all open interest"
+      "name": "Add Total Debt",
+      "note": "This factor adds the company's total debt to its market capitalization, accounting for financial liabilities in the calculation of enterprise value."
     },
     "enterprise_value": {
       "factor": "enterpriseValue",
-      "name": "enterpriseValue",
-      "note": "all open interest"
+      "name": "Enterprise Value",
+      "note": "This factor represents the total value of the company, incorporating its equity, debt, and subtracting liquid assets, offering a comprehensive metric for its overall worth."
     }
   },
   "HistoricalPrice": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Historical Stock Price Data",
+      "note": "This section provides historical daily stock price data, including open, high, low, and close prices, as well as adjusted close prices and volume. It's crucial for analyzing stock price trends, identifying patterns, and determining support and resistance levels.",
       "metaclass": "HistoricalPriceFullMeta",
       "api": "api/v3/historical-price-full"
     },
     "adj_close": {
       "factor": "adjClose",
-      "name": "adjusted closing price",
-      "note": "all open interest"
+      "name": "Adjusted Closing Price",
+      "note": "This factor represents the adjusted closing price of the stock, accounting for any corporate actions like dividends, stock splits, or new share issuance, providing a more accurate reflection of the stock's value."
     },
     "low": {
       "factor": "low",
-      "name": "low",
-      "note": "all open interest"
+      "name": "Low Price",
+      "note": "This factor indicates the lowest price at which the stock traded during the day, reflecting the minimum market valuation of the stock for that day."
     },
     "high": {
       "factor": "high",
-      "name": "high",
-      "note": "all open interest"
+      "name": "High Price",
+      "note": "This factor represents the highest price at which the stock traded during the day, showing the maximum market valuation of the stock for that day."
     },
     "change": {
       "factor": "change",
-      "name": "change",
-      "note": "all open interest"
+      "name": "Change",
+      "note": "This factor measures the absolute change in the stock's price from the previous closing price, indicating the daily price movement."
     },
     "change_percent": {
       "factor": "changePercent",
-      "name": "changePercent",
-      "note": "all open interest"
+      "name": "Change Percent",
+      "note": "This factor represents the percentage change in the stock's price from the previous closing, providing a relative measure of the price movement."
     },
     "vwap": {
       "factor": "vwap",
-      "name": "vwap",
-      "note": "all open interest"
+      "name": "Volume-Weighted Average Price",
+      "note": "This factor calculates the volume-weighted average price of the stock for the day, which combines price and volume to give an average price weighted by the number of shares traded."
     },
     "volume": {
       "factor": "volume",
-      "name": "volume",
-      "note": "all open interest"
+      "name": "Trading Volume",
+      "note": "This factor measures the total number of shares of the stock traded during the day, indicating the liquidity and trading activity of the stock."
     }
   }
 }

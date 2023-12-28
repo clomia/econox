@@ -1,8 +1,8 @@
 {
   "InstitutionalStockOwnership": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Institutional Stock Ownership",
+      "note": "This section provides data on the share ownership of individual stocks by institutional investors, offering insights into institutional holdings and investment trends.",
       "metaclass": "ClientMeta",
       "api": "api/v4/institutional-ownership/symbol-ownership",
       "symbol_in_query": true,
@@ -12,192 +12,192 @@
     },
     "investorsHolding": {
       "factor": "investorsHolding",
-      "name": "investorsHolding",
-      "note": "all open interest"
+      "name": "Investors Holding",
+      "note": "This factor represents the total number of shares held by institutional investors for a particular stock, reflecting the extent of institutional investment in that stock."
     },
     "lastInvestorsHolding": {
       "factor": "lastInvestorsHolding",
-      "name": "lastInvestorsHolding",
-      "note": "all open interest"
+      "name": "Last Investors Holding",
+      "note": "This factor indicates the previous reporting period's total number of shares held by institutional investors, providing a comparative perspective on institutional holdings."
     },
     "investorsHoldingChange": {
       "factor": "investorsHoldingChange",
-      "name": "investorsHoldingChange",
-      "note": "all open interest"
+      "name": "Investors Holding Change",
+      "note": "This factor shows the change in the number of shares held by institutional investors between the current and previous reporting periods, highlighting trends in institutional investment."
     },
     "numberOf13Fshares": {
       "factor": "numberOf13Fshares",
-      "name": "numberOf13Fshares",
-      "note": "all open interest"
+      "name": "Number of 13F Shares",
+      "note": "This factor represents the number of shares reported in the latest Form 13F filings by institutional investors, offering insight into their declared stock holdings."
     },
     "lastNumberOf13Fshares": {
       "factor": "lastNumberOf13Fshares",
-      "name": "lastNumberOf13Fshares",
-      "note": "all open interest"
+      "name": "Last Number of 13F Shares",
+      "note": "This factor shows the number of shares reported in the previous Form 13F filings by institutional investors, allowing for a historical comparison of declared holdings."
     },
     "numberOf13FsharesChange": {
       "factor": "numberOf13FsharesChange",
-      "name": "numberOf13FsharesChange",
-      "note": "all open interest"
+      "name": "Number of 13F Shares Change",
+      "note": "This factor indicates the change in the number of shares reported in Form 13F filings between the latest and previous periods, reflecting shifts in institutional investors' reported stock holdings."
     },
     "totalInvested": {
       "factor": "totalInvested",
-      "name": "totalInvested",
-      "note": "all open interest"
+      "name": "Total Invested",
+      "note": "This factor indicates the total monetary value invested by institutional investors in a specific stock, representing the overall financial commitment of institutions to that stock."
     },
     "lastTotalInvested": {
       "factor": "lastTotalInvested",
-      "name": "lastTotalInvested",
-      "note": "all open interest"
+      "name": "Last Total Invested",
+      "note": "This factor represents the total invested amount by institutional investors in the previous reporting period, allowing for comparison of investment trends over time."
     },
     "totalInvestedChange": {
       "factor": "totalInvestedChange",
-      "name": "totalInvestedChange",
-      "note": "all open interest"
+      "name": "Total Invested Change",
+      "note": "This factor shows the change in the total invested amount by institutional investors from the previous to the current reporting period, highlighting the dynamics of institutional investment in the stock."
     },
     "ownershipPercent": {
       "factor": "ownershipPercent",
-      "name": "ownershipPercent",
-      "note": "all open interest"
+      "name": "Ownership Percent",
+      "note": "This factor reflects the percentage of a company's stock that is owned by institutional investors, indicating the level of institutional involvement in the stock."
     },
     "lastOwnershipPercent": {
       "factor": "lastOwnershipPercent",
-      "name": "lastOwnershipPercent",
-      "note": "all open interest"
+      "name": "Last Ownership Percent",
+      "note": "This factor represents the percentage of stock ownership by institutional investors in the last reporting period, providing a basis for understanding changes in institutional investment patterns."
     },
     "ownershipPercentChange": {
       "factor": "ownershipPercentChange",
-      "name": "ownershipPercentChange",
-      "note": "all open interest"
+      "name": "Ownership Percent Change",
+      "note": "This factor indicates the change in the percentage of stock ownership by institutional investors between the current and previous reporting periods, signifying shifts in institutional engagement with the stock."
     },
     "newPositions": {
       "factor": "newPositions",
-      "name": "newPositions",
-      "note": "all open interest"
+      "name": "New Positions",
+      "note": "This factor denotes the number of new stock positions acquired by institutional investors in the current reporting period, reflecting fresh investments and interest in the stock."
     },
     "lastNewPositions": {
       "factor": "lastNewPositions",
-      "name": "lastNewPositions",
-      "note": "all open interest"
+      "name": "Last New Positions",
+      "note": "This factor represents the number of new stock positions institutional investors acquired in the previous reporting period, allowing for a comparison of new investment activities over time."
     },
     "newPositionsChange": {
       "factor": "newPositionsChange",
-      "name": "newPositionsChange",
-      "note": "all open interest"
+      "name": "New Positions Change",
+      "note": "This factor indicates the change in the number of new stock positions acquired by institutional investors between the current and previous reporting periods, highlighting trends in new investments."
     },
     "increasedPositions": {
       "factor": "increasedPositions",
-      "name": "increasedPositions",
-      "note": "all open interest"
+      "name": "Increased Positions",
+      "note": "This factor shows the number of stock positions that institutional investors have increased their holdings in during the current reporting period, signifying a growing interest or confidence in those stocks."
     },
     "lastIncreasedPositions": {
       "factor": "lastIncreasedPositions",
-      "name": "lastIncreasedPositions",
-      "note": "all open interest"
+      "name": "Last Increased Positions",
+      "note": "This factor denotes the number of stock positions that were increased by institutional investors in the last reporting period, offering insights into past investment trends and strategies."
     },
     "increasedPositionsChange": {
       "factor": "increasedPositionsChange",
-      "name": "increasedPositionsChange",
-      "note": "all open interest"
+      "name": "Increased Positions Change",
+      "note": "This factor reflects the change in the number of stock positions that have seen increased investment by institutional investors between the current and previous reporting periods, indicating shifting investment focus or confidence."
     },
     "closedPositions": {
       "factor": "closedPositions",
-      "name": "closedPositions",
-      "note": "all open interest"
+      "name": "Closed Positions",
+      "note": "This factor represents the number of stock positions that institutional investors have completely sold off or closed in the current reporting period, indicating a withdrawal of investment from those stocks."
     },
     "lastClosedPositions": {
       "factor": "lastClosedPositions",
-      "name": "lastClosedPositions",
-      "note": "all open interest"
+      "name": "Last Closed Positions",
+      "note": "This factor shows the number of stock positions that were closed by institutional investors in the previous reporting period, providing a historical context for investment withdrawal trends."
     },
     "closedPositionsChange": {
       "factor": "closedPositionsChange",
-      "name": "closedPositionsChange",
-      "note": "all open interest"
+      "name": "Closed Positions Change",
+      "note": "This factor indicates the change in the number of closed positions by institutional investors between the current and previous reporting periods, highlighting the evolving investment exit strategies."
     },
     "reducedPositions": {
       "factor": "reducedPositions",
-      "name": "reducedPositions",
-      "note": "all open interest"
+      "name": "Reduced Positions",
+      "note": "This factor denotes the number of stock positions where institutional investors have decreased their holdings in the current reporting period, signifying a reduced investment or interest in those stocks."
     },
     "lastReducedPositions": {
       "factor": "lastReducedPositions",
-      "name": "lastReducedPositions",
-      "note": "all open interest"
+      "name": "Last Reduced Positions",
+      "note": "This factor represents the number of stock positions that saw a reduction in investment by institutional investors in the last reporting period, offering insights into changing investment patterns."
     },
     "reducedPositionsChange": {
       "factor": "reducedPositionsChange",
-      "name": "reducedPositionsChange",
-      "note": "all open interest"
+      "name": "Reduced Positions Change",
+      "note": "This factor reflects the change in the number of stock positions with reduced investment by institutional investors, capturing the shifting focus or confidence between the current and previous reporting periods."
     },
     "totalCalls": {
       "factor": "totalCalls",
-      "name": "totalCalls",
-      "note": "all open interest"
+      "name": "Total Calls",
+      "note": "This factor indicates the total number of call options held by institutional investors on the stock, signifying a bullish outlook or strategy for potential price increases."
     },
     "lastTotalCalls": {
       "factor": "lastTotalCalls",
-      "name": "lastTotalCalls",
-      "note": "all open interest"
+      "name": "Last Total Calls",
+      "note": "This factor shows the total number of call options held by institutional investors in the previous reporting period, allowing for an analysis of trends in bullish option strategies."
     },
     "totalCallsChange": {
       "factor": "totalCallsChange",
-      "name": "totalCallsChange",
-      "note": "all open interest"
+      "name": "Total Calls Change",
+      "note": "This factor represents the change in the number of call options held by institutional investors between the current and previous reporting periods, highlighting shifts in bullish market sentiment."
     },
     "totalPuts": {
       "factor": "totalPuts",
-      "name": "totalPuts",
-      "note": "all open interest"
+      "name": "Total Puts",
+      "note": "This factor denotes the total number of put options held by institutional investors, indicating a bearish stance or protective strategy against potential stock price declines."
     },
     "lastTotalPuts": {
       "factor": "lastTotalPuts",
-      "name": "lastTotalPuts",
-      "note": "all open interest"
+      "name": "Last Total Puts",
+      "note": "This factor indicates the total number of put options held by institutional investors in the last reporting period, providing context for changes in bearish or defensive investment approaches."
     },
     "totalPutsChange": {
       "factor": "totalPutsChange",
-      "name": "totalPutsChange",
-      "note": "all open interest"
+      "name": "Total Puts Change",
+      "note": "This factor shows the change in the number of put options held by institutional investors from the previous to the current reporting period, reflecting adjustments in bearish or defensive strategies."
     },
     "putCallRatio": {
       "factor": "putCallRatio",
-      "name": "putCallRatio",
-      "note": "all open interest"
+      "name": "Put/Call Ratio",
+      "note": "This factor represents the ratio of put options to call options held by institutional investors, serving as an indicator of overall market sentiment and expectations."
     },
     "lastPutCallRatio": {
       "factor": "lastPutCallRatio",
-      "name": "lastPutCallRatio",
-      "note": "all open interest"
+      "name": "Last Put/Call Ratio",
+      "note": "This factor denotes the put/call ratio from the previous reporting period, offering insights into historical market sentiment and institutional investor expectations."
     },
     "putCallRatioChange": {
       "factor": "putCallRatioChange",
-      "name": "putCallRatioChange",
-      "note": "all open interest"
+      "name": "Put/Call Ratio Change",
+      "note": "This factor indicates the change in the put/call ratio between the current and previous reporting periods, highlighting shifts in market sentiment and institutional investor outlook."
     }
   },
   "HistoricalDividends": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Historical Dividends",
+      "note": "This section provides a comprehensive list of historical dividend payments for publicly traded companies, including key details like dividend payment dates, ex-dividend dates, and dividend amounts per share. It serves as an essential tool for analyzing dividend payment trends and company financial performance.",
       "metaclass": "HistoricalPriceFullMeta",
       "api": "api/v3/historical-price-full/stock_dividend"
     },
     "adjDividend": {
       "factor": "adjDividend",
-      "name": "adjDividend",
-      "note": "all open interest"
+      "name": "Adjusted Dividend",
+      "note": "This factor represents the adjusted dividend amount, accounting for any changes in the stock such as stock splits, rights offerings, or other corporate actions, to provide a consistent and comparable view of the dividend payouts over time."
     },
     "dividend": {
       "factor": "dividend",
-      "name": "dividend",
-      "note": "all open interest"
+      "name": "Dividend",
+      "note": "This factor indicates the actual dividend amount paid per share for a specific period, offering a direct measure of the return distributed to shareholders from the company's earnings."
     }
   },
   "AdvancedLeveredDiscountedCashFlow": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Advanced Levered Discounted Cash Flow",
+      "note": "This section offers an advanced levered version of the DCF valuation method, providing a detailed and sophisticated approach to estimate a company's value based on projected future cash flows. It takes into account the company's expected cash flows and discount rates to deliver an in-depth financial analysis.",
       "metaclass": "ClientMeta",
       "api": "api/v4/advanced_levered_discounted_cash_flow",
       "t_key": "year",
@@ -205,169 +205,169 @@
     },
     "revenue": {
       "factor": "revenue",
-      "name": "revenue",
-      "note": "all open interest"
+      "name": "Revenue",
+      "note": "This factor represents the total income generated by a company from its business activities, providing a fundamental measure of the company's sales or service effectiveness and market demand."
     },
     "revenuePercentage": {
       "factor": "revenuePercentage",
-      "name": "revenuePercentage",
-      "note": "all open interest"
+      "name": "Revenue Percentage",
+      "note": "This factor indicates the percentage change in revenue over a specified period, offering insights into the company's growth rate and revenue trends over time."
     },
     "capitalExpenditure": {
       "factor": "capitalExpenditure",
-      "name": "capitalExpenditure",
-      "note": "all open interest"
+      "name": "Capital Expenditure",
+      "note": "This factor denotes the company's expenses for acquiring or maintaining fixed assets, such as property, plant, and equipment, highlighting its investment in long-term assets for growth."
     },
     "capitalExpenditurePercentage": {
       "factor": "capitalExpenditurePercentage",
-      "name": "capitalExpenditurePercentage",
-      "note": "all open interest"
+      "name": "Capital Expenditure Percentage",
+      "note": "This factor shows the percentage change in capital expenditure over a given period, reflecting the company's changing investment strategies and priorities in its fixed assets."
     },
     "price": {
       "factor": "price",
-      "name": "price",
-      "note": "all open interest"
+      "name": "Price",
+      "note": "This factor refers to the current stock price of the company, serving as a key indicator of market valuation and investor sentiment."
     },
     "beta": {
       "factor": "beta",
-      "name": "beta",
-      "note": "all open interest"
+      "name": "Beta",
+      "note": "This factor represents the beta coefficient of the stock, indicating its volatility in relation to the overall market, and is used to assess the risk level of the stock relative to market fluctuations."
     },
     "dilutedSharesOutstanding": {
       "factor": "dilutedSharesOutstanding",
-      "name": "dilutedSharesOutstanding",
-      "note": "all open interest"
+      "name": "Diluted Shares Outstanding",
+      "note": "This factor refers to the total number of shares outstanding after accounting for all possible sources of conversion, such as stock options and convertible bonds, providing a more comprehensive picture of the company's equity."
     },
     "costofDebt": {
       "factor": "costofDebt",
-      "name": "costofDebt",
-      "note": "all open interest"
+      "name": "Cost of Debt",
+      "note": "This factor signifies the effective interest rate a company pays on its current debts, offering insights into the financial burden of the company's debt obligations and its efficiency in managing debt costs."
     },
     "taxRate": {
       "factor": "taxRate",
-      "name": "taxRate",
-      "note": "all open interest"
+      "name": "Tax Rate",
+      "note": "This factor represents the percentage of income a company pays in taxes, reflecting its tax burden and effectiveness in tax planning and management."
     },
     "afterTaxCostOfDebt": {
       "factor": "afterTaxCostOfDebt",
-      "name": "afterTaxCostOfDebt",
-      "note": "all open interest"
+      "name": "After Tax Cost of Debt",
+      "note": "This factor indicates the net cost of debt after accounting for tax deductions, showing the actual financial cost of debt considering the tax benefits."
     },
     "riskFreeRate": {
       "factor": "riskFreeRate",
-      "name": "riskFreeRate",
-      "note": "all open interest"
+      "name": "Risk-Free Rate",
+      "note": "This factor denotes the return rate of a risk-free investment, such as government bonds, serving as a baseline for evaluating investment risk and calculating the cost of capital."
     },
     "marketRiskPremium": {
       "factor": "marketRiskPremium",
-      "name": "marketRiskPremium",
-      "note": "all open interest"
+      "name": "Market Risk Premium",
+      "note": "This factor represents the additional return expected by investors for taking on the higher risk of investing in the stock market over a risk-free investment, used in assessing the required return for equity investments."
     },
     "costOfEquity": {
       "factor": "costOfEquity",
-      "name": "costOfEquity",
-      "note": "all open interest"
+      "name": "Cost of Equity",
+      "note": "This factor measures the return rate that shareholders expect for their investment in the company, incorporating the risks associated with equity investment and serving as a crucial component in determining a company's cost of capital."
     },
     "totalDebt": {
       "factor": "totalDebt",
-      "name": "totalDebt",
-      "note": "all open interest"
+      "name": "Total Debt",
+      "note": "This factor represents the aggregate amount of debt (both short-term and long-term) owed by the company, providing insight into the company's financial leverage and debt burden."
     },
     "totalEquity": {
       "factor": "totalEquity",
-      "name": "totalEquity",
-      "note": "all open interest"
+      "name": "Total Equity",
+      "note": "This factor indicates the total value of shareholders' equity in the company, reflecting the residual interest in the company's assets after deducting liabilities, and is a key measure of financial health."
     },
     "totalCapital": {
       "factor": "totalCapital",
-      "name": "totalCapital",
-      "note": "all open interest"
+      "name": "Total Capital",
+      "note": "This factor represents the sum of a company's debt and equity, providing a comprehensive view of the company's total capital structure used for financing its operations and investments."
     },
     "debtWeighting": {
       "factor": "debtWeighting",
-      "name": "debtWeighting",
-      "note": "all open interest"
+      "name": "Debt Weighting",
+      "note": "This factor refers to the proportion of debt in the company's overall capital structure, illustrating the extent to which the company relies on debt financing relative to equity."
     },
     "equityWeighting": {
       "factor": "equityWeighting",
-      "name": "equityWeighting",
-      "note": "all open interest"
+      "name": "Equity Weighting",
+      "note": "This factor denotes the proportion of equity in the company's total capital structure, indicating the relative importance of shareholder equity in financing the company's assets."
     },
     "wacc": {
       "factor": "wacc",
-      "name": "wacc",
-      "note": "all open interest"
+      "name": "Weighted Average Cost of Capital (WACC)",
+      "note": "This factor represents the company's overall cost of capital, accounting for the weighted average of the costs of equity and debt. WACC is a critical financial metric used in discounted cash flow analysis to determine the discount rate for future cash flows."
     },
     "operatingCashFlow": {
       "factor": "operatingCashFlow",
-      "name": "operatingCashFlow",
-      "note": "all open interest"
+      "name": "Operating Cash Flow",
+      "note": "This factor indicates the cash generated from the company's regular business operations, reflecting its ability to generate sufficient cash to maintain and grow its operations."
     },
     "pvLfcf": {
       "factor": "pvLfcf",
-      "name": "pvLfcf",
-      "note": "all open interest"
+      "name": "Present Value of Levered Free Cash Flow",
+      "note": "This factor denotes the present value of the company's projected levered free cash flows, discounted at the WACC. It reflects the value of the company's cash flows after accounting for debt financing costs."
     },
     "sumPvLfcf": {
       "factor": "sumPvLfcf",
-      "name": "sumPvLfcf",
-      "note": "all open interest"
+      "name": "Sum of Present Value of Levered Free Cash Flow",
+      "note": "This factor represents the total present value of all projected levered free cash flows, providing an aggregate measure of the company's value from its future cash generation capabilities."
     },
     "longTermGrowthRate": {
       "factor": "longTermGrowthRate",
-      "name": "longTermGrowthRate",
-      "note": "all open interest"
+      "name": "Long-Term Growth Rate",
+      "note": "This factor signifies the expected annual growth rate of the company's free cash flow in perpetuity, used in calculating the terminal value in DCF analysis."
     },
     "freeCashFlow": {
       "factor": "freeCashFlow",
-      "name": "freeCashFlow",
-      "note": "all open interest"
+      "name": "Free Cash Flow",
+      "note": "This factor measures the cash a company generates after accounting for cash outflows to support operations and maintain its capital assets, offering insight into the company's financial health and profitability."
     },
     "terminalValue": {
       "factor": "terminalValue",
-      "name": "terminalValue",
-      "note": "all open interest"
+      "name": "Terminal Value",
+      "note": "This factor estimates the value of the company's cash flows beyond the forecast period in a discounted cash flow analysis, representing the present value of all future cash flows when a business reaches a stable growth phase."
     },
     "presentTerminalValue": {
       "factor": "presentTerminalValue",
-      "name": "presentTerminalValue",
-      "note": "all open interest"
+      "name": "Present Terminal Value",
+      "note": "This factor indicates the present value of the terminal value, discounting it back to the present day using the weighted average cost of capital, reflecting the long-term value of the company in today's terms."
     },
     "enterpriseValue": {
       "factor": "enterpriseValue",
-      "name": "enterpriseValue",
-      "note": "all open interest"
+      "name": "Enterprise Value",
+      "note": "This factor denotes the total valuation of the company, combining its market capitalization, debt, and cash, to provide a comprehensive measure of the company's overall value."
     },
     "netDebt": {
       "factor": "netDebt",
-      "name": "netDebt",
-      "note": "all open interest"
+      "name": "Net Debt",
+      "note": "This factor represents the company's total debt minus its cash and cash equivalents, indicating the net financial obligations of the company."
     },
     "equityValue": {
       "factor": "equityValue",
-      "name": "equityValue",
-      "note": "all open interest"
+      "name": "Equity Value",
+      "note": "This factor measures the value of the company's equity, calculated as the difference between its enterprise value and net debt, representing the value attributable to shareholders."
     },
     "equityValuePerShare": {
       "factor": "equityValuePerShare",
-      "name": "equityValuePerShare",
-      "note": "all open interest"
+      "name": "Equity Value Per Share",
+      "note": "This factor calculates the value of each outstanding share of the company's stock based on the equity value, providing a per-share valuation metric for investors."
     },
     "freeCashFlowT1": {
       "factor": "freeCashFlowT1",
-      "name": "freeCashFlowT1",
-      "note": "all open interest"
+      "name": "Free Cash Flow T1",
+      "note": "This factor represents the company's projected free cash flow for the first year in the forecast period, serving as a key input in determining the company's future cash flow generation capabilities."
     },
     "operatingCashFlowPercentage": {
       "factor": "operatingCashFlowPercentage",
-      "name": "operatingCashFlowPercentage",
-      "note": "all open interest"
+      "name": "Operating Cash Flow Percentage",
+      "note": "This factor indicates the percentage of the company's operating cash flow relative to its revenue, offering insights into the efficiency of its core business operations and cash management."
     }
   },
   "AdvancedDiscountedCashFlow": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Advanced Discounted Cash Flow",
+      "note": "This section encompasses the advanced application of DCF valuation, integrating capabilities like multiple scenario modeling and diverse valuation methodologies. It empowers investors with tools for a deeper analysis, considering various growth rates and cost structures, and offering flexibility in employing different valuation approaches such as WACC and FCFE.",
       "metaclass": "ClientMeta",
       "api": "api/v4/advanced_discounted_cash_flow",
       "t_key": "year",
@@ -375,945 +375,945 @@
     },
     "revenue": {
       "factor": "revenue",
-      "name": "revenue",
-      "note": "all open interest"
+      "name": "Revenue",
+      "note": "This factor denotes the total income generated by a company from its operations, offering a fundamental gauge of its business scale and market performance."
     },
     "revenuePercentage": {
       "factor": "revenuePercentage",
-      "name": "revenuePercentage",
-      "note": "all open interest"
+      "name": "Revenue Percentage",
+      "note": "This factor measures the percentage change in a company's revenue over a specific period, providing insights into its growth rate and financial trajectory."
     },
     "ebitda": {
       "factor": "ebitda",
-      "name": "ebitda",
-      "note": "all open interest"
+      "name": "EBITDA (Earnings Before Interest, Taxes, Depreciation, and Amortization)",
+      "note": "EBITDA reflects a company's earnings before subtracting interest, taxes, depreciation, and amortization, offering an indicator of its operational efficiency and profitability."
     },
     "ebitdaPercentage": {
       "factor": "ebitdaPercentage",
-      "name": "ebitdaPercentage",
-      "note": "all open interest"
+      "name": "EBITDA Percentage",
+      "note": "This factor shows the percentage change in EBITDA over a period, revealing trends in the company's operational profitability and efficiency."
     },
     "ebit": {
       "factor": "ebit",
-      "name": "ebit",
-      "note": "all open interest"
+      "name": "EBIT (Earnings Before Interest and Taxes)",
+      "note": "EBIT represents a company's earnings before accounting for interest and taxes, providing a clear view of its operational income."
     },
     "ebitPercentage": {
       "factor": "ebitPercentage",
-      "name": "ebitPercentage",
-      "note": "all open interest"
+      "name": "EBIT Percentage",
+      "note": "This factor indicates the percentage change in EBIT over time, highlighting shifts in a company's operational earnings before financial and tax impacts."
     },
     "depreciation": {
       "factor": "depreciation",
-      "name": "depreciation",
-      "note": "all open interest"
+      "name": "Depreciation",
+      "note": "This factor represents the allocation of the cost of assets over their useful life, reflecting the company's accounting for the wear and tear on its physical assets."
     },
     "depreciationPercentage": {
       "factor": "depreciationPercentage",
-      "name": "depreciationPercentage",
-      "note": "all open interest"
+      "name": "Depreciation Percentage",
+      "note": "This factor calculates the percentage change in depreciation over a specified period, indicating how the company's allocation for asset wear and tear varies over time."
     },
     "totalCash": {
       "factor": "totalCash",
-      "name": "totalCash",
-      "note": "all open interest"
+      "name": "Total Cash",
+      "note": "This factor represents the total amount of cash and cash equivalents held by the company, reflecting its liquidity and ability to meet short-term obligations."
     },
     "totalCashPercentage": {
       "factor": "totalCashPercentage",
-      "name": "totalCashPercentage",
-      "note": "all open interest"
+      "name": "Total Cash Percentage",
+      "note": "This factor measures the percentage change in the company's total cash and cash equivalents, providing insights into the variations in its liquidity position."
     },
     "receivables": {
       "factor": "receivables",
-      "name": "receivables",
-      "note": "all open interest"
+      "name": "Receivables",
+      "note": "This factor indicates the total amount of money owed to the company by its customers for goods or services delivered, representing an essential component of its current assets."
     },
     "receivablesPercentage": {
       "factor": "receivablesPercentage",
-      "name": "receivablesPercentage",
-      "note": "all open interest"
+      "name": "Receivables Percentage",
+      "note": "This factor shows the percentage change in the company's receivables over time, shedding light on trends in its credit sales and collection efficiency."
     },
     "inventories": {
       "factor": "inventories",
-      "name": "inventories",
-      "note": "all open interest"
+      "name": "Inventories",
+      "note": "This factor represents the total value of a company's unsold goods and materials held for sale, highlighting an important aspect of its current assets and operational efficiency."
     },
     "inventoriesPercentage": {
       "factor": "inventoriesPercentage",
-      "name": "inventoriesPercentage",
+      "name": "Inventories Percentage",
       "note": "all open interest"
     },
     "payable": {
       "factor": "payable",
-      "name": "payable",
-      "note": "all open interest"
+      "name": "Payable",
+      "note": "This factor indicates the total amount of money the company owes to its suppliers and creditors, representing short-term liabilities arising from operational activities."
     },
     "payablePercentage": {
       "factor": "payablePercentage",
-      "name": "payablePercentage",
-      "note": "all open interest"
+      "name": "Payable Percentage",
+      "note": "This factor shows the percentage change in the company's payable amounts, reflecting shifts in its short-term financial obligations and vendor relationships."
     },
     "capitalExpenditure": {
       "factor": "capitalExpenditure",
-      "name": "capitalExpenditure",
-      "note": "all open interest"
+      "name": "Capital Expenditure",
+      "note": "This factor denotes the company's expenditure on acquiring or maintaining fixed assets, such as property, plant, and equipment, indicating its investment in long-term growth and operational capacity."
     },
     "capitalExpenditurePercentage": {
       "factor": "capitalExpenditurePercentage",
-      "name": "capitalExpenditurePercentage",
-      "note": "all open interest"
+      "name": "Capital Expenditure Percentage",
+      "note": "This factor represents the percentage change in the company's capital expenditure over time, revealing its strategic investment decisions and focus on long-term asset development."
     },
     "price": {
       "factor": "price",
-      "name": "price",
-      "note": "all open interest"
+      "name": "Price",
+      "note": "This factor represents the current market price of the company's stock, reflecting investor sentiment and market valuation of the company."
     },
     "beta": {
       "factor": "beta",
-      "name": "beta",
-      "note": "all open interest"
+      "name": "Beta",
+      "note": "Beta measures the volatility of the company's stock relative to the overall market, indicating the stock's risk level compared to the market average."
     },
     "dilutedSharesOutstanding": {
       "factor": "dilutedSharesOutstanding",
-      "name": "dilutedSharesOutstanding",
-      "note": "all open interest"
+      "name": "Diluted Shares Outstanding",
+      "note": "This factor indicates the total number of shares outstanding, including all convertible securities, options, and warrants, providing a comprehensive view of the company's equity structure."
     },
     "costofDebt": {
       "factor": "costofDebt",
-      "name": "costofDebt",
-      "note": "all open interest"
+      "name": "Cost of Debt",
+      "note": "This factor represents the effective interest rate the company pays on its debts, highlighting the financial cost of its borrowings."
     },
     "taxRate": {
       "factor": "taxRate",
-      "name": "taxRate",
-      "note": "all open interest"
+      "name": "Tax Rate",
+      "note": "This factor denotes the percentage of its earnings that the company pays as taxes, reflecting its tax burden."
     },
     "afterTaxCostOfDebt": {
       "factor": "afterTaxCostOfDebt",
-      "name": "afterTaxCostOfDebt",
-      "note": "all open interest"
+      "name": "After-Tax Cost of Debt",
+      "note": "This factor shows the company's cost of debt after accounting for tax deductions, providing a net view of the financial impact of its debts."
     },
     "riskFreeRate": {
       "factor": "riskFreeRate",
-      "name": "riskFreeRate",
-      "note": "all open interest"
+      "name": "Risk-Free Rate",
+      "note": "This factor represents the return on investments considered virtually risk-free, typically government bonds, serving as a benchmark for evaluating investment risks."
     },
     "marketRiskPremium": {
       "factor": "marketRiskPremium",
-      "name": "marketRiskPremium",
-      "note": "all open interest"
+      "name": "Market Risk Premium",
+      "note": "This factor denotes the additional return expected by investors for bearing the risk of investing in the stock market over a risk-free investment."
     },
     "costOfEquity": {
       "factor": "costOfEquity",
-      "name": "costOfEquity",
-      "note": "all open interest"
+      "name": "Cost of Equity",
+      "note": "This factor measures the return rate that shareholders require for their investment in the company, reflecting the risks associated with equity investment."
     },
     "totalDebt": {
       "factor": "totalDebt",
-      "name": "totalDebt",
-      "note": "all open interest"
+      "name": "Total Debt",
+      "note": "This factor indicates the total amount of debt, including both short-term and long-term liabilities, that the company owes."
     },
     "totalEquity": {
       "factor": "totalEquity",
-      "name": "totalEquity",
-      "note": "all open interest"
+      "name": "Total Equity",
+      "note": "This factor represents the total shareholders' equity in the company, indicating the residual value to shareholders after debts are settled."
     },
     "totalCapital": {
       "factor": "totalCapital",
-      "name": "totalCapital",
-      "note": "all open interest"
+      "name": "Total Capital",
+      "note": "This factor denotes the sum of the company's total debt and equity, illustrating the entire capital available for the company's operations and investments."
     },
     "debtWeighting": {
       "factor": "debtWeighting",
-      "name": "debtWeighting",
-      "note": "all open interest"
+      "name": "Debt Weighting",
+      "note": "This factor shows the proportion of debt in the company's capital structure, indicating how much of the company's capital is financed through borrowing."
     },
     "equityWeighting": {
       "factor": "equityWeighting",
-      "name": "equityWeighting",
-      "note": "all open interest"
+      "name": "Equity Weighting",
+      "note": "This factor reflects the proportion of equity in the company's capital structure, illustrating the extent to which the company is financed through shareholder equity."
     },
     "wacc": {
       "factor": "wacc",
-      "name": "wacc",
-      "note": "all open interest"
+      "name": "WACC (Weighted Average Cost of Capital)",
+      "note": "WACC represents the company's average cost of capital, considering both equity and debt, used as a discount rate in DCF analysis."
     },
     "taxRateCash": {
       "factor": "taxRateCash",
-      "name": "taxRateCash",
-      "note": "all open interest"
+      "name": "Tax Rate Cash",
+      "note": "This factor indicates the effective cash tax rate of the company, representing the actual cash paid for taxes as a proportion of its earnings."
     },
     "ebiat": {
       "factor": "ebiat",
-      "name": "ebiat",
-      "note": "all open interest"
+      "name": "EBIAT (Earnings Before Interest After Taxes)",
+      "note": "EBIAT denotes the company's earnings before interest but after taxes, providing insight into the company's operational profitability excluding financing and tax impacts."
     },
     "ufcf": {
       "factor": "ufcf",
-      "name": "ufcf",
-      "note": "all open interest"
+      "name": "Unlevered Free Cash Flow (UFCF)",
+      "note": "UFCF refers to the company's free cash flow before considering financial leverage, offering a view of its cash earnings irrespective of its capital structure."
     },
     "sumPvUfcf": {
       "factor": "sumPvUfcf",
-      "name": "sumPvUfcf",
-      "note": "all open interest"
+      "name": "Sum of Present Value of Unlevered Free Cash Flow",
+      "note": "This factor calculates the total present value of the company's projected UFCF, discounting it back to present value, to assess the company's value independent of its debt structure."
     },
     "longTermGrowthRate": {
       "factor": "longTermGrowthRate",
-      "name": "longTermGrowthRate",
-      "note": "all open interest"
+      "name": "Long-Term Growth Rate",
+      "note": "This factor estimates the perpetual growth rate of the company's free cash flow, essential for calculating the terminal value in DCF models."
     },
     "terminalValue": {
       "factor": "terminalValue",
-      "name": "terminalValue",
-      "note": "all open interest"
+      "name": "Terminal Value",
+      "note": "Terminal Value represents the value of all future cash flows beyond the forecast period in a DCF analysis, assuming a constant growth rate."
     },
     "presentTerminalValue": {
       "factor": "presentTerminalValue",
-      "name": "presentTerminalValue",
-      "note": "all open interest"
+      "name": "Present Terminal Value",
+      "note": "This factor calculates the present value of the terminal value, discounting it to the present day using the company's WACC."
     },
     "enterpriseValue": {
       "factor": "enterpriseValue",
-      "name": "enterpriseValue",
-      "note": "all open interest"
+      "name": "Enterprise Value",
+      "note": "Enterprise Value is the total valuation of the company, considering its market capitalization, debt, and cash."
     },
     "netDebt": {
       "factor": "netDebt",
-      "name": "netDebt",
-      "note": "all open interest"
+      "name": "Net Debt",
+      "note": "Net Debt signifies the company's total debt minus its cash and cash equivalents, showing its net financial obligations."
     },
     "equityValue": {
       "factor": "equityValue",
-      "name": "equityValue",
-      "note": "all open interest"
+      "name": "Equity Value",
+      "note": "Equity Value is the value attributed to shareholders, calculated as the difference between the enterprise value and net debt."
     },
     "equityValuePerShare": {
       "factor": "equityValuePerShare",
-      "name": "equityValuePerShare",
-      "note": "all open interest"
+      "name": "Equity Value Per Share",
+      "note": "This factor represents the value of each share based on the company's equity value, offering a per-share valuation metric."
     },
     "freeCashFlowT1": {
       "factor": "freeCashFlowT1",
-      "name": "freeCashFlowT1",
-      "note": "all open interest"
+      "name": "Free Cash Flow T1",
+      "note": "Free Cash Flow T1 indicates the projected free cash flow for the first year in the forecast period, used in DCF analysis."
     }
   },
   "MarketCapitalization": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Market Capitalization",
+      "note": "This section provides historical market capitalization data for companies, enabling the analysis of a company's growth and market performance over time. It is a vital tool for investors to track and compare the market value trends of different companies.",
       "metaclass": "ClientMeta",
       "api": "api/v3/historical-market-capitalization"
     },
     "market_cap": {
       "factor": "marketCap",
-      "name": "marketCap",
-      "note": "all open interest"
+      "name": "Market Capitalization",
+      "note": "This factor represents the total market value of a company's outstanding shares, calculated by multiplying the current stock price by the total number of outstanding shares. It reflects the company's size and the market's valuation of its overall worth, providing a key metric for comparing companies within an industry or the broader market."
     }
   },
   "EsgScore": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "ESG Score",
+      "note": "This section provides access to ESG ratings and related data for companies and funds, enabling users to evaluate entities based on their environmental, social, and governance practices. It's a valuable tool for socially responsible investing, helping investors find companies that align with their ESG values.",
       "metaclass": "ClientMeta",
       "api": "api/v4/esg-environmental-social-governance-data",
       "symbol_in_query": true
     },
     "name1": {
       "factor": "environmentalScore",
-      "name": "environmentalScore",
-      "note": "all open interest"
+      "name": "Environmental Score",
+      "note": "This factor assesses a company's impact on the environment, including its energy use, waste production, and resource conservation practices. It reflects the company's commitment to environmental sustainability and its performance in managing ecological issues."
     },
     "name2": {
       "factor": "socialScore",
-      "name": "socialScore",
-      "note": "all open interest"
+      "name": "Social Score",
+      "note": "This factor evaluates a company's relationships with its employees, suppliers, customers, and communities. It encompasses aspects like labor practices, human rights, and community development, reflecting the company's social responsibility."
     },
     "name3": {
       "factor": "governanceScore",
-      "name": "governanceScore",
-      "note": "all open interest"
+      "name": "Governance Score",
+      "note": "This factor measures a company's governance practices, including leadership, executive pay, audits, internal controls, and shareholder rights. It indicates how well the company is managed and whether it operates with transparency and integrity."
     },
     "name4": {
       "factor": "ESGScore",
-      "name": "ESGScore",
-      "note": "all open interest"
+      "name": "ESG Score",
+      "note": "This score combines the environmental, social, and governance scores, providing a comprehensive assessment of a company's performance across all three ESG criteria. It helps investors evaluate the company's overall commitment to sustainable and responsible business practices."
     }
   },
   "CotReportAnalysis": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "COT Report Analysis",
+      "note": "This section offers in-depth analysis of the Commitment of Traders report, providing valuable insights into market participant behavior, such as net long and short positions, and changes in open interest for specific symbols. It serves as a crucial tool for understanding market sentiment and aiding in informed trading decisions based on comprehensive COT data.",
       "metaclass": "ClientMeta",
       "api": "api/v4/commitment_of_traders_report_analysis"
     },
     "name1": {
       "factor": "currentLongMarketSituation",
-      "name": "currentLongMarketSituation",
-      "note": "all open interest"
+      "name": "Current Long Market Situation",
+      "note": "This factor represents the current total long positions held by market participants for a specific symbol, indicating bullish sentiment or expectation of rising prices."
     },
     "name2": {
       "factor": "currentShortMarketSituation",
-      "name": "currentShortMarketSituation",
-      "note": "all open interest"
+      "name": "Current Short Market Situation",
+      "note": "This factor denotes the current total short positions held by market participants, reflecting bearish sentiment or expectation of declining prices for the symbol."
     },
     "name3": {
       "factor": "previousLongMarketSituation",
-      "name": "previousLongMarketSituation",
-      "note": "all open interest"
+      "name": "Previous Long Market Situation",
+      "note": "This factor shows the total long positions held by market participants for the symbol in the previous reporting period, allowing for comparison of market sentiment over time."
     },
     "name4": {
       "factor": "previousShortMarketSituation",
-      "name": "previousShortMarketSituation",
-      "note": "all open interest"
+      "name": "Previous Short Market Situation",
+      "note": "This factor indicates the total short positions held in the previous reporting period, providing a historical perspective on bearish market sentiment."
     },
     "name5": {
       "factor": "netPostion",
-      "name": "netPostion",
-      "note": "all open interest"
+      "name": "Net Position",
+      "note": "This factor calculates the difference between total long and short positions currently held by market participants, offering an overall view of market sentiment for the symbol."
     },
     "name6": {
       "factor": "previousNetPosition",
-      "name": "previousNetPosition",
-      "note": "all open interest"
+      "name": "Previous Net Position",
+      "note": "This factor represents the net position from the previous reporting period, enabling a comparative analysis of market sentiment changes over time."
     },
     "name7": {
       "factor": "changeInNetPosition",
-      "name": "changeInNetPosition",
-      "note": "all open interest"
+      "name": "Change in Net Position",
+      "note": "This factor measures the change in net position between the current and previous reporting periods, highlighting the dynamics and shifts in overall market sentiment."
     }
   },
   "CotReport": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "COT Report",
+      "note": "This section provides a comprehensive Commitment of Traders report for specific symbols, including detailed information on net long and short positions of various market participants, changes in these positions, open interest, and speculative positioning index. It is a crucial tool for investors to gain an in-depth understanding of market dynamics and make informed trading decisions based on thorough COT analysis.",
       "metaclass": "ClientMeta",
       "api": "api/v4/commitment_of_traders_report"
     },
     "oi_all": {
       "factor": "open_interest_all",
-      "name": "open_interest_all",
-      "note": "all open interest"
+      "name": "Open Interest All",
+      "note": "This factor represents the total number of open contracts for a symbol, indicating the overall activity and interest in the market for that specific asset."
     },
     "nc_pos_long_all": {
       "factor": "noncomm_positions_long_all",
-      "name": "noncomm_positions_long_all",
-      "note": "all open interest"
+      "name": "Non-Commercial Positions Long All",
+      "note": "This factor shows the total long positions held by non-commercial traders, providing insights into the speculative sentiment and bullish expectations of these traders."
     },
     "nc_pos_short_all": {
       "factor": "noncomm_positions_short_all",
-      "name": "noncomm_positions_short_all",
-      "note": "all open interest"
+      "name": "Non-Commercial Positions Short All",
+      "note": "This factor indicates the total short positions held by non-commercial traders, reflecting the bearish sentiment and speculative bets against the market by these traders."
     },
     "nc_pos_spread_all": {
       "factor": "noncomm_postions_spread_all",
-      "name": "noncomm_postions_spread_all",
-      "note": "all open interest"
+      "name": "Non-Commercial Positions Spread All",
+      "note": "This factor denotes the total spread positions held by non-commercial traders, highlighting their strategies that involve holding both long and short positions simultaneously."
     },
     "c_pos_long_all": {
       "factor": "comm_positions_long_all",
-      "name": "comm_positions_long_all",
-      "note": "all open interest"
+      "name": "Commercial Positions Long All",
+      "note": "This factor represents the total long positions held by commercial traders, indicating their bullish market view and expectations based on their business operations and market knowledge."
     },
     "c_pos_short_all": {
       "factor": "comm_positions_short_all",
-      "name": "comm_positions_short_all",
-      "note": "all open interest"
+      "name": "Commercial Positions Short All",
+      "note": "This factor shows the total short positions held by commercial traders, reflecting their bearish market expectations, often based on their commercial interests and market expertise."
     },
     "tr_pos_long_all": {
       "factor": "tot_rept_positions_long_all",
-      "name": "tot_rept_positions_long_all",
-      "note": "all open interest"
+      "name": "Total Reportable Positions Long All",
+      "note": "This factor indicates the total long positions held by reportable traders, encompassing both commercial and non-commercial traders, showcasing the overall bullish sentiment among major market participants."
     },
     "tr_pos_short_all": {
       "factor": "tot_rept_positions_short_all",
-      "name": "tot_rept_positions_short_all",
-      "note": "all open interest"
+      "name": "Total Reportable Positions Short All",
+      "note": "This factor shows the total short positions held by reportable traders, providing insights into the collective bearish sentiment among significant market players."
     },
     "nr_pos_long_all": {
       "factor": "nonrept_positions_long_all",
-      "name": "nonrept_positions_long_all",
-      "note": "all open interest"
+      "name": "Non-Reportable Positions Long All",
+      "note": "This factor represents the total long positions held by non-reportable traders, typically smaller or individual traders, reflecting their bullish market outlook."
     },
     "nr_pos_short_all": {
       "factor": "nonrept_positions_short_all",
-      "name": "nonrept_positions_short_all",
-      "note": "all open interest"
+      "name": "Non-Reportable Positions Short All",
+      "note": "This factor denotes the total short positions held by non-reportable traders, indicating the bearish sentiment among smaller or individual market participants."
     },
     "oi_old": {
       "factor": "open_interest_old",
-      "name": "open_interest_old",
-      "note": "all open interest"
+      "name": "Open Interest Old",
+      "note": "This factor refers to the open interest held in older contracts for a symbol, providing a perspective on the long-term interest and market involvement in these contracts."
     },
     "nc_pos_long_old": {
       "factor": "noncomm_positions_long_old",
-      "name": "noncomm_positions_long_old",
-      "note": "all open interest"
+      "name": "Non-Commercial Positions Long Old",
+      "note": "This factor shows the long positions held by non-commercial traders in older contracts, indicating speculative or investment interest in these longer-duration market positions."
     },
     "nc_pos_short_old": {
       "factor": "noncomm_positions_short_old",
-      "name": "noncomm_positions_short_old",
-      "note": "all open interest"
+      "name": "Non-Commercial Positions Short Old",
+      "note": "This factor represents the short positions held by non-commercial traders in older contracts, reflecting their bearish outlook or speculative bets against these long-duration market positions."
     },
     "nc_pos_spread_old": {
       "factor": "noncomm_positions_spread_old",
-      "name": "noncomm_positions_spread_old",
-      "note": "all open interest"
+      "name": "Non-Commercial Positions Spread Old",
+      "note": "This factor indicates the spread positions held by non-commercial traders in older contracts, showcasing their hedging or diversified strategies over a longer time frame."
     },
     "c_pos_long_old": {
       "factor": "comm_positions_long_old",
-      "name": "comm_positions_long_old",
-      "note": "all open interest"
+      "name": "Commercial Positions Long Old",
+      "note": "This factor shows the long positions held by commercial traders in older contracts, reflecting their bullish market expectations based on long-term business needs or market analysis."
     },
     "c_pos_short_old": {
       "factor": "comm_positions_short_old",
-      "name": "comm_positions_short_old",
-      "note": "all open interest"
+      "name": "Commercial Positions Short Old",
+      "note": "This factor denotes the short positions held by commercial traders in older contracts, indicating their bearish market outlook or hedging strategies against long-term market fluctuations."
     },
     "tr_pos_long_old": {
       "factor": "tot_rept_positions_long_old",
-      "name": "tot_rept_positions_long_old",
-      "note": "all open interest"
+      "name": "Total Reportable Positions Long Old",
+      "note": "This factor represents the total long positions in older contracts held by reportable traders, offering insights into the collective bullish sentiment among major market participants over an extended period."
     },
     "tr_pos_short_old": {
       "factor": "tot_rept_positions_short_old",
-      "name": "tot_rept_positions_short_old",
-      "note": "all open interest"
+      "name": "Total Reportable Positions Short Old",
+      "note": "This factor indicates the total short positions in older contracts held by reportable traders, reflecting the aggregate bearish sentiment among significant traders in the longer-term market."
     },
     "nr_pos_long_old": {
       "factor": "nonrept_positions_long_old",
-      "name": "nonrept_positions_long_old",
-      "note": "all open interest"
+      "name": "Non-Reportable Positions Long Old",
+      "note": "This factor shows the long positions in older contracts held by non-reportable traders, indicating bullish sentiment among smaller or individual traders over a long-term perspective."
     },
     "nr_pos_short_old": {
       "factor": "nonrept_positions_short_old",
-      "name": "nonrept_positions_short_old",
-      "note": "all open interest"
+      "name": "Non-Reportable Positions Short Old",
+      "note": "This factor represents the short positions in older contracts held by non-reportable traders, reflecting bearish sentiment among smaller market participants in the long-term market."
     },
     "oi_other": {
       "factor": "open_interest_other",
-      "name": "open_interest_other",
-      "note": "all open interest"
+      "name": "Open Interest Other",
+      "note": "This factor indicates the open interest in contracts other than the most current or older ones, providing insights into the market activity and interest in mid-term contract durations."
     },
     "nc_pos_long_other": {
       "factor": "noncomm_positions_long_other",
-      "name": "noncomm_positions_long_other",
-      "note": "all open interest"
+      "name": "Non-Commercial Positions Long Other",
+      "note": "This factor shows the long positions held by non-commercial traders in other contracts, representing their speculative or investment interest in mid-duration market positions."
     },
     "nc_pos_short_other": {
       "factor": "noncomm_positions_short_other",
-      "name": "noncomm_positions_short_other",
-      "note": "all open interest"
+      "name": "Non-Commercial Positions Short Other",
+      "note": "This factor denotes the short positions held by non-commercial traders in other contracts, reflecting their bearish or speculative bets against mid-term market positions."
     },
     "nc_pos_spread_other": {
       "factor": "noncomm_positions_spread_other",
-      "name": "noncomm_positions_spread_other",
-      "note": "all open interest"
+      "name": "Non-Commercial Positions Spread Other",
+      "note": "This factor indicates the spread positions held by non-commercial traders in other contracts, highlighting their diversified or hedging strategies for mid-term market exposures."
     },
     "c_pos_long_other": {
       "factor": "comm_positions_long_other",
-      "name": "comm_positions_long_other",
-      "note": "all open interest"
+      "name": "Commercial Positions Long Other",
+      "note": "This factor represents the long positions held by commercial traders in contracts that are neither the most current nor the oldest, indicating their bullish expectations for mid-term market trends based on commercial insights."
     },
     "c_pos_short_other": {
       "factor": "comm_positions_short_other",
-      "name": "comm_positions_short_other",
-      "note": "all open interest"
+      "name": "Commercial Positions Short Other",
+      "note": "This factor shows the short positions held by commercial traders in mid-term contracts, reflecting their bearish outlook or hedging strategies against mid-duration market changes."
     },
     "tr_pos_long_other": {
       "factor": "tot_rept_positions_long_other",
-      "name": "tot_rept_positions_long_other",
-      "note": "all open interest"
+      "name": "Total Reportable Positions Long Other",
+      "note": "This factor indicates the total long positions in mid-term contracts held by reportable traders, encompassing both commercial and non-commercial participants, showing overall bullish sentiment in this time frame."
     },
     "tr_pos_short_other": {
       "factor": "tot_rept_positions_short_other",
-      "name": "tot_rept_positions_short_other",
-      "note": "all open interest"
+      "name": "Total Reportable Positions Short Other",
+      "note": "This factor denotes the total short positions in mid-term contracts held by reportable traders, providing a collective view of bearish sentiment among major market participants in the mid-term market."
     },
     "nr_pos_long_other": {
       "factor": "nonrept_positions_long_other",
-      "name": "nonrept_positions_long_other",
-      "note": "all open interest"
+      "name": "Non-Reportable Positions Long Other",
+      "note": "This factor represents the long positions in mid-term contracts held by non-reportable traders, indicating bullish sentiment among smaller or individual traders in the mid-term market."
     },
     "nr_pos_short_other": {
       "factor": "nonrept_positions_short_other",
-      "name": "nonrept_positions_short_other",
-      "note": "all open interest"
+      "name": "Non-Reportable Positions Short Other",
+      "note": "This factor shows the short positions in mid-term contracts held by non-reportable traders, reflecting bearish sentiment among smaller market participants in this segment of the market."
     },
     "chg_oi_all": {
       "factor": "change_in_open_interest_all",
-      "name": "change_in_open_interest_all",
-      "note": "all open interest"
+      "name": "Change in Open Interest All",
+      "note": "This factor measures the change in the total number of open contracts for a symbol, indicating the recent shift in market activity and trader interest."
     },
     "chg_nc_long_all": {
       "factor": "change_in_noncomm_long_all",
-      "name": "change_in_noncomm_long_all",
-      "note": "all open interest"
+      "name": "Change in Non-Commercial Long All",
+      "note": "This factor shows the recent change in total long positions held by non-commercial traders, highlighting shifts in speculative or investment sentiment among these market participants."
     },
     "chg_nc_short_all": {
       "factor": "change_in_noncomm_short_all",
-      "name": "change_in_noncomm_short_all",
-      "note": "all open interest"
+      "name": "Change in Non-Commercial Short All",
+      "note": "This factor represents the recent change in total short positions held by non-commercial traders, reflecting changes in bearish sentiment or speculative strategies."
     },
     "chg_nc_spread_all": {
       "factor": "change_in_noncomm_spead_all",
-      "name": "change_in_noncomm_spead_all",
-      "note": "all open interest"
+      "name": "Change in Non-Commercial Spread All",
+      "note": "This factor indicates the change in total spread positions held by non-commercial traders, showcasing their recent adjustments in hedging or diversified market strategies."
     },
     "chg_c_long_all": {
       "factor": "change_in_comm_long_all",
-      "name": "change_in_comm_long_all",
-      "note": "all open interest"
+      "name": "Change in Commercial Long All",
+      "note": "This factor denotes the change in total long positions held by commercial traders, signifying recent shifts in market outlook and strategies based on their commercial interests and insights."
     },
     "chg_c_short_all": {
       "factor": "change_in_comm_short_all",
-      "name": "change_in_comm_short_all",
-      "note": "all open interest"
+      "name": "Change in Commercial Short All",
+      "note": "This factor shows the recent change in total short positions held by commercial traders, reflecting their evolving bearish market outlook or adjustments in hedging strategies."
     },
     "chg_tr_long_all": {
       "factor": "change_in_tot_rept_long_all",
-      "name": "change_in_tot_rept_long_all",
-      "note": "all open interest"
+      "name": "Change in Total Reportable Long All",
+      "note": "This factor indicates the recent change in total long positions held by reportable traders, signifying shifts in overall bullish sentiment among major market players."
     },
     "chg_tr_short_all": {
       "factor": "change_in_tot_rept_short_all",
-      "name": "change_in_tot_rept_short_all",
-      "note": "all open interest"
+      "name": "Change in Total Reportable Short All",
+      "note": "This factor represents the recent change in total short positions held by reportable traders, highlighting collective changes in bearish sentiment among significant traders."
     },
     "chg_nr_long_all": {
       "factor": "change_in_nonrept_long_all",
-      "name": "change_in_nonrept_long_all",
-      "note": "all open interest"
+      "name": "Change in Non-Reportable Long All",
+      "note": "This factor measures the recent change in total long positions held by non-reportable traders, offering insights into shifts in bullish sentiment among smaller or individual market participants."
     },
     "chg_nr_short_all": {
       "factor": "change_in_nonrept_short_all",
-      "name": "change_in_nonrept_short_all",
-      "note": "all open interest"
+      "name": "Change in Non-Reportable Short All",
+      "note": "This factor denotes the recent change in total short positions held by non-reportable traders, reflecting changes in bearish sentiment among smaller traders in the market."
     },
     "pct_oi_all": {
       "factor": "pct_of_open_interest_all",
-      "name": "pct_of_open_interest_all",
-      "note": "all open interest"
+      "name": "Percent of Open Interest All",
+      "note": "This factor indicates the percentage of total open interest represented by all contracts for a symbol, providing a proportionate view of market involvement and interest."
     },
     "pct_nc_long_all": {
       "factor": "pct_of_oi_noncomm_long_all",
-      "name": "pct_of_oi_noncomm_long_all",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Commercial Long All",
+      "note": "This factor measures the percentage of total open interest that comprises non-commercial traders' long positions, offering insights into their relative bullish market influence."
     },
     "pct_nc_short_all": {
       "factor": "pct_of_oi_noncomm_short_all",
-      "name": "pct_of_oi_noncomm_short_all",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Commercial Short All",
+      "note": "This factor shows the proportion of total open interest made up of non-commercial traders' short positions, highlighting their impact on bearish market sentiment."
     },
     "pct_nc_spread_all": {
       "factor": "pct_of_oi_noncomm_spread_all",
-      "name": "pct_of_oi_noncomm_spread_all",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Commercial Spread All",
+      "note": "This factor represents the percentage of total open interest consisting of non-commercial traders' spread positions, indicating their contribution to the market's hedging or diversified strategies."
     },
     "pct_c_long_all": {
       "factor": "pct_of_oi_comm_long_all",
-      "name": "pct_of_oi_comm_long_all",
-      "note": "all open interest"
+      "name": "Percent of OI Commercial Long All",
+      "note": "This factor indicates the percentage of total open interest attributed to commercial traders' long positions, reflecting their bullish influence based on commercial interests."
     },
     "pct_c_short_all": {
       "factor": "pct_of_oi_comm_short_all",
-      "name": "pct_of_oi_comm_short_all",
-      "note": "all open interest"
+      "name": "Percent of OI Commercial Short All",
+      "note": "This factor denotes the proportion of total open interest that comprises commercial traders' short positions, offering insights into their bearish market impact based on commercial strategies."
     },
     "pct_tr_long_all": {
       "factor": "pct_of_oi_tot_rept_long_all",
-      "name": "pct_of_oi_tot_rept_long_all",
-      "note": "all open interest"
+      "name": "Percent of OI Total Reportable Long All",
+      "note": "This factor indicates the percentage of total open interest represented by long positions of reportable traders, reflecting their influence on the bullish market outlook."
     },
     "pct_tr_short_all": {
       "factor": "pct_of_oi_tot_rept_short_all",
-      "name": "pct_of_oi_tot_rept_short_all",
-      "note": "all open interest"
+      "name": "Percent of OI Total Reportable Short All",
+      "note": "This factor shows the proportion of total open interest made up by short positions of reportable traders, highlighting their collective impact on bearish market sentiment."
     },
     "pct_nr_long_all": {
       "factor": "pct_of_oi_nonrept_long_all",
-      "name": "pct_of_oi_nonrept_long_all",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Reportable Long All",
+      "note": "This factor measures the percentage of total open interest comprised of long positions held by non-reportable traders, offering insights into their bullish market influence."
     },
     "pct_nr_short_all": {
       "factor": "pct_of_oi_nonrept_short_all",
-      "name": "pct_of_oi_nonrept_short_all",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Reportable Short All",
+      "note": "This factor represents the proportion of total open interest that consists of short positions held by non-reportable traders, reflecting their impact on bearish sentiment in the market."
     },
     "pct_oi_ol": {
       "factor": "pct_of_open_interest_ol",
-      "name": "pct_of_open_interest_ol",
-      "note": "all open interest"
+      "name": "Percent of Open Interest Old",
+      "note": "This factor indicates the percentage of total open interest in older contracts, providing insights into the market's long-term interest and involvement in these positions."
     },
     "pct_nc_long_ol": {
       "factor": "pct_of_oi_noncomm_long_ol",
-      "name": "pct_of_oi_noncomm_long_ol",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Commercial Long Old",
+      "note": "This factor shows the proportion of total open interest in older contracts made up of non-commercial traders' long positions, highlighting their speculative or investment interest over a longer-term horizon."
     },
     "pct_nc_short_ol": {
       "factor": "pct_of_oi_noncomm_short_ol",
-      "name": "pct_of_oi_noncomm_short_ol",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Commercial Short Old",
+      "note": "This factor indicates the percentage of total open interest in older contracts represented by non-commercial traders' short positions, highlighting their bearish expectations over a long-term horizon."
     },
     "pct_nc_spread_ol": {
       "factor": "pct_of_oi_noncomm_spread_ol",
-      "name": "pct_of_oi_noncomm_spread_ol",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Commercial Spread Old",
+      "note": "This factor shows the proportion of total open interest in older contracts made up by non-commercial traders' spread positions, reflecting their hedging or diversified market strategies over time."
     },
     "pct_c_long_ol": {
       "factor": "pct_of_oi_comm_long_ol",
-      "name": "pct_of_oi_comm_long_ol",
-      "note": "all open interest"
+      "name": "Percent of OI Commercial Long Old",
+      "note": "This factor represents the percentage of total open interest in older contracts attributed to commercial traders' long positions, indicating their long-term bullish market strategies based on commercial insights."
     },
     "pct_c_short_ol": {
       "factor": "pct_of_oi_comm_short_ol",
-      "name": "pct_of_oi_comm_short_ol",
-      "note": "all open interest"
+      "name": "Percent of OI Commercial Short Old",
+      "note": "This factor measures the proportion of total open interest in older contracts consisting of commercial traders' short positions, offering insights into their long-term bearish outlook or hedging strategies."
     },
     "pct_tr_long_ol": {
       "factor": "pct_of_oi_tot_rept_long_ol",
-      "name": "pct_of_oi_tot_rept_long_ol",
-      "note": "all open interest"
+      "name": "Percent of OI Total Reportable Long Old",
+      "note": "This factor denotes the percentage of total open interest in older contracts represented by long positions of reportable traders, reflecting their collective influence on long-term bullish market trends."
     },
     "pct_tr_short_ol": {
       "factor": "pct_of_oi_tot_rept_short_ol",
-      "name": "pct_of_oi_tot_rept_short_ol",
-      "note": "all open interest"
+      "name": "Percent of OI Total Reportable Short Old",
+      "note": "This factor indicates the proportion of total open interest in older contracts comprised of short positions of reportable traders, showcasing their collective impact on long-term bearish market sentiment."
     },
     "pct_nr_long_ol": {
       "factor": "pct_of_oi_nonrept_long_ol",
-      "name": "pct_of_oi_nonrept_long_ol",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Reportable Long Old",
+      "note": "This factor measures the percentage of total open interest in older contracts represented by long positions held by non-reportable traders, showing their long-term bullish influence in the market."
     },
     "pct_nr_short_ol": {
       "factor": "pct_of_oi_nonrept_short_ol",
-      "name": "pct_of_oi_nonrept_short_ol",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Reportable Short Old",
+      "note": "This factor indicates the proportion of total open interest in older contracts made up by short positions held by non-reportable traders, reflecting their long-term bearish sentiment."
     },
     "pct_oi_other": {
       "factor": "pct_of_open_interest_other",
-      "name": "pct_of_open_interest_other",
-      "note": "all open interest"
+      "name": "Percent of Open Interest Other",
+      "note": "This factor represents the percentage of total open interest in mid-term contracts, providing insights into market involvement in these intermediate duration positions."
     },
     "pct_nc_long_other": {
       "factor": "pct_of_oi_noncomm_long_other",
-      "name": "pct_of_oi_noncomm_long_other",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Commercial Long Other",
+      "note": "This factor shows the proportion of total open interest in mid-term contracts represented by non-commercial traders' long positions, indicating their speculative bullish expectations for these durations."
     },
     "pct_nc_short_other": {
       "factor": "pct_of_oi_noncomm_short_other",
-      "name": "pct_of_oi_noncomm_short_other",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Commercial Short Other",
+      "note": "This factor measures the percentage of total open interest in mid-term contracts comprising non-commercial traders' short positions, highlighting their bearish outlook or speculative strategies for these periods."
     },
     "pct_nc_spread_other": {
       "factor": "pct_of_oi_noncomm_spread_other",
-      "name": "pct_of_oi_noncomm_spread_other",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Commercial Spread Other",
+      "note": "This factor denotes the proportion of total open interest in mid-term contracts made up by non-commercial traders' spread positions, showcasing their hedging or diversified strategies over intermediate time frames."
     },
     "pct_c_long_other": {
       "factor": "pct_of_oi_comm_long_other",
-      "name": "pct_of_oi_comm_long_other",
-      "note": "all open interest"
+      "name": "Percent of OI Commercial Long Other",
+      "note": "This factor indicates the percentage of total open interest in mid-term contracts represented by commercial traders' long positions, reflecting their bullish market expectations based on commercial interests."
     },
     "pct_c_short_other": {
       "factor": "pct_of_oi_comm_short_other",
-      "name": "pct_of_oi_comm_short_other",
-      "note": "all open interest"
+      "name": "Percent of OI Commercial Short Other",
+      "note": "This factor measures the proportion of total open interest in mid-term contracts comprising commercial traders' short positions, highlighting their bearish outlook based on commercial strategies."
     },
     "pct_tr_long_other": {
       "factor": "pct_of_oi_tot_rept_long_other",
-      "name": "pct_of_oi_tot_rept_long_other",
-      "note": "all open interest"
+      "name": "Percent of OI Total Reportable Long Other",
+      "note": "This factor shows the percentage of total open interest in mid-term contracts represented by long positions of reportable traders, indicating the collective bullish sentiment among major market participants."
     },
     "pct_tr_short_other": {
       "factor": "pct_of_oi_tot_rept_short_other",
-      "name": "pct_of_oi_tot_rept_short_other",
-      "note": "all open interest"
+      "name": "Percent of OI Total Reportable Short Other",
+      "note": "This factor denotes the proportion of total open interest in mid-term contracts made up by short positions of reportable traders, reflecting their aggregate bearish sentiment."
     },
     "pct_nr_long_other": {
       "factor": "pct_of_oi_nonrept_long_other",
-      "name": "pct_of_oi_nonrept_long_other",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Reportable Long Other",
+      "note": "This factor represents the percentage of total open interest in mid-term contracts held by non-reportable traders' long positions, indicating bullish sentiment among smaller or individual market participants."
     },
     "pct_nr_short_other": {
       "factor": "pct_of_oi_nonrept_short_other",
-      "name": "pct_of_oi_nonrept_short_other",
-      "note": "all open interest"
+      "name": "Percent of OI Non-Reportable Short Other",
+      "note": "This factor shows the proportion of total open interest in mid-term contracts comprised of short positions held by non-reportable traders, highlighting bearish sentiment among smaller traders."
     },
     "traders_total_all": {
       "factor": "traders_tot_all",
-      "name": "traders_tot_all",
-      "note": "all open interest"
+      "name": "Traders Total All",
+      "note": "This factor indicates the total number of traders involved in all types of positions (long, short, spread) for a symbol, providing a comprehensive overview of market participant activity."
     },
     "traders_noncomm_long_all": {
       "factor": "traders_noncomm_long_all",
-      "name": "traders_noncomm_long_all",
-      "note": "all open interest"
+      "name": "Traders Non-Commercial Long All",
+      "note": "This factor represents the number of non-commercial traders holding long positions, reflecting the extent of speculative or investment interest among these traders in bullish market strategies."
     },
     "traders_noncomm_short_all": {
       "factor": "traders_noncomm_short_all",
-      "name": "traders_noncomm_short_all",
-      "note": "all open interest"
+      "name": "Traders Non-Commercial Short All",
+      "note": "This factor shows the number of non-commercial traders with short positions, indicating the level of bearish market sentiment or speculative bets among these traders."
     },
     "traders_noncomm_spread_all": {
       "factor": "traders_noncomm_spread_all",
-      "name": "traders_noncomm_spread_all",
-      "note": "all open interest"
+      "name": "Traders Non-Commercial Spread All",
+      "note": "This factor denotes the number of non-commercial traders engaging in spread positions, highlighting their involvement in hedging or diversified market strategies."
     },
     "traders_comm_long_all": {
       "factor": "traders_comm_long_all",
-      "name": "traders_comm_long_all",
-      "note": "all open interest"
+      "name": "Traders Commercial Long All",
+      "note": "This factor indicates the number of commercial traders holding long positions, reflecting their bullish market outlook based on business needs and market analysis."
     },
     "traders_comm_short_all": {
       "factor": "traders_comm_short_all",
-      "name": "traders_comm_short_all",
-      "note": "all open interest"
+      "name": "Traders Commercial Short All",
+      "note": "This factor measures the number of commercial traders with short positions, showing their bearish market expectations or hedging strategies based on commercial interests."
     },
     "traders_total_reportable_long_all": {
       "factor": "traders_tot_rept_long_all",
-      "name": "traders_tot_rept_long_all",
-      "note": "all open interest"
+      "name": "Traders Total Reportable Long All",
+      "note": "This factor represents the total number of reportable traders holding long positions, indicating the level of involvement by major market participants in bullish strategies."
     },
     "traders_total_reportable_short_all": {
       "factor": "traders_tot_rept_short_all",
-      "name": "traders_tot_rept_short_all",
-      "note": "all open interest"
+      "name": "Traders Total Reportable Short All",
+      "note": "This factor shows the total number of reportable traders with short positions, highlighting the collective bearish sentiment among significant traders."
     },
     "traders_total_ol": {
       "factor": "traders_tot_ol",
-      "name": "traders_tot_ol",
-      "note": "all open interest"
+      "name": "Traders Total Old",
+      "note": "This factor indicates the total number of traders involved in older contracts, providing insights into long-term market participant engagement and strategies."
     },
     "traders_noncomm_long_ol": {
       "factor": "traders_noncomm_long_ol",
-      "name": "traders_noncomm_long_ol",
-      "note": "all open interest"
+      "name": "Traders Non-Commercial Long Old",
+      "note": "This factor represents the number of non-commercial traders holding long positions in older contracts, reflecting their speculative or investment interest over a longer-term horizon."
     },
     "traders_noncomm_short_ol": {
       "factor": "traders_noncomm_short_ol",
-      "name": "traders_noncomm_short_ol",
-      "note": "all open interest"
+      "name": "Traders Non-Commercial Short Old",
+      "note": "This factor shows the number of non-commercial traders with short positions in older contracts, indicating their bearish expectations or strategies for long-term market trends."
     },
     "traders_noncomm_spread_ol": {
       "factor": "traders_noncomm_spead_ol",
-      "name": "traders_noncomm_spead_ol",
-      "note": "all open interest"
+      "name": "Traders Non-Commercial Spread Old",
+      "note": "This factor denotes the number of non-commercial traders engaged in spread positions in older contracts, highlighting their long-term hedging or diversified market strategies."
     },
     "traders_comm_long_ol": {
       "factor": "traders_comm_long_ol",
-      "name": "traders_comm_long_ol",
-      "note": "all open interest"
+      "name": "Traders Commercial Long Old",
+      "note": "This factor indicates the number of commercial traders holding long positions in older contracts, reflecting their long-term bullish market strategies based on commercial interests."
     },
     "traders_comm_short_ol": {
       "factor": "traders_comm_short_ol",
-      "name": "traders_comm_short_ol",
-      "note": "all open interest"
+      "name": "Traders Commercial Short Old",
+      "note": "This factor shows the number of commercial traders with short positions in older contracts, highlighting their long-term bearish outlook or hedging strategies."
     },
     "traders_total_reportable_long_ol": {
       "factor": "traders_tot_rept_long_ol",
-      "name": "traders_tot_rept_long_ol",
-      "note": "all open interest"
+      "name": "Traders Total Reportable Long Old",
+      "note": "This factor represents the total number of reportable traders with long positions in older contracts, indicating significant trader involvement in long-term bullish strategies."
     },
     "traders_total_reportable_short_ol": {
       "factor": "traders_tot_rept_short_ol",
-      "name": "traders_tot_rept_short_ol",
-      "note": "all open interest"
+      "name": "Traders Total Reportable Short Old",
+      "note": "This factor denotes the total number of reportable traders with short positions in older contracts, showing collective long-term bearish sentiment among major traders."
     },
     "traders_total_other": {
       "factor": "traders_tot_other",
-      "name": "traders_tot_other",
-      "note": "all open interest"
+      "name": "Traders Total Other",
+      "note": "This factor indicates the total number of traders involved in mid-term contracts, providing insights into the level of market participation in these intermediate duration positions."
     },
     "traders_noncomm_long_other": {
       "factor": "traders_noncomm_long_other",
-      "name": "traders_noncomm_long_other",
-      "note": "all open interest"
+      "name": "Traders Non-Commercial Long Other",
+      "note": "This factor represents the number of non-commercial traders holding long positions in mid-term contracts, reflecting their speculative bullish interest for these periods."
     },
     "traders_noncomm_short_other": {
       "factor": "traders_noncomm_short_other",
-      "name": "traders_noncomm_short_other",
-      "note": "all open interest"
+      "name": "Traders Non-Commercial Short Other",
+      "note": "This factor shows the number of non-commercial traders with short positions in mid-term contracts, indicating their bearish expectations or strategies for these durations."
     },
     "traders_noncomm_spread_other": {
       "factor": "traders_noncomm_spread_other",
-      "name": "traders_noncomm_spread_other",
-      "note": "all open interest"
+      "name": "Traders Non-Commercial Spread Other",
+      "note": "This factor denotes the number of non-commercial traders engaged in spread positions in mid-term contracts, highlighting their hedging or diversified strategies over intermediate time frames."
     },
     "traders_comm_long_other": {
       "factor": "traders_comm_long_other",
-      "name": "traders_comm_long_other",
-      "note": "all open interest"
+      "name": "Traders Commercial Long Other",
+      "note": "This factor represents the number of commercial traders holding long positions in mid-term contracts, indicating their bullish market strategies based on business insights for these durations."
     },
     "traders_comm_short_other": {
       "factor": "traders_comm_short_other",
-      "name": "traders_comm_short_other",
-      "note": "all open interest"
+      "name": "Traders Commercial Short Other",
+      "note": "This factor shows the number of commercial traders with short positions in mid-term contracts, highlighting their bearish outlook or hedging strategies over intermediate time frames."
     },
     "traders_total_reportable_long_other": {
       "factor": "traders_tot_rept_long_other",
-      "name": "traders_tot_rept_long_other",
-      "note": "all open interest"
+      "name": "Traders Total Reportable Long Other",
+      "note": "This factor indicates the total number of reportable traders with long positions in mid-term contracts, reflecting the collective bullish sentiment of major market participants for these periods."
     },
     "traders_total_reportable_short_other": {
       "factor": "traders_tot_rept_short_other",
-      "name": "traders_tot_rept_short_other",
-      "note": "all open interest"
+      "name": "Traders Total Reportable Short Other",
+      "note": "This factor denotes the total number of reportable traders with short positions in mid-term contracts, showing the aggregate bearish sentiment among significant traders for these durations."
     },
     "conc_gross_le_4_tdr_long_all": {
       "factor": "conc_gross_le_4_tdr_long_all",
-      "name": "conc_gross_le_4_tdr_long_all",
-      "note": "all open interest"
+      "name": "Concentration Gross Long (Top 4 Traders) All",
+      "note": "This factor measures the concentration of long positions held by the top four traders, providing insights into the market dominance and influence of major traders on overall bullish sentiment."
     },
     "conc_gross_le_4_tdr_short_all": {
       "factor": "conc_gross_le_4_tdr_short_all",
-      "name": "conc_gross_le_4_tdr_short_all",
-      "note": "all open interest"
+      "name": "Concentration Gross Short (Top 4 Traders) All",
+      "note": "This factor indicates the concentration of short positions held by the top four traders, highlighting the extent of market control and impact of major traders on overall bearish sentiment."
     },
     "conc_gross_le_8_tdr_long_all": {
       "factor": "conc_gross_le_8_tdr_long_all",
-      "name": "conc_gross_le_8_tdr_long_all",
-      "note": "all open interest"
+      "name": "Concentration Gross Long (Top 8 Traders) All",
+      "note": "This factor measures the total long positions held by the top eight traders, providing insights into the concentration and influence of these major traders on the bullish market sentiment."
     },
     "conc_gross_le_8_tdr_short_all": {
       "factor": "conc_gross_le_8_tdr_short_all",
-      "name": "conc_gross_le_8_tdr_short_all",
-      "note": "all open interest"
+      "name": "Concentration Gross Short (Top 8 Traders) All",
+      "note": "This factor indicates the concentration of short positions held by the top eight traders, highlighting the market impact and control exerted by these significant traders on bearish sentiment."
     },
     "conc_net_le_4_tdr_long_all": {
       "factor": "conc_net_le_4_tdr_long_all",
-      "name": "conc_net_le_4_tdr_long_all",
-      "note": "all open interest"
+      "name": "Concentration Net Long (Top 4 Traders) All",
+      "note": "This factor represents the net long position concentration among the top four traders, offering insights into their collective influence and dominance in the market's bullish direction."
     },
     "conc_net_le_4_tdr_short_all": {
       "factor": "conc_net_le_4_tdr_short_all",
-      "name": "conc_net_le_4_tdr_short_all",
-      "note": "all open interest"
+      "name": "Concentration Net Short (Top 4 Traders) All",
+      "note": "This factor shows the net short position concentration among the top four traders, reflecting their collective impact and control over the market's bearish trends."
     },
     "conc_net_le_8_tdr_long_all": {
       "factor": "conc_net_le_8_tdr_long_all",
-      "name": "conc_net_le_8_tdr_long_all",
-      "note": "all open interest"
+      "name": "Concentration Net Long (Top 8 Traders) All",
+      "note": "This factor measures the net long position concentration among the top eight traders, indicating the extent of their combined influence on the overall bullish market direction."
     },
     "conc_net_le_8_tdr_short_all": {
       "factor": "conc_net_le_8_tdr_short_all",
-      "name": "conc_net_le_8_tdr_short_all",
-      "note": "all open interest"
+      "name": "Concentration Net Short (Top 8 Traders) All",
+      "note": "This factor denotes the net short position concentration among the top eight traders, highlighting the magnitude of their collective impact on the market's bearish orientation."
     },
     "conc_gross_le_4_tdr_long_ol": {
       "factor": "conc_gross_le_4_tdr_long_ol",
-      "name": "conc_gross_le_4_tdr_long_ol",
-      "note": "all open interest"
+      "name": "Concentration Gross Long (Top 4 Traders) Old",
+      "note": "This factor indicates the concentration of long positions in older contracts held by the top four traders, showing their dominant influence on long-term bullish market sentiment."
     },
     "conc_gross_le_4_tdr_short_ol": {
       "factor": "conc_gross_le_4_tdr_short_ol",
-      "name": "conc_gross_le_4_tdr_short_ol",
-      "note": "all open interest"
+      "name": "Concentration Gross Short (Top 4 Traders) Old",
+      "note": "This factor shows the concentration of short positions in older contracts held by the top four traders, reflecting their significant impact on long-term bearish market trends."
     },
     "conc_gross_le_8_tdr_long_ol": {
       "factor": "conc_gross_le_8_tdr_long_ol",
-      "name": "conc_gross_le_8_tdr_long_ol",
-      "note": "all open interest"
+      "name": "Concentration Gross Long (Top 8 Traders) Old",
+      "note": "This factor measures the concentration of long positions in older contracts held by the top eight traders, indicating their collective influence on the market's long-term bullish orientation."
     },
     "conc_gross_le_8_tdr_short_ol": {
       "factor": "conc_gross_le_8_tdr_short_ol",
-      "name": "conc_gross_le_8_tdr_short_ol",
-      "note": "all open interest"
+      "name": "Concentration Gross Short (Top 8 Traders) Old",
+      "note": "This factor denotes the concentration of short positions in older contracts held by the top eight traders, highlighting their aggregate impact on the market's long-term bearish direction."
     },
     "conc_net_le_4_tdr_long_ol": {
       "factor": "conc_net_le_4_tdr_long_ol",
-      "name": "conc_net_le_4_tdr_long_ol",
-      "note": "all open interest"
+      "name": "Concentration Net Long (Top 4 Traders) Old",
+      "note": "This factor represents the net long position concentration in older contracts among the top four traders, offering insights into their combined influence over the long-term bullish market trends."
     },
     "conc_net_le_4_tdr_short_ol": {
       "factor": "conc_net_le_4_tdr_short_ol",
-      "name": "conc_net_le_4_tdr_short_ol",
-      "note": "all open interest"
+      "name": "Concentration Net Short (Top 4 Traders) Old",
+      "note": "This factor indicates the net short position concentration in older contracts among the top four traders, reflecting their collective control over the long-term bearish market movements."
     },
     "conc_net_le_8_tdr_long_ol": {
       "factor": "conc_net_le_8_tdr_long_ol",
-      "name": "conc_net_le_8_tdr_long_ol",
-      "note": "all open interest"
+      "name": "Concentration Net Long (Top 8 Traders) Old",
+      "note": "This factor measures the net long position concentration in older contracts among the top eight traders, indicating their collective influence on long-term bullish market trends."
     },
     "conc_net_le_8_tdr_short_ol": {
       "factor": "conc_net_le_8_tdr_short_ol",
-      "name": "conc_net_le_8_tdr_short_ol",
-      "note": "all open interest"
+      "name": "Concentration Net Short (Top 8 Traders) Old",
+      "note": "This factor shows the net short position concentration in older contracts among the top eight traders, reflecting their aggregate impact on long-term bearish market orientations."
     },
     "conc_gross_le_4_tdr_long_other": {
       "factor": "conc_gross_le_4_tdr_long_other",
-      "name": "conc_gross_le_4_tdr_long_other",
-      "note": "all open interest"
+      "name": "Concentration Gross Long (Top 4 Traders) Other",
+      "note": "This factor indicates the concentration of long positions in mid-term contracts held by the top four traders, showing their dominant influence on intermediate-term bullish sentiment."
     },
     "conc_gross_le_4_tdr_short_other": {
       "factor": "conc_gross_le_4_tdr_short_other",
-      "name": "conc_gross_le_4_tdr_short_other",
-      "note": "all open interest"
+      "name": "Concentration Gross Short (Top 4 Traders) Other",
+      "note": "This factor represents the concentration of short positions in mid-term contracts held by the top four traders, reflecting their significant impact on intermediate-term bearish trends."
     },
     "conc_gross_le_8_tdr_long_other": {
       "factor": "conc_gross_le_8_tdr_long_other",
-      "name": "conc_gross_le_8_tdr_long_other",
-      "note": "all open interest"
+      "name": "Concentration Gross Long (Top 8 Traders) Other",
+      "note": "This factor measures the concentration of long positions in mid-term contracts held by the top eight traders, indicating their collective influence on the market's intermediate-term bullish direction."
     },
     "conc_gross_le_8_tdr_short_other": {
       "factor": "conc_gross_le_8_tdr_short_other",
-      "name": "conc_gross_le_8_tdr_short_other",
-      "note": "all open interest"
+      "name": "Concentration Gross Short (Top 8 Traders) Other",
+      "note": "This factor denotes the concentration of short positions in mid-term contracts held by the top eight traders, highlighting their aggregate impact on the market's intermediate-term bearish orientation."
     },
     "conc_net_le_4_tdr_long_other": {
       "factor": "conc_net_le_4_tdr_long_other",
-      "name": "conc_net_le_4_tdr_long_other",
-      "note": "all open interest"
+      "name": "Concentration Net Long (Top 4 Traders) Other",
+      "note": "This factor shows the net long position concentration in mid-term contracts among the top four traders, offering insights into their combined influence over intermediate-term bullish market trends."
     },
     "conc_net_le_4_tdr_short_other": {
       "factor": "conc_net_le_4_tdr_short_other",
-      "name": "conc_net_le_4_tdr_short_other",
-      "note": "all open interest"
+      "name": "Concentration Net Short (Top 4 Traders) Other",
+      "note": "This factor indicates the net short position concentration in mid-term contracts among the top four traders, reflecting their collective control and influence on intermediate-term bearish market trends."
     },
     "conc_net_le_8_tdr_long_other": {
       "factor": "conc_net_le_8_tdr_long_other",
-      "name": "conc_net_le_8_tdr_long_other",
-      "note": "all open interest"
+      "name": "Concentration Net Long (Top 8 Traders) Other",
+      "note": "This factor measures the net long position concentration in mid-term contracts among the top eight traders, showing the aggregate influence of these traders on the market's intermediate-term bullish direction."
     },
     "conc_net_le_8_tdr_short_other": {
       "factor": "conc_net_le_8_tdr_short_other",
-      "name": "conc_net_le_8_tdr_short_other",
-      "note": "all open interest"
+      "name": "Concentration Net Short (Top 8 Traders) Other",
+      "note": "This factor denotes the net short position concentration in mid-term contracts among the top eight traders, highlighting their combined impact on intermediate-term bearish market movements."
     }
   },
   "EarningsCalendar": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Earnings Calendar",
+      "note": "This section provides a comprehensive list of upcoming and past earnings announcements for publicly traded companies, offering crucial insights into financial performance and outlook. It includes data on earnings dates, estimated EPS, and actual EPS, serving as a vital resource for staying informed about company performances and market trends.",
       "metaclass": "ClientMeta",
       "api": "api/v3/historical/earning_calendar"
     },
     "eps": {
       "factor": "eps",
-      "name": "eps",
-      "note": "all open interest"
+      "name": "EPS",
+      "note": "This factor represents the actual Earnings Per Share (EPS) as reported by the company. It reflects the company's profitability on a per-share basis and is a critical indicator of financial health and performance."
     },
     "eps_estimated": {
       "factor": "epsEstimated",
-      "name": "epsEstimated",
-      "note": "all open interest"
+      "name": "EPS Estimated",
+      "note": "This factor denotes the estimated Earnings Per Share (EPS) before the actual earnings announcement. Analysts' forecasts form these estimates, providing an expectation of the company's financial performance for the period."
     },
     "revenue": {
       "factor": "revenue",
-      "name": "revenue",
-      "note": "all open interest"
+      "name": "Revenue",
+      "note": "This factor shows the actual revenue reported by the company. It indicates the total income generated from business operations, essential for assessing the company's size, market presence, and growth potential."
     },
     "revenue_estimated": {
       "factor": "revenueEstimated",
-      "name": "revenueEstimated",
-      "note": "all open interest"
+      "name": "Revenue Estimated",
+      "note": "This factor represents the estimated revenue anticipated before the actual earnings report. These estimates, often derived from market analysis and forecasts, provide insights into expected company performance and market expectations."
     }
   },
   "CashFlowStatement": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Cash Flow Statement",
+      "note": "This section offers detailed insights into a company's cash flow, highlighting cash inflows and outflows across three main categories: Operating, Investing, and Financing activities. It serves as a crucial tool for investors to assess whether a company is generating profit or incurring losses through its business operations.",
       "metaclass": "ClientMeta",
       "api": "api/v3/cash-flow-statement",
       "params": {
@@ -1322,159 +1322,159 @@
     },
     "net_income": {
       "factor": "netIncome",
-      "name": "netIncome",
-      "note": "all open interest"
+      "name": "Net Income",
+      "note": "This factor represents the company's total earnings after deducting all expenses and taxes. It is a key indicator of the company's profitability."
     },
     "dep_and_amort": {
       "factor": "depreciationAndAmortization",
-      "name": "depreciationAndAmortization",
-      "note": "all open interest"
+      "name": "Depreciation and Amortization",
+      "note": "This factor reflects the allocation of the cost of tangible and intangible assets over their useful lives. It is a non-cash expense that affects the company's net income."
     },
     "def_inc_tax": {
       "factor": "deferredIncomeTax",
-      "name": "deferredIncomeTax",
-      "note": "all open interest"
+      "name": "Deferred Income Tax",
+      "note": "This factor shows changes in deferred income tax, which occurs due to the difference in timing between when taxes are accrued and when they are paid."
     },
     "stk_based_comp": {
       "factor": "stockBasedCompensation",
-      "name": "stockBasedCompensation",
-      "note": "all open interest"
+      "name": "Stock Based Compensation",
+      "note": "This factor accounts for the expenses related to stock options or other forms of stock-based remuneration provided to employees or executives."
     },
     "chg_in_work_cap": {
       "factor": "changeInWorkingCapital",
-      "name": "changeInWorkingCapital",
-      "note": "all open interest"
+      "name": "Change in Working Capital",
+      "note": "This factor indicates the change in working capital, reflecting how much the company invested in short-term assets and liabilities."
     },
     "acc_receivables": {
       "factor": "accountsReceivables",
-      "name": "accountsReceivables",
-      "note": "all open interest"
+      "name": "Accounts Receivables",
+      "note": "This factor represents money owed to the company by customers for goods or services delivered but not yet paid for."
     },
     "inventory": {
       "factor": "inventory",
-      "name": "inventory",
-      "note": "all open interest"
+      "name": "Inventory",
+      "note": "This factor indicates the total value of the company's inventory, including goods available for sale and raw materials used to produce goods."
     },
     "acc_payables": {
       "factor": "accountsPayables",
-      "name": "accountsPayables",
-      "note": "all open interest"
+      "name": "Accounts Payables",
+      "note": "This factor shows the amount the company owes to its suppliers or creditors for goods and services received but not yet paid for."
     },
     "other_work_cap": {
       "factor": "otherWorkingCapital",
-      "name": "otherWorkingCapital",
-      "note": "all open interest"
+      "name": "Other Working Capital",
+      "note": "This factor includes additional elements affecting the company's working capital, like short-term loans and other operational liabilities or assets."
     },
     "other_non_cash_items": {
       "factor": "otherNonCashItems",
-      "name": "otherNonCashItems",
-      "note": "all open interest"
+      "name": "Other Non-Cash Items",
+      "note": "This factor covers various non-cash transactions not specifically listed elsewhere in the cash flow statement, affecting the company's financial position."
     },
     "net_cash_prov_by_op_act": {
       "factor": "netCashProvidedByOperatingActivities",
-      "name": "netCashProvidedByOperatingActivities",
-      "note": "all open interest"
+      "name": "Net Cash Provided by Operating Activities",
+      "note": "This factor shows the net cash generated from the company's core business operations, crucial for understanding its operational efficiency and financial health."
     },
     "inv_in_prop_plant_equip": {
       "factor": "investmentsInPropertyPlantAndEquipment",
-      "name": "investmentsInPropertyPlantAndEquipment",
-      "note": "all open interest"
+      "name": "Investments in Property, Plant, and Equipment",
+      "note": "This factor represents the company's capital expenditures on physical assets like buildings and machinery, indicating its investment in long-term assets."
     },
     "acquisitions_net": {
       "factor": "acquisitionsNet",
-      "name": "acquisitionsNet",
-      "note": "all open interest"
+      "name": "Acquisitions, Net",
+      "note": "This factor includes the net cash used or received in the acquisition or disposition of subsidiaries, businesses, or other significant assets."
     },
     "purch_of_inv": {
       "factor": "purchasesOfInvestments",
-      "name": "purchasesOfInvestments",
-      "note": "all open interest"
+      "name": "Purchases of Investments",
+      "note": "This factor represents the company's investment in securities, stocks, bonds, or other financial assets."
     },
     "sales_mat_of_inv": {
       "factor": "salesMaturitiesOfInvestments",
-      "name": "salesMaturitiesOfInvestments",
-      "note": "all open interest"
+      "name": "Sales/Maturities of Investments",
+      "note": "This factor shows the cash received from selling or maturing investments, indicating the company's cash inflows from its investment portfolio."
     },
     "other_inv_act": {
       "factor": "otherInvestingActivites",
-      "name": "otherInvestingActivites",
-      "note": "all open interest"
+      "name": "Other Investing Activities",
+      "note": "This factor encompasses various other investing activities not classified elsewhere, impacting the company's overall investment strategy and cash flow."
     },
     "net_cash_used_for_inv_act": {
       "factor": "netCashUsedForInvestingActivites",
-      "name": "netCashUsedForInvestingActivites",
-      "note": "all open interest"
+      "name": "Net Cash Used for Investing Activities",
+      "note": "This factor indicates the total cash used in or provided by the company's investing activities, including investments in assets and acquisitions."
     },
     "debt_repayment": {
       "factor": "debtRepayment",
-      "name": "debtRepayment",
-      "note": "all open interest"
+      "name": "Debt Repayment",
+      "note": "This factor shows the amount of money the company has paid to reduce its debt, indicating its financial obligations and strategy for managing liabilities."
     },
     "common_stock_issued": {
       "factor": "commonStockIssued",
-      "name": "commonStockIssued",
-      "note": "all open interest"
+      "name": "Common Stock Issued",
+      "note": "This factor represents the cash received from issuing common stock, reflecting the company's financing activities through equity."
     },
     "common_stock_repurchased": {
       "factor": "commonStockRepurchased",
-      "name": "commonStockRepurchased",
-      "note": "all open interest"
+      "name": "Common Stock Repurchased",
+      "note": "This factor indicates the amount spent on buying back the company's own common stock, often used as a method to return value to shareholders."
     },
     "dividends_paid": {
       "factor": "dividendsPaid",
-      "name": "dividendsPaid",
-      "note": "all open interest"
+      "name": "Dividends Paid",
+      "note": "This factor shows the total dividends paid to shareholders, reflecting the company's profit distribution policy and commitment to returning value to investors."
     },
     "other_fin_act": {
       "factor": "otherFinancingActivites",
-      "name": "otherFinancingActivites",
-      "note": "all open interest"
+      "name": "Other Financing Activities",
+      "note": "This factor encompasses various other financing activities not classified elsewhere, affecting the company's overall financial strategy and cash flow."
     },
     "net_cash_used_prov_by_fin_act": {
       "factor": "netCashUsedProvidedByFinancingActivities",
-      "name": "netCashUsedProvidedByFinancingActivities",
-      "note": "all open interest"
+      "name": "Net Cash Used/Provided by Financing Activities",
+      "note": "This factor represents the net cash flow from financing activities, including debt issuance, equity transactions, and dividends, indicating the company's financial strategy and liquidity position."
     },
     "eff_of_forex_chg_on_cash": {
       "factor": "effectOfForexChangesOnCash",
-      "name": "effectOfForexChangesOnCash",
-      "note": "all open interest"
+      "name": "Effect of Forex Changes on Cash",
+      "note": "This factor shows the impact of foreign exchange rate fluctuations on the company's cash and cash equivalents, reflecting the company's exposure to currency market volatility."
     },
     "net_chg_in_cash": {
       "factor": "netChangeInCash",
-      "name": "netChangeInCash",
-      "note": "all open interest"
+      "name": "Net Change in Cash",
+      "note": "This factor shows the overall net increase or decrease in cash and cash equivalents during the reporting period, reflecting the company's cash flow health."
     },
     "cash_at_end_of_period": {
       "factor": "cashAtEndOfPeriod",
-      "name": "cashAtEndOfPeriod",
-      "note": "all open interest"
+      "name": "Cash at End of Period",
+      "note": "This factor represents the total amount of cash and cash equivalents held by the company at the end of the financial period, indicating its liquidity status."
     },
     "cash_at_beg_of_period": {
       "factor": "cashAtBeginningOfPeriod",
-      "name": "cashAtBeginningOfPeriod",
-      "note": "all open interest"
+      "name": "Cash at Beginning of Period",
+      "note": "This factor indicates the amount of cash and cash equivalents the company had at the beginning of the financial period, serving as a baseline for cash flow analysis."
     },
     "op_cash_flow": {
       "factor": "operatingCashFlow",
-      "name": "operatingCashFlow",
-      "note": "all open interest"
+      "name": "Operating Cash Flow",
+      "note": "This factor measures the cash generated from the company's regular business operations, crucial for evaluating its operational efficiency and ability to generate cash."
     },
     "cap_expend": {
       "factor": "capitalExpenditure",
-      "name": "capitalExpenditure",
-      "note": "all open interest"
+      "name": "Capital Expenditure",
+      "note": "This factor represents the cash spent by the company on acquiring or maintaining physical assets, such as property, plant, and equipment, indicating its investment in maintaining and expanding operations."
     },
     "free_cash_flow": {
       "factor": "freeCashFlow",
-      "name": "freeCashFlow",
-      "note": "all open interest"
+      "name": "Free Cash Flow",
+      "note": "This factor calculates the cash a company generates after accounting for capital expenditures, highlighting the available cash for dividends, debt repayment, or reinvestment in the business."
     }
   },
   "BalanceSheetStatement": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Balance Sheet Statement",
+      "note": "This section provides access to a company's balance sheet, detailing its assets, liabilities, and shareholder equity at a specific point in time. The API covers a broad range of companies and offers real-time data, making it invaluable for evaluating a company's financial stability, understanding its debt and equity structure, and identifying potential financial risks.",
       "metaclass": "ClientMeta",
       "api": "api/v3/balance-sheet-statement",
       "params": {
@@ -1483,229 +1483,229 @@
     },
     "cash_equivalents": {
       "factor": "cashAndCashEquivalents",
-      "name": "cashAndCashEquivalents",
-      "note": "all open interest"
+      "name": "Cash and Cash Equivalents",
+      "note": "This factor shows the total amount of company's cash on hand and liquid assets that can be quickly converted into cash, essential for assessing short-term financial stability."
     },
     "short_term_inv": {
       "factor": "shortTermInvestments",
-      "name": "shortTermInvestments",
-      "note": "all open interest"
+      "name": "Short Term Investments",
+      "note": "This factor represents investments that can be easily liquidated within a year, such as marketable securities, providing insight into the company's short-term investment strategies."
     },
     "cash_short_term_inv": {
       "factor": "cashAndShortTermInvestments",
-      "name": "cashAndShortTermInvestments",
-      "note": "all open interest"
+      "name": "Cash and Short Term Investments",
+      "note": "This factor combines the company's cash and cash equivalents with short-term investments, offering a comprehensive view of its liquid assets."
     },
     "net_receivables": {
       "factor": "netReceivables",
-      "name": "netReceivables",
-      "note": "all open interest"
+      "name": "Net Receivables",
+      "note": "This factor indicates the total amount owed to the company by its customers after accounting for allowances for doubtful accounts, reflecting its credit exposure and income potential."
     },
     "inventory": {
       "factor": "inventory",
-      "name": "inventory",
-      "note": "all open interest"
+      "name": "Inventory",
+      "note": "This factor shows the total value of the company's inventory, including raw materials and finished goods, critical for understanding its supply chain and sales potential."
     },
     "other_current_assets": {
       "factor": "otherCurrentAssets",
-      "name": "otherCurrentAssets",
-      "note": "all open interest"
+      "name": "Other Current Assets",
+      "note": "This factor encompasses all other current assets not specifically listed, like prepaid expenses and short-term deferred assets, contributing to the company's overall liquidity."
     },
     "total_current_assets": {
       "factor": "totalCurrentAssets",
-      "name": "totalCurrentAssets",
-      "note": "all open interest"
+      "name": "Total Current Assets",
+      "note": "This factor represents the sum of all assets that a company expects to convert into cash within one year, crucial for assessing its short-term financial health and operational efficiency."
     },
     "ppe_net": {
       "factor": "propertyPlantEquipmentNet",
-      "name": "propertyPlantEquipmentNet",
-      "note": "all open interest"
+      "name": "Property, Plant, and Equipment Net",
+      "note": "This factor shows the net value of the company's physical assets, such as buildings and machinery, after accounting for depreciation and amortization, vital for evaluating its long-term investment in operations."
     },
     "goodwill": {
       "factor": "goodwill",
-      "name": "goodwill",
-      "note": "all open interest"
+      "name": "Goodwill",
+      "note": "This factor represents the excess value paid over the fair market value of assets during an acquisition, indicating the intangible value derived from brand reputation, customer relations, and other non-physical assets."
     },
     "intangible_assets": {
       "factor": "intangibleAssets",
-      "name": "intangibleAssets",
-      "note": "all open interest"
+      "name": "Intangible Assets",
+      "note": "This factor includes non-physical assets like patents, trademarks, and copyrights, crucial for companies in knowledge-intensive industries, reflecting their intellectual property and market competitiveness."
     },
     "goodwill_intang_assets": {
       "factor": "goodwillAndIntangibleAssets",
-      "name": "goodwillAndIntangibleAssets",
-      "note": "all open interest"
+      "name": "Goodwill and Intangible Assets",
+      "note": "This factor combines both goodwill and intangible assets, showcasing the total value of a company's intangible resources that contribute to its long-term value and market position."
     },
     "long_term_inv": {
       "factor": "longTermInvestments",
-      "name": "longTermInvestments",
-      "note": "all open interest"
+      "name": "Long Term Investments",
+      "note": "This factor represents investments not expected to be liquidated within a year, like bonds, stocks, or real estate, indicating the company's long-term investment strategy and financial planning."
     },
     "tax_assets": {
       "factor": "taxAssets",
-      "name": "taxAssets",
-      "note": "all open interest"
+      "name": "Tax Assets",
+      "note": "This factor includes deferred tax assets, representing potential tax relief or reductions in future tax payments, reflecting the company's tax management strategies and future tax benefits."
     },
     "other_non_current_assets": {
       "factor": "otherNonCurrentAssets",
-      "name": "otherNonCurrentAssets",
-      "note": "all open interest"
+      "name": "Other Non-Current Assets",
+      "note": "This factor encompasses all other long-term assets not classified elsewhere, like long-term prepaid expenses, contributing to the company's overall financial stability and long-term operational resources."
     },
     "total_non_current_assets": {
       "factor": "totalNonCurrentAssets",
-      "name": "totalNonCurrentAssets",
-      "note": "all open interest"
+      "name": "Total Non-Current Assets",
+      "note": "This factor represents the total value of a company's assets not expected to be converted into cash within a year, crucial for understanding its long-term financial health and investment capabilities."
     },
     "other_assets": {
       "factor": "otherAssets",
-      "name": "otherAssets",
-      "note": "all open interest"
+      "name": "Other Assets",
+      "note": "This factor includes various miscellaneous assets not categorized under current or non-current assets, offering a broader view of the company's diversified asset portfolio and resources."
     },
     "total_assets": {
       "factor": "totalAssets",
-      "name": "totalAssets",
-      "note": "all open interest"
+      "name": "Total Assets",
+      "note": "This factor represents the sum of all assets owned by the company, both current and non-current. It's a key indicator of the company's overall resources and financial strength."
     },
     "account_payables": {
       "factor": "accountPayables",
-      "name": "accountPayables",
-      "note": "all open interest"
+      "name": "Account Payables",
+      "note": "This factor indicates the amount the company owes to its suppliers or creditors for goods and services received but not yet paid for, reflecting its short-term liabilities."
     },
     "short_term_debt": {
       "factor": "shortTermDebt",
-      "name": "shortTermDebt",
-      "note": "all open interest"
+      "name": "Short Term Debt",
+      "note": "This factor shows the company's obligations due within one year, including loans and other borrowings, crucial for assessing its short-term financial obligations and liquidity needs."
     },
     "tax_payables": {
       "factor": "taxPayables",
-      "name": "taxPayables",
-      "note": "all open interest"
+      "name": "Tax Payables",
+      "note": "This factor includes taxes owed to the government that are due in the short term, representing the company's immediate tax liabilities."
     },
     "def_rev": {
       "factor": "deferredRevenue",
-      "name": "deferredRevenue",
-      "note": "all open interest"
+      "name": "Deferred Revenue",
+      "note": "This factor represents income received for goods or services yet to be delivered or performed, indicating obligations the company must fulfill in the future."
     },
     "oth_cur_liab": {
       "factor": "otherCurrentLiabilities",
-      "name": "otherCurrentLiabilities",
-      "note": "all open interest"
+      "name": "Other Current Liabilities",
+      "note": "This factor encompasses various short-term liabilities not specifically categorized, like accrued expenses, reflecting the company's immediate financial obligations."
     },
     "tot_cur_liab": {
       "factor": "totalCurrentLiabilities",
-      "name": "totalCurrentLiabilities",
-      "note": "all open interest"
+      "name": "Total Current Liabilities",
+      "note": "This factor represents the sum of all short-term liabilities, indicating the total amount the company owes within one year, crucial for assessing its short-term financial stability."
     },
     "long_debt": {
       "factor": "longTermDebt",
-      "name": "longTermDebt",
-      "note": "all open interest"
+      "name": "Long Term Debt",
+      "note": "This factor shows the company's obligations that are due beyond one year, including bonds, loans, and other long-term borrowings, key for understanding its long-term financial commitments."
     },
     "def_rev_nc": {
       "factor": "deferredRevenueNonCurrent",
-      "name": "deferredRevenueNonCurrent",
-      "note": "all open interest"
+      "name": "Deferred Revenue Non-Current",
+      "note": "This factor represents income received for goods or services to be delivered in the future, beyond the current accounting period, indicating longer-term obligations and future revenue recognition."
     },
     "def_tax_liab_nc": {
       "factor": "deferredTaxLiabilitiesNonCurrent",
-      "name": "deferredTaxLiabilitiesNonCurrent",
-      "note": "all open interest"
+      "name": "Deferred Tax Liabilities Non-Current",
+      "note": "This factor includes taxes that are accrued but not due in the short term, reflecting the company's long-term tax obligations."
     },
     "oth_nc_liab": {
       "factor": "otherNonCurrentLiabilities",
-      "name": "otherNonCurrentLiabilities",
-      "note": "all open interest"
+      "name": "Other Non-Current Liabilities",
+      "note": "This factor covers various long-term liabilities not specifically listed, like long-term lease obligations, crucial for a complete understanding of the company's long-term financial responsibilities."
     },
     "tot_nc_liab": {
       "factor": "totalNonCurrentLiabilities",
-      "name": "totalNonCurrentLiabilities",
-      "note": "all open interest"
+      "name": "Total Non-Current Liabilities",
+      "note": "This factor indicates the total amount of long-term liabilities, representing the company's financial obligations due beyond one year."
     },
     "oth_liab": {
       "factor": "otherLiabilities",
-      "name": "otherLiabilities",
-      "note": "all open interest"
+      "name": "Other Liabilities",
+      "note": "This factor includes miscellaneous liabilities not classified under current or non-current liabilities, offering a broader view of the company's varied financial obligations."
     },
     "cap_lease_obl": {
       "factor": "capitalLeaseObligations",
-      "name": "capitalLeaseObligations",
-      "note": "all open interest"
+      "name": "Capital Lease Obligations",
+      "note": "This factor indicates the company's long-term commitments under capital leases, reflecting the financial burden of leased assets considered similar to purchased assets in terms of liability."
     },
     "tot_liab": {
       "factor": "totalLiabilities",
-      "name": "totalLiabilities",
-      "note": "all open interest"
+      "name": "Total Liabilities",
+      "note": "This factor represents the sum of all the company's liabilities, both current and non-current, crucial for assessing the total financial obligations and risks."
     },
     "pref_stock": {
       "factor": "preferredStock",
-      "name": "preferredStock",
-      "note": "all open interest"
+      "name": "Preferred Stock",
+      "note": "This factor shows the value of preferred shares issued by the company, representing a type of equity that typically provides dividends before common stocks and has priority over them in asset liquidation."
     },
     "com_stock": {
       "factor": "commonStock",
-      "name": "commonStock",
-      "note": "all open interest"
+      "name": "Common Stock",
+      "note": "This factor represents the value of common shares issued, reflecting the basic equity ownership in the company, often with voting rights and dividends based on company performance."
     },
     "ret_earn": {
       "factor": "retainedEarnings",
-      "name": "retainedEarnings",
-      "note": "all open interest"
+      "name": "Retained Earnings",
+      "note": "This factor indicates the cumulative earnings retained in the company rather than distributed as dividends, essential for understanding reinvestment in the business and growth potential."
     },
     "acc_oth_comp_inc_loss": {
       "factor": "accumulatedOtherComprehensiveIncomeLoss",
-      "name": "accumulatedOtherComprehensiveIncomeLoss",
-      "note": "all open interest"
+      "name": "Accumulated Other Comprehensive Income/Loss",
+      "note": "This factor covers various income, expenses, gains, and losses that are not included in net income, reflecting the company's broader financial performance."
     },
     "oth_tot_stk_eq": {
       "factor": "othertotalStockholdersEquity",
-      "name": "othertotalStockholdersEquity",
-      "note": "all open interest"
+      "name": "Other Total Stockholders' Equity",
+      "note": "This factor encompasses additional elements of stockholders' equity not specifically categorized, contributing to the overall equity value of the company."
     },
     "tot_stk_eq": {
       "factor": "totalStockholdersEquity",
-      "name": "totalStockholdersEquity",
-      "note": "all open interest"
+      "name": "Total Stockholders' Equity",
+      "note": "This factor represents the total equity value held by shareholders, calculated as the difference between total assets and total liabilities, key for assessing the company's net worth and financial health."
     },
     "tot_eq": {
       "factor": "totalEquity",
-      "name": "totalEquity",
-      "note": "all open interest"
+      "name": "Total Equity",
+      "note": "This factor shows the total shareholders' equity, representing the residual interest in the company's assets after deducting liabilities, crucial for understanding the overall value attributable to shareholders."
     },
     "tot_liab_stk_eq": {
       "factor": "totalLiabilitiesAndStockholdersEquity",
-      "name": "totalLiabilitiesAndStockholdersEquity",
-      "note": "all open interest"
+      "name": "Total Liabilities and Stockholders' Equity",
+      "note": "This factor combines the total liabilities with total stockholders' equity, reflecting the company's total financial obligations and the equity financed by shareholders."
     },
     "min_inter": {
       "factor": "minorityInterest",
-      "name": "minorityInterest",
-      "note": "all open interest"
+      "name": "Minority Interest",
+      "note": "This factor represents the portion of subsidiary companies' equity not owned by the parent company, indicating the minority shareholders' stake in the subsidiaries."
     },
     "tot_liab_eq": {
       "factor": "totalLiabilitiesAndTotalEquity",
-      "name": "totalLiabilitiesAndTotalEquity",
-      "note": "all open interest"
+      "name": "Total Liabilities and Total Equity",
+      "note": "This factor sums up all liabilities and equity, providing a comprehensive view of the company's financial structure and total funding sources."
     },
     "tot_inv": {
       "factor": "totalInvestments",
-      "name": "totalInvestments",
-      "note": "all open interest"
+      "name": "Total Investments",
+      "note": "This factor shows the total value of the company's investments, including long-term and short-term investments, crucial for assessing its investment strategy and asset allocation."
     },
     "tot_debt": {
       "factor": "totalDebt",
-      "name": "totalDebt",
-      "note": "all open interest"
+      "name": "Total Debt",
+      "note": "This factor indicates the sum of all the company's debt, both short-term and long-term, essential for evaluating its total debt burden and financial leverage."
     },
     "net_debt": {
       "factor": "netDebt",
-      "name": "netDebt",
-      "note": "all open interest"
+      "name": "Net Debt",
+      "note": "This factor calculates the company's total debt minus its cash and cash equivalents, providing an insight into its net financial obligations and liquidity position."
     }
   },
   "IncomeStatement": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Income Statement",
+      "note": "This section offers real-time access to income statement data for a broad range of entities including public and private companies, and ETFs. The data is instrumental for analyzing a company's profitability, benchmarking against competitors, and identifying business trends.",
       "metaclass": "ClientMeta",
       "api": "api/v3/income-statement",
       "params": {
@@ -1714,149 +1714,149 @@
     },
     "revenue": {
       "factor": "revenue",
-      "name": "revenue",
-      "note": "all open interest"
+      "name": "Revenue",
+      "note": "This factor represents the total income generated from goods sold or services provided, key for assessing the company's primary business activities and market reach."
     },
     "cost_of_revenue": {
       "factor": "costOfRevenue",
-      "name": "costOfRevenue",
-      "note": "all open interest"
+      "name": "Cost of Revenue",
+      "note": "This factor indicates the direct costs attributable to the production of the goods or services sold, essential for understanding the company's production efficiency and cost management."
     },
     "gross_profit": {
       "factor": "grossProfit",
-      "name": "grossProfit",
-      "note": "all open interest"
+      "name": "Gross Profit",
+      "note": "This factor shows the profit a company makes after deducting the costs associated with producing and selling its products or services, crucial for evaluating its profitability and operational performance."
     },
     "gross_profit_ratio": {
       "factor": "grossProfitRatio",
-      "name": "grossProfitRatio",
-      "note": "all open interest"
+      "name": "Gross Profit Ratio",
+      "note": "This factor calculates the ratio of gross profit to revenue, providing insights into the company's profitability and efficiency in its core business operations."
     },
     "rnd_expenses": {
       "factor": "researchAndDevelopmentExpenses",
-      "name": "researchAndDevelopmentExpenses",
-      "note": "all open interest"
+      "name": "Research and Development Expenses",
+      "note": "This factor reflects the company's investment in innovation and development of new products or services, key for understanding its growth potential and commitment to innovation."
     },
     "ga_expenses": {
       "factor": "generalAndAdministrativeExpenses",
-      "name": "generalAndAdministrativeExpenses",
-      "note": "all open interest"
+      "name": "General and Administrative Expenses",
+      "note": "This factor includes overhead costs not directly tied to production, like office expenses, management salaries, and administrative support, indicative of the company's operational efficiency."
     },
     "sm_expenses": {
       "factor": "sellingAndMarketingExpenses",
-      "name": "sellingAndMarketingExpenses",
-      "note": "all open interest"
+      "name": "Selling and Marketing Expenses",
+      "note": "This factor represents the costs associated with sales and marketing activities, essential for evaluating the company's investment in market expansion and customer acquisition."
     },
     "sga_expenses": {
       "factor": "sellingGeneralAndAdministrativeExpenses",
-      "name": "sellingGeneralAndAdministrativeExpenses",
-      "note": "all open interest"
+      "name": "Selling, General, and Administrative Expenses",
+      "note": "This factor combines the expenses related to sales, marketing, and general administration, providing a comprehensive view of the company's overall operational costs."
     },
     "other_expenses": {
       "factor": "otherExpenses",
-      "name": "otherExpenses",
-      "note": "all open interest"
+      "name": "Other Expenses",
+      "note": "This factor includes various expenses not classified under other categories, like legal fees or asset write-downs, essential for a complete understanding of the company's financial obligations."
     },
     "operating_expenses": {
       "factor": "operatingExpenses",
-      "name": "operatingExpenses",
-      "note": "all open interest"
+      "name": "Operating Expenses",
+      "note": "This factor encompasses all expenses related to the company's primary business operations, excluding cost of revenue, crucial for assessing the operational efficiency and cost management."
     },
     "total_costs": {
       "factor": "costAndExpenses",
-      "name": "costAndExpenses",
-      "note": "all open interest"
+      "name": "Cost and Expenses",
+      "note": "This factor represents the total of all costs and expenses, combining cost of revenue with operating expenses, providing an overall view of the company's expenditure in business operations."
     },
     "interest_income": {
       "factor": "interestIncome",
-      "name": "interestIncome",
-      "note": "all open interest"
+      "name": "Interest Income",
+      "note": "This factor indicates income earned from interest-bearing assets like savings accounts or investments, reflecting the company's ability to generate income from its financial assets."
     },
     "interestExpense": {
       "factor": "interestExpense",
-      "name": "interestExpense",
-      "note": "all open interest"
+      "name": "Interest Expense",
+      "note": "This factor shows the cost incurred from interest on borrowed funds, crucial for understanding the company's debt burden and financial leverage."
     },
     "depr_amort": {
       "factor": "depreciationAndAmortization",
-      "name": "depreciationAndAmortization",
-      "note": "all open interest"
+      "name": "Depreciation and Amortization",
+      "note": "This factor reflects the allocation of the cost of tangible and intangible assets over their useful lives, impacting the company's profitability and asset valuation."
     },
     "ebitda": {
       "factor": "ebitda",
-      "name": "ebitda",
-      "note": "all open interest"
+      "name": "EBITDA",
+      "note": "Earnings Before Interest, Taxes, Depreciation, and Amortization - this factor measures the company's operating performance excluding these non-operational expenses, key for comparing profitability across different companies."
     },
     "ebitda_ratio": {
       "factor": "ebitdaratio",
-      "name": "ebitdaratio",
-      "note": "all open interest"
+      "name": "EBITDA Ratio",
+      "note": "This factor calculates the ratio of EBITDA to revenue, providing insights into the company's operational efficiency and profitability before accounting for financial and accounting decisions."
     },
     "operating_income": {
       "factor": "operatingIncome",
-      "name": "operatingIncome",
-      "note": "all open interest"
+      "name": "Operating Income",
+      "note": "This factor shows the profit earned from core business operations after deducting operating expenses, key for assessing the company's operational efficiency and profitability."
     },
     "operating_income_ratio": {
       "factor": "operatingIncomeRatio",
-      "name": "operatingIncomeRatio",
-      "note": "all open interest"
+      "name": "Operating Income Ratio",
+      "note": "This factor calculates the ratio of operating income to revenue, providing insights into how efficiently a company is generating profit from its core business."
     },
     "other_income_expenses": {
       "factor": "totalOtherIncomeExpensesNet",
-      "name": "totalOtherIncomeExpensesNet",
-      "note": "all open interest"
+      "name": "Total Other Income/Expenses Net",
+      "note": "This factor encompasses all other income and expenses not related to core operations, like investment gains or losses, impacting the company's overall financial performance."
     },
     "pre_tax_income": {
       "factor": "incomeBeforeTax",
-      "name": "incomeBeforeTax",
-      "note": "all open interest"
+      "name": "Income Before Tax",
+      "note": "This factor represents the company's earnings before taxation, essential for evaluating its pre-tax profitability and operational effectiveness."
     },
     "pre_tax_income_ratio": {
       "factor": "incomeBeforeTaxRatio",
-      "name": "incomeBeforeTaxRatio",
-      "note": "all open interest"
+      "name": "Income Before Tax Ratio",
+      "note": "This factor calculates the ratio of income before tax to revenue, providing a measure of the company's profitability before tax obligations."
     },
     "tax_expense": {
       "factor": "incomeTaxExpense",
-      "name": "incomeTaxExpense",
-      "note": "all open interest"
+      "name": "Income Tax Expense",
+      "note": "This factor indicates the total tax expense incurred by the company, reflecting its tax liabilities and fiscal responsibilities."
     },
     "net_income": {
       "factor": "netIncome",
-      "name": "netIncome",
-      "note": "all open interest"
+      "name": "Net Income",
+      "note": "This factor represents the company's total earnings after all expenses, including taxes, crucial for assessing its overall profitability and financial health."
     },
     "net_income_ratio": {
       "factor": "netIncomeRatio",
-      "name": "netIncomeRatio",
-      "note": "all open interest"
+      "name": "Net Income Ratio",
+      "note": "This factor calculates the ratio of net income to revenue, offering insights into the company's overall efficiency in generating profit relative to its revenue."
     },
     "eps": {
       "factor": "eps",
-      "name": "eps",
-      "note": "all open interest"
+      "name": "EPS",
+      "note": "Earnings Per Share (EPS) - This factor shows the company's earnings allocated to each outstanding share, a key indicator of profitability and a fundamental driver of stock prices."
     },
     "eps_diluted": {
       "factor": "epsdiluted",
-      "name": "epsdiluted",
-      "note": "all open interest"
+      "name": "EPS Diluted",
+      "note": "Diluted Earnings Per Share - This factor represents the company's earnings per share after including potential dilution from convertible securities, options, or warrants, offering a conservative view of earnings per share."
     },
     "avg_shares_out": {
       "factor": "weightedAverageShsOut",
-      "name": "weightedAverageShsOut",
-      "note": "all open interest"
+      "name": "Weighted Average Shares Outstanding",
+      "note": "This factor indicates the weighted average number of shares outstanding during the reporting period, used in calculating EPS and reflecting changes in share count over time."
     },
     "avg_shares_out_dil": {
       "factor": "weightedAverageShsOutDil",
-      "name": "weightedAverageShsOutDil",
-      "note": "all open interest"
+      "name": "Weighted Average Shares Outstanding (Diluted)",
+      "note": "This factor represents the weighted average number of shares outstanding after accounting for potential dilution effects, crucial for a comprehensive understanding of EPS when all convertible securities are exercised."
     }
   },
   "FinancialRatios": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Financial Ratios Analysis",
+      "note": "This section provides a comprehensive collection of financial ratios to evaluate company performance across various aspects like profitability, liquidity, solvency, and valuation. It aids investors in making informed decisions and identifying trends over time.",
       "metaclass": "ClientMeta",
       "api": "api/v3/ratios",
       "params": {
@@ -1865,279 +1865,279 @@
     },
     "cur_ratio": {
       "factor": "currentRatio",
-      "name": "currentRatio",
-      "note": "all open interest"
+      "name": "Current Ratio",
+      "note": "This factor represents the company's ability to cover its short-term liabilities with its short-term assets, providing insights into its short-term financial health."
     },
     "quickRatio": {
       "factor": "quickRatio",
-      "name": "quickRatio",
-      "note": "all open interest"
+      "name": "Quick Ratio",
+      "note": "This factor measures the company's capacity to meet short-term obligations with its most liquid assets, excluding inventory."
     },
     "cashRatio": {
       "factor": "cashRatio",
-      "name": "cashRatio",
-      "note": "all open interest"
+      "name": "Cash Ratio",
+      "note": "This factor indicates the company's ability to pay off short-term liabilities with its cash and cash equivalents, reflecting immediate liquidity."
     },
     "days_sales_out": {
       "factor": "daysOfSalesOutstanding",
-      "name": "daysOfSalesOutstanding",
-      "note": "all open interest"
+      "name": "Days of Sales Outstanding",
+      "note": "This factor calculates the average number of days that a company takes to collect revenue after a sale has been made, assessing the efficiency of its credit and collection policies."
     },
     "days_inv_out": {
       "factor": "daysOfInventoryOutstanding",
-      "name": "daysOfInventoryOutstanding",
-      "note": "all open interest"
+      "name": "Days of Inventory Outstanding",
+      "note": "This factor measures the average number of days a company holds its inventory before selling it, indicating inventory management efficiency."
     },
     "op_cycle": {
       "factor": "operatingCycle",
-      "name": "operatingCycle",
-      "note": "all open interest"
+      "name": "Operating Cycle",
+      "note": "This factor analyzes the time taken by a company to purchase inventory, sell it, and collect the receivables, representing the efficiency of the company's operations."
     },
     "days_pay_out": {
       "factor": "daysOfPayablesOutstanding",
-      "name": "daysOfPayablesOutstanding",
-      "note": "all open interest"
+      "name": "Days of Payables Outstanding",
+      "note": "This factor determines the average duration a company takes to pay its invoices from suppliers, indicating its payment policy efficiency."
     },
     "cash_conv_cycle": {
       "factor": "cashConversionCycle",
-      "name": "cashConversionCycle",
-      "note": "all open interest"
+      "name": "Cash Conversion Cycle",
+      "note": "This factor measures the time span between when a company pays its suppliers and when it receives cash from sales, reflecting the efficiency of its cash flow management."
     },
     "gross_profit_margin": {
       "factor": "grossProfitMargin",
-      "name": "grossProfitMargin",
-      "note": "all open interest"
+      "name": "Gross Profit Margin",
+      "note": "This factor reflects the percentage of revenue exceeding the cost of goods sold, indicating the efficiency of production and pricing."
     },
     "op_profit_margin": {
       "factor": "operatingProfitMargin",
-      "name": "operatingProfitMargin",
-      "note": "all open interest"
+      "name": "Operating Profit Margin",
+      "note": "This factor measures the percentage of revenue remaining after covering operating expenses, showcasing operational efficiency."
     },
     "pretax_profit_margin": {
       "factor": "pretaxProfitMargin",
-      "name": "pretaxProfitMargin",
-      "note": "all open interest"
+      "name": "Pretax Profit Margin",
+      "note": "This factor indicates the profitability of a company before accounting for taxes, reflecting its earnings capacity."
     },
     "net_profit_margin": {
       "factor": "netProfitMargin",
-      "name": "netProfitMargin",
-      "note": "all open interest"
+      "name": "Net Profit Margin",
+      "note": "This factor assesses the percentage of revenue that remains as profit after all expenses, taxes, and interest, indicating overall profitability."
     },
     "eff_tax_rate": {
       "factor": "effectiveTaxRate",
-      "name": "effectiveTaxRate",
-      "note": "all open interest"
+      "name": "Effective Tax Rate",
+      "note": "This factor calculates the average rate at which a corporation is taxed on its pre-tax profits, indicating its tax burden."
     },
     "return_on_assets": {
       "factor": "returnOnAssets",
-      "name": "returnOnAssets",
-      "note": "all open interest"
+      "name": "Return on Assets",
+      "note": "This factor measures how efficiently a company utilizes its assets to generate profits, reflecting asset management effectiveness."
     },
     "return_on_equity": {
       "factor": "returnOnEquity",
-      "name": "returnOnEquity",
-      "note": "all open interest"
+      "name": "Return on Equity",
+      "note": "This factor assesses a company's ability to generate profits from its shareholders' equity, indicating financial health and profitability."
     },
     "return_on_cap_empl": {
       "factor": "returnOnCapitalEmployed",
-      "name": "returnOnCapitalEmployed",
-      "note": "all open interest"
+      "name": "Return on Capital Employed",
+      "note": "This factor evaluates a company's efficiency in generating profits from its capital employed, offering insights into its overall investment returns."
     },
     "net_inc_per_ebt": {
       "factor": "netIncomePerEBT",
-      "name": "netIncomePerEBT",
-      "note": "all open interest"
+      "name": "Net Income Per EBT",
+      "note": "This factor measures the proportion of earnings before taxes (EBT) that is retained as net income, reflecting a company's tax efficiency and profitability."
     },
     "ebt_per_ebit": {
       "factor": "ebtPerEbit",
-      "name": "ebtPerEbit",
-      "note": "all open interest"
+      "name": "EBT Per EBIT",
+      "note": "This factor indicates the earnings before taxes as a percentage of earnings before interest and taxes, showcasing the impact of interest expenses on profitability."
     },
     "ebit_per_rev": {
       "factor": "ebitPerRevenue",
-      "name": "ebitPerRevenue",
-      "note": "all open interest"
+      "name": "EBIT Per Revenue",
+      "note": "This factor assesses the earnings before interest and taxes as a percentage of total revenue, indicating operational efficiency and profitability."
     },
     "debt_ratio": {
       "factor": "debtRatio",
-      "name": "debtRatio",
-      "note": "all open interest"
+      "name": "Debt Ratio",
+      "note": "This factor calculates a company's total debt as a percentage of its total assets, indicating the degree of leverage and financial risk."
     },
     "debt_equity_ratio": {
       "factor": "debtEquityRatio",
-      "name": "debtEquityRatio",
-      "note": "all open interest"
+      "name": "Debt Equity Ratio",
+      "note": "This factor measures a company's financial leverage by comparing its total liabilities to shareholders' equity, indicating its ability to cover debts with equity."
     },
     "long_debt_to_cap": {
       "factor": "longTermDebtToCapitalization",
-      "name": "longTermDebtToCapitalization",
-      "note": "all open interest"
+      "name": "Long-Term Debt to Capitalization",
+      "note": "This factor assesses the proportion of long-term debt in a company's capital structure, reflecting its reliance on long-term debt for financing."
     },
     "total_debt_to_cap": {
       "factor": "totalDebtToCapitalization",
-      "name": "totalDebtToCapitalization",
-      "note": "all open interest"
+      "name": "Total Debt to Capitalization",
+      "note": "This factor evaluates the total debt as a percentage of the company's capitalization, indicating the overall level of debt in the company's capital structure."
     },
     "interest_coverage": {
       "factor": "interestCoverage",
-      "name": "interestCoverage",
-      "note": "all open interest"
+      "name": "Interest Coverage",
+      "note": "This factor measures a company's ability to pay interest on its outstanding debt, indicating its financial stability and risk of default."
     },
     "cash_flow_to_debt": {
       "factor": "cashFlowToDebtRatio",
-      "name": "cashFlowToDebtRatio",
-      "note": "all open interest"
+      "name": "Cash Flow to Debt Ratio",
+      "note": "This factor assesses a company's ability to cover its total debt with its operating cash flows, reflecting its debt repayment capacity."
     },
     "equity_multiplier": {
       "factor": "companyEquityMultiplier",
-      "name": "companyEquityMultiplier",
-      "note": "all open interest"
+      "name": "Company Equity Multiplier",
+      "note": "This factor gauges the proportion of a company's total assets financed by shareholders' equity, indicating its financial leverage."
     },
     "receivables_turnover": {
       "factor": "receivablesTurnover",
-      "name": "receivablesTurnover",
-      "note": "all open interest"
+      "name": "Receivables Turnover",
+      "note": "This factor calculates how frequently a company collects its average accounts receivable, reflecting the efficiency of its credit policies and cash collection."
     },
     "payables_turnover": {
       "factor": "payablesTurnover",
-      "name": "payablesTurnover",
-      "note": "all open interest"
+      "name": "Payables Turnover",
+      "note": "This factor indicates how often a company pays off its suppliers, providing insights into its short-term liquidity and supplier relationship management."
     },
     "inventory_turnover": {
       "factor": "inventoryTurnover",
-      "name": "inventoryTurnover",
-      "note": "all open interest"
+      "name": "Inventory Turnover",
+      "note": "This factor measures how frequently a company's inventory is sold and replaced over a specific period, indicating efficiency in inventory management."
     },
     "fixed_asset_turnover": {
       "factor": "fixedAssetTurnover",
-      "name": "fixedAssetTurnover",
-      "note": "all open interest"
+      "name": "Fixed Asset Turnover",
+      "note": "This factor evaluates a company's effectiveness in generating net sales from its fixed assets, reflecting asset management and utilization efficiency."
     },
     "asset_turnover": {
       "factor": "assetTurnover",
-      "name": "assetTurnover",
-      "note": "all open interest"
+      "name": "Asset Turnover",
+      "note": "This factor measures how efficiently a company uses its total assets to generate sales revenue, indicating overall operational efficiency."
     },
     "op_cash_flow_per_share": {
       "factor": "operatingCashFlowPerShare",
-      "name": "operatingCashFlowPerShare",
-      "note": "all open interest"
+      "name": "Operating Cash Flow Per Share",
+      "note": "This factor indicates the amount of cash generated from operations per share, providing insights into a company's operational efficiency and profitability."
     },
     "free_cash_flow_per_share": {
       "factor": "freeCashFlowPerShare",
-      "name": "freeCashFlowPerShare",
-      "note": "all open interest"
+      "name": "Free Cash Flow Per Share",
+      "note": "This factor measures the available cash flow per share after accounting for capital expenditures, reflecting the company's financial flexibility and dividend-paying capacity."
     },
     "cash_per_share": {
       "factor": "cashPerShare",
-      "name": "cashPerShare",
-      "note": "all open interest"
+      "name": "Cash Per Share",
+      "note": "This factor represents the amount of cash and cash equivalents available per share, indicating the company's liquidity on a per-share basis."
     },
     "payout_ratio": {
       "factor": "payoutRatio",
-      "name": "payoutRatio",
-      "note": "all open interest"
+      "name": "Payout Ratio",
+      "note": "This factor calculates the proportion of earnings paid out as dividends to shareholders, indicating a company's dividend distribution policy and sustainability."
     },
     "op_cash_flow_sales_ratio": {
       "factor": "operatingCashFlowSalesRatio",
-      "name": "operatingCashFlowSalesRatio",
-      "note": "all open interest"
+      "name": "Operating Cash Flow Sales Ratio",
+      "note": "This factor assesses the ratio of operating cash flow to net sales, reflecting the efficiency of converting sales into actual cash."
     },
     "free_to_op_cash_flow_ratio": {
       "factor": "freeCashFlowOperatingCashFlowRatio",
-      "name": "freeCashFlowOperatingCashFlowRatio",
-      "note": "all open interest"
+      "name": "Free Cash Flow Operating Cash Flow Ratio",
+      "note": "This factor measures the proportion of operating cash flow that remains after capital expenditures, indicating the company's ability to generate cash for growth, debt reduction, and dividends."
     },
     "cash_flow_coverage_ratio": {
       "factor": "cashFlowCoverageRatios",
-      "name": "cashFlowCoverageRatios",
-      "note": "all open interest"
+      "name": "Cash Flow Coverage Ratios",
+      "note": "This factor evaluates a company's ability to cover debt payments, dividends, and capital expenditures with its operating cash flow, indicating overall financial health and stability."
     },
     "short_term_coverage_ratio": {
       "factor": "shortTermCoverageRatios",
-      "name": "shortTermCoverageRatios",
-      "note": "all open interest"
+      "name": "Short Term Coverage Ratios",
+      "note": "This factor measures a company's ability to meet its short-term obligations using its cash flow, providing insights into its short-term financial resilience."
     },
     "capex_coverage_ratio": {
       "factor": "capitalExpenditureCoverageRatio",
-      "name": "capitalExpenditureCoverageRatio",
-      "note": "all open interest"
+      "name": "Capital Expenditure Coverage Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "div_capex_coverage_ratio": {
       "factor": "dividendPaidAndCapexCoverageRatio",
-      "name": "dividendPaidAndCapexCoverageRatio",
-      "note": "all open interest"
+      "name": "Dividend Paid and Capex Coverage Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "dividend_payout_ratio": {
       "factor": "dividendPayoutRatio",
-      "name": "dividendPayoutRatio",
-      "note": "all open interest"
+      "name": "Dividend Payout Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "price_bookvalue_ratio": {
       "factor": "priceBookValueRatio",
-      "name": "priceBookValueRatio",
-      "note": "all open interest"
+      "name": "Price Book Value Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "price_book_ratio": {
       "factor": "priceToBookRatio",
-      "name": "priceToBookRatio",
-      "note": "all open interest"
+      "name": "Price to Book Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "price_to_sales_ratio": {
       "factor": "priceToSalesRatio",
-      "name": "priceToSalesRatio",
-      "note": "all open interest"
+      "name": "Price to Sales Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "price_earnings_ratio": {
       "factor": "priceEarningsRatio",
-      "name": "priceEarningsRatio",
-      "note": "all open interest"
+      "name": "Price Earnings Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "price_free_cash_flow_ratio": {
       "factor": "priceToFreeCashFlowsRatio",
-      "name": "priceToFreeCashFlowsRatio",
-      "note": "all open interest"
+      "name": "Price to Free Cash Flows Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "price_op_cash_flow_ratio": {
       "factor": "priceToOperatingCashFlowsRatio",
-      "name": "priceToOperatingCashFlowsRatio",
-      "note": "all open interest"
+      "name": "Price to Operating Cash Flows Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "price_cash_flow_ratio": {
       "factor": "priceCashFlowRatio",
-      "name": "priceCashFlowRatio",
-      "note": "all open interest"
+      "name": "Price Cash Flow Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "peg_ratio": {
       "factor": "priceEarningsToGrowthRatio",
-      "name": "priceEarningsToGrowthRatio",
-      "note": "all open interest"
+      "name": "Price Earnings to Growth Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "price_sales_ratio": {
       "factor": "priceSalesRatio",
-      "name": "priceSalesRatio",
-      "note": "all open interest"
+      "name": "Price Sales Ratio",
+      "note": "ㅁㅁㅁ"
     },
     "dividend_yield": {
       "factor": "dividendYield",
-      "name": "dividendYield",
-      "note": "all open interest"
+      "name": "Dividend Yield",
+      "note": "ㅁㅁㅁ"
     },
     "ev_multiple": {
       "factor": "enterpriseValueMultiple",
-      "name": "enterpriseValueMultiple",
-      "note": "all open interest"
+      "name": "Enterprise Value Multiple",
+      "note": "ㅁㅁㅁ"
     },
     "price_fair_value_ratio": {
       "factor": "priceFairValue",
-      "name": "priceFairValue",
-      "note": "all open interest"
+      "name": "Price Fair Value",
+      "note": "ㅁㅁㅁ"
     }
   },
   "CashFlowStatementGrowth": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Cash Flow Statement Growth",
+      "note": "This section provides insights into the growth rate of a company's cash flow, indicating how quickly the company's cash flow is expanding or contracting. A positive growth rate signifies increasing cash generation, reflecting financial strength and operational efficiency. In contrast, a negative growth rate suggests higher cash usage than generation, pointing towards potential financial challenges or investment phases.",
       "metaclass": "ClientMeta",
       "api": "api/v3/cash-flow-statement-growth",
       "params": {
@@ -2146,43 +2146,43 @@
     },
     "net_inc_gr": {
       "factor": "growthNetIncome",
-      "name": "growthNetIncome",
-      "note": "all open interest"
+      "name": "Growth in Net Income",
+      "note": "ㅁㅁㅁ"
     },
     "dep_amort_gr": {
       "factor": "growthDepreciationAndAmortization",
-      "name": "growthDepreciationAndAmortization",
-      "note": "all open interest"
+      "name": "Growth in Depreciation and Amortization",
+      "note": "ㅁㅁㅁ"
     },
     "def_inc_tax_gr": {
       "factor": "growthDeferredIncomeTax",
-      "name": "growthDeferredIncomeTax",
-      "note": "all open interest"
+      "name": "Growth in Deferred Income Tax",
+      "note": "ㅁㅁㅁ"
     },
     "stk_bas_comp_gr": {
       "factor": "growthStockBasedCompensation",
-      "name": "growthStockBasedCompensation",
-      "note": "all open interest"
+      "name": "Growth in Stock-Based Compensation",
+      "note": "ㅁㅁㅁ"
     },
     "ch_wrk_cap_gr": {
       "factor": "growthChangeInWorkingCapital",
-      "name": "growthChangeInWorkingCapital",
-      "note": "all open interest"
+      "name": "Growth in Change in Working Capital",
+      "note": "ㅁㅁㅁ"
     },
     "acc_rec_gr": {
       "factor": "growthAccountsReceivables",
-      "name": "growthAccountsReceivables",
-      "note": "all open interest"
+      "name": "Growth in Accounts Receivables",
+      "note": "ㅁㅁㅁ"
     },
     "inv_gr": {
       "factor": "growthInventory",
-      "name": "growthInventory",
-      "note": "all open interest"
+      "name": "Growth in Inventory",
+      "note": "ㅁㅁㅁ"
     },
     "acc_pay_gr": {
       "factor": "growthAccountsPayables",
-      "name": "growthAccountsPayables",
-      "note": "all open interest"
+      "name": "Growth in Accounts Payables",
+      "note": "ㅁㅁㅁ"
     },
     "oth_wrk_cap_gr": {
       "factor": "growthOtherWorkingCapital",

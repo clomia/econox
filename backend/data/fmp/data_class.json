@@ -2061,83 +2061,83 @@
     "capex_coverage_ratio": {
       "factor": "capitalExpenditureCoverageRatio",
       "name": "Capital Expenditure Coverage Ratio",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor assesses a company's ability to fund its capital expenditures from its operating cash flow, indicating its capacity for maintaining and expanding operations."
     },
     "div_capex_coverage_ratio": {
       "factor": "dividendPaidAndCapexCoverageRatio",
       "name": "Dividend Paid and Capex Coverage Ratio",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor evaluates the ability of a company to cover both its capital expenditures and dividend payments from its operating cash flow, reflecting financial sustainability."
     },
     "dividend_payout_ratio": {
       "factor": "dividendPayoutRatio",
       "name": "Dividend Payout Ratio",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor measures the percentage of net income paid to shareholders as dividends, indicating a company's dividend distribution policy and profitability."
     },
     "price_bookvalue_ratio": {
       "factor": "priceBookValueRatio",
       "name": "Price Book Value Ratio",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor compares a company's market value to its book value, providing insights into how investors value the company's net assets."
     },
     "price_book_ratio": {
       "factor": "priceToBookRatio",
       "name": "Price to Book Ratio",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor represents the ratio of a company's market price per share to its book value per share, used to compare market valuation with the company's asset value."
     },
     "price_to_sales_ratio": {
       "factor": "priceToSalesRatio",
       "name": "Price to Sales Ratio",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor measures a company's stock price relative to its revenue per share, indicating how much investors are willing to pay per dollar of sales."
     },
     "price_earnings_ratio": {
       "factor": "priceEarningsRatio",
       "name": "Price Earnings Ratio",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor indicates the ratio of a company's current share price compared to its per-share earnings, widely used to gauge company valuation."
     },
     "price_free_cash_flow_ratio": {
       "factor": "priceToFreeCashFlowsRatio",
       "name": "Price to Free Cash Flows Ratio",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor compares a company's market capitalization with its free cash flow, indicating the value placed by the market on the company's ability to generate cash."
     },
     "price_op_cash_flow_ratio": {
       "factor": "priceToOperatingCashFlowsRatio",
       "name": "Price to Operating Cash Flows Ratio",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor measures the relationship between a company's market stock price and its operating cash flow per share, providing insight into its valuation based on cash generation efficiency."
     },
     "price_cash_flow_ratio": {
       "factor": "priceCashFlowRatio",
       "name": "Price Cash Flow Ratio",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor compares the company's stock price with its cash flow per share, used to evaluate the stock's value relative to its ability to generate cash."
     },
     "peg_ratio": {
       "factor": "priceEarningsToGrowthRatio",
-      "name": "Price Earnings to Growth Ratio",
-      "note": "ㅁㅁㅁ"
+      "name": "Price Earnings to Growth Ratio (PEG)",
+      "note": "This factor assesses a company's stock price relative to its earnings growth rate, offering a more dynamic view of valuation compared to the traditional P/E ratio."
     },
     "price_sales_ratio": {
       "factor": "priceSalesRatio",
       "name": "Price Sales Ratio",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor indicates the amount investors are willing to pay per dollar of sales, providing a valuation measure based on revenue generation."
     },
     "dividend_yield": {
       "factor": "dividendYield",
       "name": "Dividend Yield",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor calculates the dividend per share as a percentage of the stock price, indicating the return on investment from dividends alone."
     },
     "ev_multiple": {
       "factor": "enterpriseValueMultiple",
       "name": "Enterprise Value Multiple",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor evaluates a company's total value relative to key financial metrics like EBITDA, offering insights into overall enterprise valuation."
     },
     "price_fair_value_ratio": {
       "factor": "priceFairValue",
       "name": "Price Fair Value",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor reflects the estimated fair value of a company's stock, comparing it to the market price to assess whether it is overvalued or undervalued."
     }
   },
   "CashFlowStatementGrowth": {
     "setting": {
-      "name": "Cash Flow Statement Growth",
-      "note": "This section provides insights into the growth rate of a company's cash flow, indicating how quickly the company's cash flow is expanding or contracting. A positive growth rate signifies increasing cash generation, reflecting financial strength and operational efficiency. In contrast, a negative growth rate suggests higher cash usage than generation, pointing towards potential financial challenges or investment phases.",
+      "name": "Cash Flow Statement Growth Analysis",
+      "note": "This section provides access to a company's cash flow growth rate, measuring the rate at which a company's cash flow is expanding or contracting. It indicates whether a company is increasing its cash generation or consuming more cash than it produces.",
       "metaclass": "ClientMeta",
       "api": "api/v3/cash-flow-statement-growth",
       "params": {
@@ -2147,158 +2147,158 @@
     "net_inc_gr": {
       "factor": "growthNetIncome",
       "name": "Growth in Net Income",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor assesses the year-over-year change in a company's net income, indicating its profitability growth and financial performance trend."
     },
     "dep_amort_gr": {
       "factor": "growthDepreciationAndAmortization",
       "name": "Growth in Depreciation and Amortization",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor measures the annual increase or decrease in the company's depreciation and amortization expenses, reflecting changes in asset value and investment in capital."
     },
     "def_inc_tax_gr": {
       "factor": "growthDeferredIncomeTax",
       "name": "Growth in Deferred Income Tax",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor indicates changes in the company's deferred income tax liabilities or assets, reflecting its future tax obligations or benefits."
     },
     "stk_bas_comp_gr": {
       "factor": "growthStockBasedCompensation",
       "name": "Growth in Stock-Based Compensation",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor evaluates the change in expenses related to stock-based compensation, showing how employee compensation costs are evolving."
     },
     "ch_wrk_cap_gr": {
       "factor": "growthChangeInWorkingCapital",
-      "name": "Growth in Change in Working Capital",
-      "note": "ㅁㅁㅁ"
+      "name": "Growth in Working Capital",
+      "note": "This factor measures the change in a company's working capital, indicating its operational efficiency and short-term financial health."
     },
     "acc_rec_gr": {
       "factor": "growthAccountsReceivables",
       "name": "Growth in Accounts Receivables",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor assesses the change in the amount owed to the company by its customers, indicating the efficiency of its credit and collections."
     },
     "inv_gr": {
       "factor": "growthInventory",
       "name": "Growth in Inventory",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor analyzes the annual change in the company's inventory levels, providing insights into its production, sales, and inventory management strategies."
     },
     "acc_pay_gr": {
       "factor": "growthAccountsPayables",
       "name": "Growth in Accounts Payables",
-      "note": "ㅁㅁㅁ"
+      "note": "This factor measures the change in the amount a company owes to its suppliers, reflecting its payment policies and cash flow management."
     },
     "oth_wrk_cap_gr": {
       "factor": "growthOtherWorkingCapital",
-      "name": "growthOtherWorkingCapital",
-      "note": "all open interest"
+      "name": "Growth in Other Working Capital",
+      "note": "This factor reflects changes in other components of working capital, indicating shifts in the company's short-term assets and liabilities not covered by more specific categories."
     },
     "oth_non_cash_it_gr": {
       "factor": "growthOtherNonCashItems",
-      "name": "growthOtherNonCashItems",
-      "note": "all open interest"
+      "name": "Growth in Other Non-Cash Items",
+      "note": "This factor measures changes in non-cash items that affect the company's cash flow, highlighting non-operational factors impacting financial health."
     },
     "op_cash_growth": {
       "factor": "growthNetCashProvidedByOperatingActivites",
-      "name": "growthNetCashProvidedByOperatingActivites",
-      "note": "all open interest"
+      "name": "Growth in Net Cash Provided by Operating Activities",
+      "note": "This factor assesses the year-over-year change in cash generated from core business operations, indicating the company's operational efficiency and cash-generating ability."
     },
     "caip_growth": {
       "factor": "growthInvestmentsInPropertyPlantAndEquipment",
-      "name": "growthInvestmentsInPropertyPlantAndEquipment",
-      "note": "all open interest"
+      "name": "Growth in Investments in Property, Plant, and Equipment",
+      "note": "This factor evaluates changes in capital expenditures on property, plant, and equipment, indicating the company's investment in long-term assets."
     },
     "acquisition_growth": {
       "factor": "growthAcquisitionsNet",
-      "name": "growthAcquisitionsNet",
-      "note": "all open interest"
+      "name": "Growth in Acquisitions, Net",
+      "note": "This factor measures changes in the company's acquisitions, reflecting its expansion and investment strategy."
     },
     "investment_buy_growth": {
       "factor": "growthPurchasesOfInvestments",
-      "name": "growthPurchasesOfInvestments",
-      "note": "all open interest"
+      "name": "Growth in Purchases of Investments",
+      "note": "This factor indicates changes in the company's investment purchases, showing how its investment portfolio is evolving."
     },
     "investment_sell_growth": {
       "factor": "growthSalesMaturitiesOfInvestments",
-      "name": "growthSalesMaturitiesOfInvestments",
-      "note": "all open interest"
+      "name": "Growth in Sales/Maturities of Investments",
+      "note": "This factor assesses changes in the sales or maturities of the company's investments, reflecting its investment liquidation or maturity strategy."
     },
     "other_inv_act_growth": {
       "factor": "growthOtherInvestingActivites",
-      "name": "growthOtherInvestingActivites",
-      "note": "all open interest"
+      "name": "Growth in Other Investing Activities",
+      "note": "This factor captures changes in various investing activities not classified under other specific categories, highlighting diverse aspects of the company's investment strategy."
     },
     "inv_cash_growth": {
       "factor": "growthNetCashUsedForInvestingActivites",
-      "name": "growthNetCashUsedForInvestingActivites",
-      "note": "all open interest"
+      "name": "Growth in Net Cash Used for Investing Activities",
+      "note": "This factor assesses the change in cash used for investments, reflecting how the company's investment strategy and expenditure on assets are evolving."
     },
     "debt_repay_growth": {
       "factor": "growthDebtRepayment",
-      "name": "growthDebtRepayment",
-      "note": "all open interest"
+      "name": "Growth in Debt Repayment",
+      "note": "This factor measures changes in the company's debt repayment, indicating its approach to managing and reducing liabilities."
     },
     "stock_issued_growth": {
       "factor": "growthCommonStockIssued",
-      "name": "growthCommonStockIssued",
-      "note": "all open interest"
+      "name": "Growth in Common Stock Issued",
+      "note": "This factor evaluates the change in the issuance of common stock, reflecting the company's equity financing strategy and capital raising activities."
     },
     "stock_buyback_growth": {
       "factor": "growthCommonStockRepurchased",
-      "name": "growthCommonStockRepurchased",
-      "note": "all open interest"
+      "name": "Growth in Common Stock Repurchased",
+      "note": "This factor indicates changes in the repurchase of common stock, showing the company's strategy regarding shareholder value and equity management."
     },
     "dividend_growth": {
       "factor": "growthDividendsPaid",
-      "name": "growthDividendsPaid",
-      "note": "all open interest"
+      "name": "Growth in Dividends Paid",
+      "note": "This factor measures changes in dividends paid to shareholders, indicating the company's profitability and dividend distribution policy."
     },
     "other_fin_act_growth": {
       "factor": "growthOtherFinancingActivites",
-      "name": "growthOtherFinancingActivites",
-      "note": "all open interest"
+      "name": "Growth in Other Financing Activities",
+      "note": "This factor captures changes in various financing activities, highlighting diverse aspects of the company's financial strategy not covered under other specific categories."
     },
     "fin_cash_growth": {
       "factor": "growthNetCashUsedProvidedByFinancingActivities",
-      "name": "growthNetCashUsedProvidedByFinancingActivities",
-      "note": "all open interest"
+      "name": "Growth in Net Cash Used/Provided by Financing Activities",
+      "note": "This factor assesses the change in cash flow from financing activities, indicating the company's overall financing health and strategy."
     },
     "forex_effect_growth": {
       "factor": "growthEffectOfForexChangesOnCash",
-      "name": "growthEffectOfForexChangesOnCash",
-      "note": "all open interest"
+      "name": "Growth in Effect of Forex Changes on Cash",
+      "note": "This factor evaluates the impact of foreign exchange rate changes on the company's cash position, highlighting the influence of currency fluctuations on financial performance."
     },
     "net_cash_change_growth": {
       "factor": "growthNetChangeInCash",
-      "name": "growthNetChangeInCash",
-      "note": "all open interest"
+      "name": "Growth in Net Change in Cash",
+      "note": "This factor reflects the year-over-year change in the net amount of cash and cash equivalents, highlighting the company's overall liquidity evolution."
     },
     "end_cash_growth": {
       "factor": "growthCashAtEndOfPeriod",
-      "name": "growthCashAtEndOfPeriod",
-      "note": "all open interest"
+      "name": "Growth in Cash at End of Period",
+      "note": "This factor measures the change in the company's cash position at the end of the financial period, indicating its liquidity status at fiscal year-end."
     },
     "begin_cash_growth": {
       "factor": "growthCashAtBeginningOfPeriod",
-      "name": "growthCashAtBeginningOfPeriod",
-      "note": "all open interest"
+      "name": "Growth in Cash at Beginning of Period",
+      "note": "This factor assesses the change in the company's cash position at the beginning of the financial period, providing a baseline for liquidity analysis."
     },
     "op_cash_flow_growth": {
       "factor": "growthOperatingCashFlow",
-      "name": "growthOperatingCashFlow",
-      "note": "all open interest"
+      "name": "Growth in Operating Cash Flow",
+      "note": "This factor evaluates the change in cash generated from core business operations, indicating the company's operational efficiency and cash-generating ability."
     },
     "capex_growth": {
       "factor": "growthCapitalExpenditure",
-      "name": "growthCapitalExpenditure",
-      "note": "all open interest"
+      "name": "Growth in Capital Expenditure",
+      "note": "This factor measures changes in the company's investments in physical assets, reflecting its strategy for maintaining and expanding operations."
     },
     "free_cash_flow_growth": {
       "factor": "growthFreeCashFlow",
-      "name": "growthFreeCashFlow",
-      "note": "all open interest"
+      "name": "Growth in Free Cash Flow",
+      "note": "This factor assesses the change in cash available after accounting for capital expenditures, indicating the company's financial flexibility and ability to generate surplus cash."
     }
   },
   "BalanceSheetStatementGrowth": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Balance Sheet Statement Growth Analysis",
+      "note": "This section provides insights into the growth trends of a company's total assets, liabilities, and shareholder equity over specific periods. It is vital for assessing a company's financial stability and long-term sustainability.",
       "metaclass": "ClientMeta",
       "api": "api/v3/balance-sheet-statement-growth",
       "params": {
@@ -2307,204 +2307,204 @@
     },
     "cash_and_equiv_growth": {
       "factor": "growthCashAndCashEquivalents",
-      "name": "growthCashAndCashEquivalents",
-      "note": "all open interest"
+      "name": "Growth in Cash and Cash Equivalents",
+      "note": "This factor measures the year-over-year change in the company's cash and cash equivalents, indicating its liquidity changes and short-term financial stability."
     },
     "short_term_inv_growth": {
       "factor": "growthShortTermInvestments",
-      "name": "growthShortTermInvestments",
-      "note": "all open interest"
+      "name": "Growth in Short Term Investments",
+      "note": "This factor assesses the change in the company's short-term investments, reflecting its investment strategy and liquidity management."
     },
     "cash_and_short_term_inv_growth": {
       "factor": "growthCashAndShortTermInvestments",
-      "name": "growthCashAndShortTermInvestments",
-      "note": "all open interest"
+      "name": "Growth in Cash and Short Term Investments",
+      "note": "This factor evaluates the combined growth of the company's cash and short-term investments, indicating its overall liquidity and investment choices."
     },
     "net_receivables_growth": {
       "factor": "growthNetReceivables",
-      "name": "growthNetReceivables",
-      "note": "all open interest"
+      "name": "Growth in Net Receivables",
+      "note": "This factor measures changes in the total amount owed to the company by its customers, indicating the efficiency of its credit and collections processes."
     },
     "inventory_growth": {
       "factor": "growthInventory",
-      "name": "growthInventory",
-      "note": "all open interest"
+      "name": "Growth in Inventory",
+      "note": "This factor assesses the change in the company's inventory levels, providing insights into its inventory management, production, and sales strategies."
     },
     "other_current_assets_growth": {
       "factor": "growthOtherCurrentAssets",
-      "name": "growthOtherCurrentAssets",
-      "note": "all open interest"
+      "name": "Growth in Other Current Assets",
+      "note": "This factor indicates changes in other current assets, reflecting shifts in various short-term assets not classified under more specific categories."
     },
     "total_current_assets_growth": {
       "factor": "growthTotalCurrentAssets",
-      "name": "growthTotalCurrentAssets",
-      "note": "all open interest"
+      "name": "Growth in Total Current Assets",
+      "note": "This factor evaluates the overall change in the company's total current assets, indicating its short-term financial health and operational efficiency."
     },
     "ppe_net_growth": {
       "factor": "growthPropertyPlantEquipmentNet",
-      "name": "growthPropertyPlantEquipmentNet",
-      "note": "all open interest"
+      "name": "Growth in Property, Plant, and Equipment Net",
+      "note": "This factor measures the change in the net value of the company's property, plant, and equipment, reflecting its investment in long-term assets and capital expenditure trends."
     },
     "goodwill_growth": {
       "factor": "growthGoodwill",
-      "name": "growthGoodwill",
-      "note": "all open interest"
+      "name": "Growth in Goodwill",
+      "note": "This factor reflects the year-over-year change in goodwill, indicating alterations in the company's valuation of acquired assets beyond their tangible net worth."
     },
     "intangible_assets_growth": {
       "factor": "growthIntangibleAssets",
-      "name": "growthIntangibleAssets",
-      "note": "all open interest"
+      "name": "Growth in Intangible Assets",
+      "note": "This factor measures changes in the company's intangible assets, such as patents and trademarks, highlighting its investment in non-physical assets."
     },
     "goodwill_intangible_assets_growth": {
       "factor": "growthGoodwillAndIntangibleAssets",
-      "name": "growthGoodwillAndIntangibleAssets",
-      "note": "all open interest"
+      "name": "Growth in Goodwill and Intangible Assets",
+      "note": "This factor assesses the combined growth in both goodwill and intangible assets, offering insights into the company's overall valuation of non-physical assets."
     },
     "long_term_investments_growth": {
       "factor": "growthLongTermInvestments",
-      "name": "growthLongTermInvestments",
-      "note": "all open interest"
+      "name": "Growth in Long Term Investments",
+      "note": "This factor evaluates changes in the company's long-term investments, indicating its strategy and commitment to future growth prospects."
     },
     "tax_assets_growth": {
       "factor": "growthTaxAssets",
-      "name": "growthTaxAssets",
-      "note": "all open interest"
+      "name": "Growth in Tax Assets",
+      "note": "This factor measures changes in the company's tax assets, reflecting its expected tax receivables and potential future tax benefits."
     },
     "other_non_current_assets_growth": {
       "factor": "growthOtherNonCurrentAssets",
-      "name": "growthOtherNonCurrentAssets",
-      "note": "all open interest"
+      "name": "Growth in Other Non-Current Assets",
+      "note": "This factor indicates changes in other non-current assets, covering a range of long-term assets not specified under other categories."
     },
     "total_non_current_assets_growth": {
       "factor": "growthTotalNonCurrentAssets",
-      "name": "growthTotalNonCurrentAssets",
-      "note": "all open interest"
+      "name": "Growth in Total Non-Current Assets",
+      "note": "This factor evaluates the overall change in the company's total non-current assets, highlighting its long-term asset management and investment strategies."
     },
     "other_assets_growth": {
       "factor": "growthOtherAssets",
-      "name": "growthOtherAssets",
-      "note": "all open interest"
+      "name": "Growth in Other Assets",
+      "note": "This factor assesses changes in various other assets, encompassing a broad spectrum of assets not included in other specific asset categories."
     },
     "total_assets_growth": {
       "factor": "growthTotalAssets",
-      "name": "growthTotalAssets",
-      "note": "all open interest"
+      "name": "Growth in Total Assets",
+      "note": "This factor measures the year-over-year change in the total assets of the company, reflecting its overall asset accumulation and management strategy."
     },
     "account_payables_growth": {
       "factor": "growthAccountPayables",
-      "name": "growthAccountPayables",
-      "note": "all open interest"
+      "name": "Growth in Accounts Payable",
+      "note": "This factor assesses the change in the company's accounts payable, indicating its short-term debt obligations and payment practices to suppliers."
     },
     "short_term_debt_growth": {
       "factor": "growthShortTermDebt",
-      "name": "growthShortTermDebt",
-      "note": "all open interest"
+      "name": "Growth in Short-Term Debt",
+      "note": "This factor evaluates the change in the company's short-term debt, reflecting its immediate debt repayment obligations and liquidity management."
     },
     "tax_payables_growth": {
       "factor": "growthTaxPayables",
-      "name": "growthTaxPayables",
-      "note": "all open interest"
+      "name": "Growth in Tax Payables",
+      "note": "This factor measures changes in the company's tax liabilities, indicating its upcoming tax obligations and financial planning for taxes."
     },
     "def_revenue_gr": {
       "factor": "growthDeferredRevenue",
-      "name": "growthDeferredRevenue",
-      "note": "all open interest"
+      "name": "Growth in Deferred Revenue",
+      "note": "This factor assesses the change in deferred revenue, reflecting the company's advance earnings and its revenue recognition timing."
     },
     "oth_cur_liab_gr": {
       "factor": "growthOtherCurrentLiabilities",
-      "name": "growthOtherCurrentLiabilities",
-      "note": "all open interest"
+      "name": "Growth in Other Current Liabilities",
+      "note": "This factor indicates changes in other current liabilities, encompassing a variety of short-term financial obligations not specified in other categories."
     },
     "tot_cur_liab_gr": {
       "factor": "growthTotalCurrentLiabilities",
-      "name": "growthTotalCurrentLiabilities",
-      "note": "all open interest"
+      "name": "Growth in Total Current Liabilities",
+      "note": "This factor evaluates the overall change in the company's total current liabilities, indicating its short-term financial health and liability management."
     },
     "long_term_debt_gr": {
       "factor": "growthLongTermDebt",
-      "name": "growthLongTermDebt",
-      "note": "all open interest"
+      "name": "Growth in Long-Term Debt",
+      "note": "This factor measures the change in the company's long-term debt, reflecting its long-term financial obligations and debt strategy."
     },
     "def_rev_non_cur_gr": {
       "factor": "growthDeferredRevenueNonCurrent",
-      "name": "growthDeferredRevenueNonCurrent",
-      "note": "all open interest"
+      "name": "Growth in Deferred Revenue Non-Current",
+      "note": "This factor measures changes in long-term deferred revenue, indicating future revenue to be recognized over an extended period beyond the current fiscal year."
     },
     "def_tax_liab_non_cur_gr": {
       "factor": "growthDeferrredTaxLiabilitiesNonCurrent",
-      "name": "growthDeferrredTaxLiabilitiesNonCurrent",
-      "note": "all open interest"
+      "name": "Growth in Deferred Tax Liabilities Non-Current",
+      "note": "This factor assesses the change in long-term deferred tax liabilities, reflecting the company's future tax obligations arising from temporary timing differences."
     },
     "oth_non_cur_liab_gr": {
       "factor": "growthOtherNonCurrentLiabilities",
-      "name": "growthOtherNonCurrentLiabilities",
-      "note": "all open interest"
+      "name": "Growth in Other Non-Current Liabilities",
+      "note": "This factor evaluates changes in other long-term liabilities not specifically categorized, indicating broader shifts in the company's long-term financial obligations."
     },
     "tot_non_cur_liab_gr": {
       "factor": "growthTotalNonCurrentLiabilities",
-      "name": "growthTotalNonCurrentLiabilities",
-      "note": "all open interest"
+      "name": "Growth in Total Non-Current Liabilities",
+      "note": "This factor measures the year-over-year change in the company's total long-term liabilities, reflecting its overall long-term financial health and obligations."
     },
     "oth_liab_gr": {
       "factor": "growthOtherLiabilities",
-      "name": "growthOtherLiabilities",
-      "note": "all open interest"
+      "name": "Growth in Other Liabilities",
+      "note": "This factor indicates changes in various liabilities that do not fit into standard categories, providing insights into the company's diverse financial commitments."
     },
     "tot_liab_gr": {
       "factor": "growthTotalLiabilities",
-      "name": "growthTotalLiabilities",
-      "note": "all open interest"
+      "name": "Growth in Total Liabilities",
+      "note": "This factor assesses the overall change in the company's total liabilities, indicating its financial stability and ability to manage both short-term and long-term obligations."
     },
     "com_stock_gr": {
       "factor": "growthCommonStock",
-      "name": "growthCommonStock",
-      "note": "all open interest"
+      "name": "Growth in Common Stock",
+      "note": "This factor measures changes in the value of issued common stock, reflecting the company's equity financing activities and shareholder equity alterations."
     },
     "ret_earn_gr": {
       "factor": "growthRetainedEarnings",
-      "name": "growthRetainedEarnings",
-      "note": "all open interest"
+      "name": "Growth in Retained Earnings",
+      "note": "This factor evaluates the change in retained earnings, indicating the accumulation of net income that has been reinvested in the business rather than paid out as dividends."
     },
     "acc_oth_comp_inc_loss_gr": {
       "factor": "growthAccumulatedOtherComprehensiveIncomeLoss",
-      "name": "growthAccumulatedOtherComprehensiveIncomeLoss",
-      "note": "all open interest"
+      "name": "Growth in Accumulated Other Comprehensive Income/Loss",
+      "note": "This factor assesses the year-over-year change in accumulated other comprehensive income or loss, reflecting the non-operational gains or losses that are not included in net income."
     },
     "oth_tot_stk_eq_gr": {
       "factor": "growthOthertotalStockholdersEquity",
-      "name": "growthOthertotalStockholdersEquity",
-      "note": "all open interest"
+      "name": "Growth in Other Total Stockholders' Equity",
+      "note": "This factor measures changes in other components of stockholders' equity, capturing shifts in equity not represented by common stock and retained earnings."
     },
     "tot_stk_eq_gr": {
       "factor": "growthTotalStockholdersEquity",
-      "name": "growthTotalStockholdersEquity",
-      "note": "all open interest"
+      "name": "Growth in Total Stockholders' Equity",
+      "note": "This factor evaluates the overall change in the total equity held by stockholders, indicating the company's net value and financial health from an equity perspective."
     },
     "tot_liab_stk_eq_gr": {
       "factor": "growthTotalLiabilitiesAndStockholdersEquity",
-      "name": "growthTotalLiabilitiesAndStockholdersEquity",
-      "note": "all open interest"
+      "name": "Growth in Total Liabilities and Stockholders' Equity",
+      "note": "This factor reflects the combined change in the company's total liabilities and stockholders' equity, representing the total financing of the company."
     },
     "tot_invest_gr": {
       "factor": "growthTotalInvestments",
-      "name": "growthTotalInvestments",
-      "note": "all open interest"
+      "name": "Growth in Total Investments",
+      "note": "This factor assesses the change in the company's total investment portfolio, indicating its investment strategy and allocation of resources."
     },
     "tot_debt_gr": {
       "factor": "growthTotalDebt",
-      "name": "growthTotalDebt",
-      "note": "all open interest"
+      "name": "Growth in Total Debt",
+      "note": "This factor measures changes in the company's total debt, encompassing both short-term and long-term obligations, highlighting its overall debt management."
     },
     "net_debt_gr": {
       "factor": "growthNetDebt",
-      "name": "growthNetDebt",
-      "note": "all open interest"
+      "name": "Growth in Net Debt",
+      "note": "This factor calculates the change in net debt, which is total debt minus cash and equivalents, providing insight into the company's net financial obligations."
     }
   },
   "IncomeStatementGrowth": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Income Statement Growth Analysis",
+      "note": "This section provides insights into the growth trends of a company's revenue, reflecting its financial performance and profitability over time. It is crucial for evaluating a company's capacity to generate more revenue and manage its operational costs.",
       "metaclass": "ClientMeta",
       "api": "api/v3/income-statement-growth",
       "params": {
@@ -2513,139 +2513,139 @@
     },
     "rev_growth": {
       "factor": "growthRevenue",
-      "name": "growthRevenue",
-      "note": "all open interest"
+      "name": "Growth in Revenue",
+      "note": "This factor measures the year-over-year change in the company's total revenue, indicating its overall sales growth and market performance."
     },
     "cost_of_rev_growth": {
       "factor": "growthCostOfRevenue",
-      "name": "growthCostOfRevenue",
-      "note": "all open interest"
+      "name": "Growth in Cost of Revenue",
+      "note": "This factor assesses changes in the direct costs associated with producing the goods or services sold by the company, reflecting operational efficiency."
     },
     "gross_profit_growth": {
       "factor": "growthGrossProfit",
-      "name": "growthGrossProfit",
-      "note": "all open interest"
+      "name": "Growth in Gross Profit",
+      "note": "This factor evaluates the change in gross profit, which is revenue minus the cost of goods sold, indicating profitability and cost management effectiveness."
     },
     "gross_profit_ratio_growth": {
       "factor": "growthGrossProfitRatio",
-      "name": "growthGrossProfitRatio",
-      "note": "all open interest"
+      "name": "Growth in Gross Profit Ratio",
+      "note": "This factor measures changes in the gross profit margin, reflecting the company's ability to retain a higher percentage of revenue as profit after accounting for the cost of goods sold."
     },
     "rd_exp_growth": {
       "factor": "growthResearchAndDevelopmentExpenses",
-      "name": "growthResearchAndDevelopmentExpenses",
-      "note": "all open interest"
+      "name": "Growth in Research and Development Expenses",
+      "note": "This factor analyzes changes in R&D expenses, indicating the company's investment in innovation and future product development."
     },
     "gen_admin_exp_growth": {
       "factor": "growthGeneralAndAdministrativeExpenses",
-      "name": "growthGeneralAndAdministrativeExpenses",
-      "note": "all open interest"
+      "name": "Growth in General and Administrative Expenses",
+      "note": "This factor measures changes in general and administrative costs, highlighting efficiency in managing overhead expenses."
     },
     "sell_mkt_exp_growth": {
       "factor": "growthSellingAndMarketingExpenses",
-      "name": "growthSellingAndMarketingExpenses",
-      "note": "all open interest"
+      "name": "Growth in Selling and Marketing Expenses",
+      "note": "This factor assesses changes in selling and marketing costs, indicating the company's investment in market expansion and customer acquisition."
     },
     "other_exp_growth": {
       "factor": "growthOtherExpenses",
-      "name": "growthOtherExpenses",
-      "note": "all open interest"
+      "name": "Growth in Other Expenses",
+      "note": "This factor evaluates changes in miscellaneous expenses not categorized under other specific headings, providing insight into various other operational costs."
     },
     "op_exp_growth": {
       "factor": "growthOperatingExpenses",
-      "name": "growthOperatingExpenses",
-      "note": "all open interest"
+      "name": "Growth in Operating Expenses",
+      "note": "This factor indicates the year-over-year change in expenses incurred from the company's primary operations, highlighting its operational cost management."
     },
     "cost_exp_growth": {
       "factor": "growthCostAndExpenses",
-      "name": "growthCostAndExpenses",
-      "note": "all open interest"
+      "name": "Growth in Cost and Expenses",
+      "note": "This factor assesses the overall change in the company's total costs and expenses, reflecting its financial discipline and cost control measures."
     },
     "interest_exp_growth": {
       "factor": "growthInterestExpense",
-      "name": "growthInterestExpense",
-      "note": "all open interest"
+      "name": "Growth in Interest Expense",
+      "note": "This factor measures changes in the cost of debt, indicating how interest payments on borrowed funds are impacting the company's finances."
     },
     "dep_amort_growth": {
       "factor": "growthDepreciationAndAmortization",
-      "name": "growthDepreciationAndAmortization",
-      "note": "all open interest"
+      "name": "Growth in Depreciation and Amortization",
+      "note": "This factor evaluates changes in depreciation and amortization expenses, indicating the company's asset usage and capital investment."
     },
     "ebitda_growth": {
       "factor": "growthEBITDA",
-      "name": "growthEBITDA",
-      "note": "all open interest"
+      "name": "Growth in EBITDA",
+      "note": "This factor reflects the change in Earnings Before Interest, Taxes, Depreciation, and Amortization, providing a proxy for the company's operating profitability."
     },
     "ebitda_ratio_growth": {
       "factor": "growthEBITDARatio",
-      "name": "growthEBITDARatio",
-      "note": "all open interest"
+      "name": "Growth in EBITDA Ratio",
+      "note": "This factor measures changes in the EBITDA margin, reflecting the efficiency of the company's core operations and profitability."
     },
     "op_income_growth": {
       "factor": "growthOperatingIncome",
-      "name": "growthOperatingIncome",
-      "note": "all open interest"
+      "name": "Growth in Operating Income",
+      "note": "This factor indicates changes in the income generated from the company's core business activities, highlighting its core operational profitability."
     },
     "op_income_ratio_growth": {
       "factor": "growthOperatingIncomeRatio",
-      "name": "growthOperatingIncomeRatio",
-      "note": "all open interest"
+      "name": "Growth in Operating Income Ratio",
+      "note": "This factor assesses changes in the operating income margin, providing insights into the profitability of the company's primary business operations."
     },
     "other_inc_exp_net_growth": {
       "factor": "growthTotalOtherIncomeExpensesNet",
-      "name": "growthTotalOtherIncomeExpensesNet",
-      "note": "all open interest"
+      "name": "Growth in Total Other Income/Expenses Net",
+      "note": "This factor measures changes in the net amount of other incomes or expenses that are not directly related to the company's primary operations."
     },
     "income_bfr_tax_growth": {
       "factor": "growthIncomeBeforeTax",
-      "name": "growthIncomeBeforeTax",
-      "note": "all open interest"
+      "name": "Growth in Income Before Tax",
+      "note": "This factor assesses the change in earnings before the deduction of tax expenses, indicating the company's profitability before tax impact."
     },
     "income_bfr_tax_ratio_growth": {
       "factor": "growthIncomeBeforeTaxRatio",
-      "name": "growthIncomeBeforeTaxRatio",
-      "note": "all open interest"
+      "name": "Growth in Income Before Tax Ratio",
+      "note": "This factor evaluates the change in the ratio of income before tax to revenue, reflecting the company's pre-tax profitability efficiency."
     },
     "income_tax_exp_growth": {
       "factor": "growthIncomeTaxExpense",
-      "name": "growthIncomeTaxExpense",
-      "note": "all open interest"
+      "name": "Growth in Income Tax Expense",
+      "note": "This factor indicates changes in the company's tax expenses, reflecting its tax obligations and effective tax planning."
     },
     "net_income_growth": {
       "factor": "growthNetIncome",
-      "name": "growthNetIncome",
-      "note": "all open interest"
+      "name": "Growth in Net Income",
+      "note": "This factor measures the year-over-year change in net income, highlighting the company's overall profitability after accounting for all expenses and taxes."
     },
     "net_income_ratio_growth": {
       "factor": "growthNetIncomeRatio",
-      "name": "growthNetIncomeRatio",
-      "note": "all open interest"
+      "name": "Growth in Net Income Ratio",
+      "note": "This factor evaluates changes in the net income margin, indicating how much of the company's revenue is converted into net profit."
     },
     "eps_growth": {
       "factor": "growthEPS",
-      "name": "growthEPS",
-      "note": "all open interest"
+      "name": "Growth in Earnings Per Share (EPS)",
+      "note": "This factor assesses the change in earnings per share, reflecting the company's profitability on a per-share basis."
     },
     "eps_diluted_growth": {
       "factor": "growthEPSDiluted",
-      "name": "growthEPSDiluted",
-      "note": "all open interest"
+      "name": "Growth in Diluted Earnings Per Share",
+      "note": "This factor measures changes in diluted earnings per share, which considers potential shares from conversions or stock options, providing a comprehensive view of earnings."
     },
     "avg_shares_out_growth": {
       "factor": "growthWeightedAverageShsOut",
-      "name": "growthWeightedAverageShsOut",
-      "note": "all open interest"
+      "name": "Growth in Weighted Average Shares Outstanding",
+      "note": "This factor measures the year-over-year change in the weighted average number of shares outstanding, reflecting changes in the company's equity structure and shareholder base."
     },
     "avg_shares_out_dil_growth": {
       "factor": "growthWeightedAverageShsOutDil",
-      "name": "growthWeightedAverageShsOutDil",
-      "note": "all open interest"
+      "name": "Growth in Weighted Average Shares Outstanding Diluted",
+      "note": "This factor assesses the change in the diluted weighted average number of shares outstanding, which includes the effects of convertible securities, options, and other potential shares."
     }
   },
   "FinancialGrowth": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Company Financial Growth Analysis",
+      "note": "This section provides a comprehensive overview of a company's financial growth rate, encompassing aspects such as overall financial performance improvement, cash flow growth, and income statement dynamics. It serves as a crucial indicator for assessing whether a company is becoming more financially robust or facing declining performance.",
       "metaclass": "ClientMeta",
       "api": "api/v3/financial-growth",
       "params": {
@@ -2654,179 +2654,179 @@
     },
     "rev_growth": {
       "factor": "revenueGrowth",
-      "name": "revenueGrowth",
-      "note": "all open interest"
+      "name": "Revenue Growth",
+      "note": "This factor measures the year-over-year percentage increase in a company's revenue, indicating its sales growth and market expansion."
     },
     "gross_profit_growth": {
       "factor": "grossProfitGrowth",
-      "name": "grossProfitGrowth",
-      "note": "all open interest"
+      "name": "Gross Profit Growth",
+      "note": "This factor evaluates the annual growth in gross profit, reflecting the company's efficiency in managing production costs and pricing strategies."
     },
     "ebit_growth": {
       "factor": "ebitgrowth",
-      "name": "ebitgrowth",
-      "note": "all open interest"
+      "name": "EBIT Growth",
+      "note": "This factor assesses the change in Earnings Before Interest and Taxes, highlighting the company's operational profitability before financial and tax impacts."
     },
     "op_income_growth": {
       "factor": "operatingIncomeGrowth",
-      "name": "operatingIncomeGrowth",
-      "note": "all open interest"
+      "name": "Operating Income Growth",
+      "note": "This factor indicates the growth in income generated from the company's core business operations, showing its fundamental earning power."
     },
     "net_income_growth": {
       "factor": "netIncomeGrowth",
-      "name": "netIncomeGrowth",
-      "note": "all open interest"
+      "name": "Net Income Growth",
+      "note": "This factor measures the change in net income, indicating the company's overall profitability after accounting for all expenses and taxes."
     },
     "eps_growth": {
       "factor": "epsgrowth",
-      "name": "epsgrowth",
-      "note": "all open interest"
+      "name": "EPS Growth",
+      "note": "This factor evaluates the growth in Earnings Per Share, reflecting the company's profitability on a per-share basis, an important metric for investors."
     },
     "eps_diluted_growth": {
       "factor": "epsdilutedGrowth",
-      "name": "epsdilutedGrowth",
-      "note": "all open interest"
+      "name": "Diluted EPS Growth",
+      "note": "This factor assesses the change in diluted Earnings Per Share, which considers potential shares from conversions or stock options, offering a comprehensive view of earnings."
     },
     "avg_shares_growth": {
       "factor": "weightedAverageSharesGrowth",
-      "name": "weightedAverageSharesGrowth",
-      "note": "all open interest"
+      "name": "Weighted Average Shares Growth",
+      "note": "This factor indicates the change in the weighted average number of shares outstanding, showing how the company's equity structure and shareholder base are evolving."
     },
     "avg_shares_diluted_growth": {
       "factor": "weightedAverageSharesDilutedGrowth",
-      "name": "weightedAverageSharesDilutedGrowth",
-      "note": "all open interest"
+      "name": "Weighted Average Shares Diluted Growth",
+      "note": "This factor measures the change in the diluted weighted average number of shares outstanding, reflecting the potential increase in shares due to convertible securities or stock options."
     },
     "div_per_share_growth": {
       "factor": "dividendsperShareGrowth",
-      "name": "dividendsperShareGrowth",
-      "note": "all open interest"
+      "name": "Dividends per Share Growth",
+      "note": "This factor assesses the growth in dividends paid per share, indicating the company's ability to increase shareholder value through dividend payments."
     },
     "op_cash_flow_growth": {
       "factor": "operatingCashFlowGrowth",
-      "name": "operatingCashFlowGrowth",
-      "note": "all open interest"
+      "name": "Operating Cash Flow Growth",
+      "note": "This factor evaluates the change in cash generated from operating activities, highlighting the company's efficiency in generating cash from its core business."
     },
     "free_cash_flow_growth": {
       "factor": "freeCashFlowGrowth",
-      "name": "freeCashFlowGrowth",
-      "note": "all open interest"
+      "name": "Free Cash Flow Growth",
+      "note": "This factor measures the change in free cash flow, which is operating cash flow minus capital expenditures, indicating the company's ability to generate surplus cash for investments, dividends, or debt repayment."
     },
     "ten_y_rev_growth_per_share": {
       "factor": "tenYRevenueGrowthPerShare",
-      "name": "tenYRevenueGrowthPerShare",
-      "note": "all open interest"
+      "name": "Ten-Year Revenue Growth Per Share",
+      "note": "This factor tracks the decade-long growth in revenue per share, providing insights into the company's long-term revenue trends and market expansion."
     },
     "five_y_rev_growth_per_share": {
       "factor": "fiveYRevenueGrowthPerShare",
-      "name": "fiveYRevenueGrowthPerShare",
-      "note": "all open interest"
+      "name": "Five-Year Revenue Growth Per Share",
+      "note": "This factor measures the five-year growth trajectory in revenue per share, offering a mid-term perspective on the company's revenue expansion."
     },
     "three_y_rev_growth_per_share": {
       "factor": "threeYRevenueGrowthPerShare",
-      "name": "threeYRevenueGrowthPerShare",
-      "note": "all open interest"
+      "name": "Three-Year Revenue Growth Per Share",
+      "note": "This factor assesses the three-year trend in revenue per share, giving insights into the company's short to mid-term market performance."
     },
     "ten_y_op_cf_growth_per_share": {
       "factor": "tenYOperatingCFGrowthPerShare",
-      "name": "tenYOperatingCFGrowthPerShare",
-      "note": "all open interest"
+      "name": "Ten-Year Operating Cash Flow Growth Per Share",
+      "note": "This factor evaluates the decade-long growth in operating cash flow per share, indicating the company's long-term ability to generate cash from its primary business operations."
     },
     "five_y_op_cf_growth_per_share": {
       "factor": "fiveYOperatingCFGrowthPerShare",
-      "name": "fiveYOperatingCFGrowthPerShare",
-      "note": "all open interest"
+      "name": "Five-Year Operating Cash Flow Growth Per Share",
+      "note": "This factor assesses the five-year growth in operating cash flow per share, revealing the company's mid-term ability to generate cash from its core operations."
     },
     "three_y_op_cf_growth_per_share": {
       "factor": "threeYOperatingCFGrowthPerShare",
-      "name": "threeYOperatingCFGrowthPerShare",
-      "note": "all open interest"
+      "name": "Three-Year Operating Cash Flow Growth Per Share",
+      "note": "This factor evaluates the three-year trend in operating cash flow per share, indicating the company's short-term operational cash efficiency."
     },
     "ten_y_net_income_growth_per_share": {
       "factor": "tenYNetIncomeGrowthPerShare",
-      "name": "tenYNetIncomeGrowthPerShare",
-      "note": "all open interest"
+      "name": "Ten-Year Net Income Growth Per Share",
+      "note": "This factor tracks the decade-long growth in net income per share, showing the company's long-term profitability trends."
     },
     "five_y_net_income_growth_per_share": {
       "factor": "fiveYNetIncomeGrowthPerShare",
-      "name": "fiveYNetIncomeGrowthPerShare",
-      "note": "all open interest"
+      "name": "Five-Year Net Income Growth Per Share",
+      "note": "This factor measures the five-year trend in net income per share, providing insights into the company's mid-term earnings stability and growth."
     },
     "three_y_net_income_growth_per_share": {
       "factor": "threeYNetIncomeGrowthPerShare",
-      "name": "threeYNetIncomeGrowthPerShare",
-      "note": "all open interest"
+      "name": "Three-Year Net Income Growth Per Share",
+      "note": "This factor assesses the three-year growth in net income per share, indicating the company's short-term profitability."
     },
     "ten_y_shareholders_equity_growth_per_share": {
       "factor": "tenYShareholdersEquityGrowthPerShare",
-      "name": "tenYShareholdersEquityGrowthPerShare",
-      "note": "all open interest"
+      "name": "Ten-Year Shareholders' Equity Growth Per Share",
+      "note": "This factor evaluates the decade-long growth in shareholders' equity per share, reflecting the company's long-term financial stability and value to shareholders."
     },
     "five_y_shareholders_equity_growth_per_share": {
       "factor": "fiveYShareholdersEquityGrowthPerShare",
-      "name": "fiveYShareholdersEquityGrowthPerShare",
-      "note": "all open interest"
+      "name": "Five-Year Shareholders' Equity Growth Per Share",
+      "note": "This factor measures the mid-term trend in shareholders' equity per share, indicating changes in the company's financial strength over five years."
     },
     "three_y_shareholders_equity_growth_per_share": {
       "factor": "threeYShareholdersEquityGrowthPerShare",
-      "name": "threeYShareholdersEquityGrowthPerShare",
-      "note": "all open interest"
+      "name": "Three-Year Shareholders' Equity Growth Per Share",
+      "note": "This factor assesses the three-year trend in shareholders' equity per share, revealing the company's short-term changes in equity value."
     },
     "ten_y_div_per_share_growth_per_share": {
       "factor": "tenYDividendperShareGrowthPerShare",
-      "name": "tenYDividendperShareGrowthPerShare",
-      "note": "all open interest"
+      "name": "Ten-Year Dividend per Share Growth Per Share",
+      "note": "This factor measures the decade-long trend in dividend growth per share, indicating the company's long-term commitment to returning value to shareholders."
     },
     "five_y_div_per_share_growth_per_share": {
       "factor": "fiveYDividendperShareGrowthPerShare",
-      "name": "fiveYDividendperShareGrowthPerShare",
-      "note": "all open interest"
+      "name": "Five-Year Dividend per Share Growth Per Share",
+      "note": "This factor evaluates the five-year growth in dividends per share, showing the company's mid-term dividend distribution strategy."
     },
     "three_y_div_per_share_growth_per_share": {
       "factor": "threeYDividendperShareGrowthPerShare",
-      "name": "threeYDividendperShareGrowthPerShare",
-      "note": "all open interest"
+      "name": "Three-Year Dividend per Share Growth Per Share",
+      "note": "This factor assesses the three-year trend in dividend growth per share, reflecting the company's short-term approach to shareholder returns."
     },
     "receivables_growth": {
       "factor": "receivablesGrowth",
-      "name": "receivablesGrowth",
-      "note": "all open interest"
+      "name": "Receivables Growth",
+      "note": "This factor indicates the change in the company's receivables, showing how its credit sales and collections are evolving over time."
     },
     "inventory_growth": {
       "factor": "inventoryGrowth",
-      "name": "inventoryGrowth",
-      "note": "all open interest"
+      "name": "Inventory Growth",
+      "note": "This factor measures changes in inventory levels, providing insights into the company's production, sales, and supply chain management."
     },
     "asset_growth": {
       "factor": "assetGrowth",
-      "name": "assetGrowth",
-      "note": "all open interest"
+      "name": "Asset Growth",
+      "note": "This factor assesses the year-over-year growth in total assets, indicating the company's overall asset accumulation and investment strategy."
     },
     "book_value_per_share_growth": {
       "factor": "bookValueperShareGrowth",
-      "name": "bookValueperShareGrowth",
-      "note": "all open interest"
+      "name": "Book Value per Share Growth",
+      "note": "This factor evaluates the change in book value per share, reflecting the company's evolving net asset value from a shareholder's perspective."
     },
     "debt_growth": {
       "factor": "debtGrowth",
-      "name": "debtGrowth",
-      "note": "all open interest"
+      "name": "Debt Growth",
+      "note": "This factor measures the change in total debt, indicating the company's debt management and financial leverage strategy."
     },
     "rd_expense_growth": {
       "factor": "rdexpenseGrowth",
-      "name": "rdexpenseGrowth",
-      "note": "all open interest"
+      "name": "R&D Expense Growth",
+      "note": "This factor measures the year-over-year change in research and development expenses, indicating the company's commitment to innovation and development of new products or technologies."
     },
     "sga_expenses_growth": {
       "factor": "sgaexpensesGrowth",
-      "name": "sgaexpensesGrowth",
-      "note": "all open interest"
+      "name": "SGA Expenses Growth",
+      "note": "This factor evaluates the change in selling, general, and administrative expenses, highlighting how the company's operational and overhead costs are evolving."
     }
   },
   "AnalystEstimates": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Analyst Estimates Data",
+      "note": "This section provides access to financial analysts' estimates on key financial metrics for companies, offering insights into future performance predictions and market expectations.",
       "metaclass": "ClientMeta",
       "api": "api/v3/analyst-estimates",
       "params": {
@@ -2835,283 +2835,270 @@
     },
     "revenue_low": {
       "factor": "estimatedRevenueLow",
-      "name": "estimatedRevenueLow",
-      "note": "all open interest"
+      "name": "Estimated Revenue Low",
+      "note": "This factor represents the lowest revenue estimate provided by financial analysts, indicating a conservative view of the company's future revenue potential."
     },
     "revenue_high": {
       "factor": "estimatedRevenueHigh",
-      "name": "estimatedRevenueHigh",
-      "note": "all open interest"
+      "name": "Estimated Revenue High",
+      "note": "This factor indicates the highest revenue estimate from analysts, reflecting an optimistic outlook on the company's future revenue."
     },
     "revenue_avg": {
       "factor": "estimatedRevenueAvg",
-      "name": "estimatedRevenueAvg",
-      "note": "all open interest"
+      "name": "Estimated Revenue Average",
+      "note": "This factor measures the average of all revenue estimates from financial analysts, providing a balanced view of the company's expected revenue."
     },
     "ebitda_low": {
       "factor": "estimatedEbitdaLow",
-      "name": "estimatedEbitdaLow",
-      "note": "all open interest"
+      "name": "Estimated EBITDA Low",
+      "note": "This factor represents the lowest EBITDA (Earnings Before Interest, Taxes, Depreciation, and Amortization) estimate, suggesting a conservative view of the company's operational profitability."
     },
     "ebitda_high": {
       "factor": "estimatedEbitdaHigh",
-      "name": "estimatedEbitdaHigh",
-      "note": "all open interest"
+      "name": "Estimated EBITDA High",
+      "note": "This factor indicates the highest EBITDA estimate, showing an optimistic forecast of the company's operational earnings."
     },
     "ebitda_avg": {
       "factor": "estimatedEbitdaAvg",
-      "name": "estimatedEbitdaAvg",
-      "note": "all open interest"
+      "name": "Estimated EBITDA Average",
+      "note": "This factor calculates the average of all EBITDA estimates, offering a more moderate perspective on the company's operational earnings potential."
     },
     "ebit_low": {
       "factor": "estimatedEbitLow",
-      "name": "estimatedEbitLow",
-      "note": "all open interest"
+      "name": "Estimated EBIT Low",
+      "note": "This factor provides the lowest estimate for EBIT (Earnings Before Interest and Taxes), indicating a conservative assessment of the company's operational income."
     },
     "ebit_high": {
       "factor": "estimatedEbitHigh",
-      "name": "estimatedEbitHigh",
-      "note": "all open interest"
+      "name": "Estimated EBIT High",
+      "note": "This factor shows the highest EBIT estimate, reflecting an optimistic view of the company's earnings before interest and taxes."
     },
     "ebit_avg": {
       "factor": "estimatedEbitAvg",
-      "name": "estimatedEbitAvg",
-      "note": "all open interest"
+      "name": "Estimated EBIT Average",
+      "note": "This factor calculates the average of all EBIT (Earnings Before Interest and Taxes) estimates, providing a balanced view of the company's operational income expectations."
     },
     "net_income_low": {
       "factor": "estimatedNetIncomeLow",
-      "name": "estimatedNetIncomeLow",
-      "note": "all open interest"
+      "name": "Estimated Net Income Low",
+      "note": "This factor represents the lowest estimate of the company's net income, reflecting a conservative forecast of the company's profitability."
     },
     "net_income_high": {
       "factor": "estimatedNetIncomeHigh",
-      "name": "estimatedNetIncomeHigh",
-      "note": "all open interest"
+      "name": "Estimated Net Income High",
+      "note": "This factor indicates the highest estimate of net income, showing an optimistic projection of the company's profitability."
     },
     "net_income_avg": {
       "factor": "estimatedNetIncomeAvg",
-      "name": "estimatedNetIncomeAvg",
-      "note": "all open interest"
+      "name": "Estimated Net Income Average",
+      "note": "This factor measures the average of all net income estimates, offering a moderate perspective on the company's expected profitability."
     },
     "sga_expense_low": {
       "factor": "estimatedSgaExpenseLow",
-      "name": "estimatedSgaExpenseLow",
-      "note": "all open interest"
+      "name": "Estimated SGA Expense Low",
+      "note": "This factor provides the lowest estimate for selling, general, and administrative expenses, suggesting a conservative view of the company's operational costs."
     },
     "sga_expense_high": {
       "factor": "estimatedSgaExpenseHigh",
-      "name": "estimatedSgaExpenseHigh",
-      "note": "all open interest"
+      "name": "Estimated SGA Expense High",
+      "note": "This factor indicates the highest estimate of SGA expenses, reflecting an optimistic outlook on operational expenditures."
     },
     "sga_expense_avg": {
       "factor": "estimatedSgaExpenseAvg",
-      "name": "estimatedSgaExpenseAvg",
-      "note": "all open interest"
+      "name": "Estimated SGA Expense Average",
+      "note": "This factor calculates the average of all SGA expense estimates, presenting a balanced view of the company's expected operational costs."
     },
     "eps_avg": {
       "factor": "estimatedEpsAvg",
-      "name": "estimatedEpsAvg",
-      "note": "all open interest"
+      "name": "Estimated EPS Average",
+      "note": "This factor evaluates the average estimate of Earnings Per Share, providing an overall perspective on the company's expected earnings relative to its shares."
     },
     "eps_high": {
       "factor": "estimatedEpsHigh",
-      "name": "estimatedEpsHigh",
-      "note": "all open interest"
+      "name": "Estimated EPS High",
+      "note": "This factor indicates the highest estimate of Earnings Per Share, showing the most optimistic projection of the company's earnings relative to its shares."
     },
     "eps_low": {
       "factor": "estimatedEpsLow",
-      "name": "estimatedEpsLow",
-      "note": "all open interest"
+      "name": "Estimated EPS Low",
+      "note": "This factor represents the lowest estimate of Earnings Per Share, reflecting a conservative view of the company's potential earnings per share."
     }
   },
   "ReportedIncomeStatements": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Reported Income Statements Data",
+      "note": "This section includes actual income statements as reported by companies, offering an unadjusted view of their financial performance. These statements are crucial for analyzing the company's financial health, operational efficiency, and profitability.",
       "metaclass": "ClientMeta",
       "api": "api/v3/income-statement-as-reported"
     },
     "cost_goods_services": {
       "factor": "costofgoodsandservicessold",
-      "name": "costofgoodsandservicessold",
-      "note": "all open interest"
+      "name": "Cost of Goods and Services Sold",
+      "note": "This factor represents the total cost incurred for the goods sold and services provided, reflecting the direct expenses related to production and service delivery."
     },
     "net_income": {
       "factor": "netincomeloss",
-      "name": "netincomeloss",
-      "note": "all open interest"
+      "name": "Net Income/Loss",
+      "note": "This factor indicates the company's net profit or loss, calculated as total revenue minus total expenses, taxes, and costs, providing a comprehensive view of financial performance."
     },
     "rd_expense": {
       "factor": "researchanddevelopmentexpense",
-      "name": "researchanddevelopmentexpense",
-      "note": "all open interest"
+      "name": "Research and Development Expense",
+      "note": "This factor measures the company's investment in research and development, indicating its commitment to innovation and future growth."
     },
     "gross_profit": {
       "factor": "grossprofit",
-      "name": "grossprofit",
-      "note": "all open interest"
+      "name": "Gross Profit",
+      "note": "This factor assesses the difference between revenue and the cost of goods sold, reflecting the company's ability to generate profit from sales before other expenses."
     },
     "aoci_reclass_sec": {
       "factor": "othercomprehensiveincomelossreclassificationadjustmentfromaociforsaleofsecuritiesnetoftax",
-      "name": "othercomprehensiveincomelossreclassificationadjustmentfromaociforsaleofsecuritiesnetoftax",
-      "note": "all open interest"
+      "name": "OCI Reclassification Adjustment for Sale of Securities",
+      "note": "This factor indicates the adjustments to other comprehensive income for the sale of securities, net of tax, reflecting changes in equity from non-operational activities."
     },
     "aoci_afs_sec_adj": {
       "factor": "othercomprehensiveincomelossavailableforsalesecuritiesadjustmentnetoftax",
-      "name": "othercomprehensiveincomelossavailableforsalesecuritiesadjustmentnetoftax",
-      "note": "all open interest"
+      "name": "OCI for Available-for-Sale Securities Adjustment",
+      "note": "This factor represents changes in other comprehensive income from available-for-sale securities, adjusted for tax effects."
     },
     "aoci_deriv_gain_loss": {
       "factor": "othercomprehensiveincomelossderivativeinstrumentgainlossbeforereclassificationaftertax",
-      "name": "othercomprehensiveincomelossderivativeinstrumentgainlossbeforereclassificationaftertax",
-      "note": "all open interest"
+      "name": "OCI Derivative Instrument Gain/Loss Before Reclassification",
+      "note": "This factor assesses the gain or loss on derivative instruments in other comprehensive income before any reclassification adjustments, after tax."
     },
     "aoci_forex_adj": {
       "factor": "othercomprehensiveincomelossforeigncurrencytransactionandtranslationadjustmentnetoftax",
-      "name": "othercomprehensiveincomelossforeigncurrencytransactionandtranslationadjustmentnetoftax",
-      "note": "all open interest"
+      "name": "OCI Foreign Currency Transaction and Translation Adjustment",
+      "note": "This factor indicates the adjustments in other comprehensive income for foreign currency transactions and translation, net of tax, showing the impact of currency fluctuations on equity."
     },
     "avg_diluted_shares": {
       "factor": "weightedaveragenumberofdilutedsharesoutstanding",
-      "name": "weightedaveragenumberofdilutedsharesoutstanding",
-      "note": "all open interest"
+      "name": "Weighted Average Number of Diluted Shares Outstanding",
+      "note": "This factor measures the weighted average number of diluted shares outstanding, reflecting the potential increase in shares due to convertible securities or stock options."
     },
     "avg_basic_shares": {
       "factor": "weightedaveragenumberofsharesoutstandingbasic",
-      "name": "weightedaveragenumberofsharesoutstandingbasic",
-      "note": "all open interest"
+      "name": "Weighted Average Number of Shares Outstanding Basic",
+      "note": "This factor indicates the weighted average number of basic shares outstanding, representing the average share count without considering potential dilution from securities like options or convertible shares."
     },
     "op_income_loss": {
       "factor": "operatingincomeloss",
-      "name": "operatingincomeloss",
-      "note": "all open interest"
+      "name": "Operating Income/Loss",
+      "note": "This factor measures the company's profit or loss from core business operations, excluding non-operating income and expenses, taxes, and interest."
     },
     "non_op_income_exp": {
       "factor": "nonoperatingincomeexpense",
-      "name": "nonoperatingincomeexpense",
-      "note": "all open interest"
+      "name": "Non-Operating Income/Expense",
+      "note": "This factor represents income or expenses arising from non-core business activities, such as investment gains or losses, interest income, and other non-operational financial activities."
     },
     "income_loss_pre_tax": {
       "factor": "incomelossfromcontinuingoperationsbeforeincometaxesextraordinaryitemsnoncontrollinginterest",
-      "name": "incomelossfromcontinuingoperationsbeforeincometaxesextraordinaryitemsnoncontrollinginterest",
-      "note": "all open interest"
+      "name": "Income/Loss from Continuing Operations Before Taxes",
+      "note": "This factor assesses the company's earnings or losses from ongoing operations before accounting for taxes, extraordinary items, and interests of non-controlling entities."
     },
     "eps_basic": {
       "factor": "earningspersharebasic",
-      "name": "earningspersharebasic",
-      "note": "all open interest"
+      "name": "Earnings Per Share Basic",
+      "note": "This factor indicates basic earnings per share, calculated as net income divided by the number of basic shares outstanding, offering a straightforward view of profitability on a per-share basis."
     },
     "tax_exp_benefit": {
       "factor": "incometaxexpensebenefit",
-      "name": "incometaxexpensebenefit",
-      "note": "all open interest"
+      "name": "Income Tax Expense/Benefit",
+      "note": "This factor measures the total income tax expense or benefit incurred by the company, reflecting its tax obligations or savings."
     },
     "aoci_unrealized_gl": {
       "factor": "othercomprehensiveincomeunrealizedholdinggainlossonsecuritiesarisingduringperiodnetoftax",
-      "name": "othercomprehensiveincomeunrealizedholdinggainlossonsecuritiesarisingduringperiodnetoftax",
-      "note": "all open interest"
+      "name": "Other Comprehensive Income - Unrealized Gain/Loss on Securities",
+      "note": "This factor shows unrealized gains or losses on securities recorded in other comprehensive income, net of tax, representing changes in the fair value of these investments."
     },
     "revenue_ex_tax": {
       "factor": "revenuefromcontractwithcustomerexcludingassessedtax",
-      "name": "revenuefromcontractwithcustomerexcludingassessedtax",
-      "note": "all open interest"
+      "name": "Revenue from Contract with Customer Excluding Assessed Tax",
+      "note": "This factor measures revenue generated from customer contracts, excluding any assessed taxes, providing insight into the company's core revenue streams."
     },
     "eps_diluted": {
       "factor": "earningspersharediluted",
-      "name": "earningspersharediluted",
-      "note": "all open interest"
+      "name": "Earnings Per Share Diluted",
+      "note": "This factor indicates the diluted earnings per share, which accounts for potential shares that could be issued through convertible securities or stock options, providing a comprehensive view of the company's earnings per share."
     },
     "op_expenses": {
       "factor": "operatingexpenses",
-      "name": "operatingexpenses",
-      "note": "all open interest"
+      "name": "Operating Expenses",
+      "note": "This factor measures the total expenses incurred in the company's core business operations, excluding cost of goods sold, to provide insight into the operational cost management."
     },
     "aoci_deriv_post_reclass": {
       "factor": "othercomprehensiveincomelossderivativeinstrumentgainlossafterreclassificationandtax",
-      "name": "othercomprehensiveincomelossderivativeinstrumentgainlossafterreclassificationandtax",
-      "note": "all open interest"
+      "name": "OCI Derivative Instrument Gain/Loss After Reclassification and Tax",
+      "note": "This factor assesses the net change in other comprehensive income from derivative instruments after reclassification adjustments and tax considerations."
     },
     "sga_expense": {
       "factor": "sellinggeneralandadministrativeexpense",
-      "name": "sellinggeneralandadministrativeexpense",
-      "note": "all open interest"
+      "name": "Selling, General, and Administrative Expense",
+      "note": "This factor represents the total expenses related to selling activities, general operations, and administrative tasks, providing an overview of the company's operational overhead."
     },
     "aoci_deriv_reclass_post_tax": {
       "factor": "othercomprehensiveincomelossderivativeinstrumentgainlossreclassificationaftertax",
-      "name": "othercomprehensiveincomelossderivativeinstrumentgainlossreclassificationaftertax",
-      "note": "all open interest"
+      "name": "OCI Derivative Instrument Gain/Loss Reclassification After Tax",
+      "note": "This factor evaluates the effects of reclassifying gains or losses on derivative instruments in other comprehensive income, after accounting for taxes."
     },
     "aoci_loss_parent": {
       "factor": "othercomprehensiveincomelossnetoftaxportionattributabletoparent",
-      "name": "othercomprehensiveincomelossnetoftaxportionattributabletoparent",
-      "note": "all open interest"
+      "name": "OCI Net of Tax Portion Attributable to Parent",
+      "note": "This factor measures the portion of other comprehensive income, net of taxes, which is attributable to the parent company, reflecting the parent's share of comprehensive income."
     },
     "comp_income_post_tax": {
       "factor": "comprehensiveincomenetoftax",
-      "name": "comprehensiveincomenetoftax",
-      "note": "all open interest"
+      "name": "Comprehensive Income Net of Tax",
+      "note": "This factor indicates the total comprehensive income for the period, net of taxes, encompassing all components of comprehensive income, including net income and other comprehensive income."
     }
   },
   "CompanyRating": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Company Credit Rating Data",
+      "note": "This section provides data related to a company's credit rating, offering insights into its financial stability and creditworthiness. The data encompasses historical and real-time credit ratings, reflecting the company's financial health over time.",
       "metaclass": "ClientMeta",
       "api": "api/v3/historical-rating"
     },
     "score": {
       "factor": "ratingScore",
-      "name": "ratingScore",
-      "note": "all open interest"
+      "name": "Rating Score",
+      "note": "This factor represents the overall credit rating score assigned to the company, providing a comprehensive assessment of its financial health and creditworthiness."
     },
     "dcf_score": {
       "factor": "ratingDetailsDCFScore",
-      "name": "ratingDetailsDCFScore",
-      "note": "all open interest"
+      "name": "Rating Details DCF Score",
+      "note": "This factor indicates the score based on the Discounted Cash Flow (DCF) analysis, reflecting the company's valuation and financial stability."
     },
     "roe_score": {
       "factor": "ratingDetailsROEScore",
-      "name": "ratingDetailsROEScore",
-      "note": "all open interest"
+      "name": "Rating Details ROE Score",
+      "note": "This factor measures the score based on Return on Equity (ROE), assessing the company's profitability and efficiency in generating returns for shareholders."
     },
     "roa_score": {
       "factor": "ratingDetailsROAScore",
-      "name": "ratingDetailsROAScore",
-      "note": "all open interest"
+      "name": "Rating Details ROA Score",
+      "note": "This factor evaluates the score based on Return on Assets (ROA), indicating the company's effectiveness in using its assets to generate earnings."
     },
     "de_score": {
       "factor": "ratingDetailsDEScore",
-      "name": "ratingDetailsDEScore",
-      "note": "all open interest"
+      "name": "Rating Details DE Score",
+      "note": "This factor assesses the Debt-to-Equity (DE) score, reflecting the company's financial leverage and risk associated with its debt level."
     },
     "pe_score": {
       "factor": "ratingDetailsPEScore",
-      "name": "ratingDetailsPEScore",
-      "note": "all open interest"
+      "name": "Rating Details PE Score",
+      "note": "This factor indicates the score based on the Price-to-Earnings (PE) ratio, evaluating the company's share price relative to its earnings per share."
     },
     "pb_score": {
       "factor": "ratingDetailsPBScore",
-      "name": "ratingDetailsPBScore",
-      "note": "all open interest"
-    }
-  },
-  "DiscountedCashFlow": {
-    "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "metaclass": "ClientMeta",
-      "api": "api/v3/historical-daily-discounted-cash-flow"
-    },
-    "dcf": {
-      "factor": "dcf",
-      "name": "dcf",
-      "note": "all open interest"
+      "name": "Rating Details PB Score",
+      "note": "This factor measures the score based on the Price-to-Book (PB) ratio, assessing the company's market valuation compared to its book value."
     }
   },
   "NumberOfEmployees": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Historical Number of Employees Data",
+      "note": "This section provides historical data about the number of employees in a company, enabling the analysis of workforce trends and company growth. It helps in assessing how the workforce size has evolved over time, indicating operational and strategic changes.",
       "metaclass": "ClientMeta",
       "api": "api/v4/historical/employee_count",
       "t_key": "periodOfReport",
@@ -3119,14 +3106,14 @@
     },
     "employee_count": {
       "factor": "employeeCount",
-      "name": "employeeCount",
-      "note": "all open interest"
+      "name": "Employee Count",
+      "note": "This factor represents the total number of employees within a company at a given point in time, providing insights into the company's size, operational scale, and human resources capacity."
     }
   },
   "CompanyKeyMetrics": {
     "setting": {
-      "name": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
-      "note": "COT (Commission of Traders) data detailing futures, foreign exchange and U.S. commodity holdings by market participants",
+      "name": "Company Key Financial Metrics Data",
+      "note": "This section includes key financial metrics for a company, such as revenue, net income, EPS, and P/E ratio. These metrics are essential for evaluating a company's financial performance and comparing it against its competitors.",
       "metaclass": "ClientMeta",
       "api": "api/v3/key-metrics",
       "params": {
@@ -3135,243 +3122,243 @@
     },
     "sps": {
       "factor": "revenuePerShare",
-      "name": "revenuePerShare",
-      "note": "all open interest"
+      "name": "Revenue Per Share",
+      "note": "This factor indicates the amount of revenue generated per share, providing insights into the company's sales efficiency relative to its share count."
     },
     "eps": {
       "factor": "netIncomePerShare",
-      "name": "netIncomePerShare",
-      "note": "all open interest"
+      "name": "Net Income Per Share",
+      "note": "This factor measures the net income earned per share, reflecting the company's profitability on a per-share basis."
     },
     "operating_cfps": {
       "factor": "operatingCashFlowPerShare",
-      "name": "operatingCashFlowPerShare",
-      "note": "all open interest"
+      "name": "Operating Cash Flow Per Share",
+      "note": "This factor assesses the cash flow from operating activities generated per share, indicating the company's operational efficiency in cash generation."
     },
     "free_cfps": {
       "factor": "freeCashFlowPerShare",
-      "name": "freeCashFlowPerShare",
-      "note": "all open interest"
+      "name": "Free Cash Flow Per Share",
+      "note": "This factor represents the free cash flow available per share, which is the cash flow from operations minus capital expenditures, showing the company's financial flexibility."
     },
     "cps": {
       "factor": "cashPerShare",
-      "name": "cashPerShare",
-      "note": "all open interest"
+      "name": "Cash Per Share",
+      "note": "This factor indicates the amount of cash and cash equivalents available per share, providing a measure of the company's liquidity on a per-share basis."
     },
     "bps": {
       "factor": "bookValuePerShare",
-      "name": "bookValuePerShare",
-      "note": "all open interest"
+      "name": "Book Value Per Share",
+      "note": "This factor measures the company's book value (or net asset value) per share, offering insights into its valuation and financial stability."
     },
     "tangible_bps": {
       "factor": "tangibleBookValuePerShare",
-      "name": "tangibleBookValuePerShare",
-      "note": "all open interest"
+      "name": "Tangible Book Value Per Share",
+      "note": "This factor assesses the tangible book value (excluding intangible assets) per share, indicating the company's physical asset value per share."
     },
     "shareholders_equity_per_share": {
       "factor": "shareholdersEquityPerShare",
-      "name": "shareholdersEquityPerShare",
-      "note": "all open interest"
+      "name": "Shareholders Equity Per Share",
+      "note": "This factor indicates the amount of shareholders' equity available per share, reflecting the company's financial health and equity value on a per-share basis."
     },
     "interest_debt_per_share": {
       "factor": "interestDebtPerShare",
-      "name": "interestDebtPerShare",
-      "note": "all open interest"
+      "name": "Interest Debt Per Share",
+      "note": "This factor measures the amount of interest-bearing debt per share, indicating the company's financial obligations relative to its share count."
     },
     "market_cap": {
       "factor": "marketCap",
-      "name": "marketCap",
-      "note": "all open interest"
+      "name": "Market Capitalization",
+      "note": "This factor represents the total market value of the company's outstanding shares, reflecting its overall market valuation."
     },
     "enterprise_value": {
       "factor": "enterpriseValue",
-      "name": "enterpriseValue",
-      "note": "all open interest"
+      "name": "Enterprise Value",
+      "note": "This factor assesses the total value of the company, including market capitalization, debt, and cash, providing a comprehensive view of its economic worth."
     },
     "per": {
       "factor": "peRatio",
-      "name": "peRatio",
-      "note": "all open interest"
+      "name": "Price-to-Earnings Ratio",
+      "note": "This factor indicates the ratio of the company's share price to its earnings per share, evaluating its stock valuation relative to profitability."
     },
     "psr": {
       "factor": "priceToSalesRatio",
-      "name": "priceToSalesRatio",
-      "note": "all open interest"
+      "name": "Price-to-Sales Ratio",
+      "note": "This factor measures the ratio of the company's share price to its revenue per share, assessing its valuation in relation to sales."
     },
     "operating_pcr": {
       "factor": "pocfratio",
-      "name": "pocfratio",
-      "note": "all open interest"
+      "name": "Price-to-Operating-Cash-Flow Ratio",
+      "note": "This factor evaluates the company's share price relative to its operating cash flow per share, indicating its stock valuation in terms of cash generation efficiency."
     },
     "free_pcr": {
       "factor": "pfcfRatio",
-      "name": "pfcfRatio",
-      "note": "all open interest"
+      "name": "Price-to-Free-Cash-Flow Ratio",
+      "note": "This factor assesses the company's share price in comparison to its free cash flow per share, indicating how the market values its financial flexibility."
     },
     "pbr": {
       "factor": "pbRatio",
-      "name": "pbRatio",
-      "note": "all open interest"
+      "name": "Price-to-Book Ratio",
+      "note": "This factor measures the ratio of the company's share price to its book value per share, evaluating its market valuation against its net asset value."
     },
     "tangible_pbr": {
       "factor": "ptbRatio",
-      "name": "ptbRatio",
-      "note": "all open interest"
+      "name": "Price-to-Tangible-Book Ratio",
+      "note": "This factor measures the company's share price in relation to its tangible book value per share, assessing its market valuation against physical net asset value."
     },
     "ev_to_sales": {
       "factor": "evToSales",
-      "name": "evToSales",
-      "note": "all open interest"
+      "name": "Enterprise Value to Sales Ratio",
+      "note": "This factor assesses the company's enterprise value relative to its sales, offering insights into how the market values the company compared to its revenue."
     },
     "ev_to_ebitda": {
       "factor": "enterpriseValueOverEBITDA",
-      "name": "enterpriseValueOverEBITDA",
-      "note": "all open interest"
+      "name": "Enterprise Value over EBITDA",
+      "note": "This factor evaluates the ratio of the company's enterprise value to its earnings before interest, taxes, depreciation, and amortization, indicating its valuation in terms of operational profitability."
     },
     "ev_to_operating_cash_flow": {
       "factor": "evToOperatingCashFlow",
-      "name": "evToOperatingCashFlow",
-      "note": "all open interest"
+      "name": "EV to Operating Cash Flow Ratio",
+      "note": "This factor measures the company's enterprise value in relation to its operating cash flow, showing how the market values its ability to generate cash from operations."
     },
     "ev_to_free_cash_flow": {
       "factor": "evToFreeCashFlow",
-      "name": "evToFreeCashFlow",
-      "note": "all open interest"
+      "name": "EV to Free Cash Flow Ratio",
+      "note": "This factor assesses the ratio of the company's enterprise value to its free cash flow, evaluating its valuation concerning its financial flexibility and surplus cash generation."
     },
     "earnings_yield": {
       "factor": "earningsYield",
-      "name": "earningsYield",
-      "note": "all open interest"
+      "name": "Earnings Yield",
+      "note": "This factor indicates the earnings generated from each dollar invested in the company's stock, providing an inverse perspective of the P/E ratio."
     },
     "free_cash_flow_yield": {
       "factor": "freeCashFlowYield",
-      "name": "freeCashFlowYield",
-      "note": "all open interest"
+      "name": "Free Cash Flow Yield",
+      "note": "This factor measures the free cash flow per share relative to the company's share price, assessing the profitability and cash generation efficiency of the investment."
     },
     "debt_to_equity": {
       "factor": "debtToEquity",
-      "name": "debtToEquity",
-      "note": "all open interest"
+      "name": "Debt to Equity Ratio",
+      "note": "This factor evaluates the company's financial leverage by comparing its total liabilities to shareholders' equity, indicating how much debt is used to finance assets relative to equity."
     },
     "debt_to_assets": {
       "factor": "debtToAssets",
-      "name": "debtToAssets",
-      "note": "all open interest"
+      "name": "Debt to Assets Ratio",
+      "note": "This factor measures the proportion of a company's assets financed by debt, providing an indication of financial leverage and stability."
     },
     "net_debt_to_ebtida": {
       "factor": "netDebtToEBITDA",
-      "name": "netDebtToEBITDA",
-      "note": "all open interest"
+      "name": "Net Debt to EBITDA Ratio",
+      "note": "This factor evaluates the company's net debt compared to its earnings before interest, taxes, depreciation, and amortization, indicating its ability to pay off debt with operational earnings."
     },
     "current_ratio": {
       "factor": "currentRatio",
-      "name": "currentRatio",
-      "note": "all open interest"
+      "name": "Current Ratio",
+      "note": "This factor assesses the company's ability to pay short-term obligations with its short-term assets, indicating liquidity and operational efficiency."
     },
     "interest_coverage": {
       "factor": "interestCoverage",
-      "name": "interestCoverage",
-      "note": "all open interest"
+      "name": "Interest Coverage Ratio",
+      "note": "This factor measures the company's ability to meet its interest obligations, indicating its financial health and risk of default."
     },
     "income_quality": {
       "factor": "incomeQuality",
-      "name": "incomeQuality",
-      "note": "all open interest"
+      "name": "Income Quality",
+      "note": "This factor evaluates the consistency and sustainability of a company's earnings, indicating the reliability of its financial performance."
     },
     "dividend_yield": {
       "factor": "dividendYield",
-      "name": "dividendYield",
-      "note": "all open interest"
+      "name": "Dividend Yield",
+      "note": "This factor indicates the percentage of a company's share price that is paid out in dividends, showing the return on investment from dividends."
     },
     "payout_ratio": {
       "factor": "payoutRatio",
-      "name": "payoutRatio",
-      "note": "all open interest"
+      "name": "Payout Ratio",
+      "note": "This factor measures the proportion of earnings paid out as dividends to shareholders, indicating the company's dividend distribution policy."
     },
     "sales_admin_to_revenue": {
       "factor": "salesGeneralAndAdministrativeToRevenue",
-      "name": "salesGeneralAndAdministrativeToRevenue",
-      "note": "all open interest"
+      "name": "Sales, General, and Administrative to Revenue Ratio",
+      "note": "This factor assesses the proportion of revenue consumed by sales, general, and administrative expenses, indicating operational efficiency and cost management."
     },
     "research_dev_to_revenue": {
       "factor": "researchAndDdevelopementToRevenue",
-      "name": "researchAndDdevelopementToRevenue",
-      "note": "all open interest"
+      "name": "Research and Development to Revenue Ratio",
+      "note": "This factor measures the proportion of revenue spent on research and development, indicating the company's investment in innovation relative to its sales."
     },
     "intangibles_to_assets": {
       "factor": "intangiblesToTotalAssets",
-      "name": "intangiblesToTotalAssets",
-      "note": "all open interest"
+      "name": "Intangibles to Total Assets Ratio",
+      "note": "This factor assesses the proportion of a company's total assets made up of intangible assets, such as patents and goodwill, indicating its reliance on non-physical assets."
     },
     "capex_to_operating_cash_flow": {
       "factor": "capexToOperatingCashFlow",
-      "name": "capexToOperatingCashFlow",
-      "note": "all open interest"
+      "name": "CapEx to Operating Cash Flow Ratio",
+      "note": "This factor evaluates the ratio of capital expenditures to operating cash flow, indicating how much of the cash flow is reinvested in the business."
     },
     "capex_to_revenue": {
       "factor": "capexToRevenue",
-      "name": "capexToRevenue",
-      "note": "all open interest"
+      "name": "CapEx to Revenue Ratio",
+      "note": "This factor measures the proportion of revenue spent on capital expenditures, showing the company's investment in physical assets relative to its sales."
     },
     "capex_to_depreciation": {
       "factor": "capexToDepreciation",
-      "name": "capexToDepreciation",
-      "note": "all open interest"
+      "name": "CapEx to Depreciation Ratio",
+      "note": "This factor compares capital expenditures to depreciation, indicating the company's renewal and maintenance of its physical assets."
     },
     "stock_based_compensation_to_revenue": {
       "factor": "stockBasedCompensationToRevenue",
-      "name": "stockBasedCompensationToRevenue",
-      "note": "all open interest"
+      "name": "Stock-Based Compensation to Revenue Ratio",
+      "note": "This factor assesses the proportion of revenue spent on stock-based compensation, indicating the company's use of stock options and grants as a compensation strategy."
     },
     "graham_num": {
       "factor": "grahamNumber",
-      "name": "grahamNumber",
-      "note": "all open interest"
+      "name": "Graham Number",
+      "note": "This factor represents the Graham Number, a figure that measures a stock's fundamental value based on earnings and book value, as proposed by Benjamin Graham."
     },
     "roic": {
       "factor": "roic",
-      "name": "roic",
-      "note": "all open interest"
+      "name": "Return on Invested Capital (ROIC)",
+      "note": "This factor indicates the Return on Invested Capital, measuring the company's efficiency in allocating capital to profitable investments."
     },
     "return_on_tangible_assets": {
       "factor": "returnOnTangibleAssets",
-      "name": "returnOnTangibleAssets",
-      "note": "all open interest"
+      "name": "Return on Tangible Assets",
+      "note": "This factor measures the return generated on the company's tangible assets, indicating its effectiveness in using physical assets to generate profits."
     },
     "graham_netnet": {
       "factor": "grahamNetNet",
-      "name": "grahamNetNet",
-      "note": "all open interest"
+      "name": "Graham Net-Net",
+      "note": "This factor represents the Graham Net-Net value, a valuation metric that focuses on the company's net current asset value to determine its intrinsic value."
     },
     "working_capital": {
       "factor": "workingCapital",
-      "name": "workingCapital",
-      "note": "all open interest"
+      "name": "Working Capital",
+      "note": "This factor indicates the company's working capital, which is the difference between its current assets and current liabilities, showing its short-term financial health and liquidity."
     },
     "tangible_asset_value": {
       "factor": "tangibleAssetValue",
-      "name": "tangibleAssetValue",
-      "note": "all open interest"
+      "name": "Tangible Asset Value",
+      "note": "This factor assesses the total value of the company's tangible assets, excluding intangible assets and liabilities, providing insight into the physical asset base of the company."
     },
     "ncav": {
       "factor": "netCurrentAssetValue",
-      "name": "netCurrentAssetValue",
-      "note": "all open interest"
+      "name": "Net Current Asset Value",
+      "note": "This factor measures the value of a company's current assets minus its current liabilities, indicating its net current financial position."
     },
     "invested_capital": {
       "factor": "investedCapital",
-      "name": "investedCapital",
-      "note": "all open interest"
+      "name": "Invested Capital",
+      "note": "This factor evaluates the total capital invested in the company, including debt and equity, showing the total resources employed for generating profits."
     },
     "average_receivables": {
       "factor": "averageReceivables",
-      "name": "averageReceivables",
-      "note": "all open interest"
+      "name": "Average Receivables",
+      "note": "This factor calculates the average amount of receivables, providing insights into the company's efficiency in managing credit sales and collections."
     },
     "average_payables": {
       "factor": "averagePayables",
-      "name": "averagePayables",
-      "note": "all open interest"
+      "name": "Average Payables",
+      "note": "This factor measures the average amount of payables, indicating the company's payment practices and management of short-term liabilities."
     },
     "average_inventory": {
       "factor": "averageInventory",

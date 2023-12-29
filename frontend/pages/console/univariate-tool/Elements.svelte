@@ -173,7 +173,7 @@
   }
   .list__ele__code {
     padding: 0.2rem 0.4rem;
-    border-radius: 0.2rem;
+    border-radius: 0.15rem;
     margin: 0 0.5rem;
     color: var(--white);
     background-color: rgba(255, 255, 255, 0.2);

@@ -62,7 +62,7 @@
     </div>
   {/if}
   <div class="list">
-    {#each factors as fac}
+    {#each view as fac}
       <button
         class="list__fac"
         on:click={() => select(fac)}
@@ -136,6 +136,7 @@
     width: 100%;
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     padding: 0.5rem 0;
     border-radius: 0.35rem;
     border: thin solid rgba(255, 255, 255, 0);
@@ -150,13 +151,17 @@
   }
   .list__fac__section {
     padding: 0.2rem 0.4rem;
-    border-radius: 0.2rem;
+    border-radius: 0.15rem;
     margin: 0 0.5rem;
     color: var(--white);
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: #613a55;
   }
   .list__fac__name {
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.15rem;
+    margin: 0 0.5rem;
     color: var(--white);
+    background-color: #40533e;
   }
   .progress {
     display: flex;

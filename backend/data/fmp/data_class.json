@@ -49,7 +49,7 @@
       "metaclass": "HistoricalPriceFullMeta",
       "api": "api/v3/historical-price-full/stock_dividend"
     },
-    "adjDividend": {
+    "adj_dividend": {
       "factor": "adjDividend",
       "name": "Adjusted Dividend",
       "note": "This factor represents the adjusted dividend amount, accounting for any changes in the stock such as stock splits, rights offerings, or other corporate actions, to provide a consistent and comparable view of the dividend payouts over time."
@@ -103,22 +103,22 @@
       "name": "Stock Price",
       "note": "This factor represents the current market price of the company's stock, reflecting the public valuation of each share."
     },
-    "shares_num": {
+    "number_of_shares": {
       "factor": "numberOfShares",
       "name": "Number of Shares",
       "note": "This factor indicates the total number of shares outstanding for the company, representing the quantity of stock available in the market."
     },
-    "market_cap": {
+    "market_capitalization": {
       "factor": "marketCapitalization",
       "name": "Market Capitalization",
       "note": "This factor measures the total market value of the company's outstanding shares, representing the aggregate valuation of the company by the stock market."
     },
-    "cash_minus": {
+    "minus_cash_and_cash_equivalents": {
       "factor": "minusCashAndCashEquivalents",
       "name": "Minus Cash and Cash Equivalents",
       "note": "This factor subtracts the company's liquid assets, such as cash and cash equivalents, from its overall valuation, refining the assessment of its enterprise value."
     },
-    "new_debt": {
+    "add_total_debt": {
       "factor": "addTotalDebt",
       "name": "Add Total Debt",
       "note": "This factor adds the company's total debt to its market capitalization, accounting for financial liabilities in the calculation of enterprise value."
@@ -139,37 +139,37 @@
         "period": "quarter"
       }
     },
-    "sps": {
+    "revenue_per_share": {
       "factor": "revenuePerShare",
       "name": "Revenue Per Share",
       "note": "This factor indicates the amount of revenue generated per share, providing insights into the company's sales efficiency relative to its share count."
     },
-    "eps": {
+    "net_income_per_share": {
       "factor": "netIncomePerShare",
       "name": "Net Income Per Share",
       "note": "This factor measures the net income earned per share, reflecting the company's profitability on a per-share basis."
     },
-    "operating_cfps": {
+    "operating_cash_flow_per_share": {
       "factor": "operatingCashFlowPerShare",
       "name": "Operating Cash Flow Per Share",
       "note": "This factor assesses the cash flow from operating activities generated per share, indicating the company's operational efficiency in cash generation."
     },
-    "free_cfps": {
+    "free_cash_flow_per_share": {
       "factor": "freeCashFlowPerShare",
       "name": "Free Cash Flow Per Share",
       "note": "This factor represents the free cash flow available per share, which is the cash flow from operations minus capital expenditures, showing the company's financial flexibility."
     },
-    "cps": {
+    "cash_per_share": {
       "factor": "cashPerShare",
       "name": "Cash Per Share",
       "note": "This factor indicates the amount of cash and cash equivalents available per share, providing a measure of the company's liquidity on a per-share basis."
     },
-    "bps": {
+    "book_value_per_share": {
       "factor": "bookValuePerShare",
       "name": "Book Value Per Share",
       "note": "This factor measures the company's book value (or net asset value) per share, offering insights into its valuation and financial stability."
     },
-    "tangible_bps": {
+    "tangible_book_value_per_share": {
       "factor": "tangibleBookValuePerShare",
       "name": "Tangible Book Value Per Share",
       "note": "This factor assesses the tangible book value (excluding intangible assets) per share, indicating the company's physical asset value per share."
@@ -194,32 +194,32 @@
       "name": "Enterprise Value",
       "note": "This factor assesses the total value of the company, including market capitalization, debt, and cash, providing a comprehensive view of its economic worth."
     },
-    "per": {
+    "pe_ratio": {
       "factor": "peRatio",
       "name": "Price-to-Earnings Ratio",
       "note": "This factor indicates the ratio of the company's share price to its earnings per share, evaluating its stock valuation relative to profitability."
     },
-    "psr": {
+    "price_to_sales_ratio": {
       "factor": "priceToSalesRatio",
       "name": "Price-to-Sales Ratio",
       "note": "This factor measures the ratio of the company's share price to its revenue per share, assessing its valuation in relation to sales."
     },
-    "operating_pcr": {
+    "pocfratio": {
       "factor": "pocfratio",
       "name": "Price-to-Operating-Cash-Flow Ratio",
       "note": "This factor evaluates the company's share price relative to its operating cash flow per share, indicating its stock valuation in terms of cash generation efficiency."
     },
-    "free_pcr": {
+    "pfcfRatio": {
       "factor": "pfcfRatio",
       "name": "Price-to-Free-Cash-Flow Ratio",
       "note": "This factor assesses the company's share price in comparison to its free cash flow per share, indicating how the market values its financial flexibility."
     },
-    "pbr": {
+    "pb_ratio": {
       "factor": "pbRatio",
       "name": "Price-to-Book Ratio",
       "note": "This factor measures the ratio of the company's share price to its book value per share, evaluating its market valuation against its net asset value."
     },
-    "tangible_pbr": {
+    "ptb_ratio": {
       "factor": "ptbRatio",
       "name": "Price-to-Tangible-Book Ratio",
       "note": "This factor measures the company's share price in relation to its tangible book value per share, assessing its market valuation against physical net asset value."
@@ -229,7 +229,7 @@
       "name": "Enterprise Value to Sales Ratio",
       "note": "This factor assesses the company's enterprise value relative to its sales, offering insights into how the market values the company compared to its revenue."
     },
-    "ev_to_ebitda": {
+    "enterprise_value_over_ebitda": {
       "factor": "enterpriseValueOverEBITDA",
       "name": "Enterprise Value over EBITDA",
       "note": "This factor evaluates the ratio of the company's enterprise value to its earnings before interest, taxes, depreciation, and amortization, indicating its valuation in terms of operational profitability."
@@ -294,17 +294,17 @@
       "name": "Payout Ratio",
       "note": "This factor measures the proportion of earnings paid out as dividends to shareholders, indicating the company's dividend distribution policy."
     },
-    "sales_admin_to_revenue": {
+    "sales_general_and_administrative_to_revenue": {
       "factor": "salesGeneralAndAdministrativeToRevenue",
       "name": "Sales, General, and Administrative to Revenue Ratio",
       "note": "This factor assesses the proportion of revenue consumed by sales, general, and administrative expenses, indicating operational efficiency and cost management."
     },
-    "research_dev_to_revenue": {
+    "research_and_developement_to_revenue": {
       "factor": "researchAndDdevelopementToRevenue",
       "name": "Research and Development to Revenue Ratio",
       "note": "This factor measures the proportion of revenue spent on research and development, indicating the company's investment in innovation relative to its sales."
     },
-    "intangibles_to_assets": {
+    "intangibles_to_total_assets": {
       "factor": "intangiblesToTotalAssets",
       "name": "Intangibles to Total Assets Ratio",
       "note": "This factor assesses the proportion of a company's total assets made up of intangible assets, such as patents and goodwill, indicating its reliance on non-physical assets."
@@ -329,7 +329,7 @@
       "name": "Stock-Based Compensation to Revenue Ratio",
       "note": "This factor assesses the proportion of revenue spent on stock-based compensation, indicating the company's use of stock options and grants as a compensation strategy."
     },
-    "graham_num": {
+    "graham_number": {
       "factor": "grahamNumber",
       "name": "Graham Number",
       "note": "This factor represents the Graham Number, a figure that measures a stock's fundamental value based on earnings and book value, as proposed by Benjamin Graham."
@@ -344,7 +344,7 @@
       "name": "Return on Tangible Assets",
       "note": "This factor measures the return generated on the company's tangible assets, indicating its effectiveness in using physical assets to generate profits."
     },
-    "graham_netnet": {
+    "graham_net_net": {
       "factor": "grahamNetNet",
       "name": "Graham Net-Net",
       "note": "This factor represents the Graham Net-Net value, a valuation metric that focuses on the company's net current asset value to determine its intrinsic value."
@@ -359,7 +359,7 @@
       "name": "Tangible Asset Value",
       "note": "This factor assesses the total value of the company's tangible assets, excluding intangible assets and liabilities, providing insight into the physical asset base of the company."
     },
-    "ncav": {
+    "net_current_asset_value": {
       "factor": "netCurrentAssetValue",
       "name": "Net Current Asset Value",
       "note": "This factor measures the value of a company's current assets minus its current liabilities, indicating its net current financial position."
@@ -435,92 +435,92 @@
         "period": "quarter"
       }
     },
-    "revenue_low": {
+    "estimated_revenue_low": {
       "factor": "estimatedRevenueLow",
       "name": "Estimated Revenue Low",
       "note": "This factor represents the lowest revenue estimate provided by financial analysts, indicating a conservative view of the company's future revenue potential."
     },
-    "revenue_high": {
+    "estimated_revenue_high": {
       "factor": "estimatedRevenueHigh",
       "name": "Estimated Revenue High",
       "note": "This factor indicates the highest revenue estimate from analysts, reflecting an optimistic outlook on the company's future revenue."
     },
-    "revenue_avg": {
+    "estimated_revenue_avg": {
       "factor": "estimatedRevenueAvg",
       "name": "Estimated Revenue Average",
       "note": "This factor measures the average of all revenue estimates from financial analysts, providing a balanced view of the company's expected revenue."
     },
-    "ebitda_low": {
+    "estimated_ebitda_low": {
       "factor": "estimatedEbitdaLow",
       "name": "Estimated EBITDA Low",
       "note": "This factor represents the lowest EBITDA (Earnings Before Interest, Taxes, Depreciation, and Amortization) estimate, suggesting a conservative view of the company's operational profitability."
     },
-    "ebitda_high": {
+    "estimated_ebitda_high": {
       "factor": "estimatedEbitdaHigh",
       "name": "Estimated EBITDA High",
       "note": "This factor indicates the highest EBITDA estimate, showing an optimistic forecast of the company's operational earnings."
     },
-    "ebitda_avg": {
+    "estimated_ebitda_avg": {
       "factor": "estimatedEbitdaAvg",
       "name": "Estimated EBITDA Average",
       "note": "This factor calculates the average of all EBITDA estimates, offering a more moderate perspective on the company's operational earnings potential."
     },
-    "ebit_low": {
+    "estimated_ebit_low": {
       "factor": "estimatedEbitLow",
       "name": "Estimated EBIT Low",
       "note": "This factor provides the lowest estimate for EBIT (Earnings Before Interest and Taxes), indicating a conservative assessment of the company's operational income."
     },
-    "ebit_high": {
+    "estimated_ebit_high": {
       "factor": "estimatedEbitHigh",
       "name": "Estimated EBIT High",
       "note": "This factor shows the highest EBIT estimate, reflecting an optimistic view of the company's earnings before interest and taxes."
     },
-    "ebit_avg": {
+    "estimated_ebit_avg": {
       "factor": "estimatedEbitAvg",
       "name": "Estimated EBIT Average",
       "note": "This factor calculates the average of all EBIT (Earnings Before Interest and Taxes) estimates, providing a balanced view of the company's operational income expectations."
     },
-    "net_income_low": {
+    "estimated_net_income_low": {
       "factor": "estimatedNetIncomeLow",
       "name": "Estimated Net Income Low",
       "note": "This factor represents the lowest estimate of the company's net income, reflecting a conservative forecast of the company's profitability."
     },
-    "net_income_high": {
+    "estimated_net_income_high": {
       "factor": "estimatedNetIncomeHigh",
       "name": "Estimated Net Income High",
       "note": "This factor indicates the highest estimate of net income, showing an optimistic projection of the company's profitability."
     },
-    "net_income_avg": {
+    "estimated_net_income_avg": {
       "factor": "estimatedNetIncomeAvg",
       "name": "Estimated Net Income Average",
       "note": "This factor measures the average of all net income estimates, offering a moderate perspective on the company's expected profitability."
     },
-    "sga_expense_low": {
+    "estimated_sga_expense_low": {
       "factor": "estimatedSgaExpenseLow",
       "name": "Estimated SGA Expense Low",
       "note": "This factor provides the lowest estimate for selling, general, and administrative expenses, suggesting a conservative view of the company's operational costs."
     },
-    "sga_expense_high": {
+    "estimated_sga_expense_high": {
       "factor": "estimatedSgaExpenseHigh",
       "name": "Estimated SGA Expense High",
       "note": "This factor indicates the highest estimate of SGA expenses, reflecting an optimistic outlook on operational expenditures."
     },
-    "sga_expense_avg": {
+    "estimated_sga_expense_avg": {
       "factor": "estimatedSgaExpenseAvg",
       "name": "Estimated SGA Expense Average",
       "note": "This factor calculates the average of all SGA expense estimates, presenting a balanced view of the company's expected operational costs."
     },
-    "eps_avg": {
+    "estimated_eps_avg": {
       "factor": "estimatedEpsAvg",
       "name": "Estimated EPS Average",
       "note": "This factor evaluates the average estimate of Earnings Per Share, providing an overall perspective on the company's expected earnings relative to its shares."
     },
-    "eps_high": {
+    "estimated_eps_high": {
       "factor": "estimatedEpsHigh",
       "name": "Estimated EPS High",
       "note": "This factor indicates the highest estimate of Earnings Per Share, showing the most optimistic projection of the company's earnings relative to its shares."
     },
-    "eps_low": {
+    "estimated_eps_low": {
       "factor": "estimatedEpsLow",
       "name": "Estimated EPS Low",
       "note": "This factor represents the lowest estimate of Earnings Per Share, reflecting a conservative view of the company's potential earnings per share."
@@ -548,37 +548,37 @@
       "metaclass": "ClientMeta",
       "api": "api/v3/historical-rating"
     },
-    "score": {
+    "rating_score": {
       "factor": "ratingScore",
       "name": "Rating Score",
       "note": "This factor represents the overall credit rating score assigned to the company, providing a comprehensive assessment of its financial health and creditworthiness."
     },
-    "dcf_score": {
+    "rating_details_dcf_score": {
       "factor": "ratingDetailsDCFScore",
       "name": "Rating Details DCF Score",
       "note": "This factor indicates the score based on the Discounted Cash Flow (DCF) analysis, reflecting the company's valuation and financial stability."
     },
-    "roe_score": {
+    "rating_details_roe_score": {
       "factor": "ratingDetailsROEScore",
       "name": "Rating Details ROE Score",
       "note": "This factor measures the score based on Return on Equity (ROE), assessing the company's profitability and efficiency in generating returns for shareholders."
     },
-    "roa_score": {
+    "rating_details_roa_score": {
       "factor": "ratingDetailsROAScore",
       "name": "Rating Details ROA Score",
       "note": "This factor evaluates the score based on Return on Assets (ROA), indicating the company's effectiveness in using its assets to generate earnings."
     },
-    "de_score": {
+    "rating_details_de_score": {
       "factor": "ratingDetailsDEScore",
       "name": "Rating Details DE Score",
       "note": "This factor assesses the Debt-to-Equity (DE) score, reflecting the company's financial leverage and risk associated with its debt level."
     },
-    "pe_score": {
+    "rating_details_pe_score": {
       "factor": "ratingDetailsPEScore",
       "name": "Rating Details PE Score",
       "note": "This factor indicates the score based on the Price-to-Earnings (PE) ratio, evaluating the company's share price relative to its earnings per share."
     },
-    "pb_score": {
+    "rating_details_pb_score": {
       "factor": "ratingDetailsPBScore",
       "name": "Rating Details PB Score",
       "note": "This factor measures the score based on the Price-to-Book (PB) ratio, assessing the company's market valuation compared to its book value."
@@ -594,42 +594,42 @@
         "period": "quarter"
       }
     },
-    "cur_ratio": {
+    "current_ratio": {
       "factor": "currentRatio",
       "name": "Current Ratio",
       "note": "This factor represents the company's ability to cover its short-term liabilities with its short-term assets, providing insights into its short-term financial health."
     },
-    "quickRatio": {
+    "quick_ratio": {
       "factor": "quickRatio",
       "name": "Quick Ratio",
       "note": "This factor measures the company's capacity to meet short-term obligations with its most liquid assets, excluding inventory."
     },
-    "cashRatio": {
+    "cash_ratio": {
       "factor": "cashRatio",
       "name": "Cash Ratio",
       "note": "This factor indicates the company's ability to pay off short-term liabilities with its cash and cash equivalents, reflecting immediate liquidity."
     },
-    "days_sales_out": {
+    "days_of_sales_outstanding": {
       "factor": "daysOfSalesOutstanding",
       "name": "Days of Sales Outstanding",
       "note": "This factor calculates the average number of days that a company takes to collect revenue after a sale has been made, assessing the efficiency of its credit and collection policies."
     },
-    "days_inv_out": {
+    "days_of_inventory_outstanding": {
       "factor": "daysOfInventoryOutstanding",
       "name": "Days of Inventory Outstanding",
       "note": "This factor measures the average number of days a company holds its inventory before selling it, indicating inventory management efficiency."
     },
-    "op_cycle": {
+    "operating_cycle": {
       "factor": "operatingCycle",
       "name": "Operating Cycle",
       "note": "This factor analyzes the time taken by a company to purchase inventory, sell it, and collect the receivables, representing the efficiency of the company's operations."
     },
-    "days_pay_out": {
+    "days_of_payables_outstanding": {
       "factor": "daysOfPayablesOutstanding",
       "name": "Days of Payables Outstanding",
       "note": "This factor determines the average duration a company takes to pay its invoices from suppliers, indicating its payment policy efficiency."
     },
-    "cash_conv_cycle": {
+    "cash_conversion_cycle": {
       "factor": "cashConversionCycle",
       "name": "Cash Conversion Cycle",
       "note": "This factor measures the time span between when a company pays its suppliers and when it receives cash from sales, reflecting the efficiency of its cash flow management."
@@ -639,7 +639,7 @@
       "name": "Gross Profit Margin",
       "note": "This factor reflects the percentage of revenue exceeding the cost of goods sold, indicating the efficiency of production and pricing."
     },
-    "op_profit_margin": {
+    "operating_profit_margin": {
       "factor": "operatingProfitMargin",
       "name": "Operating Profit Margin",
       "note": "This factor measures the percentage of revenue remaining after covering operating expenses, showcasing operational efficiency."
@@ -654,7 +654,7 @@
       "name": "Net Profit Margin",
       "note": "This factor assesses the percentage of revenue that remains as profit after all expenses, taxes, and interest, indicating overall profitability."
     },
-    "eff_tax_rate": {
+    "effective_tax_rate": {
       "factor": "effectiveTaxRate",
       "name": "Effective Tax Rate",
       "note": "This factor calculates the average rate at which a corporation is taxed on its pre-tax profits, indicating its tax burden."
@@ -669,12 +669,12 @@
       "name": "Return on Equity",
       "note": "This factor assesses a company's ability to generate profits from its shareholders' equity, indicating financial health and profitability."
     },
-    "return_on_cap_empl": {
+    "return_on_capital_employed": {
       "factor": "returnOnCapitalEmployed",
       "name": "Return on Capital Employed",
       "note": "This factor evaluates a company's efficiency in generating profits from its capital employed, offering insights into its overall investment returns."
     },
-    "net_inc_per_ebt": {
+    "net_income_per_ebt": {
       "factor": "netIncomePerEBT",
       "name": "Net Income Per EBT",
       "note": "This factor measures the proportion of earnings before taxes (EBT) that is retained as net income, reflecting a company's tax efficiency and profitability."
@@ -684,7 +684,7 @@
       "name": "EBT Per EBIT",
       "note": "This factor indicates the earnings before taxes as a percentage of earnings before interest and taxes, showcasing the impact of interest expenses on profitability."
     },
-    "ebit_per_rev": {
+    "ebit_per_revenue": {
       "factor": "ebitPerRevenue",
       "name": "EBIT Per Revenue",
       "note": "This factor assesses the earnings before interest and taxes as a percentage of total revenue, indicating operational efficiency and profitability."
@@ -699,12 +699,12 @@
       "name": "Debt Equity Ratio",
       "note": "This factor measures a company's financial leverage by comparing its total liabilities to shareholders' equity, indicating its ability to cover debts with equity."
     },
-    "long_debt_to_cap": {
+    "long_term_debt_to_capitalization": {
       "factor": "longTermDebtToCapitalization",
       "name": "Long-Term Debt to Capitalization",
       "note": "This factor assesses the proportion of long-term debt in a company's capital structure, reflecting its reliance on long-term debt for financing."
     },
-    "total_debt_to_cap": {
+    "total_debt_to_capitalization": {
       "factor": "totalDebtToCapitalization",
       "name": "Total Debt to Capitalization",
       "note": "This factor evaluates the total debt as a percentage of the company's capitalization, indicating the overall level of debt in the company's capital structure."
@@ -714,12 +714,12 @@
       "name": "Interest Coverage",
       "note": "This factor measures a company's ability to pay interest on its outstanding debt, indicating its financial stability and risk of default."
     },
-    "cash_flow_to_debt": {
+    "cash_flow_to_debt_ratio": {
       "factor": "cashFlowToDebtRatio",
       "name": "Cash Flow to Debt Ratio",
       "note": "This factor assesses a company's ability to cover its total debt with its operating cash flows, reflecting its debt repayment capacity."
     },
-    "equity_multiplier": {
+    "company_equity_multiplier": {
       "factor": "companyEquityMultiplier",
       "name": "Company Equity Multiplier",
       "note": "This factor gauges the proportion of a company's total assets financed by shareholders' equity, indicating its financial leverage."
@@ -749,7 +749,7 @@
       "name": "Asset Turnover",
       "note": "This factor measures how efficiently a company uses its total assets to generate sales revenue, indicating overall operational efficiency."
     },
-    "op_cash_flow_per_share": {
+    "operating_cash_flow_per_share": {
       "factor": "operatingCashFlowPerShare",
       "name": "Operating Cash Flow Per Share",
       "note": "This factor indicates the amount of cash generated from operations per share, providing insights into a company's operational efficiency and profitability."
@@ -769,32 +769,32 @@
       "name": "Payout Ratio",
       "note": "This factor calculates the proportion of earnings paid out as dividends to shareholders, indicating a company's dividend distribution policy and sustainability."
     },
-    "op_cash_flow_sales_ratio": {
+    "operating_cash_flow_sales_ratio": {
       "factor": "operatingCashFlowSalesRatio",
       "name": "Operating Cash Flow Sales Ratio",
       "note": "This factor assesses the ratio of operating cash flow to net sales, reflecting the efficiency of converting sales into actual cash."
     },
-    "free_to_op_cash_flow_ratio": {
+    "free_cash_flow_operating_cash_flow_ratio": {
       "factor": "freeCashFlowOperatingCashFlowRatio",
       "name": "Free Cash Flow Operating Cash Flow Ratio",
       "note": "This factor measures the proportion of operating cash flow that remains after capital expenditures, indicating the company's ability to generate cash for growth, debt reduction, and dividends."
     },
-    "cash_flow_coverage_ratio": {
+    "cash_flow_coverage_ratios": {
       "factor": "cashFlowCoverageRatios",
       "name": "Cash Flow Coverage Ratios",
       "note": "This factor evaluates a company's ability to cover debt payments, dividends, and capital expenditures with its operating cash flow, indicating overall financial health and stability."
     },
-    "short_term_coverage_ratio": {
+    "short_term_coverage_ratios": {
       "factor": "shortTermCoverageRatios",
       "name": "Short Term Coverage Ratios",
       "note": "This factor measures a company's ability to meet its short-term obligations using its cash flow, providing insights into its short-term financial resilience."
     },
-    "capex_coverage_ratio": {
+    "capital_expenditure_coverage_ratio": {
       "factor": "capitalExpenditureCoverageRatio",
       "name": "Capital Expenditure Coverage Ratio",
       "note": "This factor assesses a company's ability to fund its capital expenditures from its operating cash flow, indicating its capacity for maintaining and expanding operations."
     },
-    "div_capex_coverage_ratio": {
+    "dividend_paid_and_capex_coverage_ratio": {
       "factor": "dividendPaidAndCapexCoverageRatio",
       "name": "Dividend Paid and Capex Coverage Ratio",
       "note": "This factor evaluates the ability of a company to cover both its capital expenditures and dividend payments from its operating cash flow, reflecting financial sustainability."
@@ -804,12 +804,12 @@
       "name": "Dividend Payout Ratio",
       "note": "This factor measures the percentage of net income paid to shareholders as dividends, indicating a company's dividend distribution policy and profitability."
     },
-    "price_bookvalue_ratio": {
+    "price_book_value_ratio": {
       "factor": "priceBookValueRatio",
       "name": "Price Book Value Ratio",
       "note": "This factor compares a company's market value to its book value, providing insights into how investors value the company's net assets."
     },
-    "price_book_ratio": {
+    "price_to_book_ratio": {
       "factor": "priceToBookRatio",
       "name": "Price to Book Ratio",
       "note": "This factor represents the ratio of a company's market price per share to its book value per share, used to compare market valuation with the company's asset value."
@@ -824,12 +824,12 @@
       "name": "Price Earnings Ratio",
       "note": "This factor indicates the ratio of a company's current share price compared to its per-share earnings, widely used to gauge company valuation."
     },
-    "price_free_cash_flow_ratio": {
+    "price_to_free_cash_flows_ratio": {
       "factor": "priceToFreeCashFlowsRatio",
       "name": "Price to Free Cash Flows Ratio",
       "note": "This factor compares a company's market capitalization with its free cash flow, indicating the value placed by the market on the company's ability to generate cash."
     },
-    "price_op_cash_flow_ratio": {
+    "price_to_operating_cash_flows_ratio": {
       "factor": "priceToOperatingCashFlowsRatio",
       "name": "Price to Operating Cash Flows Ratio",
       "note": "This factor measures the relationship between a company's market stock price and its operating cash flow per share, providing insight into its valuation based on cash generation efficiency."
@@ -839,7 +839,7 @@
       "name": "Price Cash Flow Ratio",
       "note": "This factor compares the company's stock price with its cash flow per share, used to evaluate the stock's value relative to its ability to generate cash."
     },
-    "peg_ratio": {
+    "price_earnings_to_growth_ratio": {
       "factor": "priceEarningsToGrowthRatio",
       "name": "Price Earnings to Growth Ratio (PEG)",
       "note": "This factor assesses a company's stock price relative to its earnings growth rate, offering a more dynamic view of valuation compared to the traditional P/E ratio."
@@ -854,12 +854,12 @@
       "name": "Dividend Yield",
       "note": "This factor calculates the dividend per share as a percentage of the stock price, indicating the return on investment from dividends alone."
     },
-    "ev_multiple": {
+    "enterprise_value_multiple": {
       "factor": "enterpriseValueMultiple",
       "name": "Enterprise Value Multiple",
       "note": "This factor evaluates a company's total value relative to key financial metrics like EBITDA, offering insights into overall enterprise valuation."
     },
-    "price_fair_value_ratio": {
+    "price_fair_value": {
       "factor": "priceFairValue",
       "name": "Price Fair Value",
       "note": "This factor reflects the estimated fair value of a company's stock, comparing it to the market price to assess whether it is overvalued or undervalued."
@@ -875,7 +875,7 @@
         "period": "quarter"
       }
     },
-    "rev_growth": {
+    "revenue_growth": {
       "factor": "revenueGrowth",
       "name": "Revenue Growth",
       "note": "This factor measures the year-over-year percentage increase in a company's revenue, indicating its sales growth and market expansion."
@@ -890,7 +890,7 @@
       "name": "EBIT Growth",
       "note": "This factor assesses the change in Earnings Before Interest and Taxes, highlighting the company's operational profitability before financial and tax impacts."
     },
-    "op_income_growth": {
+    "operating_income_growth": {
       "factor": "operatingIncomeGrowth",
       "name": "Operating Income Growth",
       "note": "This factor indicates the growth in income generated from the company's core business operations, showing its fundamental earning power."
@@ -905,27 +905,27 @@
       "name": "EPS Growth",
       "note": "This factor evaluates the growth in Earnings Per Share, reflecting the company's profitability on a per-share basis, an important metric for investors."
     },
-    "eps_diluted_growth": {
+    "epsdiluted_growth": {
       "factor": "epsdilutedGrowth",
       "name": "Diluted EPS Growth",
       "note": "This factor assesses the change in diluted Earnings Per Share, which considers potential shares from conversions or stock options, offering a comprehensive view of earnings."
     },
-    "avg_shares_growth": {
+    "weighted_average_shares_growth": {
       "factor": "weightedAverageSharesGrowth",
       "name": "Weighted Average Shares Growth",
       "note": "This factor indicates the change in the weighted average number of shares outstanding, showing how the company's equity structure and shareholder base are evolving."
     },
-    "avg_shares_diluted_growth": {
+    "weighted_average_shares_diluted_growth": {
       "factor": "weightedAverageSharesDilutedGrowth",
       "name": "Weighted Average Shares Diluted Growth",
       "note": "This factor measures the change in the diluted weighted average number of shares outstanding, reflecting the potential increase in shares due to convertible securities or stock options."
     },
-    "div_per_share_growth": {
+    "dividendsper_share_growth": {
       "factor": "dividendsperShareGrowth",
       "name": "Dividends per Share Growth",
       "note": "This factor assesses the growth in dividends paid per share, indicating the company's ability to increase shareholder value through dividend payments."
     },
-    "op_cash_flow_growth": {
+    "operating_cash_flow_growth": {
       "factor": "operatingCashFlowGrowth",
       "name": "Operating Cash Flow Growth",
       "note": "This factor evaluates the change in cash generated from operating activities, highlighting the company's efficiency in generating cash from its core business."
@@ -935,32 +935,32 @@
       "name": "Free Cash Flow Growth",
       "note": "This factor measures the change in free cash flow, which is operating cash flow minus capital expenditures, indicating the company's ability to generate surplus cash for investments, dividends, or debt repayment."
     },
-    "ten_y_rev_growth_per_share": {
+    "ten_y_revenue_growth_per_share": {
       "factor": "tenYRevenueGrowthPerShare",
       "name": "Ten-Year Revenue Growth Per Share",
       "note": "This factor tracks the decade-long growth in revenue per share, providing insights into the company's long-term revenue trends and market expansion."
     },
-    "five_y_rev_growth_per_share": {
+    "five_y_revenue_growth_per_share": {
       "factor": "fiveYRevenueGrowthPerShare",
       "name": "Five-Year Revenue Growth Per Share",
       "note": "This factor measures the five-year growth trajectory in revenue per share, offering a mid-term perspective on the company's revenue expansion."
     },
-    "three_y_rev_growth_per_share": {
+    "three_y_revenue_growth_per_share": {
       "factor": "threeYRevenueGrowthPerShare",
       "name": "Three-Year Revenue Growth Per Share",
       "note": "This factor assesses the three-year trend in revenue per share, giving insights into the company's short to mid-term market performance."
     },
-    "ten_y_op_cf_growth_per_share": {
+    "ten_y_operating_cf_growth_per_share": {
       "factor": "tenYOperatingCFGrowthPerShare",
       "name": "Ten-Year Operating Cash Flow Growth Per Share",
       "note": "This factor evaluates the decade-long growth in operating cash flow per share, indicating the company's long-term ability to generate cash from its primary business operations."
     },
-    "five_y_op_cf_growth_per_share": {
+    "five_y_operating_cf_growth_per_share": {
       "factor": "fiveYOperatingCFGrowthPerShare",
       "name": "Five-Year Operating Cash Flow Growth Per Share",
       "note": "This factor assesses the five-year growth in operating cash flow per share, revealing the company's mid-term ability to generate cash from its core operations."
     },
-    "three_y_op_cf_growth_per_share": {
+    "three_y_operating_cf_growth_per_share": {
       "factor": "threeYOperatingCFGrowthPerShare",
       "name": "Three-Year Operating Cash Flow Growth Per Share",
       "note": "This factor evaluates the three-year trend in operating cash flow per share, indicating the company's short-term operational cash efficiency."
@@ -995,17 +995,17 @@
       "name": "Three-Year Shareholders' Equity Growth Per Share",
       "note": "This factor assesses the three-year trend in shareholders' equity per share, revealing the company's short-term changes in equity value."
     },
-    "ten_y_div_per_share_growth_per_share": {
+    "ten_y_dividendper_share_growth_per_share": {
       "factor": "tenYDividendperShareGrowthPerShare",
       "name": "Ten-Year Dividend per Share Growth Per Share",
       "note": "This factor measures the decade-long trend in dividend growth per share, indicating the company's long-term commitment to returning value to shareholders."
     },
-    "five_y_div_per_share_growth_per_share": {
+    "five_y_dividendper_share_growth_per_share": {
       "factor": "fiveYDividendperShareGrowthPerShare",
       "name": "Five-Year Dividend per Share Growth Per Share",
       "note": "This factor evaluates the five-year growth in dividends per share, showing the company's mid-term dividend distribution strategy."
     },
-    "three_y_div_per_share_growth_per_share": {
+    "three_y_dividendper_share_growth_per_share": {
       "factor": "threeYDividendperShareGrowthPerShare",
       "name": "Three-Year Dividend per Share Growth Per Share",
       "note": "This factor assesses the three-year trend in dividend growth per share, reflecting the company's short-term approach to shareholder returns."
@@ -1035,12 +1035,12 @@
       "name": "Debt Growth",
       "note": "This factor measures the change in total debt, indicating the company's debt management and financial leverage strategy."
     },
-    "rd_expense_growth": {
+    "rdexpense_growth": {
       "factor": "rdexpenseGrowth",
       "name": "R&D Expense Growth",
       "note": "This factor measures the year-over-year change in research and development expenses, indicating the company's commitment to innovation and development of new products or technologies."
     },
-    "sga_expenses_growth": {
+    "sgaexpenses_growth": {
       "factor": "sgaexpensesGrowth",
       "name": "SGA Expenses Growth",
       "note": "This factor evaluates the change in selling, general, and administrative expenses, highlighting how the company's operational and overhead costs are evolving."
@@ -1076,22 +1076,22 @@
       "name": "Gross Profit Ratio",
       "note": "This factor calculates the ratio of gross profit to revenue, providing insights into the company's profitability and efficiency in its core business operations."
     },
-    "rnd_expenses": {
+    "research_and_development_expenses": {
       "factor": "researchAndDevelopmentExpenses",
       "name": "Research and Development Expenses",
       "note": "This factor reflects the company's investment in innovation and development of new products or services, key for understanding its growth potential and commitment to innovation."
     },
-    "ga_expenses": {
+    "general_and_administrative_expenses": {
       "factor": "generalAndAdministrativeExpenses",
       "name": "General and Administrative Expenses",
       "note": "This factor includes overhead costs not directly tied to production, like office expenses, management salaries, and administrative support, indicative of the company's operational efficiency."
     },
-    "sm_expenses": {
+    "selling_and_marketing_expenses": {
       "factor": "sellingAndMarketingExpenses",
       "name": "Selling and Marketing Expenses",
       "note": "This factor represents the costs associated with sales and marketing activities, essential for evaluating the company's investment in market expansion and customer acquisition."
     },
-    "sga_expenses": {
+    "selling_general_and_administrative_expenses": {
       "factor": "sellingGeneralAndAdministrativeExpenses",
       "name": "Selling, General, and Administrative Expenses",
       "note": "This factor combines the expenses related to sales, marketing, and general administration, providing a comprehensive view of the company's overall operational costs."
@@ -1106,7 +1106,7 @@
       "name": "Operating Expenses",
       "note": "This factor encompasses all expenses related to the company's primary business operations, excluding cost of revenue, crucial for assessing the operational efficiency and cost management."
     },
-    "total_costs": {
+    "cost_and_expenses": {
       "factor": "costAndExpenses",
       "name": "Cost and Expenses",
       "note": "This factor represents the total of all costs and expenses, combining cost of revenue with operating expenses, providing an overall view of the company's expenditure in business operations."
@@ -1116,12 +1116,12 @@
       "name": "Interest Income",
       "note": "This factor indicates income earned from interest-bearing assets like savings accounts or investments, reflecting the company's ability to generate income from its financial assets."
     },
-    "interestExpense": {
+    "interest_expense": {
       "factor": "interestExpense",
       "name": "Interest Expense",
       "note": "This factor shows the cost incurred from interest on borrowed funds, crucial for understanding the company's debt burden and financial leverage."
     },
-    "depr_amort": {
+    "depreciation_and_amortization": {
       "factor": "depreciationAndAmortization",
       "name": "Depreciation and Amortization",
       "note": "This factor reflects the allocation of the cost of tangible and intangible assets over their useful lives, impacting the company's profitability and asset valuation."
@@ -1131,7 +1131,7 @@
       "name": "EBITDA",
       "note": "Earnings Before Interest, Taxes, Depreciation, and Amortization - this factor measures the company's operating performance excluding these non-operational expenses, key for comparing profitability across different companies."
     },
-    "ebitda_ratio": {
+    "ebitdaratio": {
       "factor": "ebitdaratio",
       "name": "EBITDA Ratio",
       "note": "This factor calculates the ratio of EBITDA to revenue, providing insights into the company's operational efficiency and profitability before accounting for financial and accounting decisions."
@@ -1146,22 +1146,22 @@
       "name": "Operating Income Ratio",
       "note": "This factor calculates the ratio of operating income to revenue, providing insights into how efficiently a company is generating profit from its core business."
     },
-    "other_income_expenses": {
+    "total_other_income_expenses_net": {
       "factor": "totalOtherIncomeExpensesNet",
       "name": "Total Other Income/Expenses Net",
       "note": "This factor encompasses all other income and expenses not related to core operations, like investment gains or losses, impacting the company's overall financial performance."
     },
-    "pre_tax_income": {
+    "income_before_tax": {
       "factor": "incomeBeforeTax",
       "name": "Income Before Tax",
       "note": "This factor represents the company's earnings before taxation, essential for evaluating its pre-tax profitability and operational effectiveness."
     },
-    "pre_tax_income_ratio": {
+    "income_before_tax_ratio": {
       "factor": "incomeBeforeTaxRatio",
       "name": "Income Before Tax Ratio",
       "note": "This factor calculates the ratio of income before tax to revenue, providing a measure of the company's profitability before tax obligations."
     },
-    "tax_expense": {
+    "income_tax_expense": {
       "factor": "incomeTaxExpense",
       "name": "Income Tax Expense",
       "note": "This factor indicates the total tax expense incurred by the company, reflecting its tax liabilities and fiscal responsibilities."
@@ -1181,17 +1181,17 @@
       "name": "EPS",
       "note": "Earnings Per Share (EPS) - This factor shows the company's earnings allocated to each outstanding share, a key indicator of profitability and a fundamental driver of stock prices."
     },
-    "eps_diluted": {
+    "epsdiluted": {
       "factor": "epsdiluted",
       "name": "EPS Diluted",
       "note": "Diluted Earnings Per Share - This factor represents the company's earnings per share after including potential dilution from convertible securities, options, or warrants, offering a conservative view of earnings per share."
     },
-    "avg_shares_out": {
+    "weighted_average_shs_out": {
       "factor": "weightedAverageShsOut",
       "name": "Weighted Average Shares Outstanding",
       "note": "This factor indicates the weighted average number of shares outstanding during the reporting period, used in calculating EPS and reflecting changes in share count over time."
     },
-    "avg_shares_out_dil": {
+    "weighted_average_shs_out_dil": {
       "factor": "weightedAverageShsOutDil",
       "name": "Weighted Average Shares Outstanding (Diluted)",
       "note": "This factor represents the weighted average number of shares outstanding after accounting for potential dilution effects, crucial for a comprehensive understanding of EPS when all convertible securities are exercised."
@@ -1207,132 +1207,132 @@
         "period": "quarter"
       }
     },
-    "rev_growth": {
+    "growth_revenue": {
       "factor": "growthRevenue",
       "name": "Growth in Revenue",
       "note": "This factor measures the year-over-year change in the company's total revenue, indicating its overall sales growth and market performance."
     },
-    "cost_of_rev_growth": {
+    "growth_cost_of_revenue": {
       "factor": "growthCostOfRevenue",
       "name": "Growth in Cost of Revenue",
       "note": "This factor assesses changes in the direct costs associated with producing the goods or services sold by the company, reflecting operational efficiency."
     },
-    "gross_profit_growth": {
+    "growth_gross_profit": {
       "factor": "growthGrossProfit",
       "name": "Growth in Gross Profit",
       "note": "This factor evaluates the change in gross profit, which is revenue minus the cost of goods sold, indicating profitability and cost management effectiveness."
     },
-    "gross_profit_ratio_growth": {
+    "growth_gross_profit_ratio": {
       "factor": "growthGrossProfitRatio",
       "name": "Growth in Gross Profit Ratio",
       "note": "This factor measures changes in the gross profit margin, reflecting the company's ability to retain a higher percentage of revenue as profit after accounting for the cost of goods sold."
     },
-    "rd_exp_growth": {
+    "growth_research_and_development_expenses": {
       "factor": "growthResearchAndDevelopmentExpenses",
       "name": "Growth in Research and Development Expenses",
       "note": "This factor analyzes changes in R&D expenses, indicating the company's investment in innovation and future product development."
     },
-    "gen_admin_exp_growth": {
+    "growth_general_and_administrative_expenses": {
       "factor": "growthGeneralAndAdministrativeExpenses",
       "name": "Growth in General and Administrative Expenses",
       "note": "This factor measures changes in general and administrative costs, highlighting efficiency in managing overhead expenses."
     },
-    "sell_mkt_exp_growth": {
+    "growth_selling_and_marketing_expenses": {
       "factor": "growthSellingAndMarketingExpenses",
       "name": "Growth in Selling and Marketing Expenses",
       "note": "This factor assesses changes in selling and marketing costs, indicating the company's investment in market expansion and customer acquisition."
     },
-    "other_exp_growth": {
+    "growth_other_expenses": {
       "factor": "growthOtherExpenses",
       "name": "Growth in Other Expenses",
       "note": "This factor evaluates changes in miscellaneous expenses not categorized under other specific headings, providing insight into various other operational costs."
     },
-    "op_exp_growth": {
+    "growth_operating_expenses": {
       "factor": "growthOperatingExpenses",
       "name": "Growth in Operating Expenses",
       "note": "This factor indicates the year-over-year change in expenses incurred from the company's primary operations, highlighting its operational cost management."
     },
-    "cost_exp_growth": {
+    "growth_cost_and_expenses": {
       "factor": "growthCostAndExpenses",
       "name": "Growth in Cost and Expenses",
       "note": "This factor assesses the overall change in the company's total costs and expenses, reflecting its financial discipline and cost control measures."
     },
-    "interest_exp_growth": {
+    "growth_interest_expense": {
       "factor": "growthInterestExpense",
       "name": "Growth in Interest Expense",
       "note": "This factor measures changes in the cost of debt, indicating how interest payments on borrowed funds are impacting the company's finances."
     },
-    "dep_amort_growth": {
+    "growth_depreciation_and_amortization": {
       "factor": "growthDepreciationAndAmortization",
       "name": "Growth in Depreciation and Amortization",
       "note": "This factor evaluates changes in depreciation and amortization expenses, indicating the company's asset usage and capital investment."
     },
-    "ebitda_growth": {
+    "growth_ebitda": {
       "factor": "growthEBITDA",
       "name": "Growth in EBITDA",
       "note": "This factor reflects the change in Earnings Before Interest, Taxes, Depreciation, and Amortization, providing a proxy for the company's operating profitability."
     },
-    "ebitda_ratio_growth": {
+    "growth_ebitda_ratio": {
       "factor": "growthEBITDARatio",
       "name": "Growth in EBITDA Ratio",
       "note": "This factor measures changes in the EBITDA margin, reflecting the efficiency of the company's core operations and profitability."
     },
-    "op_income_growth": {
+    "growth_operating_income": {
       "factor": "growthOperatingIncome",
       "name": "Growth in Operating Income",
       "note": "This factor indicates changes in the income generated from the company's core business activities, highlighting its core operational profitability."
     },
-    "op_income_ratio_growth": {
+    "growth_operating_income_ratio": {
       "factor": "growthOperatingIncomeRatio",
       "name": "Growth in Operating Income Ratio",
       "note": "This factor assesses changes in the operating income margin, providing insights into the profitability of the company's primary business operations."
     },
-    "other_inc_exp_net_growth": {
+    "growth_total_other_income_expenses_net": {
       "factor": "growthTotalOtherIncomeExpensesNet",
       "name": "Growth in Total Other Income/Expenses Net",
       "note": "This factor measures changes in the net amount of other incomes or expenses that are not directly related to the company's primary operations."
     },
-    "income_bfr_tax_growth": {
+    "growth_income_before_tax": {
       "factor": "growthIncomeBeforeTax",
       "name": "Growth in Income Before Tax",
       "note": "This factor assesses the change in earnings before the deduction of tax expenses, indicating the company's profitability before tax impact."
     },
-    "income_bfr_tax_ratio_growth": {
+    "growth_income_before_tax_ratio": {
       "factor": "growthIncomeBeforeTaxRatio",
       "name": "Growth in Income Before Tax Ratio",
       "note": "This factor evaluates the change in the ratio of income before tax to revenue, reflecting the company's pre-tax profitability efficiency."
     },
-    "income_tax_exp_growth": {
+    "growth_income_tax_expense": {
       "factor": "growthIncomeTaxExpense",
       "name": "Growth in Income Tax Expense",
       "note": "This factor indicates changes in the company's tax expenses, reflecting its tax obligations and effective tax planning."
     },
-    "net_income_growth": {
+    "growth_net_income": {
       "factor": "growthNetIncome",
       "name": "Growth in Net Income",
       "note": "This factor measures the year-over-year change in net income, highlighting the company's overall profitability after accounting for all expenses and taxes."
     },
-    "net_income_ratio_growth": {
+    "growth_net_income_ratio": {
       "factor": "growthNetIncomeRatio",
       "name": "Growth in Net Income Ratio",
       "note": "This factor evaluates changes in the net income margin, indicating how much of the company's revenue is converted into net profit."
     },
-    "eps_growth": {
+    "growth_eps": {
       "factor": "growthEPS",
       "name": "Growth in Earnings Per Share (EPS)",
       "note": "This factor assesses the change in earnings per share, reflecting the company's profitability on a per-share basis."
     },
-    "eps_diluted_growth": {
+    "growth_eps_diluted": {
       "factor": "growthEPSDiluted",
       "name": "Growth in Diluted Earnings Per Share",
       "note": "This factor measures changes in diluted earnings per share, which considers potential shares from conversions or stock options, providing a comprehensive view of earnings."
     },
-    "avg_shares_out_growth": {
+    "growth_weighted_average_shs_out": {
       "factor": "growthWeightedAverageShsOut",
       "name": "Growth in Weighted Average Shares Outstanding",
       "note": "This factor measures the year-over-year change in the weighted average number of shares outstanding, reflecting changes in the company's equity structure and shareholder base."
     },
-    "avg_shares_out_dil_growth": {
+    "growth_weighted_average_shs_out_dil": {
       "factor": "growthWeightedAverageShsOutDil",
       "name": "Growth in Weighted Average Shares Outstanding Diluted",
       "note": "This factor assesses the change in the diluted weighted average number of shares outstanding, which includes the effects of convertible securities, options, and other potential shares."
@@ -1353,27 +1353,27 @@
       "name": "Net Income",
       "note": "This factor represents the company's total earnings after deducting all expenses and taxes. It is a key indicator of the company's profitability."
     },
-    "dep_and_amort": {
+    "depreciation_and_amortization": {
       "factor": "depreciationAndAmortization",
       "name": "Depreciation and Amortization",
       "note": "This factor reflects the allocation of the cost of tangible and intangible assets over their useful lives. It is a non-cash expense that affects the company's net income."
     },
-    "def_inc_tax": {
+    "deferred_income_tax": {
       "factor": "deferredIncomeTax",
       "name": "Deferred Income Tax",
       "note": "This factor shows changes in deferred income tax, which occurs due to the difference in timing between when taxes are accrued and when they are paid."
     },
-    "stk_based_comp": {
+    "stock_based_compensation": {
       "factor": "stockBasedCompensation",
       "name": "Stock Based Compensation",
       "note": "This factor accounts for the expenses related to stock options or other forms of stock-based remuneration provided to employees or executives."
     },
-    "chg_in_work_cap": {
+    "change_in_working_capital": {
       "factor": "changeInWorkingCapital",
       "name": "Change in Working Capital",
       "note": "This factor indicates the change in working capital, reflecting how much the company invested in short-term assets and liabilities."
     },
-    "acc_receivables": {
+    "accounts_receivables": {
       "factor": "accountsReceivables",
       "name": "Accounts Receivables",
       "note": "This factor represents money owed to the company by customers for goods or services delivered but not yet paid for."
@@ -1383,12 +1383,12 @@
       "name": "Inventory",
       "note": "This factor indicates the total value of the company's inventory, including goods available for sale and raw materials used to produce goods."
     },
-    "acc_payables": {
+    "accounts_payables": {
       "factor": "accountsPayables",
       "name": "Accounts Payables",
       "note": "This factor shows the amount the company owes to its suppliers or creditors for goods and services received but not yet paid for."
     },
-    "other_work_cap": {
+    "other_working_capital": {
       "factor": "otherWorkingCapital",
       "name": "Other Working Capital",
       "note": "This factor includes additional elements affecting the company's working capital, like short-term loans and other operational liabilities or assets."
@@ -1398,12 +1398,12 @@
       "name": "Other Non-Cash Items",
       "note": "This factor covers various non-cash transactions not specifically listed elsewhere in the cash flow statement, affecting the company's financial position."
     },
-    "net_cash_prov_by_op_act": {
+    "net_cash_provided_by_operating_activities": {
       "factor": "netCashProvidedByOperatingActivities",
       "name": "Net Cash Provided by Operating Activities",
       "note": "This factor shows the net cash generated from the company's core business operations, crucial for understanding its operational efficiency and financial health."
     },
-    "inv_in_prop_plant_equip": {
+    "investments_in_property_plant_and_equipment": {
       "factor": "investmentsInPropertyPlantAndEquipment",
       "name": "Investments in Property, Plant, and Equipment",
       "note": "This factor represents the company's capital expenditures on physical assets like buildings and machinery, indicating its investment in long-term assets."
@@ -1413,22 +1413,22 @@
       "name": "Acquisitions, Net",
       "note": "This factor includes the net cash used or received in the acquisition or disposition of subsidiaries, businesses, or other significant assets."
     },
-    "purch_of_inv": {
+    "purchases_of_investments": {
       "factor": "purchasesOfInvestments",
       "name": "Purchases of Investments",
       "note": "This factor represents the company's investment in securities, stocks, bonds, or other financial assets."
     },
-    "sales_mat_of_inv": {
+    "sales_maturities_of_investments": {
       "factor": "salesMaturitiesOfInvestments",
       "name": "Sales/Maturities of Investments",
       "note": "This factor shows the cash received from selling or maturing investments, indicating the company's cash inflows from its investment portfolio."
     },
-    "other_inv_act": {
+    "other_investing_activites": {
       "factor": "otherInvestingActivites",
       "name": "Other Investing Activities",
       "note": "This factor encompasses various other investing activities not classified elsewhere, impacting the company's overall investment strategy and cash flow."
     },
-    "net_cash_used_for_inv_act": {
+    "net_cash_used_for_investing_activites": {
       "factor": "netCashUsedForInvestingActivites",
       "name": "Net Cash Used for Investing Activities",
       "note": "This factor indicates the total cash used in or provided by the company's investing activities, including investments in assets and acquisitions."
@@ -1453,22 +1453,22 @@
       "name": "Dividends Paid",
       "note": "This factor shows the total dividends paid to shareholders, reflecting the company's profit distribution policy and commitment to returning value to investors."
     },
-    "other_fin_act": {
+    "other_financing_activites": {
       "factor": "otherFinancingActivites",
       "name": "Other Financing Activities",
       "note": "This factor encompasses various other financing activities not classified elsewhere, affecting the company's overall financial strategy and cash flow."
     },
-    "net_cash_used_prov_by_fin_act": {
+    "net_cash_used_provided_by_financing_activities": {
       "factor": "netCashUsedProvidedByFinancingActivities",
       "name": "Net Cash Used/Provided by Financing Activities",
       "note": "This factor represents the net cash flow from financing activities, including debt issuance, equity transactions, and dividends, indicating the company's financial strategy and liquidity position."
     },
-    "eff_of_forex_chg_on_cash": {
+    "effect_of_forex_changes_on_cash": {
       "factor": "effectOfForexChangesOnCash",
       "name": "Effect of Forex Changes on Cash",
       "note": "This factor shows the impact of foreign exchange rate fluctuations on the company's cash and cash equivalents, reflecting the company's exposure to currency market volatility."
     },
-    "net_chg_in_cash": {
+    "net_change_in_cash": {
       "factor": "netChangeInCash",
       "name": "Net Change in Cash",
       "note": "This factor shows the overall net increase or decrease in cash and cash equivalents during the reporting period, reflecting the company's cash flow health."
@@ -1478,17 +1478,17 @@
       "name": "Cash at End of Period",
       "note": "This factor represents the total amount of cash and cash equivalents held by the company at the end of the financial period, indicating its liquidity status."
     },
-    "cash_at_beg_of_period": {
+    "cash_at_beginning_of_period": {
       "factor": "cashAtBeginningOfPeriod",
       "name": "Cash at Beginning of Period",
       "note": "This factor indicates the amount of cash and cash equivalents the company had at the beginning of the financial period, serving as a baseline for cash flow analysis."
     },
-    "op_cash_flow": {
+    "operating_cash_flow": {
       "factor": "operatingCashFlow",
       "name": "Operating Cash Flow",
       "note": "This factor measures the cash generated from the company's regular business operations, crucial for evaluating its operational efficiency and ability to generate cash."
     },
-    "cap_expend": {
+    "capital_expenditure": {
       "factor": "capitalExpenditure",
       "name": "Capital Expenditure",
       "note": "This factor represents the cash spent by the company on acquiring or maintaining physical assets, such as property, plant, and equipment, indicating its investment in maintaining and expanding operations."
@@ -1509,152 +1509,152 @@
         "period": "quarter"
       }
     },
-    "net_inc_gr": {
+    "growth_net_income": {
       "factor": "growthNetIncome",
       "name": "Growth in Net Income",
       "note": "This factor assesses the year-over-year change in a company's net income, indicating its profitability growth and financial performance trend."
     },
-    "dep_amort_gr": {
+    "growth_depreciation_and_amortization": {
       "factor": "growthDepreciationAndAmortization",
       "name": "Growth in Depreciation and Amortization",
       "note": "This factor measures the annual increase or decrease in the company's depreciation and amortization expenses, reflecting changes in asset value and investment in capital."
     },
-    "def_inc_tax_gr": {
+    "growth_deferred_income_tax": {
       "factor": "growthDeferredIncomeTax",
       "name": "Growth in Deferred Income Tax",
       "note": "This factor indicates changes in the company's deferred income tax liabilities or assets, reflecting its future tax obligations or benefits."
     },
-    "stk_bas_comp_gr": {
+    "growth_stock_based_compensation": {
       "factor": "growthStockBasedCompensation",
       "name": "Growth in Stock-Based Compensation",
       "note": "This factor evaluates the change in expenses related to stock-based compensation, showing how employee compensation costs are evolving."
     },
-    "ch_wrk_cap_gr": {
+    "growth_change_in_working_capital": {
       "factor": "growthChangeInWorkingCapital",
       "name": "Growth in Working Capital",
       "note": "This factor measures the change in a company's working capital, indicating its operational efficiency and short-term financial health."
     },
-    "acc_rec_gr": {
+    "growth_accounts_receivables": {
       "factor": "growthAccountsReceivables",
       "name": "Growth in Accounts Receivables",
       "note": "This factor assesses the change in the amount owed to the company by its customers, indicating the efficiency of its credit and collections."
     },
-    "inv_gr": {
+    "growth_inventory": {
       "factor": "growthInventory",
       "name": "Growth in Inventory",
       "note": "This factor analyzes the annual change in the company's inventory levels, providing insights into its production, sales, and inventory management strategies."
     },
-    "acc_pay_gr": {
+    "growth_accounts_payables": {
       "factor": "growthAccountsPayables",
       "name": "Growth in Accounts Payables",
       "note": "This factor measures the change in the amount a company owes to its suppliers, reflecting its payment policies and cash flow management."
     },
-    "oth_wrk_cap_gr": {
+    "growth_other_working_capital": {
       "factor": "growthOtherWorkingCapital",
       "name": "Growth in Other Working Capital",
       "note": "This factor reflects changes in other components of working capital, indicating shifts in the company's short-term assets and liabilities not covered by more specific categories."
     },
-    "oth_non_cash_it_gr": {
+    "growth_other_non_cash_items": {
       "factor": "growthOtherNonCashItems",
       "name": "Growth in Other Non-Cash Items",
       "note": "This factor measures changes in non-cash items that affect the company's cash flow, highlighting non-operational factors impacting financial health."
     },
-    "op_cash_growth": {
+    "growth_net_cash_provided_by_operating_activites": {
       "factor": "growthNetCashProvidedByOperatingActivites",
       "name": "Growth in Net Cash Provided by Operating Activities",
       "note": "This factor assesses the year-over-year change in cash generated from core business operations, indicating the company's operational efficiency and cash-generating ability."
     },
-    "caip_growth": {
+    "growth_investments_in_property_plant_and_equipment": {
       "factor": "growthInvestmentsInPropertyPlantAndEquipment",
       "name": "Growth in Investments in Property, Plant, and Equipment",
       "note": "This factor evaluates changes in capital expenditures on property, plant, and equipment, indicating the company's investment in long-term assets."
     },
-    "acquisition_growth": {
+    "growth_acquisitions_net": {
       "factor": "growthAcquisitionsNet",
       "name": "Growth in Acquisitions, Net",
       "note": "This factor measures changes in the company's acquisitions, reflecting its expansion and investment strategy."
     },
-    "investment_buy_growth": {
+    "growth_purchases_of_investments": {
       "factor": "growthPurchasesOfInvestments",
       "name": "Growth in Purchases of Investments",
       "note": "This factor indicates changes in the company's investment purchases, showing how its investment portfolio is evolving."
     },
-    "investment_sell_growth": {
+    "growth_sales_maturities_of_investments": {
       "factor": "growthSalesMaturitiesOfInvestments",
       "name": "Growth in Sales/Maturities of Investments",
       "note": "This factor assesses changes in the sales or maturities of the company's investments, reflecting its investment liquidation or maturity strategy."
     },
-    "other_inv_act_growth": {
+    "growth_other_investing_activites": {
       "factor": "growthOtherInvestingActivites",
       "name": "Growth in Other Investing Activities",
       "note": "This factor captures changes in various investing activities not classified under other specific categories, highlighting diverse aspects of the company's investment strategy."
     },
-    "inv_cash_growth": {
+    "growth_net_cash_used_for_investing_activites": {
       "factor": "growthNetCashUsedForInvestingActivites",
       "name": "Growth in Net Cash Used for Investing Activities",
       "note": "This factor assesses the change in cash used for investments, reflecting how the company's investment strategy and expenditure on assets are evolving."
     },
-    "debt_repay_growth": {
+    "growth_debt_repayment": {
       "factor": "growthDebtRepayment",
       "name": "Growth in Debt Repayment",
       "note": "This factor measures changes in the company's debt repayment, indicating its approach to managing and reducing liabilities."
     },
-    "stock_issued_growth": {
+    "growth_common_stock_issued": {
       "factor": "growthCommonStockIssued",
       "name": "Growth in Common Stock Issued",
       "note": "This factor evaluates the change in the issuance of common stock, reflecting the company's equity financing strategy and capital raising activities."
     },
-    "stock_buyback_growth": {
+    "growth_common_stock_repurchased": {
       "factor": "growthCommonStockRepurchased",
       "name": "Growth in Common Stock Repurchased",
       "note": "This factor indicates changes in the repurchase of common stock, showing the company's strategy regarding shareholder value and equity management."
     },
-    "dividend_growth": {
+    "growth_dividends_paid": {
       "factor": "growthDividendsPaid",
       "name": "Growth in Dividends Paid",
       "note": "This factor measures changes in dividends paid to shareholders, indicating the company's profitability and dividend distribution policy."
     },
-    "other_fin_act_growth": {
+    "growth_other_financing_activites": {
       "factor": "growthOtherFinancingActivites",
       "name": "Growth in Other Financing Activities",
       "note": "This factor captures changes in various financing activities, highlighting diverse aspects of the company's financial strategy not covered under other specific categories."
     },
-    "fin_cash_growth": {
+    "growth_net_cash_used_provided_by_financing_activities": {
       "factor": "growthNetCashUsedProvidedByFinancingActivities",
       "name": "Growth in Net Cash Used/Provided by Financing Activities",
       "note": "This factor assesses the change in cash flow from financing activities, indicating the company's overall financing health and strategy."
     },
-    "forex_effect_growth": {
+    "growth_effect_of_forex_changes_on_cash": {
       "factor": "growthEffectOfForexChangesOnCash",
       "name": "Growth in Effect of Forex Changes on Cash",
       "note": "This factor evaluates the impact of foreign exchange rate changes on the company's cash position, highlighting the influence of currency fluctuations on financial performance."
     },
-    "net_cash_change_growth": {
+    "growth_net_change_in_cash": {
       "factor": "growthNetChangeInCash",
       "name": "Growth in Net Change in Cash",
       "note": "This factor reflects the year-over-year change in the net amount of cash and cash equivalents, highlighting the company's overall liquidity evolution."
     },
-    "end_cash_growth": {
+    "growth_cash_at_end_of_period": {
       "factor": "growthCashAtEndOfPeriod",
       "name": "Growth in Cash at End of Period",
       "note": "This factor measures the change in the company's cash position at the end of the financial period, indicating its liquidity status at fiscal year-end."
     },
-    "begin_cash_growth": {
+    "growth_cash_at_beginning_of_period": {
       "factor": "growthCashAtBeginningOfPeriod",
       "name": "Growth in Cash at Beginning of Period",
       "note": "This factor assesses the change in the company's cash position at the beginning of the financial period, providing a baseline for liquidity analysis."
     },
-    "op_cash_flow_growth": {
+    "growth_operating_cash_flow": {
       "factor": "growthOperatingCashFlow",
       "name": "Growth in Operating Cash Flow",
       "note": "This factor evaluates the change in cash generated from core business operations, indicating the company's operational efficiency and cash-generating ability."
     },
-    "capex_growth": {
+    "growth_capital_expenditure": {
       "factor": "growthCapitalExpenditure",
       "name": "Growth in Capital Expenditure",
       "note": "This factor measures changes in the company's investments in physical assets, reflecting its strategy for maintaining and expanding operations."
     },
-    "free_cash_flow_growth": {
+    "growth_free_cash_flow": {
       "factor": "growthFreeCashFlow",
       "name": "Growth in Free Cash Flow",
       "note": "This factor assesses the change in cash available after accounting for capital expenditures, indicating the company's financial flexibility and ability to generate surplus cash."
@@ -1670,17 +1670,17 @@
         "period": "quarter"
       }
     },
-    "cash_equivalents": {
+    "cash_and_cash_equivalents": {
       "factor": "cashAndCashEquivalents",
       "name": "Cash and Cash Equivalents",
       "note": "This factor shows the total amount of company's cash on hand and liquid assets that can be quickly converted into cash, essential for assessing short-term financial stability."
     },
-    "short_term_inv": {
+    "short_term_investments": {
       "factor": "shortTermInvestments",
       "name": "Short Term Investments",
       "note": "This factor represents investments that can be easily liquidated within a year, such as marketable securities, providing insight into the company's short-term investment strategies."
     },
-    "cash_short_term_inv": {
+    "cash_and_short_term_investments": {
       "factor": "cashAndShortTermInvestments",
       "name": "Cash and Short Term Investments",
       "note": "This factor combines the company's cash and cash equivalents with short-term investments, offering a comprehensive view of its liquid assets."
@@ -1705,7 +1705,7 @@
       "name": "Total Current Assets",
       "note": "This factor represents the sum of all assets that a company expects to convert into cash within one year, crucial for assessing its short-term financial health and operational efficiency."
     },
-    "ppe_net": {
+    "property_plant_equipment_net": {
       "factor": "propertyPlantEquipmentNet",
       "name": "Property, Plant, and Equipment Net",
       "note": "This factor shows the net value of the company's physical assets, such as buildings and machinery, after accounting for depreciation and amortization, vital for evaluating its long-term investment in operations."
@@ -1720,12 +1720,12 @@
       "name": "Intangible Assets",
       "note": "This factor includes non-physical assets like patents, trademarks, and copyrights, crucial for companies in knowledge-intensive industries, reflecting their intellectual property and market competitiveness."
     },
-    "goodwill_intang_assets": {
+    "goodwill_and_intangible_assets": {
       "factor": "goodwillAndIntangibleAssets",
       "name": "Goodwill and Intangible Assets",
       "note": "This factor combines both goodwill and intangible assets, showcasing the total value of a company's intangible resources that contribute to its long-term value and market position."
     },
-    "long_term_inv": {
+    "long_term_investments": {
       "factor": "longTermInvestments",
       "name": "Long Term Investments",
       "note": "This factor represents investments not expected to be liquidated within a year, like bonds, stocks, or real estate, indicating the company's long-term investment strategy and financial planning."
@@ -1770,117 +1770,117 @@
       "name": "Tax Payables",
       "note": "This factor includes taxes owed to the government that are due in the short term, representing the company's immediate tax liabilities."
     },
-    "def_rev": {
+    "deferred_revenue": {
       "factor": "deferredRevenue",
       "name": "Deferred Revenue",
       "note": "This factor represents income received for goods or services yet to be delivered or performed, indicating obligations the company must fulfill in the future."
     },
-    "oth_cur_liab": {
+    "other_current_liabilities": {
       "factor": "otherCurrentLiabilities",
       "name": "Other Current Liabilities",
       "note": "This factor encompasses various short-term liabilities not specifically categorized, like accrued expenses, reflecting the company's immediate financial obligations."
     },
-    "tot_cur_liab": {
+    "total_current_liabilities": {
       "factor": "totalCurrentLiabilities",
       "name": "Total Current Liabilities",
       "note": "This factor represents the sum of all short-term liabilities, indicating the total amount the company owes within one year, crucial for assessing its short-term financial stability."
     },
-    "long_debt": {
+    "long_term_debt": {
       "factor": "longTermDebt",
       "name": "Long Term Debt",
       "note": "This factor shows the company's obligations that are due beyond one year, including bonds, loans, and other long-term borrowings, key for understanding its long-term financial commitments."
     },
-    "def_rev_nc": {
+    "deferred_revenue_non_current": {
       "factor": "deferredRevenueNonCurrent",
       "name": "Deferred Revenue Non-Current",
       "note": "This factor represents income received for goods or services to be delivered in the future, beyond the current accounting period, indicating longer-term obligations and future revenue recognition."
     },
-    "def_tax_liab_nc": {
+    "deferred_tax_liabilities_non_current": {
       "factor": "deferredTaxLiabilitiesNonCurrent",
       "name": "Deferred Tax Liabilities Non-Current",
       "note": "This factor includes taxes that are accrued but not due in the short term, reflecting the company's long-term tax obligations."
     },
-    "oth_nc_liab": {
+    "other_non_current_liabilities": {
       "factor": "otherNonCurrentLiabilities",
       "name": "Other Non-Current Liabilities",
       "note": "This factor covers various long-term liabilities not specifically listed, like long-term lease obligations, crucial for a complete understanding of the company's long-term financial responsibilities."
     },
-    "tot_nc_liab": {
+    "total_non_current_liabilities": {
       "factor": "totalNonCurrentLiabilities",
       "name": "Total Non-Current Liabilities",
       "note": "This factor indicates the total amount of long-term liabilities, representing the company's financial obligations due beyond one year."
     },
-    "oth_liab": {
+    "other_liabilities": {
       "factor": "otherLiabilities",
       "name": "Other Liabilities",
       "note": "This factor includes miscellaneous liabilities not classified under current or non-current liabilities, offering a broader view of the company's varied financial obligations."
     },
-    "cap_lease_obl": {
+    "capital_lease_obligations": {
       "factor": "capitalLeaseObligations",
       "name": "Capital Lease Obligations",
       "note": "This factor indicates the company's long-term commitments under capital leases, reflecting the financial burden of leased assets considered similar to purchased assets in terms of liability."
     },
-    "tot_liab": {
+    "total_liabilities": {
       "factor": "totalLiabilities",
       "name": "Total Liabilities",
       "note": "This factor represents the sum of all the company's liabilities, both current and non-current, crucial for assessing the total financial obligations and risks."
     },
-    "pref_stock": {
+    "preferred_stock": {
       "factor": "preferredStock",
       "name": "Preferred Stock",
       "note": "This factor shows the value of preferred shares issued by the company, representing a type of equity that typically provides dividends before common stocks and has priority over them in asset liquidation."
     },
-    "com_stock": {
+    "common_stock": {
       "factor": "commonStock",
       "name": "Common Stock",
       "note": "This factor represents the value of common shares issued, reflecting the basic equity ownership in the company, often with voting rights and dividends based on company performance."
     },
-    "ret_earn": {
+    "retained_earnings": {
       "factor": "retainedEarnings",
       "name": "Retained Earnings",
       "note": "This factor indicates the cumulative earnings retained in the company rather than distributed as dividends, essential for understanding reinvestment in the business and growth potential."
     },
-    "acc_oth_comp_inc_loss": {
+    "accumulated_other_comprehensive_income_loss": {
       "factor": "accumulatedOtherComprehensiveIncomeLoss",
       "name": "Accumulated Other Comprehensive Income/Loss",
       "note": "This factor covers various income, expenses, gains, and losses that are not included in net income, reflecting the company's broader financial performance."
     },
-    "oth_tot_stk_eq": {
+    "othertotal_stockholders_equity": {
       "factor": "othertotalStockholdersEquity",
       "name": "Other Total Stockholders' Equity",
       "note": "This factor encompasses additional elements of stockholders' equity not specifically categorized, contributing to the overall equity value of the company."
     },
-    "tot_stk_eq": {
+    "total_stockholders_equity": {
       "factor": "totalStockholdersEquity",
       "name": "Total Stockholders' Equity",
       "note": "This factor represents the total equity value held by shareholders, calculated as the difference between total assets and total liabilities, key for assessing the company's net worth and financial health."
     },
-    "tot_eq": {
+    "total_equity": {
       "factor": "totalEquity",
       "name": "Total Equity",
       "note": "This factor shows the total shareholders' equity, representing the residual interest in the company's assets after deducting liabilities, crucial for understanding the overall value attributable to shareholders."
     },
-    "tot_liab_stk_eq": {
+    "total_liabilities_and_stockholders_equity": {
       "factor": "totalLiabilitiesAndStockholdersEquity",
       "name": "Total Liabilities and Stockholders' Equity",
       "note": "This factor combines the total liabilities with total stockholders' equity, reflecting the company's total financial obligations and the equity financed by shareholders."
     },
-    "min_inter": {
+    "minority_interest": {
       "factor": "minorityInterest",
       "name": "Minority Interest",
       "note": "This factor represents the portion of subsidiary companies' equity not owned by the parent company, indicating the minority shareholders' stake in the subsidiaries."
     },
-    "tot_liab_eq": {
+    "total_liabilities_and_total_equity": {
       "factor": "totalLiabilitiesAndTotalEquity",
       "name": "Total Liabilities and Total Equity",
       "note": "This factor sums up all liabilities and equity, providing a comprehensive view of the company's financial structure and total funding sources."
     },
-    "tot_inv": {
+    "total_investments": {
       "factor": "totalInvestments",
       "name": "Total Investments",
       "note": "This factor shows the total value of the company's investments, including long-term and short-term investments, crucial for assessing its investment strategy and asset allocation."
     },
-    "tot_debt": {
+    "total_debt": {
       "factor": "totalDebt",
       "name": "Total Debt",
       "note": "This factor indicates the sum of all the company's debt, both short-term and long-term, essential for evaluating its total debt burden and financial leverage."
@@ -1901,197 +1901,197 @@
         "period": "quarter"
       }
     },
-    "cash_and_equiv_growth": {
+    "growth_cash_and_cash_equivalents": {
       "factor": "growthCashAndCashEquivalents",
       "name": "Growth in Cash and Cash Equivalents",
       "note": "This factor measures the year-over-year change in the company's cash and cash equivalents, indicating its liquidity changes and short-term financial stability."
     },
-    "short_term_inv_growth": {
+    "growth_short_term_investments": {
       "factor": "growthShortTermInvestments",
       "name": "Growth in Short Term Investments",
       "note": "This factor assesses the change in the company's short-term investments, reflecting its investment strategy and liquidity management."
     },
-    "cash_and_short_term_inv_growth": {
+    "growth_cash_and_short_term_investments": {
       "factor": "growthCashAndShortTermInvestments",
       "name": "Growth in Cash and Short Term Investments",
       "note": "This factor evaluates the combined growth of the company's cash and short-term investments, indicating its overall liquidity and investment choices."
     },
-    "net_receivables_growth": {
+    "growth_net_receivables": {
       "factor": "growthNetReceivables",
       "name": "Growth in Net Receivables",
       "note": "This factor measures changes in the total amount owed to the company by its customers, indicating the efficiency of its credit and collections processes."
     },
-    "inventory_growth": {
+    "growth_inventory": {
       "factor": "growthInventory",
       "name": "Growth in Inventory",
       "note": "This factor assesses the change in the company's inventory levels, providing insights into its inventory management, production, and sales strategies."
     },
-    "other_current_assets_growth": {
+    "growth_other_current_assets": {
       "factor": "growthOtherCurrentAssets",
       "name": "Growth in Other Current Assets",
       "note": "This factor indicates changes in other current assets, reflecting shifts in various short-term assets not classified under more specific categories."
     },
-    "total_current_assets_growth": {
+    "growth_total_current_assets": {
       "factor": "growthTotalCurrentAssets",
       "name": "Growth in Total Current Assets",
       "note": "This factor evaluates the overall change in the company's total current assets, indicating its short-term financial health and operational efficiency."
     },
-    "ppe_net_growth": {
+    "growth_property_plant_equipment_net": {
       "factor": "growthPropertyPlantEquipmentNet",
       "name": "Growth in Property, Plant, and Equipment Net",
       "note": "This factor measures the change in the net value of the company's property, plant, and equipment, reflecting its investment in long-term assets and capital expenditure trends."
     },
-    "goodwill_growth": {
+    "growth_goodwill": {
       "factor": "growthGoodwill",
       "name": "Growth in Goodwill",
       "note": "This factor reflects the year-over-year change in goodwill, indicating alterations in the company's valuation of acquired assets beyond their tangible net worth."
     },
-    "intangible_assets_growth": {
+    "growth_intangible_assets": {
       "factor": "growthIntangibleAssets",
       "name": "Growth in Intangible Assets",
       "note": "This factor measures changes in the company's intangible assets, such as patents and trademarks, highlighting its investment in non-physical assets."
     },
-    "goodwill_intangible_assets_growth": {
+    "growth_goodwill_and_intangible_assets": {
       "factor": "growthGoodwillAndIntangibleAssets",
       "name": "Growth in Goodwill and Intangible Assets",
       "note": "This factor assesses the combined growth in both goodwill and intangible assets, offering insights into the company's overall valuation of non-physical assets."
     },
-    "long_term_investments_growth": {
+    "growth_long_term_investments": {
       "factor": "growthLongTermInvestments",
       "name": "Growth in Long Term Investments",
       "note": "This factor evaluates changes in the company's long-term investments, indicating its strategy and commitment to future growth prospects."
     },
-    "tax_assets_growth": {
+    "growth_tax_assets": {
       "factor": "growthTaxAssets",
       "name": "Growth in Tax Assets",
       "note": "This factor measures changes in the company's tax assets, reflecting its expected tax receivables and potential future tax benefits."
     },
-    "other_non_current_assets_growth": {
+    "growth_other_non_current_assets": {
       "factor": "growthOtherNonCurrentAssets",
       "name": "Growth in Other Non-Current Assets",
       "note": "This factor indicates changes in other non-current assets, covering a range of long-term assets not specified under other categories."
     },
-    "total_non_current_assets_growth": {
+    "growth_total_non_current_assets": {
       "factor": "growthTotalNonCurrentAssets",
       "name": "Growth in Total Non-Current Assets",
       "note": "This factor evaluates the overall change in the company's total non-current assets, highlighting its long-term asset management and investment strategies."
     },
-    "other_assets_growth": {
+    "growth_other_assets": {
       "factor": "growthOtherAssets",
       "name": "Growth in Other Assets",
       "note": "This factor assesses changes in various other assets, encompassing a broad spectrum of assets not included in other specific asset categories."
     },
-    "total_assets_growth": {
+    "growth_total_assets": {
       "factor": "growthTotalAssets",
       "name": "Growth in Total Assets",
       "note": "This factor measures the year-over-year change in the total assets of the company, reflecting its overall asset accumulation and management strategy."
     },
-    "account_payables_growth": {
+    "growth_account_payables": {
       "factor": "growthAccountPayables",
       "name": "Growth in Accounts Payable",
       "note": "This factor assesses the change in the company's accounts payable, indicating its short-term debt obligations and payment practices to suppliers."
     },
-    "short_term_debt_growth": {
+    "growth_short_term_debt": {
       "factor": "growthShortTermDebt",
       "name": "Growth in Short-Term Debt",
       "note": "This factor evaluates the change in the company's short-term debt, reflecting its immediate debt repayment obligations and liquidity management."
     },
-    "tax_payables_growth": {
+    "growth_tax_payables": {
       "factor": "growthTaxPayables",
       "name": "Growth in Tax Payables",
       "note": "This factor measures changes in the company's tax liabilities, indicating its upcoming tax obligations and financial planning for taxes."
     },
-    "def_revenue_gr": {
+    "growth_deferred_revenue": {
       "factor": "growthDeferredRevenue",
       "name": "Growth in Deferred Revenue",
       "note": "This factor assesses the change in deferred revenue, reflecting the company's advance earnings and its revenue recognition timing."
     },
-    "oth_cur_liab_gr": {
+    "growth_other_current_liabilities": {
       "factor": "growthOtherCurrentLiabilities",
       "name": "Growth in Other Current Liabilities",
       "note": "This factor indicates changes in other current liabilities, encompassing a variety of short-term financial obligations not specified in other categories."
     },
-    "tot_cur_liab_gr": {
+    "growth_total_current_liabilities": {
       "factor": "growthTotalCurrentLiabilities",
       "name": "Growth in Total Current Liabilities",
       "note": "This factor evaluates the overall change in the company's total current liabilities, indicating its short-term financial health and liability management."
     },
-    "long_term_debt_gr": {
+    "growth_long_term_debt": {
       "factor": "growthLongTermDebt",
       "name": "Growth in Long-Term Debt",
       "note": "This factor measures the change in the company's long-term debt, reflecting its long-term financial obligations and debt strategy."
     },
-    "def_rev_non_cur_gr": {
+    "growth_deferred_revenue_non_current": {
       "factor": "growthDeferredRevenueNonCurrent",
       "name": "Growth in Deferred Revenue Non-Current",
       "note": "This factor measures changes in long-term deferred revenue, indicating future revenue to be recognized over an extended period beyond the current fiscal year."
     },
-    "def_tax_liab_non_cur_gr": {
+    "growth_deferrred_tax_liabilities_non_current": {
       "factor": "growthDeferrredTaxLiabilitiesNonCurrent",
       "name": "Growth in Deferred Tax Liabilities Non-Current",
       "note": "This factor assesses the change in long-term deferred tax liabilities, reflecting the company's future tax obligations arising from temporary timing differences."
     },
-    "oth_non_cur_liab_gr": {
+    "growth_other_non_current_liabilities": {
       "factor": "growthOtherNonCurrentLiabilities",
       "name": "Growth in Other Non-Current Liabilities",
       "note": "This factor evaluates changes in other long-term liabilities not specifically categorized, indicating broader shifts in the company's long-term financial obligations."
     },
-    "tot_non_cur_liab_gr": {
+    "growth_total_non_current_liabilities": {
       "factor": "growthTotalNonCurrentLiabilities",
       "name": "Growth in Total Non-Current Liabilities",
       "note": "This factor measures the year-over-year change in the company's total long-term liabilities, reflecting its overall long-term financial health and obligations."
     },
-    "oth_liab_gr": {
+    "growth_other_liabilities": {
       "factor": "growthOtherLiabilities",
       "name": "Growth in Other Liabilities",
       "note": "This factor indicates changes in various liabilities that do not fit into standard categories, providing insights into the company's diverse financial commitments."
     },
-    "tot_liab_gr": {
+    "growth_total_liabilities": {
       "factor": "growthTotalLiabilities",
       "name": "Growth in Total Liabilities",
       "note": "This factor assesses the overall change in the company's total liabilities, indicating its financial stability and ability to manage both short-term and long-term obligations."
     },
-    "com_stock_gr": {
+    "growth_common_stock": {
       "factor": "growthCommonStock",
       "name": "Growth in Common Stock",
       "note": "This factor measures changes in the value of issued common stock, reflecting the company's equity financing activities and shareholder equity alterations."
     },
-    "ret_earn_gr": {
+    "growth_retained_earnings": {
       "factor": "growthRetainedEarnings",
       "name": "Growth in Retained Earnings",
       "note": "This factor evaluates the change in retained earnings, indicating the accumulation of net income that has been reinvested in the business rather than paid out as dividends."
     },
-    "acc_oth_comp_inc_loss_gr": {
+    "growth_accumulated_other_comprehensive_income_loss": {
       "factor": "growthAccumulatedOtherComprehensiveIncomeLoss",
       "name": "Growth in Accumulated Other Comprehensive Income/Loss",
       "note": "This factor assesses the year-over-year change in accumulated other comprehensive income or loss, reflecting the non-operational gains or losses that are not included in net income."
     },
-    "oth_tot_stk_eq_gr": {
+    "growth_othertotal_stockholders_equity": {
       "factor": "growthOthertotalStockholdersEquity",
       "name": "Growth in Other Total Stockholders' Equity",
       "note": "This factor measures changes in other components of stockholders' equity, capturing shifts in equity not represented by common stock and retained earnings."
     },
-    "tot_stk_eq_gr": {
+    "growth_total_stockholders_equity": {
       "factor": "growthTotalStockholdersEquity",
       "name": "Growth in Total Stockholders' Equity",
       "note": "This factor evaluates the overall change in the total equity held by stockholders, indicating the company's net value and financial health from an equity perspective."
     },
-    "tot_liab_stk_eq_gr": {
+    "growth_total_liabilities_and_stockholders_equity": {
       "factor": "growthTotalLiabilitiesAndStockholdersEquity",
       "name": "Growth in Total Liabilities and Stockholders' Equity",
       "note": "This factor reflects the combined change in the company's total liabilities and stockholders' equity, representing the total financing of the company."
     },
-    "tot_invest_gr": {
+    "growth_total_investments": {
       "factor": "growthTotalInvestments",
       "name": "Growth in Total Investments",
       "note": "This factor assesses the change in the company's total investment portfolio, indicating its investment strategy and allocation of resources."
     },
-    "tot_debt_gr": {
+    "growth_total_debt": {
       "factor": "growthTotalDebt",
       "name": "Growth in Total Debt",
       "note": "This factor measures changes in the company's total debt, encompassing both short-term and long-term obligations, highlighting its overall debt management."
     },
-    "net_debt_gr": {
+    "growth_net_debt": {
       "factor": "growthNetDebt",
       "name": "Growth in Net Debt",
       "note": "This factor calculates the change in net debt, which is total debt minus cash and equivalents, providing insight into the company's net financial obligations."
@@ -2105,22 +2105,22 @@
       "api": "api/v4/esg-environmental-social-governance-data",
       "symbol_in_query": true
     },
-    "name1": {
+    "environmental_score": {
       "factor": "environmentalScore",
       "name": "Environmental Score",
       "note": "This factor assesses a company's impact on the environment, including its energy use, waste production, and resource conservation practices. It reflects the company's commitment to environmental sustainability and its performance in managing ecological issues."
     },
-    "name2": {
+    "social_score": {
       "factor": "socialScore",
       "name": "Social Score",
       "note": "This factor evaluates a company's relationships with its employees, suppliers, customers, and communities. It encompasses aspects like labor practices, human rights, and community development, reflecting the company's social responsibility."
     },
-    "name3": {
+    "governance_score": {
       "factor": "governanceScore",
       "name": "Governance Score",
       "note": "This factor measures a company's governance practices, including leadership, executive pay, audits, internal controls, and shareholder rights. It indicates how well the company is managed and whether it operates with transparency and integrity."
     },
-    "name4": {
+    "esg_Score": {
       "factor": "ESGScore",
       "name": "ESG Score",
       "note": "This score combines the environmental, social, and governance scores, providing a comprehensive assessment of a company's performance across all three ESG criteria. It helps investors evaluate the company's overall commitment to sustainable and responsible business practices."
@@ -2137,167 +2137,167 @@
         "includeCurrentQuarter": "false"
       }
     },
-    "investorsHolding": {
+    "investors_holding": {
       "factor": "investorsHolding",
       "name": "Investors Holding",
       "note": "This factor represents the total number of shares held by institutional investors for a particular stock, reflecting the extent of institutional investment in that stock."
     },
-    "lastInvestorsHolding": {
+    "last_investors_holding": {
       "factor": "lastInvestorsHolding",
       "name": "Last Investors Holding",
       "note": "This factor indicates the previous reporting period's total number of shares held by institutional investors, providing a comparative perspective on institutional holdings."
     },
-    "investorsHoldingChange": {
+    "investors_holding_change": {
       "factor": "investorsHoldingChange",
       "name": "Investors Holding Change",
       "note": "This factor shows the change in the number of shares held by institutional investors between the current and previous reporting periods, highlighting trends in institutional investment."
     },
-    "numberOf13Fshares": {
+    "number_of_13f_shares": {
       "factor": "numberOf13Fshares",
       "name": "Number of 13F Shares",
       "note": "This factor represents the number of shares reported in the latest Form 13F filings by institutional investors, offering insight into their declared stock holdings."
     },
-    "lastNumberOf13Fshares": {
+    "last_number_of_13f_shares": {
       "factor": "lastNumberOf13Fshares",
       "name": "Last Number of 13F Shares",
       "note": "This factor shows the number of shares reported in the previous Form 13F filings by institutional investors, allowing for a historical comparison of declared holdings."
     },
-    "numberOf13FsharesChange": {
+    "number_of_13f_shares_change": {
       "factor": "numberOf13FsharesChange",
       "name": "Number of 13F Shares Change",
       "note": "This factor indicates the change in the number of shares reported in Form 13F filings between the latest and previous periods, reflecting shifts in institutional investors' reported stock holdings."
     },
-    "totalInvested": {
+    "total_invested": {
       "factor": "totalInvested",
       "name": "Total Invested",
       "note": "This factor indicates the total monetary value invested by institutional investors in a specific stock, representing the overall financial commitment of institutions to that stock."
     },
-    "lastTotalInvested": {
+    "last_total_invested": {
       "factor": "lastTotalInvested",
       "name": "Last Total Invested",
       "note": "This factor represents the total invested amount by institutional investors in the previous reporting period, allowing for comparison of investment trends over time."
     },
-    "totalInvestedChange": {
+    "total_invested_change": {
       "factor": "totalInvestedChange",
       "name": "Total Invested Change",
       "note": "This factor shows the change in the total invested amount by institutional investors from the previous to the current reporting period, highlighting the dynamics of institutional investment in the stock."
     },
-    "ownershipPercent": {
+    "ownership_percent": {
       "factor": "ownershipPercent",
       "name": "Ownership Percent",
       "note": "This factor reflects the percentage of a company's stock that is owned by institutional investors, indicating the level of institutional involvement in the stock."
     },
-    "lastOwnershipPercent": {
+    "last_ownership_percent": {
       "factor": "lastOwnershipPercent",
       "name": "Last Ownership Percent",
       "note": "This factor represents the percentage of stock ownership by institutional investors in the last reporting period, providing a basis for understanding changes in institutional investment patterns."
     },
-    "ownershipPercentChange": {
+    "ownership_percent_change": {
       "factor": "ownershipPercentChange",
       "name": "Ownership Percent Change",
       "note": "This factor indicates the change in the percentage of stock ownership by institutional investors between the current and previous reporting periods, signifying shifts in institutional engagement with the stock."
     },
-    "newPositions": {
+    "new_positions": {
       "factor": "newPositions",
       "name": "New Positions",
       "note": "This factor denotes the number of new stock positions acquired by institutional investors in the current reporting period, reflecting fresh investments and interest in the stock."
     },
-    "lastNewPositions": {
+    "last_new_positions": {
       "factor": "lastNewPositions",
       "name": "Last New Positions",
       "note": "This factor represents the number of new stock positions institutional investors acquired in the previous reporting period, allowing for a comparison of new investment activities over time."
     },
-    "newPositionsChange": {
+    "new_positions_change": {
       "factor": "newPositionsChange",
       "name": "New Positions Change",
       "note": "This factor indicates the change in the number of new stock positions acquired by institutional investors between the current and previous reporting periods, highlighting trends in new investments."
     },
-    "increasedPositions": {
+    "increased_positions": {
       "factor": "increasedPositions",
       "name": "Increased Positions",
       "note": "This factor shows the number of stock positions that institutional investors have increased their holdings in during the current reporting period, signifying a growing interest or confidence in those stocks."
     },
-    "lastIncreasedPositions": {
+    "last_increased_positions": {
       "factor": "lastIncreasedPositions",
       "name": "Last Increased Positions",
       "note": "This factor denotes the number of stock positions that were increased by institutional investors in the last reporting period, offering insights into past investment trends and strategies."
     },
-    "increasedPositionsChange": {
+    "increased_positions_change": {
       "factor": "increasedPositionsChange",
       "name": "Increased Positions Change",
       "note": "This factor reflects the change in the number of stock positions that have seen increased investment by institutional investors between the current and previous reporting periods, indicating shifting investment focus or confidence."
     },
-    "closedPositions": {
+    "closed_positions": {
       "factor": "closedPositions",
       "name": "Closed Positions",
       "note": "This factor represents the number of stock positions that institutional investors have completely sold off or closed in the current reporting period, indicating a withdrawal of investment from those stocks."
     },
-    "lastClosedPositions": {
+    "last_closed_positions": {
       "factor": "lastClosedPositions",
       "name": "Last Closed Positions",
       "note": "This factor shows the number of stock positions that were closed by institutional investors in the previous reporting period, providing a historical context for investment withdrawal trends."
     },
-    "closedPositionsChange": {
+    "closed_positions_change": {
       "factor": "closedPositionsChange",
       "name": "Closed Positions Change",
       "note": "This factor indicates the change in the number of closed positions by institutional investors between the current and previous reporting periods, highlighting the evolving investment exit strategies."
     },
-    "reducedPositions": {
+    "reduced_positions": {
       "factor": "reducedPositions",
       "name": "Reduced Positions",
       "note": "This factor denotes the number of stock positions where institutional investors have decreased their holdings in the current reporting period, signifying a reduced investment or interest in those stocks."
     },
-    "lastReducedPositions": {
+    "last_reduced_positions": {
       "factor": "lastReducedPositions",
       "name": "Last Reduced Positions",
       "note": "This factor represents the number of stock positions that saw a reduction in investment by institutional investors in the last reporting period, offering insights into changing investment patterns."
     },
-    "reducedPositionsChange": {
+    "reduced_positions_change": {
       "factor": "reducedPositionsChange",
       "name": "Reduced Positions Change",
       "note": "This factor reflects the change in the number of stock positions with reduced investment by institutional investors, capturing the shifting focus or confidence between the current and previous reporting periods."
     },
-    "totalCalls": {
+    "total_calls": {
       "factor": "totalCalls",
       "name": "Total Calls",
       "note": "This factor indicates the total number of call options held by institutional investors on the stock, signifying a bullish outlook or strategy for potential price increases."
     },
-    "lastTotalCalls": {
+    "last_total_calls": {
       "factor": "lastTotalCalls",
       "name": "Last Total Calls",
       "note": "This factor shows the total number of call options held by institutional investors in the previous reporting period, allowing for an analysis of trends in bullish option strategies."
     },
-    "totalCallsChange": {
+    "total_calls_change": {
       "factor": "totalCallsChange",
       "name": "Total Calls Change",
       "note": "This factor represents the change in the number of call options held by institutional investors between the current and previous reporting periods, highlighting shifts in bullish market sentiment."
     },
-    "totalPuts": {
+    "total_puts": {
       "factor": "totalPuts",
       "name": "Total Puts",
       "note": "This factor denotes the total number of put options held by institutional investors, indicating a bearish stance or protective strategy against potential stock price declines."
     },
-    "lastTotalPuts": {
+    "last_total_puts": {
       "factor": "lastTotalPuts",
       "name": "Last Total Puts",
       "note": "This factor indicates the total number of put options held by institutional investors in the last reporting period, providing context for changes in bearish or defensive investment approaches."
     },
-    "totalPutsChange": {
+    "total_puts_change": {
       "factor": "totalPutsChange",
       "name": "Total Puts Change",
       "note": "This factor shows the change in the number of put options held by institutional investors from the previous to the current reporting period, reflecting adjustments in bearish or defensive strategies."
     },
-    "putCallRatio": {
+    "put_call_ratio": {
       "factor": "putCallRatio",
       "name": "Put/Call Ratio",
       "note": "This factor represents the ratio of put options to call options held by institutional investors, serving as an indicator of overall market sentiment and expectations."
     },
-    "lastPutCallRatio": {
+    "last_put_call_ratio": {
       "factor": "lastPutCallRatio",
       "name": "Last Put/Call Ratio",
       "note": "This factor denotes the put/call ratio from the previous reporting period, offering insights into historical market sentiment and institutional investor expectations."
     },
-    "putCallRatioChange": {
+    "put_call_ratio_change": {
       "factor": "putCallRatioChange",
       "name": "Put/Call Ratio Change",
       "note": "This factor indicates the change in the put/call ratio between the current and previous reporting periods, highlighting shifts in market sentiment and institutional investor outlook."
@@ -2310,17 +2310,17 @@
       "metaclass": "ClientMeta",
       "api": "api/v3/income-statement-as-reported"
     },
-    "cost_goods_services": {
+    "cost_of_goods_and_services_sold": {
       "factor": "costofgoodsandservicessold",
       "name": "Cost of Goods and Services Sold",
       "note": "This factor represents the total cost incurred for the goods sold and services provided, reflecting the direct expenses related to production and service delivery."
     },
-    "net_income": {
+    "net_income_loss": {
       "factor": "netincomeloss",
       "name": "Net Income/Loss",
       "note": "This factor indicates the company's net profit or loss, calculated as total revenue minus total expenses, taxes, and costs, providing a comprehensive view of financial performance."
     },
-    "rd_expense": {
+    "research_and_development_expense": {
       "factor": "researchanddevelopmentexpense",
       "name": "Research and Development Expense",
       "note": "This factor measures the company's investment in research and development, indicating its commitment to innovation and future growth."
@@ -2330,102 +2330,102 @@
       "name": "Gross Profit",
       "note": "This factor assesses the difference between revenue and the cost of goods sold, reflecting the company's ability to generate profit from sales before other expenses."
     },
-    "aoci_reclass_sec": {
+    "oci_reclassification_adjustment_for_sale_of_securities": {
       "factor": "othercomprehensiveincomelossreclassificationadjustmentfromaociforsaleofsecuritiesnetoftax",
       "name": "OCI Reclassification Adjustment for Sale of Securities",
       "note": "This factor indicates the adjustments to other comprehensive income for the sale of securities, net of tax, reflecting changes in equity from non-operational activities."
     },
-    "aoci_afs_sec_adj": {
+    "oci_for_available_for_sale_securities_adjustment": {
       "factor": "othercomprehensiveincomelossavailableforsalesecuritiesadjustmentnetoftax",
       "name": "OCI for Available-for-Sale Securities Adjustment",
       "note": "This factor represents changes in other comprehensive income from available-for-sale securities, adjusted for tax effects."
     },
-    "aoci_deriv_gain_loss": {
+    "oci_derivative_instrument_gain_loss_before_reclassification": {
       "factor": "othercomprehensiveincomelossderivativeinstrumentgainlossbeforereclassificationaftertax",
       "name": "OCI Derivative Instrument Gain/Loss Before Reclassification",
       "note": "This factor assesses the gain or loss on derivative instruments in other comprehensive income before any reclassification adjustments, after tax."
     },
-    "aoci_forex_adj": {
+    "oci_foreign_currency_transaction_and_translation_adjustment": {
       "factor": "othercomprehensiveincomelossforeigncurrencytransactionandtranslationadjustmentnetoftax",
       "name": "OCI Foreign Currency Transaction and Translation Adjustment",
       "note": "This factor indicates the adjustments in other comprehensive income for foreign currency transactions and translation, net of tax, showing the impact of currency fluctuations on equity."
     },
-    "avg_diluted_shares": {
+    "weighted_average_number_of_diluted_shares_outstanding": {
       "factor": "weightedaveragenumberofdilutedsharesoutstanding",
       "name": "Weighted Average Number of Diluted Shares Outstanding",
       "note": "This factor measures the weighted average number of diluted shares outstanding, reflecting the potential increase in shares due to convertible securities or stock options."
     },
-    "avg_basic_shares": {
+    "weighted_average_number_of_shares_outstanding_basic": {
       "factor": "weightedaveragenumberofsharesoutstandingbasic",
       "name": "Weighted Average Number of Shares Outstanding Basic",
       "note": "This factor indicates the weighted average number of basic shares outstanding, representing the average share count without considering potential dilution from securities like options or convertible shares."
     },
-    "op_income_loss": {
+    "operating_income_loss": {
       "factor": "operatingincomeloss",
       "name": "Operating Income/Loss",
       "note": "This factor measures the company's profit or loss from core business operations, excluding non-operating income and expenses, taxes, and interest."
     },
-    "non_op_income_exp": {
+    "non_operating_income_expense": {
       "factor": "nonoperatingincomeexpense",
       "name": "Non-Operating Income/Expense",
       "note": "This factor represents income or expenses arising from non-core business activities, such as investment gains or losses, interest income, and other non-operational financial activities."
     },
-    "income_loss_pre_tax": {
+    "income_loss_from_continuing_operations_before_taxes": {
       "factor": "incomelossfromcontinuingoperationsbeforeincometaxesextraordinaryitemsnoncontrollinginterest",
       "name": "Income/Loss from Continuing Operations Before Taxes",
       "note": "This factor assesses the company's earnings or losses from ongoing operations before accounting for taxes, extraordinary items, and interests of non-controlling entities."
     },
-    "eps_basic": {
+    "earnings_per_share_basic": {
       "factor": "earningspersharebasic",
       "name": "Earnings Per Share Basic",
       "note": "This factor indicates basic earnings per share, calculated as net income divided by the number of basic shares outstanding, offering a straightforward view of profitability on a per-share basis."
     },
-    "tax_exp_benefit": {
+    "income_tax_expense_benefit": {
       "factor": "incometaxexpensebenefit",
       "name": "Income Tax Expense/Benefit",
       "note": "This factor measures the total income tax expense or benefit incurred by the company, reflecting its tax obligations or savings."
     },
-    "aoci_unrealized_gl": {
+    "other_comprehensive_income_unrealized_gain_loss_on_securities": {
       "factor": "othercomprehensiveincomeunrealizedholdinggainlossonsecuritiesarisingduringperiodnetoftax",
       "name": "Other Comprehensive Income - Unrealized Gain/Loss on Securities",
       "note": "This factor shows unrealized gains or losses on securities recorded in other comprehensive income, net of tax, representing changes in the fair value of these investments."
     },
-    "revenue_ex_tax": {
+    "revenue_from_contract_with_customer_excluding_assessed_tax": {
       "factor": "revenuefromcontractwithcustomerexcludingassessedtax",
       "name": "Revenue from Contract with Customer Excluding Assessed Tax",
       "note": "This factor measures revenue generated from customer contracts, excluding any assessed taxes, providing insight into the company's core revenue streams."
     },
-    "eps_diluted": {
+    "earnings_per_share_diluted": {
       "factor": "earningspersharediluted",
       "name": "Earnings Per Share Diluted",
       "note": "This factor indicates the diluted earnings per share, which accounts for potential shares that could be issued through convertible securities or stock options, providing a comprehensive view of the company's earnings per share."
     },
-    "op_expenses": {
+    "operating_expenses": {
       "factor": "operatingexpenses",
       "name": "Operating Expenses",
       "note": "This factor measures the total expenses incurred in the company's core business operations, excluding cost of goods sold, to provide insight into the operational cost management."
     },
-    "aoci_deriv_post_reclass": {
+    "oci_derivative_instrument_gain_loss_after_reclassification_and_tax": {
       "factor": "othercomprehensiveincomelossderivativeinstrumentgainlossafterreclassificationandtax",
       "name": "OCI Derivative Instrument Gain/Loss After Reclassification and Tax",
       "note": "This factor assesses the net change in other comprehensive income from derivative instruments after reclassification adjustments and tax considerations."
     },
-    "sga_expense": {
+    "selling_general_and_administrative_expense": {
       "factor": "sellinggeneralandadministrativeexpense",
       "name": "Selling, General, and Administrative Expense",
       "note": "This factor represents the total expenses related to selling activities, general operations, and administrative tasks, providing an overview of the company's operational overhead."
     },
-    "aoci_deriv_reclass_post_tax": {
+    "oci_derivative_instrument_gain_loss_reclassification_after_tax": {
       "factor": "othercomprehensiveincomelossderivativeinstrumentgainlossreclassificationaftertax",
       "name": "OCI Derivative Instrument Gain/Loss Reclassification After Tax",
       "note": "This factor evaluates the effects of reclassifying gains or losses on derivative instruments in other comprehensive income, after accounting for taxes."
     },
-    "aoci_loss_parent": {
+    "oci_net_of_tax_portion_attributable_to_parent": {
       "factor": "othercomprehensiveincomelossnetoftaxportionattributabletoparent",
       "name": "OCI Net of Tax Portion Attributable to Parent",
       "note": "This factor measures the portion of other comprehensive income, net of taxes, which is attributable to the parent company, reflecting the parent's share of comprehensive income."
     },
-    "comp_income_post_tax": {
+    "comprehensive_income_net_of_tax": {
       "factor": "comprehensiveincomenetoftax",
       "name": "Comprehensive Income Net of Tax",
       "note": "This factor indicates the total comprehensive income for the period, net of taxes, encompassing all components of comprehensive income, including net income and other comprehensive income."
@@ -2445,7 +2445,7 @@
       "name": "Revenue",
       "note": "This factor denotes the total income generated by a company from its operations, offering a fundamental gauge of its business scale and market performance."
     },
-    "revenuePercentage": {
+    "revenue_percentage": {
       "factor": "revenuePercentage",
       "name": "Revenue Percentage",
       "note": "This factor measures the percentage change in a company's revenue over a specific period, providing insights into its growth rate and financial trajectory."
@@ -2455,7 +2455,7 @@
       "name": "EBITDA (Earnings Before Interest, Taxes, Depreciation, and Amortization)",
       "note": "EBITDA reflects a company's earnings before subtracting interest, taxes, depreciation, and amortization, offering an indicator of its operational efficiency and profitability."
     },
-    "ebitdaPercentage": {
+    "ebitda_percentage": {
       "factor": "ebitdaPercentage",
       "name": "EBITDA Percentage",
       "note": "This factor shows the percentage change in EBITDA over a period, revealing trends in the company's operational profitability and efficiency."
@@ -2465,7 +2465,7 @@
       "name": "EBIT (Earnings Before Interest and Taxes)",
       "note": "EBIT represents a company's earnings before accounting for interest and taxes, providing a clear view of its operational income."
     },
-    "ebitPercentage": {
+    "ebit_percentage": {
       "factor": "ebitPercentage",
       "name": "EBIT Percentage",
       "note": "This factor indicates the percentage change in EBIT over time, highlighting shifts in a company's operational earnings before financial and tax impacts."
@@ -2475,17 +2475,17 @@
       "name": "Depreciation",
       "note": "This factor represents the allocation of the cost of assets over their useful life, reflecting the company's accounting for the wear and tear on its physical assets."
     },
-    "depreciationPercentage": {
+    "depreciation_percentage": {
       "factor": "depreciationPercentage",
       "name": "Depreciation Percentage",
       "note": "This factor calculates the percentage change in depreciation over a specified period, indicating how the company's allocation for asset wear and tear varies over time."
     },
-    "totalCash": {
+    "total_cash": {
       "factor": "totalCash",
       "name": "Total Cash",
       "note": "This factor represents the total amount of cash and cash equivalents held by the company, reflecting its liquidity and ability to meet short-term obligations."
     },
-    "totalCashPercentage": {
+    "total_cash_percentage": {
       "factor": "totalCashPercentage",
       "name": "Total Cash Percentage",
       "note": "This factor measures the percentage change in the company's total cash and cash equivalents, providing insights into the variations in its liquidity position."
@@ -2495,7 +2495,7 @@
       "name": "Receivables",
       "note": "This factor indicates the total amount of money owed to the company by its customers for goods or services delivered, representing an essential component of its current assets."
     },
-    "receivablesPercentage": {
+    "receivables_percentage": {
       "factor": "receivablesPercentage",
       "name": "Receivables Percentage",
       "note": "This factor shows the percentage change in the company's receivables over time, shedding light on trends in its credit sales and collection efficiency."
@@ -2505,7 +2505,7 @@
       "name": "Inventories",
       "note": "This factor represents the total value of a company's unsold goods and materials held for sale, highlighting an important aspect of its current assets and operational efficiency."
     },
-    "inventoriesPercentage": {
+    "inventories_percentage": {
       "factor": "inventoriesPercentage",
       "name": "Inventories Percentage",
       "note": "all open interest"
@@ -2515,17 +2515,17 @@
       "name": "Payable",
       "note": "This factor indicates the total amount of money the company owes to its suppliers and creditors, representing short-term liabilities arising from operational activities."
     },
-    "payablePercentage": {
+    "payable_percentage": {
       "factor": "payablePercentage",
       "name": "Payable Percentage",
       "note": "This factor shows the percentage change in the company's payable amounts, reflecting shifts in its short-term financial obligations and vendor relationships."
     },
-    "capitalExpenditure": {
+    "capital_expenditure": {
       "factor": "capitalExpenditure",
       "name": "Capital Expenditure",
       "note": "This factor denotes the company's expenditure on acquiring or maintaining fixed assets, such as property, plant, and equipment, indicating its investment in long-term growth and operational capacity."
     },
-    "capitalExpenditurePercentage": {
+    "capital_expenditure_percentage": {
       "factor": "capitalExpenditurePercentage",
       "name": "Capital Expenditure Percentage",
       "note": "This factor represents the percentage change in the company's capital expenditure over time, revealing its strategic investment decisions and focus on long-term asset development."
@@ -2540,62 +2540,62 @@
       "name": "Beta",
       "note": "Beta measures the volatility of the company's stock relative to the overall market, indicating the stock's risk level compared to the market average."
     },
-    "dilutedSharesOutstanding": {
+    "diluted_shares_outstanding": {
       "factor": "dilutedSharesOutstanding",
       "name": "Diluted Shares Outstanding",
       "note": "This factor indicates the total number of shares outstanding, including all convertible securities, options, and warrants, providing a comprehensive view of the company's equity structure."
     },
-    "costofDebt": {
+    "costof_debt": {
       "factor": "costofDebt",
       "name": "Cost of Debt",
       "note": "This factor represents the effective interest rate the company pays on its debts, highlighting the financial cost of its borrowings."
     },
-    "taxRate": {
+    "tax_rate": {
       "factor": "taxRate",
       "name": "Tax Rate",
       "note": "This factor denotes the percentage of its earnings that the company pays as taxes, reflecting its tax burden."
     },
-    "afterTaxCostOfDebt": {
+    "after_tax_cost_of_debt": {
       "factor": "afterTaxCostOfDebt",
       "name": "After-Tax Cost of Debt",
       "note": "This factor shows the company's cost of debt after accounting for tax deductions, providing a net view of the financial impact of its debts."
     },
-    "riskFreeRate": {
+    "risk_free_rate": {
       "factor": "riskFreeRate",
       "name": "Risk-Free Rate",
       "note": "This factor represents the return on investments considered virtually risk-free, typically government bonds, serving as a benchmark for evaluating investment risks."
     },
-    "marketRiskPremium": {
+    "market_risk_premium": {
       "factor": "marketRiskPremium",
       "name": "Market Risk Premium",
       "note": "This factor denotes the additional return expected by investors for bearing the risk of investing in the stock market over a risk-free investment."
     },
-    "costOfEquity": {
+    "cost_of_equity": {
       "factor": "costOfEquity",
       "name": "Cost of Equity",
       "note": "This factor measures the return rate that shareholders require for their investment in the company, reflecting the risks associated with equity investment."
     },
-    "totalDebt": {
+    "total_debt": {
       "factor": "totalDebt",
       "name": "Total Debt",
       "note": "This factor indicates the total amount of debt, including both short-term and long-term liabilities, that the company owes."
     },
-    "totalEquity": {
+    "total_equity": {
       "factor": "totalEquity",
       "name": "Total Equity",
       "note": "This factor represents the total shareholders' equity in the company, indicating the residual value to shareholders after debts are settled."
     },
-    "totalCapital": {
+    "total_capital": {
       "factor": "totalCapital",
       "name": "Total Capital",
       "note": "This factor denotes the sum of the company's total debt and equity, illustrating the entire capital available for the company's operations and investments."
     },
-    "debtWeighting": {
+    "debt_weighting": {
       "factor": "debtWeighting",
       "name": "Debt Weighting",
       "note": "This factor shows the proportion of debt in the company's capital structure, indicating how much of the company's capital is financed through borrowing."
     },
-    "equityWeighting": {
+    "equity_weighting": {
       "factor": "equityWeighting",
       "name": "Equity Weighting",
       "note": "This factor reflects the proportion of equity in the company's capital structure, illustrating the extent to which the company is financed through shareholder equity."
@@ -2605,7 +2605,7 @@
       "name": "WACC (Weighted Average Cost of Capital)",
       "note": "WACC represents the company's average cost of capital, considering both equity and debt, used as a discount rate in DCF analysis."
     },
-    "taxRateCash": {
+    "tax_rate_cash": {
       "factor": "taxRateCash",
       "name": "Tax Rate Cash",
       "note": "This factor indicates the effective cash tax rate of the company, representing the actual cash paid for taxes as a proportion of its earnings."
@@ -2620,47 +2620,47 @@
       "name": "Unlevered Free Cash Flow (UFCF)",
       "note": "UFCF refers to the company's free cash flow before considering financial leverage, offering a view of its cash earnings irrespective of its capital structure."
     },
-    "sumPvUfcf": {
+    "sum_pv_ufcf": {
       "factor": "sumPvUfcf",
       "name": "Sum of Present Value of Unlevered Free Cash Flow",
       "note": "This factor calculates the total present value of the company's projected UFCF, discounting it back to present value, to assess the company's value independent of its debt structure."
     },
-    "longTermGrowthRate": {
+    "long_term_growth_rate": {
       "factor": "longTermGrowthRate",
       "name": "Long-Term Growth Rate",
       "note": "This factor estimates the perpetual growth rate of the company's free cash flow, essential for calculating the terminal value in DCF models."
     },
-    "terminalValue": {
+    "terminal_value": {
       "factor": "terminalValue",
       "name": "Terminal Value",
       "note": "Terminal Value represents the value of all future cash flows beyond the forecast period in a DCF analysis, assuming a constant growth rate."
     },
-    "presentTerminalValue": {
+    "present_terminal_value": {
       "factor": "presentTerminalValue",
       "name": "Present Terminal Value",
       "note": "This factor calculates the present value of the terminal value, discounting it to the present day using the company's WACC."
     },
-    "enterpriseValue": {
+    "enterprise_value": {
       "factor": "enterpriseValue",
       "name": "Enterprise Value",
       "note": "Enterprise Value is the total valuation of the company, considering its market capitalization, debt, and cash."
     },
-    "netDebt": {
+    "net_debt": {
       "factor": "netDebt",
       "name": "Net Debt",
       "note": "Net Debt signifies the company's total debt minus its cash and cash equivalents, showing its net financial obligations."
     },
-    "equityValue": {
+    "equity_value": {
       "factor": "equityValue",
       "name": "Equity Value",
       "note": "Equity Value is the value attributed to shareholders, calculated as the difference between the enterprise value and net debt."
     },
-    "equityValuePerShare": {
+    "equity_value_per_share": {
       "factor": "equityValuePerShare",
       "name": "Equity Value Per Share",
       "note": "This factor represents the value of each share based on the company's equity value, offering a per-share valuation metric."
     },
-    "freeCashFlowT1": {
+    "free_cash_flow_t1": {
       "factor": "freeCashFlowT1",
       "name": "Free Cash Flow T1",
       "note": "Free Cash Flow T1 indicates the projected free cash flow for the first year in the forecast period, used in DCF analysis."
@@ -2680,17 +2680,17 @@
       "name": "Revenue",
       "note": "This factor represents the total income generated by a company from its business activities, providing a fundamental measure of the company's sales or service effectiveness and market demand."
     },
-    "revenuePercentage": {
+    "revenue_percentage": {
       "factor": "revenuePercentage",
       "name": "Revenue Percentage",
       "note": "This factor indicates the percentage change in revenue over a specified period, offering insights into the company's growth rate and revenue trends over time."
     },
-    "capitalExpenditure": {
+    "capital_expenditure": {
       "factor": "capitalExpenditure",
       "name": "Capital Expenditure",
       "note": "This factor denotes the company's expenses for acquiring or maintaining fixed assets, such as property, plant, and equipment, highlighting its investment in long-term assets for growth."
     },
-    "capitalExpenditurePercentage": {
+    "capital_expenditure_percentage": {
       "factor": "capitalExpenditurePercentage",
       "name": "Capital Expenditure Percentage",
       "note": "This factor shows the percentage change in capital expenditure over a given period, reflecting the company's changing investment strategies and priorities in its fixed assets."
@@ -2705,62 +2705,62 @@
       "name": "Beta",
       "note": "This factor represents the beta coefficient of the stock, indicating its volatility in relation to the overall market, and is used to assess the risk level of the stock relative to market fluctuations."
     },
-    "dilutedSharesOutstanding": {
+    "diluted_shares_outstanding": {
       "factor": "dilutedSharesOutstanding",
       "name": "Diluted Shares Outstanding",
       "note": "This factor refers to the total number of shares outstanding after accounting for all possible sources of conversion, such as stock options and convertible bonds, providing a more comprehensive picture of the company's equity."
     },
-    "costofDebt": {
+    "costof_debt": {
       "factor": "costofDebt",
       "name": "Cost of Debt",
       "note": "This factor signifies the effective interest rate a company pays on its current debts, offering insights into the financial burden of the company's debt obligations and its efficiency in managing debt costs."
     },
-    "taxRate": {
+    "tax_rate": {
       "factor": "taxRate",
       "name": "Tax Rate",
       "note": "This factor represents the percentage of income a company pays in taxes, reflecting its tax burden and effectiveness in tax planning and management."
     },
-    "afterTaxCostOfDebt": {
+    "after_tax_cost_of_debt": {
       "factor": "afterTaxCostOfDebt",
       "name": "After Tax Cost of Debt",
       "note": "This factor indicates the net cost of debt after accounting for tax deductions, showing the actual financial cost of debt considering the tax benefits."
     },
-    "riskFreeRate": {
+    "risk_free_rate": {
       "factor": "riskFreeRate",
       "name": "Risk-Free Rate",
       "note": "This factor denotes the return rate of a risk-free investment, such as government bonds, serving as a baseline for evaluating investment risk and calculating the cost of capital."
     },
-    "marketRiskPremium": {
+    "market_risk_premium": {
       "factor": "marketRiskPremium",
       "name": "Market Risk Premium",
       "note": "This factor represents the additional return expected by investors for taking on the higher risk of investing in the stock market over a risk-free investment, used in assessing the required return for equity investments."
     },
-    "costOfEquity": {
+    "cost_of_equity": {
       "factor": "costOfEquity",
       "name": "Cost of Equity",
       "note": "This factor measures the return rate that shareholders expect for their investment in the company, incorporating the risks associated with equity investment and serving as a crucial component in determining a company's cost of capital."
     },
-    "totalDebt": {
+    "total_debt": {
       "factor": "totalDebt",
       "name": "Total Debt",
       "note": "This factor represents the aggregate amount of debt (both short-term and long-term) owed by the company, providing insight into the company's financial leverage and debt burden."
     },
-    "totalEquity": {
+    "total_equity": {
       "factor": "totalEquity",
       "name": "Total Equity",
       "note": "This factor indicates the total value of shareholders' equity in the company, reflecting the residual interest in the company's assets after deducting liabilities, and is a key measure of financial health."
     },
-    "totalCapital": {
+    "total_capital": {
       "factor": "totalCapital",
       "name": "Total Capital",
       "note": "This factor represents the sum of a company's debt and equity, providing a comprehensive view of the company's total capital structure used for financing its operations and investments."
     },
-    "debtWeighting": {
+    "debt_weighting": {
       "factor": "debtWeighting",
       "name": "Debt Weighting",
       "note": "This factor refers to the proportion of debt in the company's overall capital structure, illustrating the extent to which the company relies on debt financing relative to equity."
     },
-    "equityWeighting": {
+    "equity_weighting": {
       "factor": "equityWeighting",
       "name": "Equity Weighting",
       "note": "This factor denotes the proportion of equity in the company's total capital structure, indicating the relative importance of shareholder equity in financing the company's assets."
@@ -2770,67 +2770,67 @@
       "name": "Weighted Average Cost of Capital (WACC)",
       "note": "This factor represents the company's overall cost of capital, accounting for the weighted average of the costs of equity and debt. WACC is a critical financial metric used in discounted cash flow analysis to determine the discount rate for future cash flows."
     },
-    "operatingCashFlow": {
+    "operating_cash_flow": {
       "factor": "operatingCashFlow",
       "name": "Operating Cash Flow",
       "note": "This factor indicates the cash generated from the company's regular business operations, reflecting its ability to generate sufficient cash to maintain and grow its operations."
     },
-    "pvLfcf": {
+    "pv_lfcf": {
       "factor": "pvLfcf",
       "name": "Present Value of Levered Free Cash Flow",
       "note": "This factor denotes the present value of the company's projected levered free cash flows, discounted at the WACC. It reflects the value of the company's cash flows after accounting for debt financing costs."
     },
-    "sumPvLfcf": {
+    "sum_pv_lfcf": {
       "factor": "sumPvLfcf",
       "name": "Sum of Present Value of Levered Free Cash Flow",
       "note": "This factor represents the total present value of all projected levered free cash flows, providing an aggregate measure of the company's value from its future cash generation capabilities."
     },
-    "longTermGrowthRate": {
+    "long_term_growth_rate": {
       "factor": "longTermGrowthRate",
       "name": "Long-Term Growth Rate",
       "note": "This factor signifies the expected annual growth rate of the company's free cash flow in perpetuity, used in calculating the terminal value in DCF analysis."
     },
-    "freeCashFlow": {
+    "free_cash_flow": {
       "factor": "freeCashFlow",
       "name": "Free Cash Flow",
       "note": "This factor measures the cash a company generates after accounting for cash outflows to support operations and maintain its capital assets, offering insight into the company's financial health and profitability."
     },
-    "terminalValue": {
+    "terminal_value": {
       "factor": "terminalValue",
       "name": "Terminal Value",
       "note": "This factor estimates the value of the company's cash flows beyond the forecast period in a discounted cash flow analysis, representing the present value of all future cash flows when a business reaches a stable growth phase."
     },
-    "presentTerminalValue": {
+    "present_terminal_value": {
       "factor": "presentTerminalValue",
       "name": "Present Terminal Value",
       "note": "This factor indicates the present value of the terminal value, discounting it back to the present day using the weighted average cost of capital, reflecting the long-term value of the company in today's terms."
     },
-    "enterpriseValue": {
+    "enterprise_value": {
       "factor": "enterpriseValue",
       "name": "Enterprise Value",
       "note": "This factor denotes the total valuation of the company, combining its market capitalization, debt, and cash, to provide a comprehensive measure of the company's overall value."
     },
-    "netDebt": {
+    "net_debt": {
       "factor": "netDebt",
       "name": "Net Debt",
       "note": "This factor represents the company's total debt minus its cash and cash equivalents, indicating the net financial obligations of the company."
     },
-    "equityValue": {
+    "equity_value": {
       "factor": "equityValue",
       "name": "Equity Value",
       "note": "This factor measures the value of the company's equity, calculated as the difference between its enterprise value and net debt, representing the value attributable to shareholders."
     },
-    "equityValuePerShare": {
+    "equity_value_per_share": {
       "factor": "equityValuePerShare",
       "name": "Equity Value Per Share",
       "note": "This factor calculates the value of each outstanding share of the company's stock based on the equity value, providing a per-share valuation metric for investors."
     },
-    "freeCashFlowT1": {
+    "free_cash_flow_t1": {
       "factor": "freeCashFlowT1",
       "name": "Free Cash Flow T1",
       "note": "This factor represents the company's projected free cash flow for the first year in the forecast period, serving as a key input in determining the company's future cash flow generation capabilities."
     },
-    "operatingCashFlowPercentage": {
+    "operating_cash_flow_percentage": {
       "factor": "operatingCashFlowPercentage",
       "name": "Operating Cash Flow Percentage",
       "note": "This factor indicates the percentage of the company's operating cash flow relative to its revenue, offering insights into the efficiency of its core business operations and cash management."
@@ -2843,357 +2843,357 @@
       "metaclass": "ClientMeta",
       "api": "api/v4/commitment_of_traders_report"
     },
-    "oi_all": {
+    "open_interest_all": {
       "factor": "open_interest_all",
       "name": "Open Interest All",
       "note": "This factor represents the total number of open contracts for a symbol, indicating the overall activity and interest in the market for that specific asset."
     },
-    "nc_pos_long_all": {
+    "noncomm_positions_long_all": {
       "factor": "noncomm_positions_long_all",
       "name": "Non-Commercial Positions Long All",
       "note": "This factor shows the total long positions held by non-commercial traders, providing insights into the speculative sentiment and bullish expectations of these traders."
     },
-    "nc_pos_short_all": {
+    "noncomm_positions_short_all": {
       "factor": "noncomm_positions_short_all",
       "name": "Non-Commercial Positions Short All",
       "note": "This factor indicates the total short positions held by non-commercial traders, reflecting the bearish sentiment and speculative bets against the market by these traders."
     },
-    "nc_pos_spread_all": {
+    "noncomm_postions_spread_all": {
       "factor": "noncomm_postions_spread_all",
       "name": "Non-Commercial Positions Spread All",
       "note": "This factor denotes the total spread positions held by non-commercial traders, highlighting their strategies that involve holding both long and short positions simultaneously."
     },
-    "c_pos_long_all": {
+    "comm_positions_long_all": {
       "factor": "comm_positions_long_all",
       "name": "Commercial Positions Long All",
       "note": "This factor represents the total long positions held by commercial traders, indicating their bullish market view and expectations based on their business operations and market knowledge."
     },
-    "c_pos_short_all": {
+    "comm_positions_short_all": {
       "factor": "comm_positions_short_all",
       "name": "Commercial Positions Short All",
       "note": "This factor shows the total short positions held by commercial traders, reflecting their bearish market expectations, often based on their commercial interests and market expertise."
     },
-    "tr_pos_long_all": {
+    "tot_rept_positions_long_all": {
       "factor": "tot_rept_positions_long_all",
       "name": "Total Reportable Positions Long All",
       "note": "This factor indicates the total long positions held by reportable traders, encompassing both commercial and non-commercial traders, showcasing the overall bullish sentiment among major market participants."
     },
-    "tr_pos_short_all": {
+    "tot_rept_positions_short_all": {
       "factor": "tot_rept_positions_short_all",
       "name": "Total Reportable Positions Short All",
       "note": "This factor shows the total short positions held by reportable traders, providing insights into the collective bearish sentiment among significant market players."
     },
-    "nr_pos_long_all": {
+    "nonrept_positions_long_all": {
       "factor": "nonrept_positions_long_all",
       "name": "Non-Reportable Positions Long All",
       "note": "This factor represents the total long positions held by non-reportable traders, typically smaller or individual traders, reflecting their bullish market outlook."
     },
-    "nr_pos_short_all": {
+    "nonrept_positions_short_all": {
       "factor": "nonrept_positions_short_all",
       "name": "Non-Reportable Positions Short All",
       "note": "This factor denotes the total short positions held by non-reportable traders, indicating the bearish sentiment among smaller or individual market participants."
     },
-    "oi_old": {
+    "open_interest_old": {
       "factor": "open_interest_old",
       "name": "Open Interest Old",
       "note": "This factor refers to the open interest held in older contracts for a symbol, providing a perspective on the long-term interest and market involvement in these contracts."
     },
-    "nc_pos_long_old": {
+    "noncomm_positions_long_old": {
       "factor": "noncomm_positions_long_old",
       "name": "Non-Commercial Positions Long Old",
       "note": "This factor shows the long positions held by non-commercial traders in older contracts, indicating speculative or investment interest in these longer-duration market positions."
     },
-    "nc_pos_short_old": {
+    "noncomm_positions_short_old": {
       "factor": "noncomm_positions_short_old",
       "name": "Non-Commercial Positions Short Old",
       "note": "This factor represents the short positions held by non-commercial traders in older contracts, reflecting their bearish outlook or speculative bets against these long-duration market positions."
     },
-    "nc_pos_spread_old": {
+    "noncomm_positions_spread_old": {
       "factor": "noncomm_positions_spread_old",
       "name": "Non-Commercial Positions Spread Old",
       "note": "This factor indicates the spread positions held by non-commercial traders in older contracts, showcasing their hedging or diversified strategies over a longer time frame."
     },
-    "c_pos_long_old": {
+    "comm_positions_long_old": {
       "factor": "comm_positions_long_old",
       "name": "Commercial Positions Long Old",
       "note": "This factor shows the long positions held by commercial traders in older contracts, reflecting their bullish market expectations based on long-term business needs or market analysis."
     },
-    "c_pos_short_old": {
+    "comm_positions_short_old": {
       "factor": "comm_positions_short_old",
       "name": "Commercial Positions Short Old",
       "note": "This factor denotes the short positions held by commercial traders in older contracts, indicating their bearish market outlook or hedging strategies against long-term market fluctuations."
     },
-    "tr_pos_long_old": {
+    "tot_rept_positions_long_old": {
       "factor": "tot_rept_positions_long_old",
       "name": "Total Reportable Positions Long Old",
       "note": "This factor represents the total long positions in older contracts held by reportable traders, offering insights into the collective bullish sentiment among major market participants over an extended period."
     },
-    "tr_pos_short_old": {
+    "tot_rept_positions_short_old": {
       "factor": "tot_rept_positions_short_old",
       "name": "Total Reportable Positions Short Old",
       "note": "This factor indicates the total short positions in older contracts held by reportable traders, reflecting the aggregate bearish sentiment among significant traders in the longer-term market."
     },
-    "nr_pos_long_old": {
+    "nonrept_positions_long_old": {
       "factor": "nonrept_positions_long_old",
       "name": "Non-Reportable Positions Long Old",
       "note": "This factor shows the long positions in older contracts held by non-reportable traders, indicating bullish sentiment among smaller or individual traders over a long-term perspective."
     },
-    "nr_pos_short_old": {
+    "nonrept_positions_short_old": {
       "factor": "nonrept_positions_short_old",
       "name": "Non-Reportable Positions Short Old",
       "note": "This factor represents the short positions in older contracts held by non-reportable traders, reflecting bearish sentiment among smaller market participants in the long-term market."
     },
-    "oi_other": {
+    "open_interest_other": {
       "factor": "open_interest_other",
       "name": "Open Interest Other",
       "note": "This factor indicates the open interest in contracts other than the most current or older ones, providing insights into the market activity and interest in mid-term contract durations."
     },
-    "nc_pos_long_other": {
+    "noncomm_positions_long_other": {
       "factor": "noncomm_positions_long_other",
       "name": "Non-Commercial Positions Long Other",
       "note": "This factor shows the long positions held by non-commercial traders in other contracts, representing their speculative or investment interest in mid-duration market positions."
     },
-    "nc_pos_short_other": {
+    "noncomm_positions_short_other": {
       "factor": "noncomm_positions_short_other",
       "name": "Non-Commercial Positions Short Other",
       "note": "This factor denotes the short positions held by non-commercial traders in other contracts, reflecting their bearish or speculative bets against mid-term market positions."
     },
-    "nc_pos_spread_other": {
+    "noncomm_positions_spread_other": {
       "factor": "noncomm_positions_spread_other",
       "name": "Non-Commercial Positions Spread Other",
       "note": "This factor indicates the spread positions held by non-commercial traders in other contracts, highlighting their diversified or hedging strategies for mid-term market exposures."
     },
-    "c_pos_long_other": {
+    "comm_positions_long_other": {
       "factor": "comm_positions_long_other",
       "name": "Commercial Positions Long Other",
       "note": "This factor represents the long positions held by commercial traders in contracts that are neither the most current nor the oldest, indicating their bullish expectations for mid-term market trends based on commercial insights."
     },
-    "c_pos_short_other": {
+    "comm_positions_short_other": {
       "factor": "comm_positions_short_other",
       "name": "Commercial Positions Short Other",
       "note": "This factor shows the short positions held by commercial traders in mid-term contracts, reflecting their bearish outlook or hedging strategies against mid-duration market changes."
     },
-    "tr_pos_long_other": {
+    "tot_rept_positions_long_other": {
       "factor": "tot_rept_positions_long_other",
       "name": "Total Reportable Positions Long Other",
       "note": "This factor indicates the total long positions in mid-term contracts held by reportable traders, encompassing both commercial and non-commercial participants, showing overall bullish sentiment in this time frame."
     },
-    "tr_pos_short_other": {
+    "tot_rept_positions_short_other": {
       "factor": "tot_rept_positions_short_other",
       "name": "Total Reportable Positions Short Other",
       "note": "This factor denotes the total short positions in mid-term contracts held by reportable traders, providing a collective view of bearish sentiment among major market participants in the mid-term market."
     },
-    "nr_pos_long_other": {
+    "nonrept_positions_long_other": {
       "factor": "nonrept_positions_long_other",
       "name": "Non-Reportable Positions Long Other",
       "note": "This factor represents the long positions in mid-term contracts held by non-reportable traders, indicating bullish sentiment among smaller or individual traders in the mid-term market."
     },
-    "nr_pos_short_other": {
+    "nonrept_positions_short_other": {
       "factor": "nonrept_positions_short_other",
       "name": "Non-Reportable Positions Short Other",
       "note": "This factor shows the short positions in mid-term contracts held by non-reportable traders, reflecting bearish sentiment among smaller market participants in this segment of the market."
     },
-    "chg_oi_all": {
+    "change_in_open_interest_all": {
       "factor": "change_in_open_interest_all",
       "name": "Change in Open Interest All",
       "note": "This factor measures the change in the total number of open contracts for a symbol, indicating the recent shift in market activity and trader interest."
     },
-    "chg_nc_long_all": {
+    "change_in_noncomm_long_all": {
       "factor": "change_in_noncomm_long_all",
       "name": "Change in Non-Commercial Long All",
       "note": "This factor shows the recent change in total long positions held by non-commercial traders, highlighting shifts in speculative or investment sentiment among these market participants."
     },
-    "chg_nc_short_all": {
+    "change_in_noncomm_short_all": {
       "factor": "change_in_noncomm_short_all",
       "name": "Change in Non-Commercial Short All",
       "note": "This factor represents the recent change in total short positions held by non-commercial traders, reflecting changes in bearish sentiment or speculative strategies."
     },
-    "chg_nc_spread_all": {
+    "change_in_noncomm_spead_all": {
       "factor": "change_in_noncomm_spead_all",
       "name": "Change in Non-Commercial Spread All",
       "note": "This factor indicates the change in total spread positions held by non-commercial traders, showcasing their recent adjustments in hedging or diversified market strategies."
     },
-    "chg_c_long_all": {
+    "change_in_comm_long_all": {
       "factor": "change_in_comm_long_all",
       "name": "Change in Commercial Long All",
       "note": "This factor denotes the change in total long positions held by commercial traders, signifying recent shifts in market outlook and strategies based on their commercial interests and insights."
     },
-    "chg_c_short_all": {
+    "change_in_comm_short_all": {
       "factor": "change_in_comm_short_all",
       "name": "Change in Commercial Short All",
       "note": "This factor shows the recent change in total short positions held by commercial traders, reflecting their evolving bearish market outlook or adjustments in hedging strategies."
     },
-    "chg_tr_long_all": {
+    "change_in_tot_rept_long_all": {
       "factor": "change_in_tot_rept_long_all",
       "name": "Change in Total Reportable Long All",
       "note": "This factor indicates the recent change in total long positions held by reportable traders, signifying shifts in overall bullish sentiment among major market players."
     },
-    "chg_tr_short_all": {
+    "change_in_tot_rept_short_all": {
       "factor": "change_in_tot_rept_short_all",
       "name": "Change in Total Reportable Short All",
       "note": "This factor represents the recent change in total short positions held by reportable traders, highlighting collective changes in bearish sentiment among significant traders."
     },
-    "chg_nr_long_all": {
+    "change_in_nonrept_long_all": {
       "factor": "change_in_nonrept_long_all",
       "name": "Change in Non-Reportable Long All",
       "note": "This factor measures the recent change in total long positions held by non-reportable traders, offering insights into shifts in bullish sentiment among smaller or individual market participants."
     },
-    "chg_nr_short_all": {
+    "change_in_nonrept_short_all": {
       "factor": "change_in_nonrept_short_all",
       "name": "Change in Non-Reportable Short All",
       "note": "This factor denotes the recent change in total short positions held by non-reportable traders, reflecting changes in bearish sentiment among smaller traders in the market."
     },
-    "pct_oi_all": {
+    "pct_of_open_interest_all": {
       "factor": "pct_of_open_interest_all",
       "name": "Percent of Open Interest All",
       "note": "This factor indicates the percentage of total open interest represented by all contracts for a symbol, providing a proportionate view of market involvement and interest."
     },
-    "pct_nc_long_all": {
+    "pct_of_oi_noncomm_long_all": {
       "factor": "pct_of_oi_noncomm_long_all",
       "name": "Percent of OI Non-Commercial Long All",
       "note": "This factor measures the percentage of total open interest that comprises non-commercial traders' long positions, offering insights into their relative bullish market influence."
     },
-    "pct_nc_short_all": {
+    "pct_of_oi_noncomm_short_all": {
       "factor": "pct_of_oi_noncomm_short_all",
       "name": "Percent of OI Non-Commercial Short All",
       "note": "This factor shows the proportion of total open interest made up of non-commercial traders' short positions, highlighting their impact on bearish market sentiment."
     },
-    "pct_nc_spread_all": {
+    "pct_of_oi_noncomm_spread_all": {
       "factor": "pct_of_oi_noncomm_spread_all",
       "name": "Percent of OI Non-Commercial Spread All",
       "note": "This factor represents the percentage of total open interest consisting of non-commercial traders' spread positions, indicating their contribution to the market's hedging or diversified strategies."
     },
-    "pct_c_long_all": {
+    "pct_of_oi_comm_long_all": {
       "factor": "pct_of_oi_comm_long_all",
       "name": "Percent of OI Commercial Long All",
       "note": "This factor indicates the percentage of total open interest attributed to commercial traders' long positions, reflecting their bullish influence based on commercial interests."
     },
-    "pct_c_short_all": {
+    "pct_of_oi_comm_short_all": {
       "factor": "pct_of_oi_comm_short_all",
       "name": "Percent of OI Commercial Short All",
       "note": "This factor denotes the proportion of total open interest that comprises commercial traders' short positions, offering insights into their bearish market impact based on commercial strategies."
     },
-    "pct_tr_long_all": {
+    "pct_of_oi_tot_rept_long_all": {
       "factor": "pct_of_oi_tot_rept_long_all",
       "name": "Percent of OI Total Reportable Long All",
       "note": "This factor indicates the percentage of total open interest represented by long positions of reportable traders, reflecting their influence on the bullish market outlook."
     },
-    "pct_tr_short_all": {
+    "pct_of_oi_tot_rept_short_all": {
       "factor": "pct_of_oi_tot_rept_short_all",
       "name": "Percent of OI Total Reportable Short All",
       "note": "This factor shows the proportion of total open interest made up by short positions of reportable traders, highlighting their collective impact on bearish market sentiment."
     },
-    "pct_nr_long_all": {
+    "pct_of_oi_nonrept_long_all": {
       "factor": "pct_of_oi_nonrept_long_all",
       "name": "Percent of OI Non-Reportable Long All",
       "note": "This factor measures the percentage of total open interest comprised of long positions held by non-reportable traders, offering insights into their bullish market influence."
     },
-    "pct_nr_short_all": {
+    "pct_of_oi_nonrept_short_all": {
       "factor": "pct_of_oi_nonrept_short_all",
       "name": "Percent of OI Non-Reportable Short All",
       "note": "This factor represents the proportion of total open interest that consists of short positions held by non-reportable traders, reflecting their impact on bearish sentiment in the market."
     },
-    "pct_oi_ol": {
+    "pct_of_open_interest_ol": {
       "factor": "pct_of_open_interest_ol",
       "name": "Percent of Open Interest Old",
       "note": "This factor indicates the percentage of total open interest in older contracts, providing insights into the market's long-term interest and involvement in these positions."
     },
-    "pct_nc_long_ol": {
+    "pct_of_oi_noncomm_long_ol": {
       "factor": "pct_of_oi_noncomm_long_ol",
       "name": "Percent of OI Non-Commercial Long Old",
       "note": "This factor shows the proportion of total open interest in older contracts made up of non-commercial traders' long positions, highlighting their speculative or investment interest over a longer-term horizon."
     },
-    "pct_nc_short_ol": {
+    "pct_of_oi_noncomm_short_ol": {
       "factor": "pct_of_oi_noncomm_short_ol",
       "name": "Percent of OI Non-Commercial Short Old",
       "note": "This factor indicates the percentage of total open interest in older contracts represented by non-commercial traders' short positions, highlighting their bearish expectations over a long-term horizon."
     },
-    "pct_nc_spread_ol": {
+    "pct_of_oi_noncomm_spread_ol": {
       "factor": "pct_of_oi_noncomm_spread_ol",
       "name": "Percent of OI Non-Commercial Spread Old",
       "note": "This factor shows the proportion of total open interest in older contracts made up by non-commercial traders' spread positions, reflecting their hedging or diversified market strategies over time."
     },
-    "pct_c_long_ol": {
+    "pct_of_oi_comm_long_ol": {
       "factor": "pct_of_oi_comm_long_ol",
       "name": "Percent of OI Commercial Long Old",
       "note": "This factor represents the percentage of total open interest in older contracts attributed to commercial traders' long positions, indicating their long-term bullish market strategies based on commercial insights."
     },
-    "pct_c_short_ol": {
+    "pct_of_oi_comm_short_ol": {
       "factor": "pct_of_oi_comm_short_ol",
       "name": "Percent of OI Commercial Short Old",
       "note": "This factor measures the proportion of total open interest in older contracts consisting of commercial traders' short positions, offering insights into their long-term bearish outlook or hedging strategies."
     },
-    "pct_tr_long_ol": {
+    "pct_of_oi_tot_rept_long_ol": {
       "factor": "pct_of_oi_tot_rept_long_ol",
       "name": "Percent of OI Total Reportable Long Old",
       "note": "This factor denotes the percentage of total open interest in older contracts represented by long positions of reportable traders, reflecting their collective influence on long-term bullish market trends."
     },
-    "pct_tr_short_ol": {
+    "pct_of_oi_tot_rept_short_ol": {
       "factor": "pct_of_oi_tot_rept_short_ol",
       "name": "Percent of OI Total Reportable Short Old",
       "note": "This factor indicates the proportion of total open interest in older contracts comprised of short positions of reportable traders, showcasing their collective impact on long-term bearish market sentiment."
     },
-    "pct_nr_long_ol": {
+    "pct_of_oi_nonrept_long_ol": {
       "factor": "pct_of_oi_nonrept_long_ol",
       "name": "Percent of OI Non-Reportable Long Old",
       "note": "This factor measures the percentage of total open interest in older contracts represented by long positions held by non-reportable traders, showing their long-term bullish influence in the market."
     },
-    "pct_nr_short_ol": {
+    "pct_of_oi_nonrept_short_ol": {
       "factor": "pct_of_oi_nonrept_short_ol",
       "name": "Percent of OI Non-Reportable Short Old",
       "note": "This factor indicates the proportion of total open interest in older contracts made up by short positions held by non-reportable traders, reflecting their long-term bearish sentiment."
     },
-    "pct_oi_other": {
+    "pct_of_open_interest_other": {
       "factor": "pct_of_open_interest_other",
       "name": "Percent of Open Interest Other",
       "note": "This factor represents the percentage of total open interest in mid-term contracts, providing insights into market involvement in these intermediate duration positions."
     },
-    "pct_nc_long_other": {
+    "pct_of_oi_noncomm_long_other": {
       "factor": "pct_of_oi_noncomm_long_other",
       "name": "Percent of OI Non-Commercial Long Other",
       "note": "This factor shows the proportion of total open interest in mid-term contracts represented by non-commercial traders' long positions, indicating their speculative bullish expectations for these durations."
     },
-    "pct_nc_short_other": {
+    "pct_of_oi_noncomm_short_other": {
       "factor": "pct_of_oi_noncomm_short_other",
       "name": "Percent of OI Non-Commercial Short Other",
       "note": "This factor measures the percentage of total open interest in mid-term contracts comprising non-commercial traders' short positions, highlighting their bearish outlook or speculative strategies for these periods."
     },
-    "pct_nc_spread_other": {
+    "pct_of_oi_noncomm_spread_other": {
       "factor": "pct_of_oi_noncomm_spread_other",
       "name": "Percent of OI Non-Commercial Spread Other",
       "note": "This factor denotes the proportion of total open interest in mid-term contracts made up by non-commercial traders' spread positions, showcasing their hedging or diversified strategies over intermediate time frames."
     },
-    "pct_c_long_other": {
+    "pct_of_oi_comm_long_other": {
       "factor": "pct_of_oi_comm_long_other",
       "name": "Percent of OI Commercial Long Other",
       "note": "This factor indicates the percentage of total open interest in mid-term contracts represented by commercial traders' long positions, reflecting their bullish market expectations based on commercial interests."
     },
-    "pct_c_short_other": {
+    "pct_of_oi_comm_short_other": {
       "factor": "pct_of_oi_comm_short_other",
       "name": "Percent of OI Commercial Short Other",
       "note": "This factor measures the proportion of total open interest in mid-term contracts comprising commercial traders' short positions, highlighting their bearish outlook based on commercial strategies."
     },
-    "pct_tr_long_other": {
+    "pct_of_oi_tot_rept_long_other": {
       "factor": "pct_of_oi_tot_rept_long_other",
       "name": "Percent of OI Total Reportable Long Other",
       "note": "This factor shows the percentage of total open interest in mid-term contracts represented by long positions of reportable traders, indicating the collective bullish sentiment among major market participants."
     },
-    "pct_tr_short_other": {
+    "pct_of_oi_tot_rept_short_other": {
       "factor": "pct_of_oi_tot_rept_short_other",
       "name": "Percent of OI Total Reportable Short Other",
       "note": "This factor denotes the proportion of total open interest in mid-term contracts made up by short positions of reportable traders, reflecting their aggregate bearish sentiment."
     },
-    "pct_nr_long_other": {
+    "pct_of_oi_nonrept_long_other": {
       "factor": "pct_of_oi_nonrept_long_other",
       "name": "Percent of OI Non-Reportable Long Other",
       "note": "This factor represents the percentage of total open interest in mid-term contracts held by non-reportable traders' long positions, indicating bullish sentiment among smaller or individual market participants."
     },
-    "pct_nr_short_other": {
+    "pct_of_oi_nonrept_short_other": {
       "factor": "pct_of_oi_nonrept_short_other",
       "name": "Percent of OI Non-Reportable Short Other",
       "note": "This factor shows the proportion of total open interest in mid-term contracts comprised of short positions held by non-reportable traders, highlighting bearish sentiment among smaller traders."
     },
-    "traders_total_all": {
+    "traders_tot_all": {
       "factor": "traders_tot_all",
       "name": "Traders Total All",
       "note": "This factor indicates the total number of traders involved in all types of positions (long, short, spread) for a symbol, providing a comprehensive overview of market participant activity."
@@ -3223,17 +3223,17 @@
       "name": "Traders Commercial Short All",
       "note": "This factor measures the number of commercial traders with short positions, showing their bearish market expectations or hedging strategies based on commercial interests."
     },
-    "traders_total_reportable_long_all": {
+    "traders_tot_rept_long_all": {
       "factor": "traders_tot_rept_long_all",
       "name": "Traders Total Reportable Long All",
       "note": "This factor represents the total number of reportable traders holding long positions, indicating the level of involvement by major market participants in bullish strategies."
     },
-    "traders_total_reportable_short_all": {
+    "traders_tot_rept_short_all": {
       "factor": "traders_tot_rept_short_all",
       "name": "Traders Total Reportable Short All",
       "note": "This factor shows the total number of reportable traders with short positions, highlighting the collective bearish sentiment among significant traders."
     },
-    "traders_total_ol": {
+    "traders_tot_ol": {
       "factor": "traders_tot_ol",
       "name": "Traders Total Old",
       "note": "This factor indicates the total number of traders involved in older contracts, providing insights into long-term market participant engagement and strategies."
@@ -3248,7 +3248,7 @@
       "name": "Traders Non-Commercial Short Old",
       "note": "This factor shows the number of non-commercial traders with short positions in older contracts, indicating their bearish expectations or strategies for long-term market trends."
     },
-    "traders_noncomm_spread_ol": {
+    "traders_noncomm_spead_ol": {
       "factor": "traders_noncomm_spead_ol",
       "name": "Traders Non-Commercial Spread Old",
       "note": "This factor denotes the number of non-commercial traders engaged in spread positions in older contracts, highlighting their long-term hedging or diversified market strategies."
@@ -3263,17 +3263,17 @@
       "name": "Traders Commercial Short Old",
       "note": "This factor shows the number of commercial traders with short positions in older contracts, highlighting their long-term bearish outlook or hedging strategies."
     },
-    "traders_total_reportable_long_ol": {
+    "traders_tot_rept_long_ol": {
       "factor": "traders_tot_rept_long_ol",
       "name": "Traders Total Reportable Long Old",
       "note": "This factor represents the total number of reportable traders with long positions in older contracts, indicating significant trader involvement in long-term bullish strategies."
     },
-    "traders_total_reportable_short_ol": {
+    "traders_tot_rept_short_ol": {
       "factor": "traders_tot_rept_short_ol",
       "name": "Traders Total Reportable Short Old",
       "note": "This factor denotes the total number of reportable traders with short positions in older contracts, showing collective long-term bearish sentiment among major traders."
     },
-    "traders_total_other": {
+    "traders_tot_other": {
       "factor": "traders_tot_other",
       "name": "Traders Total Other",
       "note": "This factor indicates the total number of traders involved in mid-term contracts, providing insights into the level of market participation in these intermediate duration positions."
@@ -3303,12 +3303,12 @@
       "name": "Traders Commercial Short Other",
       "note": "This factor shows the number of commercial traders with short positions in mid-term contracts, highlighting their bearish outlook or hedging strategies over intermediate time frames."
     },
-    "traders_total_reportable_long_other": {
+    "traders_tot_rept_long_other": {
       "factor": "traders_tot_rept_long_other",
       "name": "Traders Total Reportable Long Other",
       "note": "This factor indicates the total number of reportable traders with long positions in mid-term contracts, reflecting the collective bullish sentiment of major market participants for these periods."
     },
-    "traders_total_reportable_short_other": {
+    "traders_tot_rept_short_other": {
       "factor": "traders_tot_rept_short_other",
       "name": "Traders Total Reportable Short Other",
       "note": "This factor denotes the total number of reportable traders with short positions in mid-term contracts, showing the aggregate bearish sentiment among significant traders for these durations."
@@ -3441,37 +3441,37 @@
       "metaclass": "ClientMeta",
       "api": "api/v4/commitment_of_traders_report_analysis"
     },
-    "name1": {
+    "current_long_market_situation": {
       "factor": "currentLongMarketSituation",
       "name": "Current Long Market Situation",
       "note": "This factor represents the current total long positions held by market participants for a specific symbol, indicating bullish sentiment or expectation of rising prices."
     },
-    "name2": {
+    "current_short_market_situation": {
       "factor": "currentShortMarketSituation",
       "name": "Current Short Market Situation",
       "note": "This factor denotes the current total short positions held by market participants, reflecting bearish sentiment or expectation of declining prices for the symbol."
     },
-    "name3": {
+    "previous_long_market_situation": {
       "factor": "previousLongMarketSituation",
       "name": "Previous Long Market Situation",
       "note": "This factor shows the total long positions held by market participants for the symbol in the previous reporting period, allowing for comparison of market sentiment over time."
     },
-    "name4": {
+    "previous_short_market_situation": {
       "factor": "previousShortMarketSituation",
       "name": "Previous Short Market Situation",
       "note": "This factor indicates the total short positions held in the previous reporting period, providing a historical perspective on bearish market sentiment."
     },
-    "name5": {
+    "net_postion": {
       "factor": "netPostion",
       "name": "Net Position",
       "note": "This factor calculates the difference between total long and short positions currently held by market participants, offering an overall view of market sentiment for the symbol."
     },
-    "name6": {
+    "previous_net_position": {
       "factor": "previousNetPosition",
       "name": "Previous Net Position",
       "note": "This factor represents the net position from the previous reporting period, enabling a comparative analysis of market sentiment changes over time."
     },
-    "name7": {
+    "change_in_net_position": {
       "factor": "changeInNetPosition",
       "name": "Change in Net Position",
       "note": "This factor measures the change in net position between the current and previous reporting periods, highlighting the dynamics and shifts in overall market sentiment."

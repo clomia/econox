@@ -67,6 +67,7 @@
         class="list__fac"
         on:click={() => select(fac)}
         class:selected={$UnivariateFactorSelected === fac}
+        class:list__ele_with_scroll={view.length >= 6}
       >
         <div class="list__fac__section">{fac.section.name}</div>
         <div class="list__fac__name">{fac.name}</div>
@@ -136,11 +137,12 @@
     width: 100%;
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
-    padding: 0.5rem 0;
-    border-radius: 0.35rem;
+    text-align: start;
     border: thin solid rgba(255, 255, 255, 0);
     position: relative;
+  }
+  .list__ele_with_scroll {
+    width: 98%;
   }
   .list__fac.selected {
     border-color: rgba(255, 255, 255, 0.2);
@@ -150,16 +152,16 @@
     cursor: pointer;
   }
   .list__fac__section {
+    margin: 0.5rem;
     padding: 0.2rem 0.4rem;
     border-radius: 0.15rem;
-    margin: 0 0.5rem;
     color: var(--white);
     background-color: #613a55;
   }
   .list__fac__name {
+    margin: 0.5rem;
     padding: 0.2rem 0.4rem;
     border-radius: 0.15rem;
-    margin: 0 0.5rem;
     color: var(--white);
     background-color: #40533e;
   }

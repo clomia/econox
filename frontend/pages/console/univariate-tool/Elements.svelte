@@ -74,7 +74,7 @@
         class="list__ele"
         on:click={() => select(ele)}
         class:selected={$UnivariateElementSelected === ele}
-        class:list__ele_with_scroll={view.length >= 4}
+        class:list__ele_with_scroll={view.length >= 6}
       >
         <div class="list__ele__code">{ele.code}</div>
         <div class="list__ele__name">

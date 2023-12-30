@@ -130,22 +130,33 @@ export const setFactors = async (ele: ElementType) => {
   }
 };
 
+/**
+ * 객체의 특정 속성으로 배열을 정렬합니다.
+ * @param arr 객체로 이루어진 배열
+ * @param query 검색 쿼리 문자열
+ * @param attrKey 검색 속성, 2단계 이상의 깊이는 배열을 통해 정의
+ * @returns 정렬된 배열
+ */
 export const attrQuerySort = (
   arr: any[],
   query: string,
-  attrKey: string
+  attrKey: string | string[]
 ): any[] => {
   const _arr = [...arr];
   const result: any[] = [];
 
-  const sortedAttrs = querySort(
-    _arr.map((feature) => feature[attrKey]),
-    query
-  );
-  console.log(sortedAttrs);
+  const getAttr = (obj: any) => {
+    if (typeof attrKey === "string") {
+      return obj[attrKey];
+    } else if (Array.isArray(attrKey)) {
+      return attrKey.reduce((currentObj, key) => currentObj[key], obj);
+    }
+  };
+
+  const sortedAttrs = querySort(_arr.map(getAttr), query);
 
   sortedAttrs.forEach((attr) => {
-    const index = _arr.findIndex((feature) => feature[attrKey] === attr);
+    const index = _arr.findIndex((feature) => getAttr(feature) === attr);
     if (index !== -1) {
       result.push(_arr[index]);
       _arr.splice(index, 1);

@@ -28,7 +28,7 @@
     : 0;
 
   let query = "";
-  let attr = "name";
+  let attr: string | string[] = "name";
   let view: any[] = [];
 
   $: if (query) {
@@ -40,7 +40,7 @@
 
   const searchAttrChange = () => {
     if (attr === "name") {
-      attr = "section";
+      attr = ["section", "name"];
     } else {
       attr = "name";
     }

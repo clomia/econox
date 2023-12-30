@@ -4,7 +4,7 @@
   import RippleLoader from "../../../assets/animation/RippleLoader.svelte";
   import { Text } from "../../../modules/state";
   import {
-    UnivariateNote,
+    UnivariateSelected,
     UnivariateElementSelected,
     UnivariateFactorSelected,
     UnivariateFactors,
@@ -16,7 +16,7 @@
 
   const select = (fac: FactorType) => {
     $UnivariateFactorSelected = fac;
-    $UnivariateNote = fac.note;
+    $UnivariateSelected = fac;
   };
 
   $: ele = $UnivariateElementSelected;

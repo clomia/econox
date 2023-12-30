@@ -3,7 +3,7 @@ import { get } from "svelte/store";
 import { api } from "../../../modules/request";
 import { Lang } from "../../../modules/state";
 import {
-  UnivariateNote,
+  UnivariateSelected,
   UnivariateElements,
   UnivariateElementsLoaded,
   UnivariateFactors,
@@ -11,7 +11,6 @@ import {
   UnivariateElementSelected,
 } from "../../../modules/state";
 import { isSame, querySort } from "../../../modules/functions";
-import type { FeatureType } from "../../../modules/functions";
 import type { ElementType, FactorType } from "../../../modules/state";
 
 /**
@@ -20,7 +19,7 @@ import type { ElementType, FactorType } from "../../../modules/state";
  * 백엔드가 삭제에 실패한 경우 해당 요소를 다시 삽입하여 동기화 한 후 에러를 던집니다.
  */
 export const deleteElement = async (code: string, section: string) => {
-  const univariateNote = get(UnivariateNote);
+  const univariateSelected = get(UnivariateSelected);
   const univariateElements = get(UnivariateElements);
   const univariateElementSelected = get(UnivariateElementSelected);
 
@@ -33,8 +32,8 @@ export const deleteElement = async (code: string, section: string) => {
   if (univariateElementSelected && isSame(target, univariateElementSelected)) {
     UnivariateElementSelected.set(null); // 선택된 경우 선택 해제
   }
-  if (target.note === univariateNote) {
-    UnivariateNote.set(""); // 노트 대상자인 경우 노트 지우기
+  if (target === univariateSelected) {
+    UnivariateSelected.set(null);
   }
   UnivariateElements.set(univariateElements.filter((ele) => ele !== target)); // 배열에서 요소 제거
   try {

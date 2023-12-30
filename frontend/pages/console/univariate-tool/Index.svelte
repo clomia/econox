@@ -2,6 +2,7 @@
   import RippleLoader from "../../../assets/animation/RippleLoader.svelte";
   import Elements from "./Elements.svelte";
   import Factors from "./Factors.svelte";
+  import Note from "./Note.svelte";
   import { setElements } from "./functions";
 
   const setElementsPromise = setElements();
@@ -14,6 +15,7 @@
     <div class="element-selector"><Elements /></div>
   {/await}
   <div class="factor-selector"><Factors /></div>
+  <div class="note"><Note /></div>
 </main>
 
 <style>
@@ -30,7 +32,8 @@
     justify-content: center;
     border-bottom: thin solid rgba(255, 255, 255, 0.2);
   }
-  .element-selector {
+  .element-selector,
+  .factor-selector {
     border-bottom: thin solid rgba(255, 255, 255, 0.2);
   }
 </style>

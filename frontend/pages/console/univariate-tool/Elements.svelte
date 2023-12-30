@@ -9,14 +9,14 @@
   import {
     UnivariateElements,
     UnivariateElementSelected,
-    UnivariateNote,
+    UnivariateSelected,
     UnivariateFactorsProgress,
   } from "../../../modules/state";
   import type { ElementType } from "../../../modules/state";
 
   const select = async (ele: ElementType) => {
     $UnivariateElementSelected = ele;
-    $UnivariateNote = ele.note;
+    $UnivariateSelected = ele;
     await setFactors(ele);
   };
 

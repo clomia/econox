@@ -7,7 +7,7 @@ import base64
 import asyncio
 from uuid import uuid4
 from datetime import datetime
-from typing import List, Awaitable, Callable, TypeVar, Literal
+from typing import Awaitable, Callable, TypeVar, Literal
 from functools import partial
 
 import jwt

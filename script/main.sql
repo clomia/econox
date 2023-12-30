@@ -1,4 +1,4 @@
---- Last commit: 2023-12-15 14:09:17 ---
+--- Last commit: 2023-12-30 13:15:10 ---
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ------------------------------------------------
@@ -87,7 +87,7 @@ CREATE TYPE element_section AS ENUM('symbol', 'country', 'custom');
 CREATE TABLE elements (
     "id" SERIAL NOT NULL PRIMARY KEY,
     "section" element_section NOT NULL,
-    "code" VARCHAR(50) NOT NULL,
+    "code" VARCHAR(255) NOT NULL,
     UNIQUE ("section", "code") -- 이 순서가 인덱스 효율적임
 );
 

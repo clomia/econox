@@ -1,12 +1,45 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+  import mermaid from "mermaid";
   import {
     UnivariateSelected,
     UnivariateElementSelected,
     UnivariateFactorSelected,
   } from "../../../modules/state";
+
+  let diagram = `
+    stateDiagram-v2
+      direction LR
+      state Element {
+          Meta
+      }
+      state Factor {
+        direction LR
+        주가데이터 --> 조정종가
+      }
+      Meta --> 주가데이터
+    `;
+
+  let svgDiagram: any = "";
+  async function renderDiagram() {
+    try {
+      const { svg, bindFunctions } = await mermaid.render("mermaid", diagram);
+      svgDiagram = svg;
+    } catch (err) {
+      console.error("Mermaid diagram rendering failed:", err);
+    }
+  }
+
+  onMount(() => {
+    mermaid.initialize({ startOnLoad: false });
+    renderDiagram();
+  });
+
+  $: diagram && renderDiagram();
 </script>
 
 <main>
+  {@html svgDiagram}
   <div class="header">
     {#if $UnivariateElementSelected}
       {$UnivariateElementSelected.name}

@@ -6,22 +6,18 @@
     UnivariateElementSelected,
     UnivariateFactorSelected,
   } from "../../../modules/state";
-  import { Text } from "../../../modules/state";
 
   let element = "";
   let factorSectionName = "";
   let factorName = "";
   $: diagram = `
-    stateDiagram-v2
-      direction LR
-      state ${$Text.Element} {
-          Meta
-      }
-      state Factor {
-        direction LR
-        주가데이터 --> 조정종가
-      }
-      Meta --> 주가데이터
+    flowchart TB
+
+      element(${element})
+      factor-section(${factorSectionName})
+      factor(${factorName})
+
+      element --> factor-section --> factor
     `;
 
   let svgDiagram: any = "";

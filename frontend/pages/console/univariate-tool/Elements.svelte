@@ -151,7 +151,7 @@
   }
   .list {
     margin: 1rem;
-    /* 최소 4개 ~ 쵀대 6개 */
+    /* 최소 4개 ~ 최대 6개 */
     min-height: 10.78rem;
     max-height: 16rem;
     overflow: auto;
@@ -183,6 +183,8 @@
   }
   .list__ele__name {
     color: var(--white);
+    display: flex;
+    align-items: center;
   }
   .progress {
     color: white;

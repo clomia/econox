@@ -41,7 +41,6 @@
     "js-yaml": "^4.1.0",
     "jsonwebtoken": "^9.0.1",
     "libphonenumber-js": "^1.10.39",
-    "mermaid": "^10.6.1",
     "rollup-plugin-polyfill-node": "^0.13.0",
     "semver": "^7.5.4",
     "sirv-cli": "^2.0.2",

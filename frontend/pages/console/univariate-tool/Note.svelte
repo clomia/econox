@@ -1,51 +1,72 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import mermaid from "mermaid";
+  import { CountryCodeMap } from "../../../modules/state";
   import {
     UnivariateSelected,
     UnivariateElementSelected,
     UnivariateFactorSelected,
   } from "../../../modules/state";
 
-  let element = "";
-  let factorSectionName = "";
-  let factorName = "";
-  $: diagram = `
-    flowchart TB
+  $: element = $UnivariateElementSelected?.name || "없음";
+  $: factorSectionName = $UnivariateFactorSelected?.section?.name || "없음";
+  $: factorName = $UnivariateFactorSelected?.name || "없음";
 
-      element(${element})
-      factor-section(${factorSectionName})
-      factor(${factorName})
-
-      element --> factor-section --> factor
-    `;
-
-  let svgDiagram: any = "";
-  $: renderDiagram = async () => {
-    try {
-      const { svg, bindFunctions } = await mermaid.render("mermaid", diagram);
-      svgDiagram = svg;
-    } catch (err) {
-      console.error("Mermaid diagram rendering failed:", err);
-    }
+  const selected = { element: false, factorSection: false, factor: false };
+  const selectElement = () => {
+    selected.element = true;
+    selected.factor = false;
+    selected.factorSection = false;
   };
-
-  onMount(() => {
-    mermaid.initialize({ startOnLoad: false });
-    renderDiagram();
-  });
-
-  $: diagram && renderDiagram();
+  const selectFactorSection = () => {
+    selected.factorSection = true;
+    selected.element = false;
+    selected.factor = false;
+  };
 </script>
 
 <main>
-  {@html svgDiagram}
   <div class="header">
     {#if $UnivariateElementSelected}
-      {$UnivariateElementSelected.name}
+      <button
+        class="header__btn"
+        on:click={selectElement}
+        class:selected={selected.element}
+      >
+        <div class="header__btn__element-code">
+          {$UnivariateElementSelected.code}
+        </div>
+        <div class="header__btn__element-name">
+          {$UnivariateElementSelected.name}
+          {#if $UnivariateElementSelected.section === "country" && $CountryCodeMap}
+            {@const code =
+              $CountryCodeMap[$UnivariateElementSelected.code].toLowerCase()}
+            <img
+              src={`https://flagcdn.com/w40/${code}.png`}
+              alt={$UnivariateElementSelected.name}
+              width="30px"
+            />
+          {/if}
+        </div></button
+      >
     {/if}
     {#if $UnivariateFactorSelected}
-      {$UnivariateFactorSelected.name}
+      <button
+        class="header__btn"
+        on:click={selectFactorSection}
+        class:selected={selected.factorSection}
+      >
+        <div class="header__btn__factor-section">
+          {$UnivariateFactorSelected.section.name}
+        </div>
+      </button>
+      <button
+        class="header__btn"
+        on:click={selectFactorSection}
+        class:selected={selected.factor}
+      >
+        <div class="header__btn__factor">
+          {$UnivariateFactorSelected.name}
+        </div>
+      </button>
     {/if}
   </div>
   {#if typeof $UnivariateSelected?.section === "string"}
@@ -84,5 +105,45 @@
 <style>
   div {
     color: var(--white);
+  }
+  .header {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .header__btn {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border: thin solid rgba(255, 255, 255, 0);
+    position: relative;
+  }
+  .header__btn.selected {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  .header__btn:hover {
+    background-color: rgba(255, 255, 255, 0.07);
+    cursor: pointer;
+  }
+  .header__btn__element-code {
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.15rem;
+    margin-right: 0.5rem;
+    color: var(--white);
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  .header__btn__element-name {
+    color: var(--white);
+  }
+  .header__btn__factor-section {
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.15rem;
+    color: var(--white);
+    background-color: #613a55;
+  }
+  .header__btn__factor {
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.15rem;
+    color: var(--white);
+    background-color: #40533e;
   }
 </style>

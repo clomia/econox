@@ -376,6 +376,12 @@ Code:
 Section:
   en: "Section"
   ko: "섹션"
+Element:
+  en: "Element"
+  ko: "요소"
+Factor:
+  en: "Factor"
+  ko: "펙터"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

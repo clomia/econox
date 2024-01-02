@@ -121,6 +121,8 @@ export interface UiText {
     ReadMore: "Read More" | "자세히 보기";
     Code: "Code" | "코드";
     Section: "Section" | "섹션";
+    Element: "Element" | "요소";
+    Factor: "Factor" | "펙터";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

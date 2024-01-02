@@ -181,7 +181,11 @@ class ServiceTokenBearer(CognitoTokenBearer):
         self.authority = authority
 
     async def __call__(self, request: Request) -> dict:
-        db_user = await super().__call__(request)
+        try:
+            db_user = await super().__call__(request)
+        except Exception as e:
+            print(f"인증 실패 이유 {e}")
+            raise e
         match self.authority:
             case "all":  # 서비스 회원 모두 허용
                 return db_user

@@ -51,7 +51,7 @@ async def exec(
     *sql: SQL,
     dbname: str = "main",
     parallel: bool = False,
-    _retry=False,
+    _retry=0,
 ) -> Dict[SQL, None | List[Dict[str, Any]]]:
     """
     - 여러 SQL을 동시에 실행합니다. 하나의 트렌젝션으로 취급되며 하나라도 실패하면 모두 안전하게 롤백됩니다.
@@ -66,8 +66,8 @@ async def exec(
     """
 
     async def _exec(_sql: SQL, cur):
-        query, params = _sql.encode()
         try:
+            query, params = _sql.encode()
             await cur.execute(query, params)
             if _sql.fetch is False:
                 return None
@@ -88,7 +88,7 @@ async def exec(
             password=SECRETS["DB_PASSWORD"],
             row_factory=dict_row,
         ) as conn:
-            if _retry:
+            if _retry > 0:
                 log.info("[DB] Secrets Manager로부터 업데이트된 암호로 인증에 성공하였습니다.")
             async with conn.cursor() as cur:
                 tasks = [_exec(_sql, cur) for _sql in sql]
@@ -98,7 +98,8 @@ async def exec(
                     results = [await task for task in tasks]  # 순차 실행
                 return {_sql: result for _sql, result in zip(sql, results)}
     except psycopg.OperationalError as e:
-        if _retry:
+        if _retry > 50:
+            log.critical(f"{e} 에러로 인해 50회 재시도하였으나 실패하였습니다!")
             raise e
         # Secrets Manager에서 암호 교체가 이루어졌다고 간주하고 암호 업데이트 후 재시도
         SECRETS["DB_PASSWORD"] = json.loads(  # 최신 비밀번호로 업데이트
@@ -106,8 +107,11 @@ async def exec(
                 SecretId=SECRETS["RDS_SECRET_MANAGER_ARN"]
             )["SecretString"]
         )["password"]
-        log.info("[DB] 암호 변경 감지. Secrets Manager로부터 암호를 업데이트합니다.")
-        return await exec(*sql, dbname, _retry=True)  # 재시도
+        log.info(
+            "[DB] 암호 변경 감지. Secrets Manager로부터 암호를 업데이트합니다.\n"
+            f"현재까지 {_retry}번 재시도되었습니다. DB 암호 업데이트는 적용까지 약 1분 소요됩니다."
+        )
+        return await exec(*sql, dbname=dbname, _retry=_retry + 1)  # 재시도
 
 
 class SQL:

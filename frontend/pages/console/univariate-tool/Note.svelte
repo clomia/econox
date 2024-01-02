@@ -6,11 +6,15 @@
     UnivariateElementSelected,
     UnivariateFactorSelected,
   } from "../../../modules/state";
+  import { Text } from "../../../modules/state";
 
-  let diagram = `
+  let element = "";
+  let factorSectionName = "";
+  let factorName = "";
+  $: diagram = `
     stateDiagram-v2
       direction LR
-      state Element {
+      state ${$Text.Element} {
           Meta
       }
       state Factor {
@@ -21,14 +25,14 @@
     `;
 
   let svgDiagram: any = "";
-  async function renderDiagram() {
+  $: renderDiagram = async () => {
     try {
       const { svg, bindFunctions } = await mermaid.render("mermaid", diagram);
       svgDiagram = svg;
     } catch (err) {
       console.error("Mermaid diagram rendering failed:", err);
     }
-  }
+  };
 
   onMount(() => {
     mermaid.initialize({ startOnLoad: false });

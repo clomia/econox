@@ -109,6 +109,7 @@
   .header {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-evenly;
   }
   .header__btn {
     display: flex;

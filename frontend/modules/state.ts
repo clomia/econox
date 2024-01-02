@@ -150,5 +150,5 @@ export const UnivariateFactors = writable<{ [key: string]: FactorType[] }>({});
 export const UnivariateFactorsProgress = writable<{ [key: string]: number }>(
   {}
 );
-export const UnivariateFactorSelected = writable<FactorType>();
+export const UnivariateFactorSelected = writable<FactorType | null>(null);
 export const UnivariateFactorQuery = writable("");

@@ -10,6 +10,7 @@
     UnivariateElements,
     UnivariateElementSelected,
     UnivariateSelected,
+    UnivariateFactorSelected,
     UnivariateFactorsProgress,
   } from "../../../modules/state";
   import type { ElementType } from "../../../modules/state";
@@ -17,6 +18,7 @@
   const select = async (ele: ElementType) => {
     $UnivariateElementSelected = ele;
     $UnivariateSelected = ele;
+    $UnivariateFactorSelected = null;
     await setFactors(ele);
   };
 
@@ -186,10 +188,13 @@
     display: flex;
     align-items: center;
   }
+  .list__ele__name img {
+    margin-left: 0.5rem;
+  }
   .progress {
     color: white;
     opacity: 0.3;
-    margin-left: 0.2rem;
+    margin-left: 0.5rem;
   }
   .list__ele__del-btn {
     width: 2rem;

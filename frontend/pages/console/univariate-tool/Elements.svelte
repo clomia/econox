@@ -181,7 +181,7 @@
     border-radius: 0.15rem;
     margin: 0 0.5rem;
     color: var(--white);
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: #41425e;
   }
   .list__ele__name {
     color: var(--white);

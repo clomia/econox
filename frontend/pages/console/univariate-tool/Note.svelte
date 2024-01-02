@@ -21,51 +21,38 @@
     selected.element = false;
     selected.factor = false;
   };
+  const selectFactor = () => {
+    selected.factor = true;
+    selected.factorSection = false;
+    selected.element = false;
+  };
 </script>
 
 <main>
   <div class="header">
     {#if $UnivariateElementSelected}
       <button
-        class="header__btn"
+        class="header__btn element-btn"
         on:click={selectElement}
         class:selected={selected.element}
       >
-        <div class="header__btn__element-code">
-          {$UnivariateElementSelected.code}
-        </div>
-        <div class="header__btn__element-name">
-          {$UnivariateElementSelected.name}
-          {#if $UnivariateElementSelected.section === "country" && $CountryCodeMap}
-            {@const code =
-              $CountryCodeMap[$UnivariateElementSelected.code].toLowerCase()}
-            <img
-              src={`https://flagcdn.com/w40/${code}.png`}
-              alt={$UnivariateElementSelected.name}
-              width="30px"
-            />
-          {/if}
-        </div></button
-      >
+        {$UnivariateElementSelected.code}
+      </button>
     {/if}
     {#if $UnivariateFactorSelected}
       <button
-        class="header__btn"
+        class="header__btn factor-section-btn"
         on:click={selectFactorSection}
         class:selected={selected.factorSection}
       >
-        <div class="header__btn__factor-section">
-          {$UnivariateFactorSelected.section.name}
-        </div>
+        {$UnivariateFactorSelected.section.name}
       </button>
       <button
-        class="header__btn"
-        on:click={selectFactorSection}
+        class="header__btn factor-btn"
+        on:click={selectFactor}
         class:selected={selected.factor}
       >
-        <div class="header__btn__factor">
-          {$UnivariateFactorSelected.name}
-        </div>
+        {$UnivariateFactorSelected.name}
       </button>
     {/if}
   </div>
@@ -108,43 +95,32 @@
   }
   .header {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
+    align-items: stretch;
+    padding: 1rem 1.5rem;
   }
   .header__btn {
+    height: inherit;
     display: flex;
     align-items: center;
-    padding: 0.5rem;
-    border: thin solid rgba(255, 255, 255, 0);
-    position: relative;
+    justify-content: center;
+    text-align: start;
+    padding: 0.3rem 0.6rem;
+    color: var(--white);
   }
-  .header__btn.selected {
-    border-color: rgba(255, 255, 255, 0.2);
+  .element-btn {
+    background-color: #41425e;
+  }
+  .factor-section-btn {
+    background-color: #613a55;
+  }
+  .factor-btn {
+    background-color: #40533e;
   }
   .header__btn:hover {
     background-color: rgba(255, 255, 255, 0.07);
     cursor: pointer;
   }
-  .header__btn__element-code {
-    padding: 0.2rem 0.4rem;
-    border-radius: 0.15rem;
-    margin-right: 0.5rem;
-    color: var(--white);
-    background-color: rgba(255, 255, 255, 0.2);
-  }
-  .header__btn__element-name {
-    color: var(--white);
-  }
-  .header__btn__factor-section {
-    padding: 0.2rem 0.4rem;
-    border-radius: 0.15rem;
-    color: var(--white);
-    background-color: #613a55;
-  }
-  .header__btn__factor {
-    padding: 0.2rem 0.4rem;
-    border-radius: 0.15rem;
-    color: var(--white);
-    background-color: #40533e;
-  }
+  /* .header__btn.selected {
+
+  } */
 </style>

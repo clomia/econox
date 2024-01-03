@@ -1,61 +1,111 @@
 <script lang="ts">
-  import { CountryCodeMap } from "../../../modules/state";
   import {
     UnivariateSelected,
     UnivariateElementSelected,
     UnivariateFactorSelected,
+    UnivariateNoteSelected,
+    UnivariateNoteHovered,
   } from "../../../modules/state";
+  import type { CurrentNoteTargetType } from "../../../modules/state";
 
-  $: element = $UnivariateElementSelected?.name || "없음";
-  $: factorSectionName = $UnivariateFactorSelected?.section?.name || "없음";
-  $: factorName = $UnivariateFactorSelected?.name || "없음";
+  let elementBoxWidth = 0;
+  let factorSectionBoxWidth = 0;
+  let factorBoxWidth = 0;
 
-  const selected = { element: false, factorSection: false, factor: false };
-  const selectElement = () => {
-    selected.element = true;
-    selected.factor = false;
-    selected.factorSection = false;
-  };
-  const selectFactorSection = () => {
-    selected.factorSection = true;
-    selected.element = false;
-    selected.factor = false;
-  };
-  const selectFactor = () => {
-    selected.factor = true;
-    selected.factorSection = false;
-    selected.element = false;
-  };
+  function resetState(store: any) {
+    store.set({ element: false, factorSection: false, factor: false });
+  }
+
+  function select(target: keyof CurrentNoteTargetType) {
+    resetState(UnivariateNoteSelected);
+    if ($UnivariateNoteHovered[target]) {
+      resetState(UnivariateNoteHovered);
+    }
+    UnivariateNoteSelected.update((s) => ({ ...s, [target]: true }));
+  }
+
+  function hover(target: keyof CurrentNoteTargetType) {
+    resetState(UnivariateNoteHovered);
+    if (!$UnivariateNoteSelected[target]) {
+      UnivariateNoteHovered.update((h) => ({ ...h, [target]: true }));
+    }
+  }
+
+  function hoverOut() {
+    resetState(UnivariateNoteHovered);
+  }
 </script>
 
 <main>
   <div class="header">
-    {#if $UnivariateElementSelected}
-      <button
-        class="header__btn element-btn"
-        on:click={selectElement}
-        class:selected={selected.element}
-      >
-        {$UnivariateElementSelected.code}
-      </button>
-    {/if}
-    {#if $UnivariateFactorSelected}
-      <button
-        class="header__btn factor-section-btn"
-        on:click={selectFactorSection}
-        class:selected={selected.factorSection}
-      >
-        {$UnivariateFactorSelected.section.name}
-      </button>
-      <button
-        class="header__btn factor-btn"
-        on:click={selectFactor}
-        class:selected={selected.factor}
-      >
-        {$UnivariateFactorSelected.name}
-      </button>
-    {/if}
+    <div class="header__box-row">
+      {#if $UnivariateElementSelected}
+        <button
+          class="header__box-row__btn element-btn"
+          on:click={() => select("element")}
+          bind:clientWidth={elementBoxWidth}
+          on:mouseover={() => hover("element")}
+          on:mouseleave={hoverOut}
+          on:focus={() => hover("element")}
+        >
+          {$UnivariateElementSelected.code}
+        </button>
+      {/if}
+      {#if $UnivariateFactorSelected}
+        <button
+          class="header__box-row__btn factor-section-btn"
+          on:click={() => select("factorSection")}
+          bind:clientWidth={factorSectionBoxWidth}
+          on:mouseover={() => hover("factorSection")}
+          on:mouseleave={hoverOut}
+          on:focus={() => hover("factorSection")}
+        >
+          {$UnivariateFactorSelected.section.name}
+        </button>
+        <button
+          class="header__box-row__btn factor-btn"
+          on:click={() => select("factor")}
+          bind:clientWidth={factorBoxWidth}
+          on:mouseover={() => hover("factor")}
+          on:mouseleave={hoverOut}
+          on:focus={() => hover("factor")}
+        >
+          {$UnivariateFactorSelected.name}
+        </button>
+      {/if}
+    </div>
+    <div class="header__line-row">
+      {#if $UnivariateElementSelected}
+        <button
+          class="header__line-row__btn"
+          on:click={() => select("element")}
+          class:selected={$UnivariateNoteSelected.element}
+          class:hovered={$UnivariateNoteHovered.element}
+          style="width: {elementBoxWidth}px;"
+        >
+        </button>
+      {/if}
+      {#if $UnivariateFactorSelected}
+        <button
+          class="header__line-row__btn"
+          on:click={() => select("factorSection")}
+          class:selected={$UnivariateNoteSelected.factorSection}
+          class:hovered={$UnivariateNoteHovered.factorSection}
+          style="width: {factorSectionBoxWidth}px;"
+        >
+        </button>
+        <button
+          class="header__line-row__btn"
+          on:click={() => select("factor")}
+          class:selected={$UnivariateNoteSelected.factor}
+          class:hovered={$UnivariateNoteHovered.factor}
+          style="width: {factorBoxWidth}px;"
+        >
+        </button>
+      {/if}
+    </div>
   </div>
+
   {#if typeof $UnivariateSelected?.section === "string"}
     <!-- 선택된 단변량이 Element인 경우 -->
     <div class="element">
@@ -94,12 +144,12 @@
     color: var(--white);
   }
   .header {
-    display: flex;
-    align-items: stretch;
     padding: 1rem 1.5rem;
   }
-  .header__btn {
-    height: inherit;
+  .header__box-row {
+    display: flex;
+  }
+  .header__box-row__btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -116,11 +166,24 @@
   .factor-btn {
     background-color: #40533e;
   }
-  .header__btn:hover {
-    background-color: rgba(255, 255, 255, 0.07);
+
+  .header__line-row {
+    display: flex;
+  }
+  .header__line-row__btn {
+    display: flex;
+    height: 0.7rem;
+    border-bottom: 0.2rem solid rgba(255, 255, 255, 0.2);
+  }
+  .header__line-row__btn.selected {
+    border-color: var(--white);
+  }
+  .header__line-row__btn.hovered {
+    border-color: rgba(255, 255, 255, 0.45);
+  }
+
+  .header__box-row__btn:hover,
+  .header__line-row__btn:hover {
     cursor: pointer;
   }
-  /* .header__btn.selected {
-
-  } */
 </style>

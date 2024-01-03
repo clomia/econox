@@ -79,6 +79,12 @@ export interface PacketInfoType {
   elements: ElementType[];
 }
 
+export interface CurrentNoteTargetType {
+  element: boolean;
+  factorSection: boolean;
+  factor: boolean;
+}
+
 // ============= 전역적으로 사용되는 상태들 =============
 
 export const Lang = writable("en");
@@ -152,3 +158,14 @@ export const UnivariateFactorsProgress = writable<{ [key: string]: number }>(
 );
 export const UnivariateFactorSelected = writable<FactorType | null>(null);
 export const UnivariateFactorQuery = writable("");
+
+export const UnivariateNoteSelected = writable<CurrentNoteTargetType>({
+  element: false,
+  factorSection: false,
+  factor: false,
+});
+export const UnivariateNoteHovered = writable<CurrentNoteTargetType>({
+  element: false,
+  factorSection: false,
+  factor: false,
+});

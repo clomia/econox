@@ -1,6 +1,5 @@
 <script lang="ts">
   import {
-    UnivariateSelected,
     UnivariateElementSelected,
     UnivariateFactorSelected,
     UnivariateNoteSelected,
@@ -33,6 +32,10 @@
 
   function hoverOut() {
     resetState(UnivariateNoteHovered);
+  }
+
+  $: if ($UnivariateElementSelected) {
+    select("element"); // 요소가 변경되면 변경된 요소를 선택해준다.
   }
 </script>
 
@@ -78,66 +81,59 @@
       {#if $UnivariateElementSelected}
         <button
           class="header__line-row__btn"
-          on:click={() => select("element")}
           class:selected={$UnivariateNoteSelected.element}
           class:hovered={$UnivariateNoteHovered.element}
           style="width: {elementBoxWidth}px;"
+          on:click={() => select("element")}
+          on:mouseover={() => hover("element")}
+          on:mouseleave={hoverOut}
+          on:focus={() => hover("element")}
         >
         </button>
       {/if}
       {#if $UnivariateFactorSelected}
         <button
           class="header__line-row__btn"
-          on:click={() => select("factorSection")}
           class:selected={$UnivariateNoteSelected.factorSection}
           class:hovered={$UnivariateNoteHovered.factorSection}
           style="width: {factorSectionBoxWidth}px;"
+          on:click={() => select("factorSection")}
+          on:mouseover={() => hover("factorSection")}
+          on:mouseleave={hoverOut}
+          on:focus={() => hover("factorSection")}
         >
         </button>
         <button
           class="header__line-row__btn"
-          on:click={() => select("factor")}
           class:selected={$UnivariateNoteSelected.factor}
           class:hovered={$UnivariateNoteHovered.factor}
           style="width: {factorBoxWidth}px;"
+          on:click={() => select("factor")}
+          on:mouseover={() => hover("factor")}
+          on:mouseleave={hoverOut}
+          on:focus={() => hover("factor")}
         >
         </button>
       {/if}
     </div>
   </div>
 
-  {#if typeof $UnivariateSelected?.section === "string"}
-    <!-- 선택된 단변량이 Element인 경우 -->
-    <div class="element">
-      <div class="element__header">
-        <div class="element__header__code">{$UnivariateSelected.code}</div>
-        <div class="element__header__name">{$UnivariateSelected.name}</div>
-      </div>
-      <div class="element__note">{$UnivariateSelected.note}</div>
-    </div>
-  {:else if typeof $UnivariateSelected?.section === "object"}
-    <!-- 선택된 단변량이 Factor인 경우 -->
-    <div class="factor">
-      <div class="factor__section">
-        <div class="factor__section__name">
-          {$UnivariateSelected.section.name}
-        </div>
-        <div class="factor__section__note">
-          {$UnivariateSelected.section.note}
-        </div>
-      </div>
-      <div class="factor__factor">
-        <div class="factor__factor__name">{$UnivariateSelected.name}</div>
-        <div class="factor__factor__note">{$UnivariateSelected.note}</div>
-      </div>
-    </div>
-  {:else}
-    <!-- 선택된 단변량이 없는 경우 -->
-    <div class="null">선택 안해서 보여줄거 없음</div>
-  {/if}
+  <div class="content">
+    {#if $UnivariateNoteSelected.element}
+      <div class="content__name">{$UnivariateElementSelected.name}</div>
+      <div class="content__note">{$UnivariateElementSelected.note}</div>
+    {:else if $UnivariateNoteSelected.factorSection}
+      <div class="content__name">{$UnivariateFactorSelected.section.name}</div>
+      <div class="content__note">{$UnivariateFactorSelected.section.note}</div>
+    {:else if $UnivariateNoteSelected.factor}
+      <div class="content__name">{$UnivariateFactorSelected.name}</div>
+      <div class="content__note">{$UnivariateFactorSelected.note}</div>
+    {:else}
+      <!-- 선택된 단변량이 없는 경우 -->
+      <div class="null">선택 안해서 보여줄거 없음</div>
+    {/if}
+  </div>
 </main>
-
-<div>{$UnivariateSelected}</div>
 
 <style>
   div {
@@ -185,5 +181,21 @@
   .header__box-row__btn:hover,
   .header__line-row__btn:hover {
     cursor: pointer;
+  }
+
+  .content {
+    padding-left: 1.5rem;
+    padding-right: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .content__name {
+    font-size: 1.2rem;
+    margin-bottom: 0.7rem;
+  }
+  .content__note {
+    padding-right: 0.5rem;
+    /* min-height: 10.78rem; */
+    max-height: 16rem;
+    overflow: auto;
   }
 </style>

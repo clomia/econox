@@ -119,13 +119,13 @@
   </div>
 
   <div class="content">
-    {#if $UnivariateNoteSelected.element}
+    {#if $UnivariateNoteSelected.element && $UnivariateElementSelected}
       <div class="content__name">{$UnivariateElementSelected.name}</div>
       <div class="content__note">{$UnivariateElementSelected.note}</div>
-    {:else if $UnivariateNoteSelected.factorSection}
+    {:else if $UnivariateNoteSelected.factorSection && $UnivariateFactorSelected}
       <div class="content__name">{$UnivariateFactorSelected.section.name}</div>
       <div class="content__note">{$UnivariateFactorSelected.section.note}</div>
-    {:else if $UnivariateNoteSelected.factor}
+    {:else if $UnivariateNoteSelected.factor && $UnivariateFactorSelected}
       <div class="content__name">{$UnivariateFactorSelected.name}</div>
       <div class="content__note">{$UnivariateFactorSelected.note}</div>
     {:else}

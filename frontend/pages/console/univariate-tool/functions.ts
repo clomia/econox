@@ -3,7 +3,6 @@ import { get } from "svelte/store";
 import { api } from "../../../modules/request";
 import { Lang } from "../../../modules/state";
 import {
-  UnivariateSelected,
   UnivariateElements,
   UnivariateElementsLoaded,
   UnivariateFactors,
@@ -19,7 +18,6 @@ import type { ElementType, FactorType } from "../../../modules/state";
  * 백엔드가 삭제에 실패한 경우 해당 요소를 다시 삽입하여 동기화 한 후 에러를 던집니다.
  */
 export const deleteElement = async (code: string, section: string) => {
-  const univariateSelected = get(UnivariateSelected);
   const univariateElements = get(UnivariateElements);
   const univariateElementSelected = get(UnivariateElementSelected);
 
@@ -31,9 +29,6 @@ export const deleteElement = async (code: string, section: string) => {
   }
   if (univariateElementSelected && isSame(target, univariateElementSelected)) {
     UnivariateElementSelected.set(null); // 선택된 경우 선택 해제
-  }
-  if (target === univariateSelected) {
-    UnivariateSelected.set(null);
   }
   UnivariateElements.set(univariateElements.filter((ele) => ele !== target)); // 배열에서 요소 제거
   try {

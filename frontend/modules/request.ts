@@ -81,10 +81,13 @@ const retryWithTokenRefresh = async (
   originalRequest: InternalAxiosRequestConfig
 ) => {
   try {
-    const tokenRefreshedRequest = await tokenInsert(originalRequest); // 토큰 갱신 요청
-    return await axios(tokenRefreshedRequest); // 갱신된 토큰으로 재요청
+    const refreshToken = await settingObjectStore.get("cognitoRefreshToken"); // 갱신용 토큰 가져오기
+    await tokenRefresh(refreshToken); // 토큰 갱신 후 settingObjectStore에서 토큰 교체
+    const tokenRefreshedRequest = await tokenInsert(originalRequest); // 교체된 토큰으로 요청 다시 생성
+    return await axios(tokenRefreshedRequest); // 생성한 요청 수행
   } catch (error: any) {
     if (error?.response?.status === 401) {
+      // 갱신 토큰이 만료되었거나, 다른 기기에서 로그인 된 경우
       // return await logout();
       // 디버깅을 위해 엑세스 토큰과 ID 토큰 만료를 5분으로 설정해놨다, 디버깅 후 다시 20분으로 돌려놓아야 한다.
       console.log(error);

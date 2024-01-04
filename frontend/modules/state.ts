@@ -143,10 +143,6 @@ export const PacketInfo = writable<PacketInfoType>({
 }); // 검색을 수행하는 비동기 함수는 컴포넌트가 없어진다고 멈추지 않음, 따라서 전역 상태로 관리 가능
 
 // console.univariate-tool 상태
-export const UnivariateSelected = writable<ElementType | FactorType | null>(
-  null
-);
-
 export const UnivariateElements = writable<ElementType[]>([]);
 export const UnivariateElementsLoaded = writable(false);
 export const UnivariateElementSelected = writable<ElementType | null>(null); // 선택안한 경우 null

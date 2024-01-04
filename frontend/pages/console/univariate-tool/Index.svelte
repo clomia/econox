@@ -3,6 +3,7 @@
   import Elements from "./Elements.svelte";
   import Factors from "./Factors.svelte";
   import Note from "./Note.svelte";
+  import Chart from "./Chart.svelte";
   import { setElements } from "./functions";
 
   const setElementsPromise = setElements();
@@ -16,6 +17,7 @@
   {/await}
   <div class="factor-selector"><Factors /></div>
   <div class="note"><Note /></div>
+  <div class="chart"><Chart /></div>
 </main>
 
 <style>

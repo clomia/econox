@@ -52,6 +52,32 @@ HistoricalPrice = create_class("HistoricalPrice")
 
 
 class Symbol:
+    attr_name = {  # 펙터 클래스에 대한 속성 이름
+        "HistoricalPrice": "price",
+        "HistoricalDividends": "dividends",
+        "CompanyEnterpriseValue": "enterprise_value",
+        "CompanyKeyMetrics": "key_metrics",
+        "FinancialRatios": "financial_ratio",
+        "FinancialGrowth": "financial_growth",
+        "CashFlowStatement": "cash_flow",
+        "CashFlowStatementGrowth": "cash_flow_growth",
+        "BalanceSheetStatement": "balance_sheet",
+        "BalanceSheetStatementGrowth": "balance_sheet_growth",
+        "IncomeStatement": "income",
+        "ReportedIncomeStatements": "reported_income",
+        "IncomeStatementGrowth": "income_growth",
+        "EarningsCalendar": "earnings",
+        "InstitutionalStockOwnership": "institutional_ownership",
+        "NumberOfEmployees": "employees",
+        "AdvancedDiscountedCashFlow": "dcf",
+        "AdvancedLeveredDiscountedCashFlow": "levered_dcf",
+        "CompanyRating": "rating",
+        "EsgScore": "esg_score",
+        "CotReportAnalysis": "cot_report_analysis",
+        "CotReport": "cot_report",
+        "AnalystEstimates": "analyst_estimates",
+    }
+
     def __init__(self, code: str):
         """
         - 인스턴스 생성 방법

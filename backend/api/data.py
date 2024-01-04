@@ -1,11 +1,14 @@
 """ /api/data """
 import asyncio
 
+import numpy as np
+import xarray as xr
 from aiocache import cached
 
 from backend.http import APIRouter
-from backend.math import datetime2utcstr
+from backend.math import datetime2utcstr, destandardize
 from backend.data import fmp, world_bank
+from backend.data.factor import Factor
 from backend.system import ElasticRedisCache, CacheTTL, log
 
 router = APIRouter("data")
@@ -82,3 +85,33 @@ async def search_news_related_to_symbols(symbol: str, lang: str):
             "note": symbol_note,
         },
     }
+
+
+@router.basic.get("/feature")
+async def get_feature_time_series(
+    element_code: str,
+    element_section: str,
+    factor_code: str,
+    factor_section: str,
+    standardization: bool = True,
+):
+    """
+    - Element의 Factor 시계열 데이터를 응답합니다.
+    """
+    if element_section == "symbol":
+        element = fmp.Symbol(element_code)
+    elif element_section == "country":
+        element = world_bank.Country(element_code)
+
+    # ClientMeta 메타클래스가 만든 data_class 클래스의 인스턴스
+    data_instance = getattr(element, element.attr_name[factor_section])
+    factor: Factor = getattr(data_instance, factor_code)
+    data: xr.Dataset = await factor.get()
+
+    data_array = data.daily if standardization else destandardize(data)
+
+    values = data_array.values.tolist()
+    times = np.datetime_as_string(data_array.t.values).tolist()
+
+    # print(data.attrs)
+    return {"values": values, "times": times}

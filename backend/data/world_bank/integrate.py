@@ -11,6 +11,14 @@ from backend.data.world_bank.data_class import *
 
 
 class Country:
+    attr_name = {  # 펙터 클래스에 대한 속성 이름
+        "Trade": "trade",
+        "Natural": "natural",
+        "Population": "population",
+        "Industry": "industry",
+        "Economy": "economy",
+    }
+
     def __init__(self, code: str):
         """
         - code: ISO 3166-1 alpha-3 국가코드

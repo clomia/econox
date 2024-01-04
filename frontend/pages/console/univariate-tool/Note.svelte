@@ -1,5 +1,6 @@
 <script lang="ts">
   import {
+    Text,
     UnivariateElementSelected,
     UnivariateFactorSelected,
     UnivariateNoteSelected,
@@ -119,18 +120,17 @@
   </div>
 
   <div class="content">
-    {#if $UnivariateNoteSelected.element && $UnivariateElementSelected}
+    {#if $UnivariateElementSelected && $UnivariateNoteSelected.element}
       <div class="content__name">{$UnivariateElementSelected.name}</div>
       <div class="content__note">{$UnivariateElementSelected.note}</div>
-    {:else if $UnivariateNoteSelected.factorSection && $UnivariateFactorSelected}
+    {:else if $UnivariateFactorSelected && $UnivariateNoteSelected.factorSection}
       <div class="content__name">{$UnivariateFactorSelected.section.name}</div>
       <div class="content__note">{$UnivariateFactorSelected.section.note}</div>
-    {:else if $UnivariateNoteSelected.factor && $UnivariateFactorSelected}
+    {:else if $UnivariateFactorSelected && $UnivariateNoteSelected.factor}
       <div class="content__name">{$UnivariateFactorSelected.name}</div>
       <div class="content__note">{$UnivariateFactorSelected.note}</div>
     {:else}
-      <!-- 선택된 단변량이 없는 경우 -->
-      <div class="null">선택 안해서 보여줄거 없음</div>
+      <div class="blank">{$Text.FactorsListBlank}</div>
     {/if}
   </div>
 </main>
@@ -194,8 +194,13 @@
   }
   .content__note {
     padding-right: 0.5rem;
-    /* min-height: 10.78rem; */
     max-height: 16rem;
     overflow: auto;
+  }
+  .blank {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.5);
   }
 </style>

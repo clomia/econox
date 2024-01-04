@@ -22,20 +22,17 @@ export const deleteElement = async (code: string, section: string) => {
   const univariateElements = get(UnivariateElements);
   const univariateElementSelected = get(UnivariateElementSelected);
 
-  const target = univariateElements.find(
-    (ele) => ele.code === code && ele.section === section
+  const target = univariateElements.find((ele) =>
+    isSame(ele, { code, section })
   );
   if (!target) {
     throw new Error("Element does not exists");
   }
+  const elementArr = univariateElements.filter((ele) => !isSame(ele, target));
+  UnivariateElements.set(elementArr); // 배열에서 요소 제거
+  UnivariateFactorSelected.set(null); // 선택된 펙터 초기화
   if (univariateElementSelected && isSame(target, univariateElementSelected)) {
     UnivariateElementSelected.set(null); // 선택된 경우 선택 해제
-  }
-  const elementArr = univariateElements.filter((ele) => ele !== target);
-  UnivariateElements.set(elementArr); // 배열에서 요소 제거
-  if (elementArr.length === 0) {
-    // 요소가 없으면 펙터도 없어야 함
-    UnivariateFactorSelected.set(null);
   }
   try {
     await api.member.delete("/feature/user/element", {

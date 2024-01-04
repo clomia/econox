@@ -607,7 +607,7 @@
     border-radius: 0.2rem;
     margin: 0 0.5rem;
     color: var(--white);
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: #41425e;
   }
   .packet-info__list__ele__name {
     color: var(--white);

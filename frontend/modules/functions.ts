@@ -190,7 +190,7 @@ export const paymentMethodString = (str: string): string => {
 
 export interface FeatureType {
   code: string;
-  section: string;
+  section: string | { code: string; name: string; note: string };
   [key: string]: any;
 }
 
@@ -199,7 +199,11 @@ export interface FeatureType {
  * Element, Factor 객체를 비교할 때 쓰세요
  */
 export const isSame = (a: FeatureType, b: FeatureType) => {
-  return a.code === b.code && a.section === b.section;
+  if (typeof a.section !== "string" && typeof b.section !== "string") {
+    return a.code === b.code && a.section.code === b.section.code;
+  } else {
+    return a.code === b.code && a.section === b.section;
+  }
 };
 
 /**

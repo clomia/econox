@@ -382,6 +382,9 @@ Element:
 Factor:
   en: "Factor"
   ko: "펙터"
+LogoutReasonUseAnotherDevice:
+  en: "You have been logged out as your account is being used on another device."
+  ko: "다른 기기에서 사용 중이므로 로그아웃되었습니다."
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

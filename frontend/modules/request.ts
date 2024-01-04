@@ -87,14 +87,19 @@ const retryWithTokenRefresh = async (
     return await axios(tokenRefreshedRequest); // 생성한 요청 수행
   } catch (error: any) {
     if (error?.response?.status === 401) {
-      // 갱신 토큰이 만료되었거나, 다른 기기에서 로그인 된 경우
-      // return await logout();
-      // 디버깅을 위해 엑세스 토큰과 ID 토큰 만료를 5분으로 설정해놨다, 디버깅 후 다시 20분으로 돌려놓아야 한다.
-      console.log(error);
-      console.log(originalRequest);
-      Swal.fire(
-        "401에 대해 토큰 재요청을 못하것 같습니다. 관리자 콘솔에서 에러 로그를 확인하세요. 디버깅 후 코드를 복원하세요"
-      );
+      // 다른 기기에서 로그인되면 갱신토큰이 비활성화된다.
+      // 토큰의 유효기간은 5분이므로 최대 5분 후 갱신을 시도하는데 이때 갱신이 불가능하면 여기로 온다.
+      // 갱신토큰은 10년짜리라 갱신토큰이 만료되서 비활성화되는 경우는 고려하지 않음
+      const text = get(Text);
+      await Swal.fire({
+        ...defaultSwalStyle,
+        width: "30rem",
+        icon: "info",
+        showDenyButton: false,
+        title: text.LogoutReasonUseAnotherDevice,
+        confirmButtonText: text.Ok,
+      });
+      return await logout();
     }
     throw error;
   }

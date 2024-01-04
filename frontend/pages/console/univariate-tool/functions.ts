@@ -5,9 +5,10 @@ import { Lang } from "../../../modules/state";
 import {
   UnivariateElements,
   UnivariateElementsLoaded,
+  UnivariateElementSelected,
   UnivariateFactors,
   UnivariateFactorsProgress,
-  UnivariateElementSelected,
+  UnivariateFactorSelected,
 } from "../../../modules/state";
 import { isSame, querySort } from "../../../modules/functions";
 import type { ElementType, FactorType } from "../../../modules/state";
@@ -30,7 +31,12 @@ export const deleteElement = async (code: string, section: string) => {
   if (univariateElementSelected && isSame(target, univariateElementSelected)) {
     UnivariateElementSelected.set(null); // 선택된 경우 선택 해제
   }
-  UnivariateElements.set(univariateElements.filter((ele) => ele !== target)); // 배열에서 요소 제거
+  const elementArr = univariateElements.filter((ele) => ele !== target);
+  UnivariateElements.set(elementArr); // 배열에서 요소 제거
+  if (elementArr.length === 0) {
+    // 요소가 없으면 펙터도 없어야 함
+    UnivariateFactorSelected.set(null);
+  }
   try {
     await api.member.delete("/feature/user/element", {
       params: { code, section },

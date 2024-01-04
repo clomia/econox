@@ -85,7 +85,13 @@ const retryWithTokenRefresh = async (
     return await axios(tokenRefreshedRequest); // 갱신된 토큰으로 재요청
   } catch (error: any) {
     if (error?.response?.status === 401) {
-      return await logout();
+      // return await logout();
+      // 디버깅을 위해 엑세스 토큰과 ID 토큰 만료를 5분으로 설정해놨다, 디버깅 후 다시 20분으로 돌려놓아야 한다.
+      console.log(error);
+      console.log(originalRequest);
+      Swal.fire(
+        "401에 대해 토큰 재요청을 못하것 같습니다. 관리자 콘솔에서 에러 로그를 확인하세요. 디버깅 후 코드를 복원하세요"
+      );
     }
     throw error;
   }

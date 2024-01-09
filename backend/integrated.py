@@ -1,10 +1,11 @@
 """
 - api와 data 모듈의 통합 로직 중 반복되는 부분을 함수로 제공합니다.
 """
-from fastapi import HTTPException
+from fastapi import HTTPException, Request
+from fastapi.responses import JSONResponse
 
 from backend.data import fmp, world_bank
-from backend.data.exceptions import ElementDoesNotExist
+from backend.data.exceptions import ElementDoesNotExist, LanguageNotSupported
 
 
 async def get_element(section: str, code: str):
@@ -25,4 +26,12 @@ async def get_element(section: str, code: str):
         return element
 
 
-# async def translate_exception_handler 미들웨어...(translate):
+async def lang_exception_handler(request: Request, call_next):
+    """
+    - LanguageNotSupported 예외를 422 HTTPException 예외로 전파시킵니다.
+    - app.py에서 FastAPI 앱에 미들웨어로 등록되었습니다.
+    """
+    try:
+        return await call_next(request)
+    except LanguageNotSupported as e:
+        return JSONResponse(status_code=422, content=e.message)

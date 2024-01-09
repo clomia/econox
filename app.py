@@ -6,6 +6,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 from backend import api
+from backend.integrated import lang_exception_handler
 
 app = FastAPI(
     title="Econox API",
@@ -15,8 +16,12 @@ app = FastAPI(
 )
 
 # ================= backend =================
+set_middleware = app.middleware("http")
+set_middleware(lang_exception_handler)
+
 for router in api.routers:
     app.include_router(router)
+
 # ================= frontend =================
 app.mount("/static", StaticFiles(directory="frontend/static"))
 

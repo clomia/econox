@@ -160,7 +160,7 @@ class Symbol:
         if self.info["name"] and self.info["note"]:
             self.is_loaded = True
         else:
-            raise ElementDoesNotExist(f"code: {self.code}")
+            raise ElementDoesNotExist(f"[code: {self.code}]")
         return self
 
     @cached(cache=ElasticRedisCache, ttl=CacheTTL.MAX)

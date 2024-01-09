@@ -184,7 +184,6 @@ class ServiceTokenBearer(CognitoTokenBearer):
         try:
             db_user = await super().__call__(request)
         except HTTPException as e:
-            print(f"인증 실패 이유 {e.status_code}, {e.headers}, {e.detail}")
             raise e
         match self.authority:
             case "all":  # 서비스 회원 모두 허용

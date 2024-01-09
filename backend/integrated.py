@@ -17,8 +17,8 @@ async def get_element(section: str, code: str):
             element = await world_bank.Country(code).load()
         else:
             raise HTTPException(
-                status_code=422,
-                detail=f"element_section {section} is not supported.",
+                status_code=404,
+                detail=f"element_section {section} does not exist",
             )
     except ElementDoesNotExist as e:
         raise HTTPException(status_code=404, detail=e.message)

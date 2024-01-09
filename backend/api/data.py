@@ -4,7 +4,9 @@ import asyncio
 import numpy as np
 import xarray as xr
 from aiocache import cached
+from fastapi import HTTPException
 
+from backend import db
 from backend.http import APIRouter
 from backend.math import datetime2utcstr, destandardize
 from backend.data import fmp, world_bank
@@ -103,13 +105,46 @@ async def get_feature_time_series(
     """
     element = await get_element(element_section, element_code)
     # ClientMeta 메타클래스가 만든 data_class 클래스의 인스턴스
-    data_instance = getattr(element, element.attr_name[factor_section])
-    factor: Factor = getattr(data_instance, factor_code)
+    try:
+        data_instance = getattr(element, element.attr_name[factor_section])
+        factor: Factor = getattr(data_instance, factor_code)
+    except KeyError:
+        raise HTTPException(
+            status_code=404, detail=f"factor_section {factor_section} does not exist"
+        )
+    except AttributeError:
+        raise HTTPException(
+            status_code=404, detail=f"factor_code {factor_code} does not exist"
+        )
+
     data: xr.Dataset = await factor.get()
-
-    data_array = data.daily if standardization else destandardize(data)
-
-    values = data_array.values.tolist()
-    times = np.datetime_as_string(data_array.t.values).tolist()
-
-    return {"values": values, "times": times}
+    if data is not None:
+        data_array = data.daily if standardization else destandardize(data)
+        values = data_array.values.tolist()
+        times = np.datetime_as_string(data_array.t.values).tolist()
+        return {"values": values, "times": times}
+    else:
+        await db.SQL(
+            """
+        DELETE FROM elements_factors
+        WHERE element_id = (
+            SELECT id FROM elements
+            WHERE code = {ec}
+            AND section = {es}
+        )
+        AND factor_id = (
+            SELECT id FROM factors
+            WHERE code = {fc}
+            AND section = {fs}
+        )""",
+            params={
+                "ec": element_code,
+                "es": element_section,
+                "fc": factor_code,
+                "fs": factor_section,
+            },
+        ).exec()
+        raise HTTPException(
+            status_code=404,
+            detail=f"The {factor_code} factor is not supported by this element",
+        )

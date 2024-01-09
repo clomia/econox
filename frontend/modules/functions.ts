@@ -45,34 +45,23 @@ export const init = async () => {
   }
 
   // ========== UI 텍스트와 유저 데이터를 불러옵니다. ==========
-  const [cognitoToken, cognitoRefreshToken] = await Promise.all([
-    settingObjectStore.get("cognitoToken"), // 이 작업들은 매우 빠름
-    settingObjectStore.get("cognitoRefreshToken"),
-  ]);
+  const [uiText, countryCodeMap, cognitoToken, cognitoRefreshToken] =
+    await Promise.all([
+      loadUiText(),
+      axios
+        .create({ baseURL: window.location.origin })
+        .get("/static/countryCodeMap.json"),
+      settingObjectStore.get("cognitoToken"), // 이 작업들은 매우 빠름
+      settingObjectStore.get("cognitoRefreshToken"),
+    ]);
+  Text.set(uiText.text);
+  Lang.set(uiText.lang);
+  CountryCodeMap.set(countryCodeMap.data);
+
   if (cognitoToken && cognitoRefreshToken) {
     // 로그인된 경우 유저 데이터 세팅하기
-    const [uiText, countryCodeMap, userInfo] = await Promise.all([
-      loadUiText(),
-      axios
-        .create({ baseURL: window.location.origin })
-        .get("/static/countryCodeMap.json"),
-      api.private.get("/user"),
-    ]);
-    Text.set(uiText.text);
-    Lang.set(uiText.lang);
-    CountryCodeMap.set(countryCodeMap.data);
+    const userInfo = await api.private.get("/user");
     UserInfo.set(userInfo.data);
-  } else {
-    // 로그인 안된 경우 유저 데이터 세팅 안하기
-    const [uiText, countryCodeMap] = await Promise.all([
-      loadUiText(),
-      axios
-        .create({ baseURL: window.location.origin })
-        .get("/static/countryCodeMap.json"),
-    ]);
-    Text.set(uiText.text);
-    Lang.set(uiText.lang);
-    CountryCodeMap.set(countryCodeMap.data);
   }
 };
 

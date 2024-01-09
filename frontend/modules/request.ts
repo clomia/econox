@@ -84,6 +84,7 @@ const retryWithTokenRefresh = async (
       // 토큰의 유효기간은 5분이므로 최대 5분 후 갱신을 시도하는데 이때 갱신이 불가능하면 여기로 온다.
       // 갱신토큰은 10년짜리라 갱신토큰이 만료되서 비활성화되는 경우는 고려하지 않음
       const text = get(Text);
+      console.log(text.LogoutReasonUseAnotherDevice);
       await Swal.fire({
         ...defaultSwalStyle,
         width: "30rem",

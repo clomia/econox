@@ -106,7 +106,7 @@ async def get_element_from_user(lang: str, user=router.basic.user):
     return await asyncio.gather(*[parsing(record) for record in fetched])
 
 
-@router.basic.get("/factors")
+@router.basic.get("/element/factors")
 async def get_factor_from_element(
     element_code: str,
     element_section: str,
@@ -229,12 +229,39 @@ async def get_factor_from_element(
     return {"factors": factors, "pages": pages}
 
 
-@router.basic.delete("/factors")
+@router.basic.delete("/element/factor")
 async def delete_factor_from_element(
     element_code: str, element_section: str, factor_code: str, factor_section: str
 ):
     """
-    - 펙터를 Element로부터 제거합니다.
-    - response: 총 페이지 갯수와 펙터 배열을 응답합니다.
+    - Element로부터 펙터를 제거합니다.
     """
-    pass
+
+    sql = db.SQL(
+        """ 
+        DELETE FROM elements_factors
+        WHERE element_id = (
+            SELECT id FROM elements
+            WHERE code = {ec}
+            AND section = {es}
+        )
+        AND factor_id = (
+            SELECT id FROM factors
+            WHERE code = {fc}
+            AND section = {fs}
+        )""",
+        params={
+            "ec": element_code,
+            "es": element_section,
+            "fc": factor_code,
+            "fs": factor_section,
+        },
+    )
+
+    try:
+        await sql.exec()
+    except psycopg.errors.InvalidTextRepresentation:
+        pass  # 레코드가 존재하지 않는 경우 서브쿼리 결과가 비어서 이 에러가 난다.
+
+    # 실제로 삭제 동작을 했는지는 모르지만 결과가 무결하므로 200 응답
+    return {"message": "As a result, factor does not exist in element"}

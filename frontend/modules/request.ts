@@ -37,19 +37,12 @@ const isJwtExpired = (token: string): boolean => {
  * @returns 갱신된 Cognito 토큰
  */
 const tokenRefresh = async (refreshToken: string) => {
-  try {
-    const resp = await api.public.post("/auth/refresh-cognito-token", {
-      cognito_refresh_token: refreshToken,
-    });
-    const newCognitoToken: string = resp.data["cognito_token"];
-    await settingObjectStore.put("cognitoToken", newCognitoToken);
-    return newCognitoToken;
-  } catch (error: any) {
-    if (error?.response?.status === 401) {
-      return await logout(); // Refresh 토큰이 유효하지 않으므로 로그아웃해야 함
-    }
-    throw error;
-  }
+  const resp = await api.public.post("/auth/refresh-cognito-token", {
+    cognito_refresh_token: refreshToken,
+  });
+  const newCognitoToken: string = resp.data["cognito_token"];
+  await settingObjectStore.put("cognitoToken", newCognitoToken);
+  return newCognitoToken;
 };
 
 /**

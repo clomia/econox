@@ -3,7 +3,7 @@
   import Elements from "./Elements.svelte";
   import Factors from "./Factors.svelte";
   import Note from "./Note.svelte";
-  import Chart from "./Chart.svelte";
+  import Chart from "./chart/Index.svelte";
   import { setElements } from "./functions";
 
   const setElementsPromise = setElements();
@@ -35,7 +35,8 @@
     border-bottom: thin solid rgba(255, 255, 255, 0.2);
   }
   .element-selector,
-  .factor-selector {
+  .factor-selector,
+  .note {
     border-bottom: thin solid rgba(255, 255, 255, 0.2);
   }
 </style>

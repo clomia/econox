@@ -9,6 +9,8 @@ import {
   UnivariateFactors,
   UnivariateFactorsProgress,
   UnivariateFactorSelected,
+  UnivariateChartSourceOriginal,
+  UnivariateChartSourceStandardization,
 } from "../../../modules/state";
 import { isSame, querySort } from "../../../modules/functions";
 import type { ElementType, FactorType } from "../../../modules/state";
@@ -160,4 +162,18 @@ export const attrQuerySort = (
     }
   });
   return result;
+};
+
+/**
+ * 시계열 데이터를 불러와 Echarts에 호환되는 배열로 세팅합니다.
+ * 전역 상태 UnivariateChartSourceOriginal, UnivariateChartSourceStandardization에 세팅합니다.
+ * 시계열 데이터가 없는 경우 해당 Element에서 Factor를 제거하는 후처리를 모두 수행하고 사용자에게 안내합니다.
+ */
+export const setChartSource = (
+  elementCode: string,
+  elementSection: string,
+  factorCode: string,
+  factorSection: string
+) => {
+  console.log;
 };

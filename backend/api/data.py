@@ -8,8 +8,10 @@ from aiocache import cached
 from backend.http import APIRouter
 from backend.math import datetime2utcstr, destandardize
 from backend.data import fmp, world_bank
-from backend.data.factor import Factor
+from backend.data.model import Factor
 from backend.system import ElasticRedisCache, CacheTTL, log
+from backend.integrated import get_element
+
 
 router = APIRouter("data")
 
@@ -71,8 +73,9 @@ async def search_news_related_to_symbols(symbol: str, lang: str):
         }
 
     symbol_obj, news_objects = await asyncio.gather(
-        fmp.Symbol(code=symbol).load(), fmp.news(symbol)
+        get_element(section="symbol", code=symbol), fmp.news(symbol)
     )
+
     symbol_name, symbol_note, *news = await asyncio.gather(
         *[symbol_obj.name.en(), symbol_obj.note.trans(to=lang)]
         + [parsing(news_obj) for news_obj in news_objects]
@@ -98,11 +101,7 @@ async def get_feature_time_series(
     """
     - Element의 Factor 시계열 데이터를 응답합니다.
     """
-    if element_section == "symbol":
-        element = fmp.Symbol(element_code)
-    elif element_section == "country":
-        element = world_bank.Country(element_code)
-
+    element = await get_element(element_section, element_code)
     # ClientMeta 메타클래스가 만든 data_class 클래스의 인스턴스
     data_instance = getattr(element, element.attr_name[factor_section])
     factor: Factor = getattr(data_instance, factor_code)
@@ -113,5 +112,4 @@ async def get_feature_time_series(
     values = data_array.values.tolist()
     times = np.datetime_as_string(data_array.t.values).tolist()
 
-    # print(data.attrs)
     return {"values": values, "times": times}

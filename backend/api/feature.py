@@ -8,9 +8,9 @@ from pydantic import constr
 from fastapi import HTTPException, Query
 
 from backend import db
-from backend.data import fmp, world_bank
 from backend.math import datetime2utcstr
 from backend.http import APIRouter
+from backend.integrated import get_element
 
 router = APIRouter("feature")
 
@@ -24,6 +24,8 @@ async def insert_element_to_user(
     user=router.basic.user,
 ):
     """엘리먼트를 유저에게 저장합니다."""
+    await get_element(section, code)  # 실제 존재하는 엘리먼트인지 검증
+
     insert_element_if_it_does_not_exist = db.SQL(
         """
         INSERT INTO elements (section, code)
@@ -56,7 +58,11 @@ async def insert_element_to_user(
     section: section_type,
     user=router.basic.user,
 ):
-    """엘리먼트를 유저에게서 삭제합니다."""
+    # Element 검증은 저장할때 하므로 삭제할떄는 필요없음
+    """
+    - 엘리먼트를 유저에게서 삭제합니다.
+    - 실제 삭제 여부와 무관하게 결과적으로 해당 요소가 유저에게 없는 경우 성공 응답을 합니다.
+    """
     query = """
         DELETE FROM users_elements
         USING elements
@@ -67,7 +73,8 @@ async def insert_element_to_user(
     """
     params = {"user_id": user["id"], "section": section, "code": code}
     await db.SQL(query, params).exec()
-    return {"message": "Delete successfully"}  # 실제로 삭제 동작을 했는지는 모르지만 결과가 무결하므로 200 응답
+    # 실제로 삭제 동작을 했는지는 모르지만 결과가 무결하므로 200 응답
+    return {"message": "As a result, element does not exist in user"}
 
 
 @router.basic.get("/user/elements")
@@ -85,11 +92,8 @@ async def get_element_from_user(lang: str, user=router.basic.user):
     fetched = await db.SQL(query, params={"user_id": user["id"]}, fetch="all").exec()
 
     async def parsing(record: dict):
-        # 캐싱되어있으면 엄청 빠름
-        if record["section"] == "symbol":
-            ele = await fmp.Symbol(record["code"]).load()
-        elif record["section"] == "country":
-            ele = await world_bank.Country(record["code"]).load()
+        # DB에서 나온 데이터이므로 여기에서 에러나면 서버 문제임!
+        ele = await get_element(section=record["section"], code=record["code"])
         name, note = await asyncio.gather(ele.name.en(), ele.note.trans(to=lang))
         return {
             "code": record["code"],
@@ -143,10 +147,7 @@ async def get_factor_from_element(
             },
         }
 
-    if element_section == "symbol":
-        element = await fmp.Symbol(element_code).load()
-    elif element_section == "country":
-        element = await world_bank.Country(element_code).load()
+    element = await get_element(element_section, element_code)
     all_factors = element.factors()
 
     sql = db.SQL(
@@ -226,3 +227,14 @@ async def get_factor_from_element(
     pages = ceil(len(all_factors) / per_page)
     factors = await asyncio.gather(*[translate(factor) for factor in target])
     return {"factors": factors, "pages": pages}
+
+
+@router.basic.delete("/factors")
+async def delete_factor_from_element(
+    element_code: str, element_section: str, factor_code: str, factor_section: str
+):
+    """
+    - 펙터를 Element로부터 제거합니다.
+    - response: 총 페이지 갯수와 펙터 배열을 응답합니다.
+    """
+    pass

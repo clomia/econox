@@ -165,3 +165,7 @@ export const UnivariateNoteHovered = writable<CurrentNoteTargetType>({
   factorSection: false,
   factor: false,
 });
+
+export const UnivariateChartFullScreen = writable(false);
+export const UnivariateChartSourceOriginal = writable<any[]>([]); // 원본
+export const UnivariateChartSourceStandardization = writable<any[]>([]); // 표준화된 버전

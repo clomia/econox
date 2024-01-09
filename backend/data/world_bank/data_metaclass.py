@@ -8,7 +8,7 @@ import xarray as xr
 from backend.math import standardization
 from backend.http import WorldBankAPI
 from backend.system import EFS_VOLUME_PATH
-from backend.data.factor import Factor
+from backend.data.model import Factor
 from backend.data.text import Multilingual
 
 DATA_PATH = EFS_VOLUME_PATH / "features/country"

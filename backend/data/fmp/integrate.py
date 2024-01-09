@@ -12,6 +12,7 @@ from backend.http import FmpAPI
 from backend.system import ElasticRedisCache, CacheTTL
 from backend.data.fmp import data_metaclass
 from backend.data.text import Multilingual, translate
+from backend.data.exceptions import ElementDoesNotExist
 
 # ========= data_class.json에 정의된대로 클래스들을 생성합니다. =========
 with data_metaclass.CLASS_PATH.open("r") as file:
@@ -86,7 +87,7 @@ class Symbol:
         """
         self.code = code
         self.info = {"note": None, "name": None}  # load 메서드가 할당함
-        self.is_valid = False  # load 메서드가 할당함
+        self.is_loaded = False  # load 메서드가 할당함
 
         # 주식 관련
         self.price = HistoricalPrice(code)
@@ -156,7 +157,10 @@ class Symbol:
 
     async def load(self):
         self.info = await self.get_info()
-        self.is_valid = self.info["name"] and self.info["note"]
+        if self.info["name"] and self.info["note"]:
+            self.is_loaded = True
+        else:
+            raise ElementDoesNotExist(f"code: {self.code}")
         return self
 
     @cached(cache=ElasticRedisCache, ttl=CacheTTL.MAX)

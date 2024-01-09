@@ -14,7 +14,7 @@ from httpx import HTTPStatusError
 
 from backend.http import FmpAPI
 from backend.math import standardization
-from backend.data.factor import Factor
+from backend.data.model import Factor
 from backend.data.text import Multilingual
 from backend.system import ROOT_PATH, EFS_VOLUME_PATH
 

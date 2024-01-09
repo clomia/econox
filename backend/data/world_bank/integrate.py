@@ -7,6 +7,7 @@ from aiocache import cached
 from backend.http import WorldBankAPI
 from backend.system import ElasticRedisCache, CacheTTL
 from backend.data.text import Multilingual, translate
+from backend.data.exceptions import ElementDoesNotExist
 from backend.data.world_bank.data_class import *
 
 
@@ -29,7 +30,7 @@ class Country:
         self.api = WorldBankAPI()
         self.code = code
         self.info = {"name": None, "note": None}
-        self.is_valid = False
+        self.is_loaded = False
         (
             self.trade,
             self.natural,
@@ -75,7 +76,10 @@ class Country:
             self.get_info(), *[section.load_factor() for section in self.sections]
         )
         self.info = info
-        self.is_valid = self.info["name"] and self.info["note"]
+        if self.info["name"] and self.info["note"]:
+            self.is_loaded = True
+        else:
+            raise ElementDoesNotExist(f"code: {self.code}")
         return self
 
     @cached(cache=ElasticRedisCache, ttl=CacheTTL.MAX)
@@ -126,7 +130,7 @@ class Country:
 
 async def search(text: str, limit: int = 3) -> List[Country]:
     """
-    - is_valid가 False인 Country는 리스트에서 제외됩니다.
+    - is_loaded가 False인 Country는 리스트에서 제외됩니다.
     - limit: 검색 갯수 제한 (World bank 약해서 한번에 너무 많이 하면 안돼)
     """
     api = WorldBankAPI()
@@ -143,6 +147,6 @@ async def search(text: str, limit: int = 3) -> List[Country]:
     target_list = list(iso_code_set)[:limit]
     countires = await asyncio.gather(*(Country(code).load() for code in target_list))
     return sorted(
-        [country for country in countires if country.is_valid],
+        [country for country in countires if country.is_loaded],
         key=lambda country: len(country.name.text),  # 국가명이 짧은게 위로 오도록
     )

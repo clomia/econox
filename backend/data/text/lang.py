@@ -10,6 +10,7 @@ import redis.asyncio as redis
 
 from backend.http import pooling
 from backend.system import SECRETS, REDIS_CONFIG, CacheTTL
+from backend.data.exceptions import LanguageNotSupported
 
 # - 번역 용어집: 인공지능 번역의 불완전한 부분을 보완하는데 사용됩니다.
 # - 이 디렉토리에 {출발어}-{목적어}.json 파일로 용어집을 생성하세요 (언어 표기는 ISO 639-1 사용)
@@ -23,6 +24,11 @@ for name, glossary in glossaries_json.items():
     to_lang = name.split("-")[-1]
     for from_txt, to_txt in glossary.items():
         glossaries[to_lang][from_txt] = to_txt
+
+supported_langs = deepl.Translator(
+    auth_key=SECRETS["DEEPL_API_KEY"]
+).get_source_languages()
+supported_langs_code_list = [lang.code.lower() for lang in supported_langs]
 
 
 class DeeplCache:
@@ -52,6 +58,10 @@ class DeeplCache:
 
 async def translate(text: str, to_lang: str, *, from_lang: str = None) -> str:
     """deepl 공식 SDK쓰면 urllib 풀 사이즈 10개 제한 떠서 httpx 비동기 클라이언트로 별도의 함수 작성"""
+    if from_lang not in supported_langs_code_list:
+        raise LanguageNotSupported(f"from_lang: {from_lang}")
+    if to_lang not in supported_langs_code_list:
+        raise LanguageNotSupported(f"to_lang: {to_lang}")
 
     target = text.strip()
 
@@ -96,7 +106,7 @@ async def translate(text: str, to_lang: str, *, from_lang: str = None) -> str:
             timeout=20,
         )
     except (AssertionError, Exception) as e:
-        raise httpx.HTTPError(f"DeepL 통신 오류 Error: {e} (사용량 한도에 도달했을 수 있습니다.)")
+        raise httpx.HTTPError(f"DeepL 통신 오류 Error: {e} (사용량 한도에 도달했거나, 지원하지 않는 언어입니다)")
     else:
         result = resp.json()["translations"][0]["text"]
         await cache.set(key=target, value=result)
@@ -110,10 +120,6 @@ class Multilingual:
     - `안녕 = await hello.ko()`
     """
 
-    supported_langs = deepl.Translator(
-        auth_key=SECRETS["DEEPL_API_KEY"]
-    ).get_source_languages()
-
     def __init__(self, text: str):
         """
         - text: 영어 문자열
@@ -121,8 +127,7 @@ class Multilingual:
         """
         self.text = text
         # Multilingual 클래스에 번역 가능한 모든 iso 코드로 property를 생성합니다
-        for lang in self.supported_langs:
-            iso_code = lang.code.lower()
+        for iso_code in supported_langs_code_list:
             func = partial(self.trans, to=iso_code)
             setattr(self, iso_code, func)
 

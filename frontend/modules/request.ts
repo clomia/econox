@@ -90,7 +90,7 @@ const retryWithTokenRefresh = async (
         width: "30rem",
         icon: "info",
         showDenyButton: false,
-        title: text.LogoutReasonUseAnotherDevice,
+        text: text.LogoutReasonUseAnotherDevice,
         confirmButtonText: text.Ok,
       });
       return await logout();

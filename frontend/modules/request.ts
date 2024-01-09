@@ -147,6 +147,7 @@ const permissionFailureHandler = async (error: AxiosError) => {
     case 402:
       await Swal.fire({
         ...defaultSwalStyle,
+        width: "30rem",
         icon: "info",
         showDenyButton: false,
         title: text.DeactivatedAccountBillingRequire,
@@ -156,6 +157,7 @@ const permissionFailureHandler = async (error: AxiosError) => {
     case 403:
       return await Swal.fire({
         ...defaultSwalStyle,
+        width: "30rem",
         icon: "info",
         title: text.ProfessionalMembershipRequire,
         confirmButtonText: text.ProfessionalMembershipRequire_ConfirmText,

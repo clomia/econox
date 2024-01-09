@@ -41,10 +41,14 @@ async def search_symbols_and_countries(query: str, lang: str):
         fmp.search(query), world_bank.search(query), return_exceptions=True
     )  # search 메서드는 API 요청이 매우 많으므로 실패할때를 대비해야 한다.
     if isinstance(symbol_objects, Exception):
-        log.error(f"FMP 검색에 실패했습니다. 빈 배열로 대체합니다. Exception: {symbol_objects}")
+        log.error(
+            f"FMP 검색에 실패했습니다. 빈 배열로 대체합니다. {symbol_objects.__class__.__name__}: {symbol_objects}"
+        )
         symbol_objects = []
     if isinstance(country_objects, Exception):
-        log.error(f"World Bank 검색에 실패했습니다. 빈 배열로 대체합니다. Exception: {symbol_objects}")
+        log.error(
+            f"World Bank 검색에 실패했습니다. 빈 배열로 대체합니다. {symbol_objects.__class__.__name__}: {country_objects}"
+        )
         country_objects = []
     symbols, countries = await asyncio.gather(  # 이건 단순한 번역이라 괜찮음
         asyncio.gather(*[parsing(sym) for sym in symbol_objects]),
@@ -102,6 +106,12 @@ async def get_feature_time_series(
 ):
     """
     - Element의 Factor 시계열 데이터를 응답합니다.
+    - 해당 Element가 Factor를 지원하지 않는 경우 Element에서 Factor를 제거합니다.
+        - 서버가 이 사실을 처음 알게 되었을때 수행됩니다.
+    - response:
+        - v: 값 배열
+        - t: 날짜 배열
+        - 두 배열의 길이는 동일합니다.
     """
     element = await get_element(element_section, element_code)
     # ClientMeta 메타클래스가 만든 data_class 클래스의 인스턴스
@@ -122,7 +132,7 @@ async def get_feature_time_series(
         data_array = data.daily if standardization else destandardize(data)
         values = data_array.values.tolist()
         times = np.datetime_as_string(data_array.t.values).tolist()
-        return {"values": values, "times": times}
+        return {"v": values, "t": times}
     else:
         await db.SQL(
             """

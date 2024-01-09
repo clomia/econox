@@ -1,7 +1,8 @@
+import Swal from "sweetalert2";
 import { get } from "svelte/store";
 
 import { api } from "../../../modules/request";
-import { Lang } from "../../../modules/state";
+import { Lang, Text } from "../../../modules/state";
 import {
   UnivariateElements,
   UnivariateElementsLoaded,
@@ -12,7 +13,12 @@ import {
   UnivariateChartSourceOriginal,
   UnivariateChartSourceStandardization,
 } from "../../../modules/state";
-import { isSame, querySort } from "../../../modules/functions";
+import {
+  isSame,
+  format,
+  querySort,
+  defaultSwalStyle,
+} from "../../../modules/functions";
 import type { ElementType, FactorType } from "../../../modules/state";
 
 /**
@@ -165,15 +171,75 @@ export const attrQuerySort = (
 };
 
 /**
- * 시계열 데이터를 불러와 Echarts에 호환되는 배열로 세팅합니다.
- * 전역 상태 UnivariateChartSourceOriginal, UnivariateChartSourceStandardization에 세팅합니다.
- * 시계열 데이터가 없는 경우 해당 Element에서 Factor를 제거하는 후처리를 모두 수행하고 사용자에게 안내합니다.
+ * - 시계열 데이터를 불러와 Echarts에 호환되는 배열로 세팅합니다.
+ * - 전역 상태 UnivariateChartSourceOriginal, UnivariateChartSourceStandardization에 세팅합니다.
+ * - 시계열 데이터가 없는 경우 전역상태에서 해당 feature를 제거한 뒤, 사용자에게 안내합니다.
+ *     - elementCode, elementSection, factorCode, factorSection 모든 매개변수가 올바르다는 가정 하에 작동합니다!
+ * - factorSection은 factor.section.code 입니다
  */
-export const setChartSource = (
+export const setChartSource = async (
   elementCode: string,
   elementSection: string,
   factorCode: string,
   factorSection: string
 ) => {
-  console.log;
+  const featureParams = {
+    element_code: elementCode,
+    element_section: elementSection,
+    factor_code: factorCode,
+    factor_section: factorSection,
+  };
+  try {
+    const [original, standardization] = await Promise.all([
+      api.member.get("/data/feature", {
+        params: { ...featureParams, standardization: false },
+      }),
+      api.member.get("/data/feature", {
+        params: { ...featureParams, standardization: true },
+      }),
+    ]);
+    const encoding = (resp: any): Array<[string, number]> =>
+      resp.data.t.map((time: string, index: number) => [
+        time,
+        resp.data.v[index],
+      ]);
+    UnivariateChartSourceOriginal.set(encoding(original));
+    UnivariateChartSourceStandardization.set(encoding(standardization));
+  } catch (error: any) {
+    if (error?.response?.status === 404) {
+      const univariateFactors = get(UnivariateFactors);
+      const elementKey = `${elementSection}-${elementCode}`;
+      const elementFactors = univariateFactors[elementKey]; // get
+      const targetIndex = elementFactors.findIndex(
+        (factor) =>
+          factor.code === factorCode && factor.section.code === factorSection
+      );
+      const targetFactor = elementFactors.splice(targetIndex, 1)[0]; // delete
+      univariateFactors[elementKey] = elementFactors; // update
+      UnivariateFactors.set(univariateFactors); // reset
+
+      const univariateFactorSelected = get(UnivariateFactorSelected);
+      if (
+        univariateFactorSelected?.code === factorCode &&
+        univariateFactorSelected?.section.code === factorSection
+      ) {
+        UnivariateFactorSelected.set(null);
+
+        // 스토어 업데이트 이벤트 발생용, Note 컴포넌트에서 이 이벤트를 사용해 내용을 초기화한다.
+        UnivariateElementSelected.set(get(UnivariateElementSelected));
+      }
+      const text = get(Text);
+      await Swal.fire({
+        ...defaultSwalStyle,
+        width: "30rem",
+        icon: "info",
+        showDenyButton: false,
+        title: format(text.f_TheElementDoesNotContainThisFactor, {
+          element: elementCode,
+          factor: `${targetFactor.section.name}(${targetFactor.name})`,
+        }),
+        confirmButtonText: text.Ok,
+      });
+    }
+  }
 };

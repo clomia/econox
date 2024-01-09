@@ -10,11 +10,17 @@
     UnivariateFactorsProgress,
   } from "../../../modules/state";
   import { format } from "../../../modules/functions";
-  import { attrQuerySort } from "./functions";
+  import { attrQuerySort, setChartSource } from "./functions";
   import type { FactorType } from "../../../modules/state";
 
-  const select = (fac: FactorType) => {
+  const select = async (fac: FactorType) => {
     $UnivariateFactorSelected = fac;
+    await setChartSource(
+      $UnivariateElementSelected.code,
+      $UnivariateElementSelected.section,
+      fac.code,
+      fac.section.code
+    );
   };
 
   $: ele = $UnivariateElementSelected;

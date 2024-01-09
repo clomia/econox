@@ -383,8 +383,8 @@ Factor:
   en: "Factor"
   ko: "펙터"
 LogoutReasonUseAnotherDevice:
-  en: "You have been logged out as your account is being used on another device."
-  ko: "다른 기기에서 사용 중이므로 로그아웃되었습니다."
+  en: "You have been logged out because your account was logged in from another device."
+  ko: "다른 기기에서 로그인되었기 때문에 로그아웃되었습니다."
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"
@@ -418,3 +418,11 @@ f_DataSearchError:
 f_FactorLoadingInfo:
   en: "Collecting factors for {element}..."
   ko: "{element}에 대한 펙터를 수집중입니다..."
+f_TheElementDoesNotContainThisFactor:
+  en: >
+    We attempted to collect data for {factor} related to {element}, 
+    but were unable to find any. This outcome has been reflected in our service. 
+    Thank you for contributing to the improvement of our service.
+  ko: >
+    {element}에 대한 {factor} 데이터 수집을 시도하였으나 데이터를 찾지 못하였습니다. 
+    이 결과를 서비스에 반영하였습니다. 서비스 개선에 기여해주셔서 감사합니다.

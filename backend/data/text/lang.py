@@ -58,7 +58,7 @@ class DeeplCache:
 
 async def translate(text: str, to_lang: str, *, from_lang: str = None) -> str:
     """deepl 공식 SDK쓰면 urllib 풀 사이즈 10개 제한 떠서 httpx 비동기 클라이언트로 별도의 함수 작성"""
-    if from_lang not in supported_langs_code_list:
+    if from_lang is not None and from_lang not in supported_langs_code_list:
         raise LanguageNotSupported(f"from_lang: {from_lang}")
     if to_lang not in supported_langs_code_list:
         raise LanguageNotSupported(f"to_lang: {to_lang}")

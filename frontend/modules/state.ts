@@ -85,12 +85,14 @@ export interface CurrentNoteTargetType {
   factor: boolean;
 }
 
+export interface SourceType {
+  original: [string, string | number][];
+  standardized: [string, string | number][];
+}
+
 export interface ChartSourceType {
   // key(feature): '{elementSection}-{elementCode}_{factorSectionCode}-{factorCode}'
-  [key: string]: {
-    original: [string, string | number][];
-    standardized: [string, string | number][];
-  };
+  [key: string]: SourceType;
 }
 
 // ============= 전역적으로 사용되는 상태들 =============

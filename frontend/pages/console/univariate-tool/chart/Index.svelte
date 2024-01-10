@@ -10,8 +10,9 @@
     UnivariateChartSource,
   } from "../../../../modules/state";
   import { format } from "../../../../modules/functions";
+  import type { SourceType } from "../../../../modules/state";
 
-  let chartSource = null;
+  let chartSource: null | SourceType = null;
   $: if ($UnivariateElementSelected && $UnivariateFactorSelected) {
     const elementCode = $UnivariateElementSelected.code;
     const elementSection = $UnivariateElementSelected.section;
@@ -29,7 +30,7 @@
     {#if $UnivariateChartFullScreen}
       <FullScreen />
     {:else}
-      <main><Basic /></main>
+      <main><Basic {chartSource} /></main>
     {/if}
   {:else}
     <main>

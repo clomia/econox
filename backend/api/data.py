@@ -42,12 +42,14 @@ async def search_symbols_and_countries(query: str, lang: str):
     )  # search 메서드는 API 요청이 매우 많으므로 실패할때를 대비해야 한다.
     if isinstance(symbol_objects, Exception):
         log.error(
-            f"FMP 검색에 실패했습니다. 빈 배열로 대체합니다. {symbol_objects.__class__.__name__}: {symbol_objects}"
+            "FMP 검색에 실패했습니다. 빈 배열로 대체합니다. "
+            f"{symbol_objects.__class__.__name__}: {symbol_objects}"
         )
         symbol_objects = []
     if isinstance(country_objects, Exception):
         log.error(
-            f"World Bank 검색에 실패했습니다. 빈 배열로 대체합니다. {symbol_objects.__class__.__name__}: {country_objects}"
+            "World Bank 검색에 실패했습니다. 빈 배열로 대체합니다. "
+            f"{country_objects.__class__.__name__}: {country_objects}"
         )
         country_objects = []
     symbols, countries = await asyncio.gather(  # 이건 단순한 번역이라 괜찮음

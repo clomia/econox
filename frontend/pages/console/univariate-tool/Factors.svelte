@@ -95,6 +95,7 @@
 <style>
   main {
     position: relative;
+    border-top: thin solid rgba(255, 255, 255, 0.2);
   }
   .list-blank {
     position: absolute;
@@ -197,7 +198,7 @@
     justify-content: center;
     bottom: 0;
     left: 0;
-    padding-bottom: 9rem;
+    padding-bottom: 8.5rem;
     color: var(--white);
   }
 </style>

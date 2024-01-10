@@ -5,17 +5,21 @@
   import Note from "./Note.svelte";
   import Chart from "./chart/Index.svelte";
   import { setElements } from "./functions";
+  import { Text } from "../../../modules/state";
 
   const setElementsPromise = setElements();
 </script>
 
 <main>
   {#await setElementsPromise}
-    <div class="loading"><RippleLoader /></div>
+    <div class="loading">
+      <RippleLoader />
+      <div class="load-info">{$Text.ElementLoadingInfo}</div>
+    </div>
   {:then}
     <div class="element-selector"><Elements /></div>
+    <div class="factor-selector"><Factors /></div>
   {/await}
-  <div class="factor-selector"><Factors /></div>
   <div class="note"><Note /></div>
   <div class="chart"><Chart /></div>
 </main>
@@ -32,9 +36,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: thin solid rgba(255, 255, 255, 0.2);
+    position: relative;
   }
-  .element-selector {
-    border-bottom: thin solid rgba(255, 255, 255, 0.2);
+  .load-info {
+    position: absolute;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    bottom: 0;
+    left: 0;
+    padding-bottom: 9.5rem;
+    color: var(--white);
   }
 </style>

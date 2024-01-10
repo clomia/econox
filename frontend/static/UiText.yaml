@@ -385,6 +385,9 @@ Factor:
 LogoutReasonUseAnotherDevice:
   en: "You have been logged out because your account was logged in from another device."
   ko: "다른 기기에서 로그인되었기 때문에 로그아웃되었습니다."
+ElementLoadingInfo:
+  en: "Loading saved elements..."
+  ko: "저장된 요소들을 불러오는 중입니다..."
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"
@@ -418,6 +421,9 @@ f_DataSearchError:
 f_FactorLoadingInfo:
   en: "Collecting factors for {element}..."
   ko: "{element}에 대한 펙터를 수집중입니다..."
+f_ChartLoadingInfo:
+  en: "Collecting data on {factor} related to {element}..."
+  ko: "{element}에 대한 {factor} 데이터를 수집중입니다..."
 f_TheElementDoesNotContainThisFactor:
   en: >
     We attempted to collect data for {factor} related to {element}, 

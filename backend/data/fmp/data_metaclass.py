@@ -16,7 +16,7 @@ from backend.http import FmpAPI
 from backend.math import standardization
 from backend.data.model import Factor
 from backend.data.text import Multilingual
-from backend.data.io import xr_open_zarr
+from backend.data.io import xr_open_zarr, xr_to_zarr
 from backend.system import ROOT_PATH, EFS_VOLUME_PATH
 
 DATA_PATH = EFS_VOLUME_PATH / "features/symbol"
@@ -156,7 +156,7 @@ class ClientMeta(type):
         for factor, data_array in collected.items():
             if np.count_nonzero(~np.isnan(data_array.values)) < 2:
                 continue  # 유효한 값 갯수가 2개 미만이면 결측 factor로 취급
-            standardization(data_array).to_zarr(self.zarr_path(factor), mode="w")
+            xr_to_zarr(dataset=standardization(data_array), path=self.zarr_path(factor))
 
     async def get(self, factor: str, default=None) -> xr.Dataset | None:
         """factor Dataset을 반환합니다. 데이터가 없는 경우 default를 반환합니다."""

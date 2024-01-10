@@ -10,7 +10,7 @@ from backend.http import WorldBankAPI
 from backend.system import EFS_VOLUME_PATH
 from backend.data.model import Factor
 from backend.data.text import Multilingual
-from backend.data.io import xr_open_zarr
+from backend.data.io import xr_open_zarr, xr_to_zarr
 
 DATA_PATH = EFS_VOLUME_PATH / "features/country"
 
@@ -62,7 +62,7 @@ class DataManager:
         if np.count_nonzero(~np.isnan(data_array.values)) < 2:
             return  # 유효한 값 갯수가 2개 미만이면 결측치 취급
         self.zarr_path.parent.mkdir(parents=True, exist_ok=True)
-        standardization(data_array).to_zarr(self.zarr_path, mode="w")
+        xr_to_zarr(dataset=standardization(data_array), path=self.zarr_path)
 
     async def get(self, default=None) -> xr.Dataset | None:
         """데이터가 없는 경우 default를 반환합니다."""

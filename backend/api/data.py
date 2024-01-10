@@ -12,7 +12,7 @@ from backend.math import datetime2utcstr, destandardize
 from backend.data import fmp, world_bank
 from backend.data.model import Factor
 from backend.system import ElasticRedisCache, CacheTTL, log
-from backend.integrated import get_element
+from backend.integrate import get_element
 
 
 router = APIRouter("data")

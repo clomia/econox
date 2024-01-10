@@ -10,6 +10,7 @@ from backend.http import WorldBankAPI
 from backend.system import EFS_VOLUME_PATH
 from backend.data.model import Factor
 from backend.data.text import Multilingual
+from backend.data.io import xr_open_zarr
 
 DATA_PATH = EFS_VOLUME_PATH / "features/country"
 
@@ -51,7 +52,7 @@ class DataManager:
     async def loading(self):
         """zarr 저장소에 최신 데이터가 존재하도록 합니다."""
         if self.zarr_path.exists():
-            array = xr.open_zarr(self.zarr_path)
+            array = xr_open_zarr(self.zarr_path)
             collected_attr: str = array.attrs["client"]["collected"]
             collected_date = datetime.strptime(collected_attr, "%Y-%m-%d").date()
             if collected_date == date.today():
@@ -66,7 +67,7 @@ class DataManager:
     async def get(self, default=None) -> xr.Dataset | None:
         """데이터가 없는 경우 default를 반환합니다."""
         await self.loading()  # 데이터가 있다면 반드시 loading후 zarr_path에 데이터가 구축되어있음
-        return xr.open_zarr(self.zarr_path) if self.zarr_path.exists() else default
+        return xr_open_zarr(self.zarr_path) if self.zarr_path.exists() else default
 
 
 class ClientMeta(type):

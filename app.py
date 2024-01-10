@@ -6,7 +6,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 from backend import api
-from backend.integrated import lang_exception_handler
+from backend.integrate import lang_exception_handler
 
 app = FastAPI(
     title="Econox API",

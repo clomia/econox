@@ -16,6 +16,7 @@ from backend.http import FmpAPI
 from backend.math import standardization
 from backend.data.model import Factor
 from backend.data.text import Multilingual
+from backend.data.io import xr_open_zarr
 from backend.system import ROOT_PATH, EFS_VOLUME_PATH
 
 DATA_PATH = EFS_VOLUME_PATH / "features/symbol"
@@ -140,7 +141,7 @@ class ClientMeta(type):
 
         for fac in self.factors:  # 데이터 갱신 여부 확인
             if self.zarr_path(fac).exists():
-                array = xr.open_zarr(self.zarr_path(fac))
+                array = xr_open_zarr(self.zarr_path(fac))
                 collected_date = datetime.strptime(
                     array.attrs["client"]["collected"], "%Y-%m-%d"
                 ).date()
@@ -162,7 +163,7 @@ class ClientMeta(type):
         assert factor in self.factors  # JSON에 정의되지 않은 Factor입니다.
         await self.loading()
         return (
-            xr.open_zarr(self.zarr_path(factor))
+            xr_open_zarr(self.zarr_path(factor))
             if self.zarr_path(factor).exists()
             else default
         )

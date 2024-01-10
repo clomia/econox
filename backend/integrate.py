@@ -1,6 +1,7 @@
 """
 - api와 data 모듈의 통합 로직 중 반복되는 부분을 함수로 제공합니다.
 """
+
 from fastapi import HTTPException, Request
 from fastapi.responses import JSONResponse
 

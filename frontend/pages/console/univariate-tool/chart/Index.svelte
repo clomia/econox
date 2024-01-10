@@ -37,8 +37,8 @@
       <BouncingCubeLoader />
       <div class="load-info">
         {format($Text.f_ChartLoadingInfo, {
-          element: $UnivariateElementSelected.code,
-          factor: `${$UnivariateFactorSelected.section.name}(${$UnivariateFactorSelected.name})`,
+          element: $UnivariateElementSelected?.code,
+          factor: `${$UnivariateFactorSelected?.section.name}(${$UnivariateFactorSelected?.name})`,
         })}
       </div>
     </main>
@@ -64,6 +64,6 @@
     bottom: 0;
     left: 0;
     padding-bottom: 21.5rem;
-    color: var(--white);
+    color: rgba(255, 255, 255, 0.6);
   }
 </style>

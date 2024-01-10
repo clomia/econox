@@ -199,6 +199,6 @@
     bottom: 0;
     left: 0;
     padding-bottom: 8.5rem;
-    color: var(--white);
+    color: rgba(255, 255, 255, 0.6);
   }
 </style>

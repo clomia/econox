@@ -1,15 +1,41 @@
+<script>
+  export let borderColor = "#40533e";
+  export let backgroundColor = "#ff00f7";
+</script>
+
 <main>
   <div class="scene">
     <div class="cube-wrapper">
       <div class="cube">
         <div class="cube-faces">
-          <div class="cube-face shadow"></div>
-          <div class="cube-face bottom"></div>
-          <div class="cube-face top"></div>
-          <div class="cube-face left"></div>
-          <div class="cube-face right"></div>
-          <div class="cube-face back"></div>
-          <div class="cube-face front"></div>
+          <div
+            class="cube-face shadow"
+            style="background-color: {backgroundColor}; border: solid 1px {borderColor};"
+          ></div>
+          <div
+            class="cube-face bottom"
+            style="background-color: {backgroundColor}; border: solid 1px {borderColor};"
+          ></div>
+          <div
+            class="cube-face top"
+            style="background-color: {backgroundColor}; border: solid 1px {borderColor};"
+          ></div>
+          <div
+            class="cube-face left"
+            style="background-color: {backgroundColor}; border: solid 1px {borderColor};"
+          ></div>
+          <div
+            class="cube-face right"
+            style="background-color: {backgroundColor}; border: solid 1px {borderColor};"
+          ></div>
+          <div
+            class="cube-face back"
+            style="background-color: {backgroundColor}; border: solid 1px {borderColor};"
+          ></div>
+          <div
+            class="cube-face front"
+            style="background-color: {backgroundColor}; border: solid 1px {borderColor};"
+          ></div>
         </div>
       </div>
     </div>
@@ -60,10 +86,6 @@
   .cube-face {
     position: absolute;
     inset: 0;
-    background: #ff00f7;
-    /* russian violet */
-    border: solid 1px #40533e;
-    /* light coral */
   }
 
   .cube-face.shadow {

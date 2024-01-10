@@ -1,5 +1,5 @@
 <script lang="ts">
-  import RippleLoader from "../../../assets/animation/RippleLoader.svelte";
+  import BouncingCubeLoader from "../../../assets/animation/BouncingCubeLoader.svelte";
   import Elements from "./Elements.svelte";
   import Factors from "./Factors.svelte";
   import Note from "./Note.svelte";
@@ -13,7 +13,7 @@
 <main>
   {#await setElementsPromise}
     <div class="loading">
-      <RippleLoader />
+      <BouncingCubeLoader backgroundColor="#41425e" borderColor="#fb7cf7" />
       <div class="load-info">{$Text.ElementLoadingInfo}</div>
     </div>
   {:then}
@@ -32,11 +32,12 @@
     box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.5);
   }
   .loading {
-    height: 12.87rem;
+    height: 20rem;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    padding-top: 4rem;
   }
   .load-info {
     position: absolute;
@@ -47,7 +48,7 @@
     justify-content: center;
     bottom: 0;
     left: 0;
-    padding-bottom: 9.5rem;
-    color: var(--white);
+    padding-bottom: 16rem;
+    color: rgba(255, 255, 255, 0.6);
   }
 </style>

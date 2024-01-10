@@ -386,8 +386,8 @@ LogoutReasonUseAnotherDevice:
   en: "You have been logged out because your account was logged in from another device."
   ko: "다른 기기에서 로그인되었기 때문에 로그아웃되었습니다."
 ElementLoadingInfo:
-  en: "Loading saved elements..."
-  ko: "저장된 요소들을 불러오는 중입니다..."
+  en: "Loading elements saved in the account..."
+  ko: "계정에 저장된 요소들을 불러오는 중입니다..."
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

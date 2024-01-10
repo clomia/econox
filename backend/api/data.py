@@ -98,22 +98,19 @@ async def search_news_related_to_symbols(symbol: str, lang: str):
     }
 
 
+# 다변량은 GET /data/features 로 만들자
+
+
 @router.basic.get("/feature")
 async def get_feature_time_series(
-    element_code: str,
-    element_section: str,
-    factor_code: str,
-    factor_section: str,
-    standardization: bool = True,
+    element_code: str, element_section: str, factor_code: str, factor_section: str
 ):
     """
     - Element의 Factor 시계열 데이터를 응답합니다.
     - 해당 Element가 Factor를 지원하지 않는 경우 Element에서 Factor를 제거합니다.
         - 서버가 이 사실을 처음 알게 되었을때 수행됩니다.
-    - response:
-        - v: 값 배열
-        - t: 날짜 배열
-        - 두 배열의 길이는 동일합니다.
+    - response: {original: 원본 시계열, standardized: 표준화 시계열}
+        - 각 시계열 안에는 동일한 길이의 값 배열(v)과 날짜 배열(t)이 들어있습니다.
     """
     element = await get_element(element_section, element_code)
     # ClientMeta 메타클래스가 만든 data_class 클래스의 인스턴스
@@ -131,10 +128,18 @@ async def get_feature_time_series(
 
     data: xr.Dataset = await factor.get()
     if data is not None:
-        data_array = data.daily if standardization else destandardize(data)
-        values = data_array.values.tolist()
-        times = np.datetime_as_string(data_array.t.values).tolist()
-        return {"v": values, "t": times}
+        original = destandardize(data)
+        standardized: xr.DataArray = data.daily
+        return {
+            "original": {
+                "v": original.values.tolist(),
+                "t": np.datetime_as_string(original.t.values, unit="D").tolist(),
+            },
+            "standardized": {
+                "v": standardized.values.tolist(),
+                "t": np.datetime_as_string(standardized.t.values, unit="D").tolist(),
+            },
+        }
     else:
         await db.SQL(
             """

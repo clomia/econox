@@ -181,13 +181,6 @@ export const setChartSource = async (
   factorSection: string
 ) => {
   const sourceKey = `${elementSection}-${elementCode}_${factorSection}-${factorCode}`;
-  const apiParams = {
-    element_code: elementCode,
-    element_section: elementSection,
-    factor_code: factorCode,
-    factor_section: factorSection,
-  };
-
   if (get(UnivariateChartSource)[sourceKey]) {
     return;
   } else {
@@ -200,26 +193,26 @@ export const setChartSource = async (
   }
 
   try {
-    const [original, standardization] = await Promise.all([
-      api.member.get("/data/feature", {
-        params: { ...apiParams, standardization: false },
-      }),
-      api.member.get("/data/feature", {
-        params: { ...apiParams, standardization: true },
-      }),
-    ]);
-    const encoding = (resp: any): [string, string | number][] => {
-      const dataset = resp.data.t.map((time: string, index: number) => [
+    const resp = await api.member.get("/data/feature", {
+      params: {
+        element_code: elementCode,
+        element_section: elementSection,
+        factor_code: factorCode,
+        factor_section: factorSection,
+      },
+    });
+    const encoding = (data: any): [string, string | number][] => {
+      const dataset = data.t.map((time: string, index: number) => [
         time,
-        resp.data.v[index],
+        data.v[index],
       ]);
       return [["t", "v"], ...dataset];
     };
     UnivariateChartSource.set({
       ...get(UnivariateChartSource),
       [sourceKey]: {
-        original: encoding(original),
-        standardized: encoding(standardization),
+        original: encoding(resp.data.original),
+        standardized: encoding(resp.data.standardized),
       },
     });
   } catch (error: any) {

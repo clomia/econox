@@ -85,6 +85,14 @@ export interface CurrentNoteTargetType {
   factor: boolean;
 }
 
+export interface ChartSourceType {
+  // key(feature): '{elementSection}-{elementCode}_{factorSectionCode}-{factorCode}'
+  [key: string]: {
+    original: [string, string | number][];
+    standardized: [string, string | number][];
+  };
+}
+
 // ============= 전역적으로 사용되는 상태들 =============
 
 export const Lang = writable("en");
@@ -167,5 +175,4 @@ export const UnivariateNoteHovered = writable<CurrentNoteTargetType>({
 });
 
 export const UnivariateChartFullScreen = writable(false);
-export const UnivariateChartSourceOriginal = writable<any[]>([]); // 원본
-export const UnivariateChartSourceStandardization = writable<any[]>([]); // 표준화된 버전
+export const UnivariateChartSource = writable<ChartSourceType>({});

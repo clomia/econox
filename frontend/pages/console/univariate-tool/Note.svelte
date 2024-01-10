@@ -40,10 +40,10 @@
   }
 </script>
 
-<main>
-  <div class="header">
-    <div class="header__box-row">
-      {#if $UnivariateElementSelected}
+{#if $UnivariateElementSelected}
+  <main>
+    <div class="header">
+      <div class="header__box-row">
         <button
           class="header__box-row__btn element-btn"
           on:click={() => select("element")}
@@ -54,32 +54,30 @@
         >
           {$UnivariateElementSelected.code}
         </button>
-      {/if}
-      {#if $UnivariateFactorSelected}
-        <button
-          class="header__box-row__btn factor-section-btn"
-          on:click={() => select("factorSection")}
-          bind:clientWidth={factorSectionBoxWidth}
-          on:mouseover={() => hover("factorSection")}
-          on:mouseleave={hoverOut}
-          on:focus={() => hover("factorSection")}
-        >
-          {$UnivariateFactorSelected.section.name}
-        </button>
-        <button
-          class="header__box-row__btn factor-btn"
-          on:click={() => select("factor")}
-          bind:clientWidth={factorBoxWidth}
-          on:mouseover={() => hover("factor")}
-          on:mouseleave={hoverOut}
-          on:focus={() => hover("factor")}
-        >
-          {$UnivariateFactorSelected.name}
-        </button>
-      {/if}
-    </div>
-    <div class="header__line-row">
-      {#if $UnivariateElementSelected}
+        {#if $UnivariateFactorSelected}
+          <button
+            class="header__box-row__btn factor-section-btn"
+            on:click={() => select("factorSection")}
+            bind:clientWidth={factorSectionBoxWidth}
+            on:mouseover={() => hover("factorSection")}
+            on:mouseleave={hoverOut}
+            on:focus={() => hover("factorSection")}
+          >
+            {$UnivariateFactorSelected.section.name}
+          </button>
+          <button
+            class="header__box-row__btn factor-btn"
+            on:click={() => select("factor")}
+            bind:clientWidth={factorBoxWidth}
+            on:mouseover={() => hover("factor")}
+            on:mouseleave={hoverOut}
+            on:focus={() => hover("factor")}
+          >
+            {$UnivariateFactorSelected.name}
+          </button>
+        {/if}
+      </div>
+      <div class="header__line-row">
         <button
           class="header__line-row__btn"
           class:selected={$UnivariateNoteSelected.element}
@@ -91,51 +89,56 @@
           on:focus={() => hover("element")}
         >
         </button>
-      {/if}
-      {#if $UnivariateFactorSelected}
-        <button
-          class="header__line-row__btn"
-          class:selected={$UnivariateNoteSelected.factorSection}
-          class:hovered={$UnivariateNoteHovered.factorSection}
-          style="width: {factorSectionBoxWidth}px;"
-          on:click={() => select("factorSection")}
-          on:mouseover={() => hover("factorSection")}
-          on:mouseleave={hoverOut}
-          on:focus={() => hover("factorSection")}
-        >
-        </button>
-        <button
-          class="header__line-row__btn"
-          class:selected={$UnivariateNoteSelected.factor}
-          class:hovered={$UnivariateNoteHovered.factor}
-          style="width: {factorBoxWidth}px;"
-          on:click={() => select("factor")}
-          on:mouseover={() => hover("factor")}
-          on:mouseleave={hoverOut}
-          on:focus={() => hover("factor")}
-        >
-        </button>
+        {#if $UnivariateFactorSelected}
+          <button
+            class="header__line-row__btn"
+            class:selected={$UnivariateNoteSelected.factorSection}
+            class:hovered={$UnivariateNoteHovered.factorSection}
+            style="width: {factorSectionBoxWidth}px;"
+            on:click={() => select("factorSection")}
+            on:mouseover={() => hover("factorSection")}
+            on:mouseleave={hoverOut}
+            on:focus={() => hover("factorSection")}
+          >
+          </button>
+          <button
+            class="header__line-row__btn"
+            class:selected={$UnivariateNoteSelected.factor}
+            class:hovered={$UnivariateNoteHovered.factor}
+            style="width: {factorBoxWidth}px;"
+            on:click={() => select("factor")}
+            on:mouseover={() => hover("factor")}
+            on:mouseleave={hoverOut}
+            on:focus={() => hover("factor")}
+          >
+          </button>
+        {/if}
+      </div>
+    </div>
+
+    <div class="content">
+      {#if $UnivariateNoteSelected.element}
+        <div class="content__name">{$UnivariateElementSelected.name}</div>
+        <div class="content__note">{$UnivariateElementSelected.note}</div>
+      {:else if $UnivariateFactorSelected && $UnivariateNoteSelected.factorSection}
+        <div class="content__name">
+          {$UnivariateFactorSelected.section.name}
+        </div>
+        <div class="content__note">
+          {$UnivariateFactorSelected.section.note}
+        </div>
+      {:else if $UnivariateFactorSelected && $UnivariateNoteSelected.factor}
+        <div class="content__name">{$UnivariateFactorSelected.name}</div>
+        <div class="content__note">{$UnivariateFactorSelected.note}</div>
       {/if}
     </div>
-  </div>
-
-  <div class="content">
-    {#if $UnivariateElementSelected && $UnivariateNoteSelected.element}
-      <div class="content__name">{$UnivariateElementSelected.name}</div>
-      <div class="content__note">{$UnivariateElementSelected.note}</div>
-    {:else if $UnivariateFactorSelected && $UnivariateNoteSelected.factorSection}
-      <div class="content__name">{$UnivariateFactorSelected.section.name}</div>
-      <div class="content__note">{$UnivariateFactorSelected.section.note}</div>
-    {:else if $UnivariateFactorSelected && $UnivariateNoteSelected.factor}
-      <div class="content__name">{$UnivariateFactorSelected.name}</div>
-      <div class="content__note">{$UnivariateFactorSelected.note}</div>
-    {:else}
-      <div class="blank">{$Text.FactorsListBlank}</div>
-    {/if}
-  </div>
-</main>
+  </main>
+{/if}
 
 <style>
+  main {
+    border-top: thin solid rgba(255, 255, 255, 0.2);
+  }
   div {
     color: var(--white);
   }
@@ -196,11 +199,5 @@
     padding-right: 0.5rem;
     max-height: 16rem;
     overflow: auto;
-  }
-  .blank {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(255, 255, 255, 0.5);
   }
 </style>

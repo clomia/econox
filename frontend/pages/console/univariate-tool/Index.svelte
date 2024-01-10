@@ -34,9 +34,7 @@
     justify-content: center;
     border-bottom: thin solid rgba(255, 255, 255, 0.2);
   }
-  .element-selector,
-  .factor-selector,
-  .note {
+  .element-selector {
     border-bottom: thin solid rgba(255, 255, 255, 0.2);
   }
 </style>

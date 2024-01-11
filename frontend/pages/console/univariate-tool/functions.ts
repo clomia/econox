@@ -201,7 +201,7 @@ export const setChartSource = async (
         factor_section: factorSection,
       },
     });
-    const encoding = (data: any): [string, string | number][] => {
+    const encode = (data: any): [string, string | number][] => {
       const dataset = data.t.map((time: string, index: number) => [
         time,
         data.v[index],
@@ -211,8 +211,8 @@ export const setChartSource = async (
     UnivariateChartSource.set({
       ...get(UnivariateChartSource),
       [sourceKey]: {
-        original: encoding(resp.data.original),
-        standardized: encoding(resp.data.standardized),
+        original: encode(resp.data.original),
+        standardized: encode(resp.data.standardized),
       },
     });
   } catch (error: any) {

@@ -30,6 +30,7 @@ print(element) # {'id': 8, 'section': 'country', 'code': 'AAPLE'}
 from __future__ import annotations
 
 import re
+import time
 import json
 import asyncio
 from typing import List, Tuple, Dict, Any, Literal
@@ -101,16 +102,24 @@ async def exec(
         if _retry > 50:
             log.critical(f"{e} 에러로 인해 50회 재시도하였으나 실패하였습니다!")
             raise e
-        # Secrets Manager에서 암호 교체가 이루어졌다고 간주하고 암호 업데이트 후 재시도
-        SECRETS["DB_PASSWORD"] = json.loads(  # 최신 비밀번호로 업데이트
-            boto3.client("secretsmanager").get_secret_value(
-                SecretId=SECRETS["RDS_SECRET_MANAGER_ARN"]
-            )["SecretString"]
-        )["password"]
         log.info(
             "[DB] 암호 변경 감지. Secrets Manager로부터 암호를 업데이트합니다.\n"
             f"현재까지 {_retry}번 재시도되었습니다. DB 암호 업데이트는 적용까지 약 1분 소요됩니다."
         )
+        secret_manager = boto3.client("secretsmanager")
+        try:
+            # Secrets Manager에서 암호 교체가 이루어졌다고 간주하고 암호 업데이트
+            SECRETS["DB_PASSWORD"] = json.loads(  # 최신 비밀번호로 업데이트
+                secret_manager.get_secret_value(
+                    SecretId=SECRETS["RDS_SECRET_MANAGER_ARN"]
+                )["SecretString"]
+            )["password"]
+        except secret_manager.exceptions.EndpointConnectionError as e:
+            # AWS에서 암호 교체가 이루어지는 중에는 일시적으로 SecretManager 접속이 안된다.
+            log.warn(
+                f"[DB] Secrets Manager가 응답하지 않습니다: {e.__class__.__name__} ({e})\n"
+                "AWS RDS Aurora의 DB 암호 교체가 시작되면 일시적으로 Secret Manager 접속이 안될 수 있습니다."
+            )
         return await exec(*sql, dbname=dbname, _retry=_retry + 1)  # 재시도
 
 

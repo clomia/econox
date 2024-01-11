@@ -87,7 +87,7 @@ const retryWithTokenRefresh = async (
       console.log(text.LogoutReasonUseAnotherDevice);
       await Swal.fire({
         ...defaultSwalStyle,
-        width: "33rem",
+        width: "32rem",
         icon: "info",
         showDenyButton: false,
         text: text.LogoutReasonUseAnotherDevice,

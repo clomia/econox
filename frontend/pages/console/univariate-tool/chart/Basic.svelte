@@ -10,14 +10,12 @@
   let chartContainer: HTMLElement;
   let chart: echarts.ECharts;
 
-  const initChart = () => {
+  const initChart = (source: [string, string | number][]) => {
     chart?.dispose();
     chart = echarts.init(chartContainer);
     chart.setOption({
       ...option,
-      dataset: {
-        source: chartSource.original,
-      },
+      dataset: { source },
     });
     // 아무런 범례도 선택되지 않은 경우 restore 수행
     chart.on("legendselectchanged", (event: any) => {
@@ -31,19 +29,27 @@
   let isMounted = false;
   onMount(() => {
     isMounted = true;
-    initChart();
+    initChart(chartSource.original);
   });
   $: if (isMounted && chartSource) {
-    initChart();
+    initChart(chartSource.original);
   }
 
-  let value = false;
-  $: value, console.log(value);
+  let standardized = false;
+  const standardizationToggle = () => {
+    if (standardized) {
+      standardized = false;
+      initChart(chartSource.original);
+    } else {
+      standardized = true;
+      initChart(chartSource.standardized);
+    }
+  };
 </script>
 
 <main>
-  <button class="toggle" on:click={() => (value = !value)}>
-    <Toggle {value} />
+  <button class="toggle" on:click={standardizationToggle}>
+    <Toggle value={standardized} />
   </button>
   <div class="chart" bind:this={chartContainer}></div>
 </main>
@@ -60,5 +66,6 @@
     position: absolute;
     left: 1rem;
     top: 0.5rem;
+    z-index: 9999;
   }
 </style>

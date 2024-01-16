@@ -124,7 +124,7 @@ export const option: echarts.EChartsOption = {
       name: "line",
       type: "line",
       symbol: "none",
-      lineStyle: { color: "white", opacity: 1, width: 2 },
+      lineStyle: { color: "white", opacity: 1, width: 1.5 },
       areaStyle: { opacity: 0 },
       connectNulls: true,
       emphasis: { disabled: true },

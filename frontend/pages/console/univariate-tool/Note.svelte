@@ -12,28 +12,28 @@
   let factorSectionBoxWidth = 0;
   let factorBoxWidth = 0;
 
-  function resetState(store: any) {
+  const resetState = (store: any) => {
     store.set({ element: false, factorSection: false, factor: false });
-  }
+  };
 
-  function select(target: keyof CurrentNoteTargetType) {
+  const select = (target: keyof CurrentNoteTargetType) => {
     resetState(UnivariateNoteSelected);
     if ($UnivariateNoteHovered[target]) {
       resetState(UnivariateNoteHovered);
     }
     UnivariateNoteSelected.update((s) => ({ ...s, [target]: true }));
-  }
+  };
 
-  function hover(target: keyof CurrentNoteTargetType) {
+  const hover = (target: keyof CurrentNoteTargetType) => {
     resetState(UnivariateNoteHovered);
     if (!$UnivariateNoteSelected[target]) {
       UnivariateNoteHovered.update((h) => ({ ...h, [target]: true }));
     }
-  }
+  };
 
-  function hoverOut() {
+  const hoverOut = () => {
     resetState(UnivariateNoteHovered);
-  }
+  };
 
   $: if ($UnivariateElementSelected) {
     select("element"); // 요소가 변경되면 변경된 요소를 선택해준다.
@@ -197,7 +197,7 @@
   }
   .content__note {
     padding-right: 0.5rem;
-    max-height: 16rem;
+    height: 8rem;
     overflow: auto;
   }
 </style>

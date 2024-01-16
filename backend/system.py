@@ -123,6 +123,7 @@ REDIS_CONFIG = {  # 사용법: redis.Redis(**REDIS_CONFIG)
     "decode_responses": True,
 }
 
+
 log.debug(
     f"보안 데이터 {len(SECRETS)}개 로드 완료\n"
     f"---------- 로드된 보안 데이터 목록 ----------\n"

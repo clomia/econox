@@ -31,6 +31,22 @@ export const option: echarts.EChartsOption = {
   yAxis: {
     splitLine: { show: false },
     axisLine: { lineStyle: { color: "rgb(211, 208, 208)" } },
+    axisLabel: {
+      // 축 레이블 포맷터 함수
+      formatter: (value: number) => {
+        const formatter = new Intl.NumberFormat(undefined, {
+          maximumFractionDigits: 1,
+        });
+        if (value >= 1000000000) {
+          return formatter.format(value / 1000000000) + "B";
+        } else if (value >= 1000000) {
+          return formatter.format(value / 1000000) + "M";
+        } else if (value >= 1000) {
+          return formatter.format(value / 1000) + "K";
+        }
+        return formatter.format(value);
+      },
+    },
   },
   dataZoom: [
     { orient: "horizontal", type: "inside" },
@@ -99,7 +115,7 @@ export const option: echarts.EChartsOption = {
       name: "scatter",
       type: "scatter",
       color: "white",
-      symbolSize: 5,
+      symbolSize: 10,
       large: true,
     },
     {
@@ -134,6 +150,13 @@ export const option: echarts.EChartsOption = {
   legend: {
     data: [
       {
+        name: "bar",
+        icon: barIcon,
+        inactiveColor: "rgba(255,255,255,0.3)",
+        itemStyle: { color: "white", opacity: 1 },
+        textStyle: { color: "white" },
+      },
+      {
         name: "scatter",
         icon: scatterIcon,
         inactiveColor: "rgba(255,255,255,0.3)",
@@ -154,15 +177,8 @@ export const option: echarts.EChartsOption = {
         itemStyle: { color: "white", opacity: 1 },
         textStyle: { color: "white" },
       },
-      {
-        name: "bar",
-        icon: barIcon,
-        inactiveColor: "rgba(255,255,255,0.3)",
-        itemStyle: { color: "white", opacity: 1 },
-        textStyle: { color: "white" },
-      },
     ],
-    selected: { scatter: true, line: false, area: false, bar: false },
+    selected: { bar: true, scatter: false, line: false, area: false },
     backgroundColor: "rgb(48, 46, 62)",
     padding: [8, 15],
     borderColor: "rgba(255,255,255,0.5)",
@@ -171,9 +187,11 @@ export const option: echarts.EChartsOption = {
   },
   tooltip: {
     formatter: (params: any) => {
-      const value = params.data[1];
-      const formattedValue = Number.isInteger(value) ? value : value.toFixed(2);
-      return `${params.data[0]}: ${formattedValue}`;
+      const formatter = new Intl.NumberFormat(undefined, {
+        maximumFractionDigits: 2,
+        useGrouping: true,
+      });
+      return `${params.data[0]}: ${formatter.format(params.data[1])}`;
     },
     backgroundColor: "rgb(44, 57, 75)",
     borderColor: "rgba(255,255,255,0.6)",

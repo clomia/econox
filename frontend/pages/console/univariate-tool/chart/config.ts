@@ -117,6 +117,7 @@ export const option: echarts.EChartsOption = {
       color: "white",
       symbolSize: 10,
       itemStyle: { color: "white", opacity: 0.8 },
+      emphasis: { focus: "self", blurScope: "series" },
       large: true,
     },
     {

@@ -14,7 +14,7 @@
     chart?.dispose();
     chart = echarts.init(chartContainer);
     chart.setOption({
-      ...option,
+      ...option({ bar: false, scatter: false, line: true, area: false }),
       dataset: { source },
     });
     // 아무런 범례도 선택되지 않은 경우 restore 수행
@@ -26,29 +26,20 @@
     });
   };
 
-  let isMounted = false;
-  onMount(() => {
-    isMounted = true;
-    initChart(chartSource.original);
-  });
-  $: if (isMounted && chartSource) {
-    initChart(chartSource.original);
-  }
-
   let standardized = false;
-  const standardizationToggle = () => {
-    if (standardized) {
-      standardized = false;
-      initChart(chartSource.original);
-    } else {
-      standardized = true;
-      initChart(chartSource.standardized);
-    }
-  };
+  let isMounted = false;
+
+  onMount(() => (isMounted = true));
+
+  $: if (isMounted && chartSource && !standardized) {
+    initChart(chartSource.original);
+  } else if (isMounted && chartSource && standardized) {
+    initChart(chartSource.standardized);
+  }
 </script>
 
 <main>
-  <button class="toggle" on:click={standardizationToggle}>
+  <button class="toggle" on:click={() => (standardized = !standardized)}>
     <Toggle value={standardized} />
   </button>
   <div class="chart" bind:this={chartContainer}></div>

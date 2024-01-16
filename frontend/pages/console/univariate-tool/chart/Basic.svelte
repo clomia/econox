@@ -1,6 +1,7 @@
 <script lang="ts">
   import * as echarts from "echarts";
   import { onMount } from "svelte";
+  import { option } from "./config";
   import type { SourceType } from "../../../../modules/state";
 
   export let chartSource: SourceType;
@@ -9,22 +10,21 @@
   let chart: echarts.ECharts;
 
   const initChart = () => {
-    const option: echarts.EChartsOption = {
+    chart?.dispose();
+    chart = echarts.init(chartContainer);
+    chart.setOption({
+      ...option,
       dataset: {
         source: chartSource.original,
       },
-      xAxis: { type: "time" },
-      yAxis: { splitLine: { show: false } },
-      series: [{ type: "scatter", symbolSize: 3, color: "white" }],
-      tooltip: {
-        formatter: (params: any) => {
-          return "X: " + params.value[0] + "<br>Y: " + params.value[1];
-        },
-      },
-    };
-    chart?.dispose();
-    chart = echarts.init(chartContainer);
-    chart.setOption(option);
+    });
+    // 아무런 범례도 선택되지 않은 경우 restore 수행
+    chart.on("legendselectchanged", (event: any) => {
+      const selected = event.selected;
+      if (Object.keys(selected).every((key) => !selected[key])) {
+        chart.dispatchAction({ type: "restore" });
+      }
+    });
   };
 
   let isMounted = false;

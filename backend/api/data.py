@@ -8,7 +8,7 @@ from fastapi import HTTPException
 
 from backend import db
 from backend.http import APIRouter
-from backend.math import datetime2utcstr, destandardize
+from backend.math import datetime2utcstr, denormalize
 from backend.data import fmp, world_bank
 from backend.data.model import Factor
 from backend.system import ElasticRedisCache, CacheTTL, log
@@ -109,7 +109,7 @@ async def get_feature_time_series(
     - Element의 Factor 시계열 데이터를 응답합니다.
     - 해당 Element가 Factor를 지원하지 않는 경우 Element에서 Factor를 제거합니다.
         - 서버가 이 사실을 처음 알게 되었을때 수행됩니다.
-    - response: {original: 원본 시계열, standardized: 표준화 시계열}
+    - response: {original: 원본 시계열, normalized: 표준화 시계열}
         - 각 시계열 안에는 동일한 길이의 값 배열(v)과 날짜 배열(t)이 들어있습니다.
     """
     element = await get_element(element_section, element_code)
@@ -128,16 +128,16 @@ async def get_feature_time_series(
 
     data: xr.Dataset = await factor.get()
     if data is not None:
-        original = destandardize(data)
-        standardized: xr.DataArray = data.daily
+        original = denormalize(data)
+        normalized: xr.DataArray = data.daily
         return {
             "original": {
                 "v": original.values.tolist(),
                 "t": np.datetime_as_string(original.t.values, unit="D").tolist(),
             },
-            "standardized": {
-                "v": standardized.values.tolist(),
-                "t": np.datetime_as_string(standardized.t.values, unit="D").tolist(),
+            "normalized": {
+                "v": normalized.values.tolist(),
+                "t": np.datetime_as_string(normalized.t.values, unit="D").tolist(),
             },
         }
     else:

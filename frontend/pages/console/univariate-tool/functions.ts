@@ -186,7 +186,7 @@ export const setChartSource = async (
   } else {
     UnivariateChartSource.set({
       ...get(UnivariateChartSource),
-      [sourceKey]: { original: [], standardized: [] },
+      [sourceKey]: { original: [], normalized: [] },
       // 중복 호출 방지 & 로딩 시작이라는 의미
       // 만약 서버가 빈 배열을 응답한다고 해도 ["t", "v"] 때문에 로딩 전 후는 구분 가능
     });
@@ -212,7 +212,7 @@ export const setChartSource = async (
       ...get(UnivariateChartSource),
       [sourceKey]: {
         original: encode(resp.data.original),
-        standardized: encode(resp.data.standardized),
+        normalized: encode(resp.data.normalized),
       },
     });
   } catch (error: any) {

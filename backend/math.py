@@ -12,7 +12,7 @@ from pydantic import constr
 from backend.system import MEMBERSHIP
 
 
-def standardization(
+def normalize(
     data: xr.DataArray, *, interpolator: Callable = PchipInterpolator
 ) -> xr.Dataset:
     """
@@ -46,7 +46,7 @@ def standardization(
     daily = xr.DataArray(scaled_daily_x, dims=("t"), coords={"t": daily_t})
     mask = ~cleansed.reindex(t=daily.t).isnull()  # 원본 값 찾기용
     metadata = {
-        "standardization": {
+        "normalize": {
             "interpolation": {
                 "method": interpolator.__name__,
                 "ratio": 1 - float(mask.mean()),  # 보간된 값의 비율
@@ -60,17 +60,17 @@ def standardization(
     )
 
 
-def destandardize(standardized: xr.Dataset) -> xr.DataArray:
+def denormalize(normalized: xr.Dataset) -> xr.DataArray:
     """
-    - standardization의 역함수
-    - standardized: standardization 함수에서 반환된 Dataset
+    - normalize의 역함수
+    - normalized: normalize 함수에서 반환된 Dataset
     - return: 원본 DataArray
         - 불가피하게 미세한 실수 오차가 발생합니다.
     - 원본 데이터가 일단위보다 작은 해상도를 가질 경우 복원이 불가능합니다.
     """
-    dataset = standardized.compute()
-    origin_min = dataset.attrs["standardization"]["scaling"]["origin_min"]
-    origin_max = dataset.attrs["standardization"]["scaling"]["origin_max"]
+    dataset = normalized.compute()
+    origin_min = dataset.attrs["normalize"]["scaling"]["origin_min"]
+    origin_max = dataset.attrs["normalize"]["scaling"]["origin_max"]
     origin_x = dataset.daily[dataset.mask]
     restored = origin_x * (origin_max - origin_min) + origin_min
     return restored

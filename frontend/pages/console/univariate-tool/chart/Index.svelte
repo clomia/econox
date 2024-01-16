@@ -26,7 +26,7 @@
 </script>
 
 {#if chartSource}
-  {#if chartSource.original.length && chartSource.standardized.length}
+  {#if chartSource.original.length && chartSource.normalized.length}
     {#if $UnivariateChartFullScreen}
       <FullScreen />
     {:else}

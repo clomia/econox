@@ -26,21 +26,21 @@
     });
   };
 
-  let standardized = false;
+  let normalized = false;
   let isMounted = false;
 
   onMount(() => (isMounted = true));
 
-  $: if (isMounted && chartSource && !standardized) {
+  $: if (isMounted && chartSource && !normalized) {
     initChart(chartSource.original);
-  } else if (isMounted && chartSource && standardized) {
-    initChart(chartSource.standardized);
+  } else if (isMounted && chartSource && normalized) {
+    initChart(chartSource.normalized);
   }
 </script>
 
 <main>
-  <button class="toggle" on:click={() => (standardized = !standardized)}>
-    <Toggle value={standardized} />
+  <button class="toggle" on:click={() => (normalized = !normalized)}>
+    <Toggle value={normalized} />
   </button>
   <div class="chart" bind:this={chartContainer}></div>
 </main>

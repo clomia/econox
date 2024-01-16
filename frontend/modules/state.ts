@@ -87,7 +87,7 @@ export interface CurrentNoteTargetType {
 
 export interface SourceType {
   original: [string, string | number][];
-  standardized: [string, string | number][];
+  normalized: [string, string | number][];
 }
 
 export interface ChartSourceType {

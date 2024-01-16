@@ -277,7 +277,15 @@ async def search(text: str, limit: int = 8) -> List[Symbol]:
         if (eligible := [s for s in resp_set if (target := text.upper()) in s])
         else list(resp_set)[:limit]
     )
-    symbols = await asyncio.gather(*[Symbol(code).load() for code in codes])
+
+    async def load(code):
+        try:
+            return await Symbol(code).load()
+        except ElementDoesNotExist:
+            return None
+
+    load_results = await asyncio.gather(*[load(code) for code in codes])
+    symbols = [result for result in load_results if result is not None]
 
     async def current_volume(symbol):
         return await symbol.current_volume or 0

@@ -145,7 +145,15 @@ async def search(text: str, limit: int = 3) -> List[Country]:
     # text가 국가 코드인 경우 l1에 들어가므로 슬라이싱해도 유지됨 그니까 재정렬 안해도 됌
     iso_code_set = {country["id"] for country in list(l1) + l2 + l3 if country}
     target_list = list(iso_code_set)[:limit]
-    countires = await asyncio.gather(*(Country(code).load() for code in target_list))
+
+    async def load(code):
+        try:
+            return await Country(code).load()
+        except ElementDoesNotExist:
+            return None
+
+    load_results = await asyncio.gather(*[load(code) for code in target_list])
+    countires = [result for result in load_results if result is not None]
     return sorted(
         [country for country in countires if country.is_loaded],
         key=lambda country: len(country.name.text),  # 국가명이 짧은게 위로 오도록

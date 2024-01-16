@@ -103,7 +103,7 @@ SECRETS["DB_PASSWORD"] = db_secrets["password"]
 
 is_local = bool(os.getenv("IS_LOCAL"))
 if is_local:
-    SECRETS["RADIS_HOST"] = "localhost"
+    SECRETS["REDIS_HOST"] = "localhost"
 
 
 # 일반 커넥션 풀은 최대 연결 초과시 예외를 반환하지만 BlockingConnectionPool은 기다리면서 진입각을 본다.
@@ -112,7 +112,7 @@ redis_connection_pool = redis.BlockingConnectionPool(
     connection_class=redis.SSLConnection if not is_local else redis.Connection,
     # max_connections 제한 거는 BlockingConnectionPool 자체가 로컬에서만 필요하다.
     max_connections=200 if is_local else None,  # 일단 ElastiCache는 제한 없이 쓰는게 맞다.
-    host=SECRETS["RADIS_HOST"],
+    host=SECRETS["REDIS_HOST"],
     timeout=None,  # 이것도 Uvicorn의 Timeout에 의존
 )
 # socket_timeout, socket_connect_timeout는 None으로 하고 Uvicorn의 Timeout기능에 의존한다.
@@ -122,7 +122,6 @@ REDIS_CONFIG = {  # 사용법: redis.Redis(**REDIS_CONFIG)
     "connection_pool": redis_connection_pool,
     "decode_responses": True,
 }
-
 
 log.debug(
     f"보안 데이터 {len(SECRETS)}개 로드 완료\n"

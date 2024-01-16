@@ -7,7 +7,7 @@ __pycache__/
 env
 efs-volume
 
-# Radis
+# Redis
 dump.rdb
 
 # frontend

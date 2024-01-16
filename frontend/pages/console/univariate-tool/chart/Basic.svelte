@@ -2,6 +2,7 @@
   import * as echarts from "echarts";
   import { onMount } from "svelte";
   import { option } from "./config";
+  import Toggle from "../../../../components/Toggle.svelte";
   import type { SourceType } from "../../../../modules/state";
 
   export let chartSource: SourceType;
@@ -35,15 +36,29 @@
   $: if (isMounted && chartSource) {
     initChart();
   }
+
+  let value = false;
+  $: value, console.log(value);
 </script>
 
 <main>
+  <button class="toggle" on:click={() => (value = !value)}>
+    <Toggle {value} />
+  </button>
   <div class="chart" bind:this={chartContainer}></div>
 </main>
 
 <style>
+  main {
+    position: relative;
+  }
   .chart {
     width: 41rem;
     height: 22rem;
+  }
+  .toggle {
+    position: absolute;
+    left: 1rem;
+    top: 0.5rem;
   }
 </style>

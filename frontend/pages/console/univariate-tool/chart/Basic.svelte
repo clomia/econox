@@ -79,7 +79,7 @@
     left: 2.8rem;
     top: -0.17rem;
     color: white;
-    opacity: 0.5;
+    opacity: 0.4;
     font-size: 0.95rem;
     z-index: 1;
     text-decoration: none;
@@ -89,13 +89,17 @@
     cursor: pointer;
   }
   .emphasis {
-    opacity: 1;
+    opacity: 0.8;
   }
   .download {
     position: absolute;
     right: 0.5rem;
     bottom: 0.5rem;
     z-index: 1;
-    fill: rgba(255, 255, 255, 0.6);
+    fill: rgba(255, 255, 255, 0.4);
+  }
+  .download:hover {
+    fill: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
   }
 </style>

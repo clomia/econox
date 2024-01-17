@@ -2,6 +2,8 @@
   import * as echarts from "echarts";
   import { onMount } from "svelte";
   import { option } from "./config";
+  import { Text } from "../../../../modules/state";
+  import { wikiUrl } from "../../../../modules/wiki";
   import Toggle from "../../../../components/Toggle.svelte";
   import type { SourceType } from "../../../../modules/state";
 
@@ -42,6 +44,15 @@
   <button class="toggle" on:click={() => (normalized = !normalized)}>
     <Toggle value={normalized} />
   </button>
+  <a
+    class="toggle-text"
+    class:emphasis={normalized}
+    href={wikiUrl.normalize()}
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    {$Text.Normalize}
+  </a>
   <div class="chart" bind:this={chartContainer}></div>
 </main>
 
@@ -57,6 +68,23 @@
     position: absolute;
     left: 1rem;
     top: 0.5rem;
-    z-index: 9999;
+    z-index: 1;
+  }
+  .toggle-text {
+    position: absolute;
+    left: 2.8rem;
+    top: -0.17rem;
+    color: white;
+    opacity: 0.5;
+    font-size: 0.95rem;
+    z-index: 1;
+    text-decoration: none;
+  }
+  .toggle-text:hover {
+    border-bottom: thin solid white;
+    cursor: pointer;
+  }
+  .emphasis {
+    opacity: 1;
   }
 </style>

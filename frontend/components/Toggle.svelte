@@ -32,8 +32,8 @@
     transition: all 0.3s ease;
   }
   .selected {
-    background: #1db955;
-    border-color: #1db955;
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.2);
   }
   .selected:after {
     transform: translateX(18px);

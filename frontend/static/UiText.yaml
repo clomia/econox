@@ -388,6 +388,9 @@ LogoutReasonUseAnotherDevice:
 ElementLoadingInfo:
   en: "Loading elements saved in the account..."
   ko: "계정에 저장된 요소들을 불러오는 중입니다..."
+Normalize:
+  en: "Normalize"
+  ko: "정규화"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

@@ -125,6 +125,7 @@ export interface UiText {
     Factor: "Factor" | "펙터";
     LogoutReasonUseAnotherDevice: "You have been logged out because your account was accessed from a different device. Please log in again to continue using our service." | "다른 기기에서 계정에 접속되었기 때문에 로그아웃 되었습니다. 서비스를 계속 이용하시려면 다시 로그인해 주세요.";
     ElementLoadingInfo: "Loading elements saved in the account..." | "계정에 저장된 요소들을 불러오는 중입니다...";
+    Normalize: "Normalize" | "정규화";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

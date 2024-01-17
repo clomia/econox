@@ -5,6 +5,7 @@
   import { Text } from "../../../../modules/state";
   import { wikiUrl } from "../../../../modules/wiki";
   import Toggle from "../../../../components/Toggle.svelte";
+  import Download from "../../../../assets/icon/Download.svelte";
   import type { SourceType } from "../../../../modules/state";
 
   export let chartSource: SourceType;
@@ -53,6 +54,9 @@
   >
     {$Text.Normalize}
   </a>
+  <button class="download">
+    <Download />
+  </button>
   <div class="chart" bind:this={chartContainer}></div>
 </main>
 
@@ -86,5 +90,12 @@
   }
   .emphasis {
     opacity: 1;
+  }
+  .download {
+    position: absolute;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    z-index: 1;
+    fill: rgba(255, 255, 255, 0.6);
   }
 </style>

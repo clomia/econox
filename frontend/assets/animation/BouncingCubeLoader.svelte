@@ -51,7 +51,6 @@
 
   .scene {
     position: relative;
-    z-index: 2;
     height: 220px;
     /* $size*2.75 */
     width: 220px;

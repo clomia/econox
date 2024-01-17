@@ -358,7 +358,7 @@
   }
   #membrane {
     position: fixed;
-    z-index: 1;
+    z-index: 9999;
     top: 0;
     left: 0;
     width: 100%;
@@ -372,7 +372,7 @@
     display: flex;
     width: 100%;
     justify-content: center;
-    z-index: 2;
+    z-index: 10000;
   }
   .folder-icon {
     width: 100%;

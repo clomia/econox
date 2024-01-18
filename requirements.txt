@@ -6,6 +6,7 @@ aiocache==0.12.2 # aiocache의 redis백엔드는 버그가 많음..
 redis[hiredis]==5.0.1 # 직접 만들어서 쓰는게 훨씬 나음
 pycountry==22.3.5
 deepl==1.16.1
+pandas==2.1.4 # 데이터를 파일로 인코딩하는 용도로만 쓰기
 
 # compute
 numpy==1.26.2

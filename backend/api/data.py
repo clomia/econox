@@ -15,7 +15,7 @@ from backend.http import APIRouter
 from backend.math import datetime2utcstr, denormalize
 from backend.data import fmp, world_bank
 from backend.system import ElasticRedisCache, CacheTTL, log
-from backend.integrate import get_element, get_feature
+from backend.integrate import get_element, Feature
 
 
 router = APIRouter("data")
@@ -115,9 +115,8 @@ async def get_feature_time_series(
     - response: {original: 원본 시계열, normalized: 표준화 시계열}
         - 각 시계열 안에는 동일한 길이의 값 배열(v)과 날짜 배열(t)이 들어있습니다.
     """
-
-    data = await get_feature(element_section, element_code, factor_section, factor_code)
-    if data is not None:
+    feature = Feature(element_section, element_code, factor_section, factor_code)
+    if (data := await feature.get()) is not None:
         original = denormalize(data)
         normalized: xr.DataArray = data.daily
         return {
@@ -166,6 +165,9 @@ async def func(
     factor_section: str,
     factor_code: str,
 ):
-    data = await get_feature(element_section, element_code, factor_section, factor_code)
+    # data = await get_feature(element_section, element_code, factor_section, factor_code)
 
-    return Response(content="hello")
+    # data_array = data.daily if normalized else denormalize(data)
+    # data_frame = data_array.to_dataframe().reset_index()
+    # data_frame.columns = ["time", "value"]
+    return Response(content="hello ")

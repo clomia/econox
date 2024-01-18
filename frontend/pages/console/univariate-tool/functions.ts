@@ -257,3 +257,31 @@ export const setChartSource = async (
     }
   }
 };
+
+interface RequestFormat {
+  fileFormat: "csv" | "xlsx";
+  normalized: boolean;
+  elementSection: string;
+  elementCode: string;
+  factorSection: string;
+  factorCode: string;
+}
+
+/**
+ * /api/data/feature/file API shortcut
+ * @returns 다운로드 URL (브라우저 메모리를 가르키며 새로고침 시 사라짐)
+ */
+export const downloadFile = async (request: RequestFormat) => {
+  const resp = await api.member.get("/api/data/feature/file", {
+    params: {
+      element_section: request.elementSection,
+      element_code: request.elementCode,
+      factor_section: request.factorSection,
+      factor_code: request.factorCode,
+      normalized: request.normalized,
+      file_format: request.fileFormat,
+    },
+    responseType: "blob",
+  });
+  return window.URL.createObjectURL(resp.data);
+};

@@ -5,7 +5,8 @@
   import { Text } from "../../../../modules/state";
   import { wikiUrl } from "../../../../modules/wiki";
   import Toggle from "../../../../components/Toggle.svelte";
-  import Download from "../../../../assets/icon/Download.svelte";
+  import DownloadIcon from "../../../../assets/icon/DownloadIcon.svelte";
+  import Download from "./Download.svelte";
   import type { SourceType } from "../../../../modules/state";
 
   export let chartSource: SourceType;
@@ -39,7 +40,13 @@
   } else if (isMounted && chartSource && normalized) {
     initChart(chartSource.normalized);
   }
+
+  let downloadWindow: boolean;
 </script>
+
+{#if downloadWindow}
+  <Download {normalized} on:close={() => (downloadWindow = false)} />
+{/if}
 
 <main>
   <button class="toggle" on:click={() => (normalized = !normalized)}>
@@ -54,8 +61,8 @@
   >
     {$Text.Normalize}
   </a>
-  <button class="download">
-    <Download />
+  <button class="download" on:click={() => (downloadWindow = true)}>
+    <DownloadIcon />
   </button>
   <div class="chart" bind:this={chartContainer}></div>
 </main>

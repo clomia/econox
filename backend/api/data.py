@@ -157,7 +157,7 @@ async def get_feature_time_series(
 
 
 @router.professional.get("/feature/file")
-async def func(
+async def download_feature_time_series(
     file_format: Literal["csv", "xlsx"],
     normalized: bool,
     element_section: str,

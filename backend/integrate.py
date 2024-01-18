@@ -62,6 +62,10 @@ class Feature:
         self.factor_code = factor_code
 
     async def get(self) -> xr.Dataset:
+        """
+        - 원본 형식인 Dataset 객체를 반환합니다.
+        - 계산은 가급적 이 Dataset 객체를 통해 수행하세요.
+        """
         element = await get_element(self.element_section, self.element_code)
         # ClientMeta 메타클래스가 만든 data_class 클래스의 인스턴스
         try:
@@ -86,6 +90,7 @@ class Feature:
         data_set = await self.get()
         data_array = data_set.daily if normalized else denormalize(data_set)
         data_frame = data_array.to_dataframe().reset_index()
+        data_frame.t = data_frame.t.dt.date
         data_frame.columns = ["time", "value"]
         data_frame.index.name = "index"
         return data_frame

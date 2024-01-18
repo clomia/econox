@@ -165,9 +165,20 @@ async def func(
     factor_section: str,
     factor_code: str,
 ):
-    # data = await get_feature(element_section, element_code, factor_section, factor_code)
+    feature = Feature(element_section, element_code, factor_section, factor_code)
 
-    # data_array = data.daily if normalized else denormalize(data)
-    # data_frame = data_array.to_dataframe().reset_index()
-    # data_frame.columns = ["time", "value"]
-    return Response(content="hello ")
+    func = {"csv": feature.to_csv, "xlsx": feature.to_xlsx}
+    headers = {
+        "csv": {"Content-Disposition": "attachment; filename=file.csv"},
+        "xlsx": {"Content-Disposition": "attachment; filename=file.xlsx"},
+    }
+    media_type = {
+        "csv": "text/csv",
+        "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    }
+
+    return Response(
+        content=await func[file_format](normalized),
+        media_type=media_type[file_format],
+        headers=headers[file_format],
+    )

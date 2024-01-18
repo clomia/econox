@@ -1,18 +1,21 @@
-""" /api/data """
+""" 
+- /api/data/...
+- 데이터 제공합니다.
+"""
 import asyncio
+from typing import Literal
 
 import numpy as np
 import xarray as xr
 from aiocache import cached
-from fastapi import HTTPException
+from fastapi import HTTPException, Response
 
 from backend import db
 from backend.http import APIRouter
 from backend.math import datetime2utcstr, denormalize
 from backend.data import fmp, world_bank
-from backend.data.model import Factor
 from backend.system import ElasticRedisCache, CacheTTL, log
-from backend.integrate import get_element
+from backend.integrate import get_element, get_feature
 
 
 router = APIRouter("data")
@@ -103,7 +106,7 @@ async def search_news_related_to_symbols(symbol: str, lang: str):
 
 @router.basic.get("/feature")
 async def get_feature_time_series(
-    element_code: str, element_section: str, factor_code: str, factor_section: str
+    element_section: str, element_code: str, factor_section: str, factor_code: str
 ):
     """
     - Element의 Factor 시계열 데이터를 응답합니다.
@@ -112,21 +115,8 @@ async def get_feature_time_series(
     - response: {original: 원본 시계열, normalized: 표준화 시계열}
         - 각 시계열 안에는 동일한 길이의 값 배열(v)과 날짜 배열(t)이 들어있습니다.
     """
-    element = await get_element(element_section, element_code)
-    # ClientMeta 메타클래스가 만든 data_class 클래스의 인스턴스
-    try:
-        data_instance = getattr(element, element.attr_name[factor_section])
-        factor: Factor = getattr(data_instance, factor_code)
-    except KeyError:
-        raise HTTPException(
-            status_code=404, detail=f"factor_section {factor_section} does not exist"
-        )
-    except AttributeError:
-        raise HTTPException(
-            status_code=404, detail=f"factor_code {factor_code} does not exist"
-        )
 
-    data: xr.Dataset = await factor.get()
+    data = await get_feature(element_section, element_code, factor_section, factor_code)
     if data is not None:
         original = denormalize(data)
         normalized: xr.DataArray = data.daily
@@ -165,3 +155,17 @@ async def get_feature_time_series(
             status_code=404,
             detail=f"The {factor_code} factor is not supported by this element",
         )
+
+
+@router.professional.get("/feature/file")
+async def func(
+    file_format: Literal["csv", "xlsx"],
+    normalized: bool,
+    element_section: str,
+    element_code: str,
+    factor_section: str,
+    factor_code: str,
+):
+    data = await get_feature(element_section, element_code, factor_section, factor_code)
+
+    return Response(content="hello")

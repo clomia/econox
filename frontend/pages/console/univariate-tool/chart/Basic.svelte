@@ -70,14 +70,14 @@
   }
   .toggle {
     position: absolute;
-    left: 1rem;
-    top: 0.5rem;
+    left: 3.1rem;
+    top: 0.9rem;
     z-index: 1;
   }
   .toggle-text {
     position: absolute;
-    left: 2.8rem;
-    top: -0.17rem;
+    top: 0.2rem;
+    left: 5rem;
     color: white;
     opacity: 0.4;
     font-size: 0.95rem;

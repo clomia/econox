@@ -1,4 +1,7 @@
-""" /api/data """
+"""
+- /api/feature/... 
+- feature를 다루는 기능을 제공합니다. ( user <-> element <-> factor )
+"""
 import asyncio
 from math import ceil
 from typing import Literal

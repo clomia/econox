@@ -41,11 +41,11 @@
     initChart(chartSource.normalized);
   }
 
-  let downloadWindow: boolean;
+  let downloadWidget: boolean;
 </script>
 
-{#if downloadWindow}
-  <Download {normalized} on:close={() => (downloadWindow = false)} />
+{#if downloadWidget}
+  <Download {normalized} on:close={() => (downloadWidget = false)} />
 {/if}
 
 <main>
@@ -61,7 +61,7 @@
   >
     {$Text.Normalize}
   </a>
-  <button class="download" on:click={() => (downloadWindow = true)}>
+  <button class="download" on:click={() => (downloadWidget = true)}>
     <DownloadIcon />
   </button>
   <div class="chart" bind:this={chartContainer}></div>

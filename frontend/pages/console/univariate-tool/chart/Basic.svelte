@@ -6,6 +6,7 @@
   import { wikiUrl } from "../../../../modules/wiki";
   import Toggle from "../../../../components/Toggle.svelte";
   import DownloadIcon from "../../../../assets/icon/DownloadIcon.svelte";
+  import FullScreen from "../../../../assets/icon/FullScreen.svelte";
   import Download from "./Download.svelte";
   import type { SourceType } from "../../../../modules/state";
 
@@ -64,6 +65,7 @@
   <button class="download" on:click={() => (downloadWidget = true)}>
     <DownloadIcon />
   </button>
+  <button class="full-screen"><FullScreen /></button>
   <div class="chart" bind:this={chartContainer}></div>
 </main>
 
@@ -72,19 +74,20 @@
     position: relative;
   }
   .chart {
-    width: 41rem;
-    height: 22rem;
+    width: 46rem;
+    height: 23rem;
+    padding-right: 2rem;
   }
   .toggle {
     position: absolute;
-    left: 3.1rem;
+    left: 3.5rem;
     top: 0.9rem;
     z-index: 1;
   }
   .toggle-text {
     position: absolute;
     top: 0.2rem;
-    left: 5rem;
+    left: 5.4rem;
     color: white;
     opacity: 0.4;
     font-size: 0.95rem;
@@ -95,12 +98,23 @@
     border-bottom: thin solid white;
     cursor: pointer;
   }
+  .full-screen {
+    position: absolute;
+    right: 2.65rem;
+    top: 0.3rem;
+    opacity: 0.4;
+    z-index: 1;
+  }
+  .full-screen:hover {
+    opacity: 0.8;
+    cursor: pointer;
+  }
   .emphasis {
     opacity: 0.8;
   }
   .download {
     position: absolute;
-    right: 0.5rem;
+    right: 2.5rem;
     bottom: 0.5rem;
     z-index: 1;
     fill: rgba(255, 255, 255, 0.4);

@@ -203,21 +203,13 @@ export const option = (
           maximumFractionDigits: 2,
           useGrouping: true,
         });
-        return `${params.data[0]}: ${formatter.format(params.data[1])}`;
+        return `${params.data[0]} ${formatter.format(params.data[1])}`;
       },
       backgroundColor: "rgb(44, 57, 75)",
       borderColor: "rgba(255,255,255,0.6)",
       padding: [3, 7],
       textStyle: { color: "white" },
       extraCssText: "border-radius: 1.5px;",
-    },
-    toolbox: {
-      feature: {
-        restore: {
-          iconStyle: { borderColor: "rgba(255,255,255,0.5)" },
-          emphasis: { iconStyle: { borderColor: "white" } },
-        },
-      },
     },
   };
 };

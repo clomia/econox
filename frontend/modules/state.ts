@@ -176,5 +176,4 @@ export const UnivariateNoteHovered = writable<CurrentNoteTargetType>({
   factor: false,
 });
 
-export const UnivariateChartFullScreen = writable(false);
 export const UnivariateChartSource = writable<ChartSourceType>({});

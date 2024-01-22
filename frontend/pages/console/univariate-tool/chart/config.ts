@@ -43,14 +43,17 @@ export const option = (
           const formatter = new Intl.NumberFormat(undefined, {
             maximumFractionDigits: 1,
           });
-          if (value >= 1000000000) {
-            return formatter.format(value / 1000000000) + "B";
-          } else if (value >= 1000000) {
-            return formatter.format(value / 1000000) + "M";
-          } else if (value >= 1000) {
-            return formatter.format(value / 1000) + "K";
+          const sign = value < 0 ? "-" : "";
+          const absValue = Math.abs(value);
+
+          if (absValue >= 1000000000) {
+            return sign + formatter.format(absValue / 1000000000) + "B";
+          } else if (absValue >= 1000000) {
+            return sign + formatter.format(absValue / 1000000) + "M";
+          } else if (absValue >= 1000) {
+            return sign + formatter.format(absValue / 1000) + "K";
           }
-          return formatter.format(value);
+          return sign + formatter.format(absValue);
         },
       },
     },

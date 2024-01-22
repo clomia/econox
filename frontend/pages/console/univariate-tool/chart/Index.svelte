@@ -1,12 +1,10 @@
 <script lang="ts">
   import Basic from "./Basic.svelte";
-  import FullScreen from "./FullScreen.svelte";
   import BouncingCubeLoader from "../../../../assets/animation/BouncingCubeLoader.svelte";
   import { Text } from "../../../../modules/state";
   import {
     UnivariateElementSelected,
     UnivariateFactorSelected,
-    UnivariateChartFullScreen,
     UnivariateChartSource,
   } from "../../../../modules/state";
   import { format } from "../../../../modules/functions";
@@ -27,11 +25,7 @@
 
 {#if chartSource}
   {#if chartSource.original.length && chartSource.normalized.length}
-    {#if $UnivariateChartFullScreen}
-      <FullScreen />
-    {:else}
-      <main><Basic {chartSource} /></main>
-    {/if}
+    <main><Basic {chartSource} /></main>
   {:else}
     <main>
       <BouncingCubeLoader />
@@ -63,6 +57,7 @@
     justify-content: center;
     bottom: 0;
     left: 0;
+    padding: 1.5rem;
     padding-bottom: 21.5rem;
     color: rgba(255, 255, 255, 0.6);
   }

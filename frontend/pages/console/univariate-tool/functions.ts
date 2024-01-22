@@ -267,12 +267,8 @@ interface RequestFormat {
   factorCode: string;
 }
 
-/**
- * /api/data/feature/file API shortcut
- * @returns 다운로드 URL (브라우저 메모리를 가르키며 새로고침 시 사라짐)
- */
 export const downloadFile = async (request: RequestFormat) => {
-  const resp = await api.member.get("/api/data/feature/file", {
+  const resp = await api.member.get("/data/feature/file", {
     params: {
       element_section: request.elementSection,
       element_code: request.elementCode,
@@ -283,5 +279,16 @@ export const downloadFile = async (request: RequestFormat) => {
     },
     responseType: "blob",
   });
-  return window.URL.createObjectURL(resp.data);
+  const url = window.URL.createObjectURL(resp.data);
+  const link = document.createElement("a");
+  link.href = url;
+  let filename = `${request.elementCode}-${request.factorSection}-${request.factorCode}`;
+  if (request.normalized) {
+    filename += "-normalized";
+  }
+  link.setAttribute("download", filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  window.URL.revokeObjectURL(url);
 };

@@ -126,6 +126,7 @@ export interface UiText {
     LogoutReasonUseAnotherDevice: "You have been logged out because your account was accessed from a different device. Please log in again to continue using our service." | "다른 기기에서 계정에 접속되었기 때문에 로그아웃 되었습니다. 서비스를 계속 이용하시려면 다시 로그인해 주세요.";
     ElementLoadingInfo: "Loading elements saved in the account..." | "계정에 저장된 요소들을 불러오는 중입니다...";
     Normalize: "Normalize" | "정규화";
+    SelectFileFormat: "Select Your Preferred File Format" | "원하는 파일 형식을 선택하세요";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";
@@ -136,7 +137,7 @@ export interface UiText {
     f_MembershipChangeComplete: "Your membership has been changed from {oldMembership} to {newMembership}. Due to the price difference, your next billing date has been adjusted from {oldBillingDate} to {newBillingDate}." | "맴버십이 {oldMembership}에서 {newMembership}(으)로 변경되었으며, 차액이 적용되어 다음 결제 날짜가 {oldBillingDate} 에서 {newBillingDate} 로 조정되었습니다.";
     f_MembershipChangeComplete_Benefit: "Your membership has been updated from {oldMembership} to {newMembership}" | "맴버십이 {oldMembership}에서 {newMembership}(으)로 변경되었습니다";
     f_DataSearchError: "An unexpected issue occurred while searching for the search term '{query}'. Please try again" | "검색어 '{query}'를 검색하는 과정에서 예기치 못한 문제가 발생하였습니다. 다시 시도해주세요";
-    f_FactorLoadingInfo: "Collecting factors for {element}..." | "{element}에 대한 펙터를 수집중입니다...";
-    f_ChartLoadingInfo: "Collecting data on {factor} related to {element}..." | "{element}에 대한 {factor} 데이터를 수집중입니다...";
+    f_FactorLoadingInfo: "Collecting factors for {element}..." | "{element}에 대한 펙터를 수집 중입니다...";
+    f_ChartLoadingInfo: "Collecting data on {factor} related to {element}..." | "{element}에 대한 {factor} 데이터를 수집 중입니다...";
     f_TheElementDoesNotContainThisFactor: "We attempted to collect data for {factor} related to {element},  but were unable to find any. This outcome has been reflected in our service.  Thank you for contributing to the improvement of our service." | "{element}에 대한 {factor} 데이터 수집을 시도하였으나 데이터를 찾지 못하였습니다.  이 결과를 서비스에 반영하였습니다. 서비스 개선에 기여해주셔서 감사합니다.";
 }

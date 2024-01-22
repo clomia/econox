@@ -118,6 +118,7 @@ CREATE INDEX idx_users_elements_element_id ON users_elements(element_id);
 
 ------------------------------------------------
 -- 요소에 대해 유효한 펙터들
+-- 이 테이블의 레코드가 피쳐(요소의 펙터)입니다.
 ------------------------------------------------
 CREATE TABLE elements_factors (
     "id" SERIAL NOT NULL PRIMARY KEY,
@@ -128,3 +129,23 @@ CREATE TABLE elements_factors (
 );
 CREATE INDEX idx_elements_factors_element_id ON elements_factors(element_id);
 CREATE INDEX idx_elements_factors_factor_id ON elements_factors(factor_id);
+
+------------------------------------------------
+-- 유저가 소유한 피쳐 그룹
+------------------------------------------------
+CREATE TABLE feature_groups (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "user_id" UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    "name" VARCHAR(255) NOT NULL -- 그룹명
+);
+CREATE INDEX idx_feature_groups_user_id ON feature_groups(user_id);
+
+------------------------------------------------
+-- 피쳐 그룹이 소유한 피쳐들
+------------------------------------------------
+CREATE TABLE feature_groups_features (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "feature_group_id" INT NOT NULL REFERENCES feature_groups(id) ON DELETE CASCADE,
+    "feature_id" INT NOT NULL REFERENCES elements_factors(id) ON DELETE CASCADE
+)
+CREATE INDEX idx_feature_groups_features_feature_group_id ON feature_groups_features(feature_group_id);

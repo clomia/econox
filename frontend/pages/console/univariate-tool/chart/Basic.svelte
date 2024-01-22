@@ -6,8 +6,9 @@
   import { wikiUrl } from "../../../../modules/wiki";
   import Toggle from "../../../../components/Toggle.svelte";
   import DownloadIcon from "../../../../assets/icon/DownloadIcon.svelte";
-  import FullScreen from "../../../../assets/icon/FullScreen.svelte";
+  import FullScreenIcon from "../../../../assets/icon/FullScreenIcon.svelte";
   import Download from "./Download.svelte";
+  import FullScreen from "./FullScreen.svelte";
   import type { SourceType } from "../../../../modules/state";
 
   export let chartSource: SourceType;
@@ -33,20 +34,28 @@
 
   let normalized = false;
   let isMounted = false;
+  let currentData = chartSource.original;
 
   onMount(() => (isMounted = true));
 
   $: if (isMounted && chartSource && !normalized) {
-    initChart(chartSource.original);
+    currentData = chartSource.original;
+    initChart(currentData);
   } else if (isMounted && chartSource && normalized) {
-    initChart(chartSource.normalized);
+    currentData = chartSource.normalized;
+    initChart(currentData);
   }
 
   let downloadWidget: boolean;
+  let fullScreen: boolean;
 </script>
 
 {#if downloadWidget}
   <Download {normalized} on:close={() => (downloadWidget = false)} />
+{/if}
+
+{#if fullScreen}
+  <FullScreen data={currentData} on:close={() => (fullScreen = false)} />
 {/if}
 
 <main>
@@ -65,7 +74,9 @@
   <button class="download" on:click={() => (downloadWidget = true)}>
     <DownloadIcon />
   </button>
-  <button class="full-screen"><FullScreen /></button>
+  <button class="full-screen" on:click={() => (fullScreen = true)}>
+    <FullScreenIcon />
+  </button>
   <div class="chart" bind:this={chartContainer}></div>
 </main>
 

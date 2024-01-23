@@ -136,7 +136,8 @@ CREATE INDEX idx_elements_factors_factor_id ON elements_factors(factor_id);
 CREATE TABLE feature_groups (
     "id" SERIAL NOT NULL PRIMARY KEY,
     "user_id" UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    "name" VARCHAR(255) NOT NULL -- 그룹명
+    "name" VARCHAR(255) NOT NULL, -- 그룹명
+    "description" TEXT NOT NULL -- 그룹에 대한 설명
 );
 CREATE INDEX idx_feature_groups_user_id ON feature_groups(user_id);
 

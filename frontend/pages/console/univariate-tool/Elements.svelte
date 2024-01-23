@@ -185,6 +185,8 @@
     color: var(--white);
     display: flex;
     align-items: center;
+    padding-right: 3rem;
+    text-align: start;
   }
   .list__ele__name img {
     margin-left: 0.5rem;

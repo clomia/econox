@@ -594,6 +594,8 @@
     padding: 0.5rem 0;
     border: thin solid rgba(255, 255, 255, 0);
     position: relative;
+    padding-right: 3rem;
+    text-align: start;
   }
   .packet-info__list__ele.selected {
     border-color: rgba(255, 255, 255, 0.2);
@@ -642,6 +644,7 @@
   .packet-info__repr__name {
     color: var(--white);
     font-size: 1.1rem;
+    padding: 0 1rem;
   }
   .packet-info__repr__note {
     color: var(--white);

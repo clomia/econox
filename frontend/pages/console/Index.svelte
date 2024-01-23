@@ -2,6 +2,7 @@
   import { verify } from "../../modules/functions";
   import SearchBar from "./SearchBar.svelte";
   import UnivariateTool from "./univariate-tool/Index.svelte";
+  import MultivariateTool from "./multivariate-tool/Index.svelte";
 
   verify({ conds: { billingOk: true }, failRedirect: "/account" });
 </script>
@@ -9,8 +10,7 @@
 <div class="search-bar"><SearchBar /></div>
 <div class="tools">
   <div class="tool"><UnivariateTool /></div>
-  <div class="tool"><div id="Tool2" /></div>
-  <div class="tool"><div id="Tool3" /></div>
+  <div class="tool"><MultivariateTool /></div>
 </div>
 
 <style>
@@ -29,12 +29,5 @@
 
   .tool {
     margin: 1rem;
-  }
-
-  #Tool2,
-  #Tool3 {
-    width: 44rem;
-    height: 50rem;
-    border: thin solid var(--border-white);
   }
 </style>

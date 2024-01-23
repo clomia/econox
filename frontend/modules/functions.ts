@@ -2,6 +2,7 @@ import axios from "axios";
 import { onMount } from "svelte";
 import { get } from "svelte/store";
 import { navigate } from "svelte-routing";
+import Swal from "sweetalert2";
 import { api } from "./request";
 import { Text, UserInfo, Lang, CountryCodeMap } from "./state";
 import { loadUiText } from "./uiText";
@@ -117,7 +118,7 @@ export const verify = (
     failRedirect = "/",
   }: VerificationArgs = { conds: {} }
 ) => {
-  onMount(() => {
+  onMount(async () => {
     const userInfo = get(UserInfo);
     const failureConditions = [
       login !== null && login !== Boolean(userInfo.id),
@@ -126,6 +127,15 @@ export const verify = (
     ]; // require 혹은 ''(기본값)인 경우는 billingOk가 아님
 
     if (failureConditions.some(Boolean)) {
+      if (billingOk) {
+        const text = get(Text);
+        await Swal.fire({
+          ...defaultSwalStyle,
+          icon: "error",
+          title: text.AccountStatusError,
+          confirmButtonText: text.Ok,
+        });
+      }
       navigate(failRedirect);
     }
   });

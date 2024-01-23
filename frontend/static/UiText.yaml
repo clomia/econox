@@ -394,6 +394,9 @@ Normalize:
 SelectFileFormat:
   en: "Select Your Preferred File Format"
   ko: "원하는 파일 형식을 선택하세요"
+AccountStatusError:
+  en: "Your subscription fee has not been charged. Please check your account status"
+  ko: "구독 비용이 청구되지 않았습니다. 계정 상태를 확인해주세요"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

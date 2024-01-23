@@ -322,8 +322,8 @@ DeleteAccountConfirmCheck:
   en: "Confirmed"
   ko: "확인하였습니다"
 DeactivatedAccountBillingRequire:
-  en: "Your account is deactivate because the membership fee has not been billed. Please activate your account"
-  ko: "맴버십 비용이 청구되지 않아 계정이 비활성화된 상태입니다. 계정을 활성화 해주세요"
+  en: "Billing is required. Please check your account status"
+  ko: "비용 청구가 필요합니다. 계정 상태를 확인해주세요"
 ProfessionalMembershipRequire:
   en: "Your request requires Professional Membership. Please upgrade your account membership"
   ko: "해당 요청은 전문가 맴버십이 필요합니다. 계정의 맴버십을 변경해주세요"
@@ -394,9 +394,6 @@ Normalize:
 SelectFileFormat:
   en: "Select Your Preferred File Format"
   ko: "원하는 파일 형식을 선택하세요"
-AccountStatusError:
-  en: "Your subscription fee has not been charged. Please check your account status"
-  ko: "구독 비용이 청구되지 않았습니다. 계정 상태를 확인해주세요"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

@@ -127,15 +127,6 @@ export const verify = (
     ]; // require 혹은 ''(기본값)인 경우는 billingOk가 아님
 
     if (failureConditions.some(Boolean)) {
-      if (billingOk) {
-        const text = get(Text);
-        await Swal.fire({
-          ...defaultSwalStyle,
-          icon: "error",
-          title: text.AccountStatusError,
-          confirmButtonText: text.Ok,
-        });
-      }
       navigate(failRedirect);
     }
   });

@@ -435,6 +435,7 @@
     height: 2.3rem;
     width: 100%;
     color: rgba(255, 255, 255, 0.3);
+    padding-top: 0.3rem;
   }
   .packet__query > span {
     overflow: hidden;

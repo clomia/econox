@@ -29,5 +29,9 @@
 
   .tool {
     margin: 1rem;
+    margin-bottom: 3rem;
+  }
+  .tools > .tool:last-child {
+    margin-bottom: 0;
   }
 </style>

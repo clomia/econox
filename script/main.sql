@@ -137,7 +137,8 @@ CREATE TABLE feature_groups (
     "id" SERIAL NOT NULL PRIMARY KEY,
     "user_id" UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     "name" VARCHAR(255) NOT NULL, -- 그룹명
-    "description" TEXT NOT NULL -- 그룹에 대한 설명
+    "description" TEXT DEFAULT NULL, -- 그룹에 대한 설명
+    "default_chart" VARCHAR(255) NOT NULL -- 기본 차트 타입
 );
 CREATE INDEX idx_feature_groups_user_id ON feature_groups(user_id);
 

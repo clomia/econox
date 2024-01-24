@@ -239,7 +239,6 @@ class APIRouter:
             tags=[prefix],
             dependencies=[self.allow_professional_user],
         )
-
         # 각 라우터에 대해서 유저 정보애 접근할 수 있도록 Depends 객체를 속성으로 할당
         # Depends는 한번의 API호출에 대해서 한번만 실행되므로 쿼리 반복 실행 등에 대한 걱정 안해도 됌
         # 여기에서는 API 함수가 어떤 라우터를 사용했는지 알 방법이 없으므로 이렇게 제공하는수밖에 없음..

@@ -1,4 +1,3 @@
-from functools import partial
 from datetime import datetime, timedelta
 
 import httpx
@@ -6,7 +5,7 @@ import psycopg
 from fastapi import Body, Depends, HTTPException
 
 from backend import db
-from backend.system import Idempotent, EFS_VOLUME_PATH, log, MEMBERSHIP
+from backend.system import Idempotent, log, MEMBERSHIP
 from backend.math import utcstr2datetime, calc_next_billing_date
 from backend.http import (
     APIRouter,
@@ -119,19 +118,28 @@ async def billing():
     query = "SELECT * FROM users WHERE next_billing_date < now()"
     target_users = await db.SQL(query, fetch="all").exec()
     if not target_users:
-        log.info(
-            f"[GET /webhook/billing: No Action] "
-            "Tosspayments 사용자 중 비용 청구가 필요한 유저가 없습니다."
-        )
+        log.info(f"[GET /webhook/billing: No Action] 비용 처리가 필요한 유저가 없습니다.")
         return {"message": "Process complete (No Action)"}
 
     now = datetime.now()
     deactive = failure = complete = 0
+    deactive_detail = {
+        "non_payer": 0,
+        "deactivater": 0,
+        "benefit_end": 0,
+    }
     sql_list = []
+
     for user in target_users:
-        if user["next_billing_date"] < now - timedelta(days=3) or (
-            user["next_billing_date"] < now and user["billing_status"] == "deactive"
-        ):  # 결제가 누락된 경우 3일 버퍼를 주고, 사용자가 비활성화를 선택한 경우 즉시 계정을 비활성화
+        # 결제가 누락된 유저, 결제일 3일 이후까지 유예기간으로 보고 3일동안 계속 결제를 시도함
+        is_non_payer = user["next_billing_date"] < now - timedelta(days=3)
+        # 결제 비활성화를 선택한 유저는 즉시 상태 적용
+        is_deactivater = user["billing_status"] == "deactive"
+        # 최초 회원가입 혜택이 종료된 유저도 즉시 상태 적용
+        is_benefit_end = not user["origin_billing_date"]
+
+        # 계정 비활성화 대상자 처리
+        if any([is_non_payer, is_deactivater, is_benefit_end]):
             sql_list.append(
                 db.SQL(
                     "UPDATE users SET billing_status='require' WHERE id={id}",
@@ -143,8 +151,14 @@ async def billing():
                 f"User(Email: {user['email']}, membership: {user['membership']}, next_billing_date: {user['next_billing_date']})"
             )
             deactive += 1
+            if is_benefit_end:
+                deactive_detail["benefit_end"] += 1
+            elif is_deactivater:
+                deactive_detail["deactivater"] += 1
+            elif is_non_payer:
+                deactive_detail["non_payer"] += 1
+        # Tosspayments 결제 대상자 처리 (PayPal 결제 대상자 처리는 paypal_payment_webhook 에서 함)
         elif user["currency"] == "KRW" and user["tosspayments_billing_key"]:
-            # Tosspayments 결제
             try:
                 payment = await TosspaymentsBilling(user_id=user["id"]).billing(
                     user["tosspayments_billing_key"],
@@ -204,10 +218,13 @@ async def billing():
     if sql_list:
         await db.exec(*sql_list, parallel=True)  # 각 쿼리가 모두 독립적므로 병렬 처리
 
-    log.info(
-        f"[GET /webhook/billing: 맴버십 비용 처리 완료] "
-        f"Tosspayments 사용자 중 청구 대상자는 {len(target_users)}명입니다. "
+    result = (
+        f"비용 처리가 필요한 대상자는 {len(target_users)}명입니다. "
         f"{complete}명에게 청구를 완료하였으며 청구에 실패한 미납자는 {failure}명 입니다. "
-        f"또한, 3일 이상 청구에 실패하였거나 결제 중지가 요청된 {deactive}개의 계정을 비활성화 하였습니다."
+        f"또한, 3일 이상 청구에 실패한 {deactive_detail['non_payer']}명과 "
+        f"첫달 무료 혜택이 종료된 {deactive_detail['benefit_end']}명, "
+        f"그리고 결제 중지가 요청된 {deactive_detail['deactivater']}명까지 "
+        f"총 {deactive}개의 계정을 비활성화 하였습니다."
     )
-    return {"message": "Process complete", "target_users": target_users}
+    log.info("[GET /webhook/billing: 맴버십 비용 처리 완료] " + result)
+    return {"message": result, "target_users": target_users}

@@ -82,6 +82,7 @@ export interface UiText {
     InvalidInput: "Invalid input" | "입력값이 잘못되었습니다";
     PaymentMethod_Waiting: "Waiting... May take up to 30 minutes" | "결제수단 확인중... 최대 30분 소요됨";
     PaymentMethod_Benefit: "New Member Benefit Applied" | "첫 회원가입 혜택 적용중";
+    PaymentMethod_BenefitEnd: "Payment Method Registration Required" | "결제수단 등록 필요";
     PaymentMethod_ChangeNotAllow_DueDate: "No changes allowed on due date" | "결제 예정일에는 변경할 수 없습니다";
     PaymentMethod_ChangeNotAllow_Waiting: "No changes allowed while payment method is being verified. Please try again in a moment" | "결제수단 확인 중에는 변경할 수 없습니다 잠시 후 다시 시도해주세요";
     PaymentMethod_ChangeCompleted: "Done! We've successfully changed your payment method" | "결제수단이 변경되었습니다";
@@ -89,6 +90,7 @@ export interface UiText {
     PaymentMethod_Enter: "Enter Payment Method" | "결제수단 입력";
     PaymentMethod_EnterNewCard: "Please enter your new card details to update your payment information." | "새롭게 등록할 카드 정보를 입력해주세요";
     PaymentMethod_Benefit_ChangeAlert: "Since the New Member Benefit is active, there is no need to register a payment method" | "첫 회원가입 혜택이 적용중이므로 결제수단 등록이 필요하지 않습니다";
+    PaymentMethod_BenefitEnd_ChangeAlert: "Your one-month free trial offered as a first-time signup benefit has ended.  Please click the 'Activate Account' button to register your payment method and start your membership!" | "첫 회원가입 혜택으로 제공된 한달 무료 사용이 종료되었습니다.  '계정 활성화' 버튼을 눌러 결제수단을 등록하고 맴버십을 시작하세요!";
     PaymentHistoryLimit: "Only the last 15 payment transactions will be displayed" | "결제 내역은 최근 15건까지만 표시됩니다";
     AlreadyProgressPleaseWait: "Your request is already in progress. Please wait a moment" | "요청이 이미 처리 중입니다. 잠시만 기다려주세요";
     StopBilling: "Suspend Billing" | "결제 중단";
@@ -101,7 +103,6 @@ export interface UiText {
     AccountStatusActive: "Account status: Active" | "계정 상태가 정상입니다";
     AccountStatusDeactive: "Account status: Deactive" | "계정이 비활성 상태입니다";
     ConnotStopPayment: "You have no registered payment method" | "등록된 결제수단이 존재하지 않습니다";
-    WillMembershipBilling: "Membership fee will be charged" | "맴버십 비용이 결제됩니다";
     DeleteAccountMessage: "Your account will be immediately deleted.  Any payments made will not be refunded. This action is irreversible.  All personal data will be destroyed after a certain period of time.  If your intention is to stop payments, please use the 'Suspend Billing' feature.  To delete your account, please enter 'Confirmed'" | "계정이 즉시 삭제됩니다. 결제된 금액은 환불되지 않습니다. 이 작업은 되돌릴 수 없습니다.  모든 개인정보는 일정 기간이 지난 후 파기됩니다. 비용 결제 중단이 목적이라면 결제 중단 기능을 사용하세요.  계정을 삭제하려면 '확인하였습니다' 를 입력해주세요";
     DeleteAccountConfirmCheck: "Confirmed" | "확인하였습니다";
     DeactivatedAccountBillingRequire: "Billing is required. Please check your account status" | "비용 청구가 필요합니다. 계정 상태를 확인해주세요";
@@ -140,4 +141,5 @@ export interface UiText {
     f_FactorLoadingInfo: "Collecting factors for {element}..." | "{element}에 대한 펙터를 수집 중입니다...";
     f_ChartLoadingInfo: "Collecting data on {factor} related to {element}..." | "{element}에 대한 {factor} 데이터를 수집 중입니다...";
     f_TheElementDoesNotContainThisFactor: "We attempted to collect data for {factor} related to {element},  but were unable to find any. This outcome has been reflected in our service.  Thank you for contributing to the improvement of our service." | "{element}에 대한 {factor} 데이터 수집을 시도하였으나 데이터를 찾지 못하였습니다.  이 결과를 서비스에 반영하였습니다. 서비스 개선에 기여해주셔서 감사합니다.";
+    f_WillMembershipBilling: "The selected {membership} Membership fee of {amount} will be charged." | "선택된 {membership} 맴버십 비용({amount})이 결제됩니다.";
 }

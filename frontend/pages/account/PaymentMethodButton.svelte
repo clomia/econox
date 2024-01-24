@@ -70,13 +70,23 @@
     if (!available) {
       return;
     } else if (!$UserInfo["billing"]["registered"]) {
-      // -> Benefit~
-      await Swal.fire({
-        ...SwalStyle,
-        icon: "info",
-        showDenyButton: false,
-        title: $Text.PaymentMethod_Benefit_ChangeAlert,
-      });
+      if ($UserInfo["billing"]["status"] == "active") {
+        // -> Benefit~
+        await Swal.fire({
+          ...SwalStyle,
+          icon: "info",
+          showDenyButton: false,
+          title: $Text.PaymentMethod_Benefit_ChangeAlert,
+        });
+      } else {
+        await Swal.fire({
+          ...SwalStyle,
+          width: "33rem",
+          icon: "info",
+          showDenyButton: false,
+          title: $Text.PaymentMethod_BenefitEnd_ChangeAlert,
+        });
+      }
     } else if ($UserInfo["billing"]["currency"] === "USD") {
       // -> PayPal!
       loading = true;
@@ -117,7 +127,11 @@
     if ($UserInfo["billing"]["registered"]) {
       currentBillingMethodString = $Text.PaymentMethod_Waiting;
     } else {
-      currentBillingMethodString = $Text.PaymentMethod_Benefit;
+      if ($UserInfo["billing"]["status"] == "active") {
+        currentBillingMethodString = $Text.PaymentMethod_Benefit;
+      } else {
+        currentBillingMethodString = $Text.PaymentMethod_BenefitEnd;
+      }
     }
   }
 

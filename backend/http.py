@@ -180,33 +180,34 @@ class ServiceTokenBearer(CognitoTokenBearer):
         super().__init__()
         self.authority = authority
 
+    @staticmethod
+    def billing_status_handler(db_user):
+        if db_user["billing_status"] == "require":
+            if db_user["origin_billing_date"]:  # 대금 미납 유저 & 비활성화를 선택한 유저
+                raise HTTPException(
+                    status_code=402,
+                    detail="This account has unpaid membership fees. Payment is required",
+                )
+            else:  # 최초 회원가입 종료자
+                msg = "The benefit for this account have ended. Payment is required"
+                raise HTTPException(  # 최초 회원가입 혜택 종료로 인한 402 에러라는 점을 헤더를 통해 알립니다.
+                    status_code=402, detail=msg, headers={"Benefit-End": msg}
+                )
+
     async def __call__(self, request: Request) -> dict:
         try:
             db_user = await super().__call__(request)
         except HTTPException as e:
             raise e
-        match self.authority:
-            case "all":  # 서비스 회원 모두 허용
-                return db_user
-            case "basic":  # 맴버십이 basic 이상인 회원만 허용
-                if db_user["billing_status"] == "require":
-                    raise HTTPException(
-                        status_code=402,
-                        detail="This account has unpaid membership fees. Payment is required",
-                    )
-                return db_user
-            case "professional":  # 맴버십이 professional 이상인 회원만 허용
-                if db_user["billing_status"] == "require":
-                    raise HTTPException(
-                        status_code=402,
-                        detail="This account has unpaid membership fees. Payment is required",
-                    )
-                if db_user["membership"] != "professional":
-                    raise HTTPException(
-                        status_code=403,
-                        detail="Professional membership is required. Your membership is basic",
-                    )
-                return db_user
+        if self.authority != "all":  # 맴버십 회원만 허용
+            self.billing_status_handler(db_user)
+        if self.authority == "professional":  # 맴버십이 professional 이상인 회원만 허용
+            if db_user["membership"] != "professional":
+                raise HTTPException(
+                    status_code=403,
+                    detail="Professional membership is required. Your membership is basic",
+                )
+        return db_user
 
 
 class APIRouter:

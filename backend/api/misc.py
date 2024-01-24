@@ -36,7 +36,7 @@ async def get_request_country(request: Request):
             "timezone": client_info.timezone,
         }
     except AttributeError:  # if host is localhost
-        # default = {"country": "KR", "timezone": "Asia/Seoul"}
+        default = {"country": "KR", "timezone": "Asia/Seoul"}
         default = {"country": "US", "timezone": "America/Chicago"}
         log.warning(
             "GET /country"

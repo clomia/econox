@@ -4,7 +4,7 @@
   import { paypalWidget } from "../../modules/paypal";
   import { Text, UserInfo } from "../../modules/state";
   import { api } from "../../modules/request";
-  import { defaultSwalStyle } from "../../modules/functions";
+  import { defaultSwalStyle, format } from "../../modules/functions";
   import type { AxiosError } from "axios";
 
   let status: string;
@@ -125,10 +125,27 @@
       const e = error as AxiosError;
       if (e.response?.status === 402) {
         let deny = false;
+        let membership: string = "";
+        let amount: string = "";
+        if ($UserInfo.membership === "basic") {
+          membership = $Text.BasicPlan;
+          if ($UserInfo.billing.currency == "USD") {
+            amount = $Text.BasicPlanDollerPrice;
+          } else if ($UserInfo.billing.currency == "KRW") {
+            amount = $Text.BasicPlanWonPrice;
+          }
+        } else if ($UserInfo.membership === "professional") {
+          membership = $Text.ProfessionalPlan;
+          if ($UserInfo.billing.currency == "USD") {
+            amount = $Text.ProfessionalPlanDollerPrice;
+          } else if ($UserInfo.billing.currency == "KRW") {
+            amount = $Text.ProfessionalPlanWonPrice;
+          }
+        }
         await Swal.fire({
           ...defaultSwalStyle,
           icon: "info",
-          title: $Text.WillMembershipBilling,
+          title: format($Text.f_WillMembershipBilling, { membership, amount }),
           denyButtonText: $Text.Cancel,
           confirmButtonText: $Text.Ok,
           preDeny: () => {

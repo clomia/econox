@@ -247,6 +247,9 @@ PaymentMethod_Waiting:
 PaymentMethod_Benefit:
   en: "New Member Benefit Applied"
   ko: "첫 회원가입 혜택 적용중"
+PaymentMethod_BenefitEnd:
+  en: "Payment Method Registration Required"
+  ko: "결제수단 등록 필요"
 PaymentMethod_ChangeNotAllow_DueDate:
   en: "No changes allowed on due date"
   ko: "결제 예정일에는 변경할 수 없습니다"
@@ -268,6 +271,13 @@ PaymentMethod_EnterNewCard:
 PaymentMethod_Benefit_ChangeAlert:
   en: "Since the New Member Benefit is active, there is no need to register a payment method"
   ko: "첫 회원가입 혜택이 적용중이므로 결제수단 등록이 필요하지 않습니다"
+PaymentMethod_BenefitEnd_ChangeAlert:
+  en: >
+    Your one-month free trial offered as a first-time signup benefit has ended. 
+    Please click the 'Activate Account' button to register your payment method and start your membership!
+  ko: >
+    첫 회원가입 혜택으로 제공된 한달 무료 사용이 종료되었습니다. 
+    '계정 활성화' 버튼을 눌러 결제수단을 등록하고 맴버십을 시작하세요!
 PaymentHistoryLimit:
   en: "Only the last 15 payment transactions will be displayed"
   ko: "결제 내역은 최근 15건까지만 표시됩니다"
@@ -304,9 +314,6 @@ AccountStatusDeactive:
 ConnotStopPayment:
   en: "You have no registered payment method"
   ko: "등록된 결제수단이 존재하지 않습니다"
-WillMembershipBilling:
-  en: "Membership fee will be charged"
-  ko: "맴버십 비용이 결제됩니다"
 DeleteAccountMessage:
   en: >
     Your account will be immediately deleted. 
@@ -438,3 +445,6 @@ f_TheElementDoesNotContainThisFactor:
   ko: >
     {element}에 대한 {factor} 데이터 수집을 시도하였으나 데이터를 찾지 못하였습니다. 
     이 결과를 서비스에 반영하였습니다. 서비스 개선에 기여해주셔서 감사합니다.
+f_WillMembershipBilling:
+  en: "The selected {membership} Membership fee of {amount} will be charged."
+  ko: "선택된 {membership} 맴버십 비용({amount})이 결제됩니다."

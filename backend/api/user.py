@@ -603,9 +603,14 @@ async def activate_billing(item: BillingRestore, user=router.private.user):
         - 결제 주기를 벗어나 비활성화된 계정에 대해서는 결제정보를 받아 다시 청구를 재개해야 하므로 402을 응답합니다.
         - 결제정보가 올바르지 않은 경우에도 402 에러가 응답됩니다.
     """
-    if not payment_method_exists(user):
-        raise HTTPException(  # 첫 회원가입 혜택 대상자는 청구 비활성/활성 동작이 유효하지 않습니다.
-            status_code=409, detail="There is no registered payment method"
+    is_benefit_end = not payment_method_exists(user)
+    proper_payment_method_in_request = (  # 통화 종류에 맞는 결제 정보가 요청에 들어있는지 확인
+        user["currency"] == "KRW" and item.tosspayments
+    ) or (user["currency"] == "USD" and item.paypal)
+    if is_benefit_end and not proper_payment_method_in_request:
+        raise HTTPException(
+            status_code=402,
+            detail="Your first membership offer has ended, so we need your payment information",
         )
     if user["billing_status"] == "active":
         raise HTTPException(status_code=409, detail="You are already activated")
@@ -614,7 +619,8 @@ async def activate_billing(item: BillingRestore, user=router.private.user):
     now = datetime.now()
     if user["next_billing_date"] - timedelta(days=1) < now:  # 결제 주기를 벗어남 (계정 정지 상태)
         # 결제가 정확한 시간에 이루어지는게 아니라서 결제 예정일 하루 전을 기준으로 함, paypal 웹훅 딜레이 있어서 billing_status로 구분하면 안됌
-        if user["currency"] == "USD" and user["paypal_subscription_id"]:  # Paypal
+        # 결제 예정일 당일에 처리하면 Paypal 결제 웹훅 처리와 중복되어 2번 결제, 구독될 위험성이 있기 때문
+        if user["currency"] == "USD":  # Paypal
             if not item.paypal:
                 raise HTTPException(
                     status_code=402,
@@ -623,20 +629,21 @@ async def activate_billing(item: BillingRestore, user=router.private.user):
             next_billing_date = await get_paypal_next_billing_date(
                 item.paypal.subscription  # 새로운 구독의 유효성 확인 & 다음 결제일 가져오기
             )
-            await PayPalAPI(  # 기존 paypal 구독 취소
-                f"/v1/billing/subscriptions/{user['paypal_subscription_id']}/cancel"
-            ).post({"reason": "Reactivate Billing"})
+            if user["paypal_subscription_id"]:
+                await PayPalAPI(  # 기존 paypal 구독 취소
+                    f"/v1/billing/subscriptions/{user['paypal_subscription_id']}/cancel"
+                ).post({"reason": "Reactivate Billing"})
             sql_list.append(
                 db.SQL(
-                    "UPDATE users SET paypal_subscription_id={subscription_id} WHERE id={user_id}",
+                    "UPDATE users SET paypal_subscription_id={subscription_id}, billing_method={method} WHERE id={user_id}",
                     params={
                         "subscription_id": item.paypal.subscription,
+                        "method": "Paypal",
                         "user_id": user["id"],
                     },
                 )
             )
-        if user["currency"] == "KRW" and user["tosspayments_billing_key"]:
-            # Tosspayments
+        if user["currency"] == "KRW":  # Tosspayments
             if not item.tosspayments:
                 raise HTTPException(
                     status_code=402,
@@ -665,8 +672,12 @@ async def activate_billing(item: BillingRestore, user=router.private.user):
             else:
                 sql_list.append(
                     db.SQL(
-                        "UPDATE users SET tosspayments_billing_key={new_key} WHERE id={id}",
-                        params={"new_key": new_billing_key, "id": user["id"]},
+                        "UPDATE users SET tosspayments_billing_key={new_key}, billing_method={method} WHERE id={id}",
+                        params={
+                            "new_key": new_billing_key,
+                            "method": payment["card"]["number"],
+                            "id": user["id"],
+                        },
                     )
                 )
                 sql_list.append(
@@ -706,7 +717,7 @@ async def activate_billing(item: BillingRestore, user=router.private.user):
             )
         )
     else:  # 아직 결제 주기 안에 있음 (계정 정지 예정인 상태)
-        if user["currency"] == "USD" and user["paypal_subscription_id"]:  # PayPal
+        if user["currency"] == "USD" and user["paypal_subscription_id"]:
             try:
                 await PayPalAPI(  # paypal 구독 재활성화
                     f"/v1/billing/subscriptions/{user['paypal_subscription_id']}/activate"

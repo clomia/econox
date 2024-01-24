@@ -187,6 +187,15 @@
 
     return `${year}.${month}.${day} ${hours}:${minutes}:${seconds}`;
   };
+
+  let windowHeight: number;
+  $: if (packetInfoOn && windowHeight) {
+    console.log(windowHeight);
+    // 패킷 창이 떠도 body의 높이가 따라 변하지 않는 문제가 있어서 이렇게 해결
+    document.body.style.height = `${windowHeight + 100}px`;
+  } else {
+    document.body.style.height = "";
+  }
 </script>
 
 <main>
@@ -229,8 +238,8 @@
 </main>
 
 {#if packetInfoOn}
-  <div id="membrane" />
-  <div id="window">
+  <div class="membrane" />
+  <div class="window" bind:offsetHeight={windowHeight}>
     <section class="packet-info">
       <button class="packet-info__close-button" on:click={closePacketInfo}>
         <CloseButton />
@@ -356,7 +365,7 @@
   main {
     width: 44rem;
   }
-  #membrane {
+  .membrane {
     position: fixed;
     z-index: 9999;
     top: 0;
@@ -365,7 +374,7 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.2);
   }
-  #window {
+  .window {
     position: absolute;
     top: 0;
     left: 0;

@@ -279,7 +279,16 @@ async def get_user_detail(user=router.private.user):
 
 @router.private.delete()
 async def user_delete(user=router.private.user):
-    """DB와 Cognito에서 유저 삭제 (회원탈퇴)"""
+    """
+    - 회원 탈퇴
+    - DB와 Cognito에서 유저 삭제
+    - PayPal 사용자인 경우 구독 해지
+        - Tosspayments 사용자는 DB 유저만 지워지면 결제 중지됨
+    """
+    if user["paypal_subscription_id"]:
+        await PayPalAPI(
+            f"/v1/billing/subscriptions/{user['paypal_subscription_id']}/cancel"
+        ).post({"reason": "Delete account"})
     delete_user = db.SQL(
         "DELETE FROM users WHERE id={user_id}", params={"user_id": user["id"]}
     )

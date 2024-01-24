@@ -74,9 +74,11 @@
     }
     await Swal.fire({
       ...SwalStyle,
+      width: "35rem",
       text: $Text.PasswordChangeSuccessful,
       icon: "success",
       confirmButtonText: $Text.Ok,
+      showDenyButton: false,
       showLoaderOnConfirm: false,
     });
     await logout();

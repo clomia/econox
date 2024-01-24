@@ -397,6 +397,11 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.u
         - 구독 생성 시 GET /api/paypal/membership-change-subscription-start-time 를 사용하세요
     - Response: 조정된 다음 청구일시
     """
+    if not user["billing_status"] == "active":
+        raise HTTPException(
+            status_code=409,
+            detail="Account is deactivated. Please activate your account first",
+        )
     if (  # new_membership값이 올바른지 확인
         user["membership"] == item.new_membership
         or item.new_membership not in MEMBERSHIP
@@ -512,6 +517,11 @@ class PaymentMethodInfo(BaseModel):
 @router.private.patch("/payment-method")
 async def change_payment_method(item: PaymentMethodInfo, user=router.private.user):
     """결제수단을 변경합니다. PG사 변경은 불가능합니다."""
+    if not user["billing_status"] == "active":
+        raise HTTPException(
+            status_code=409,
+            detail="Account is deactivated. Please activate your account first",
+        )
     if user["currency"] == "KRW" and item.tosspayments:
         tosspayments = TosspaymentsBilling(user_id=user["id"])
         try:
@@ -639,9 +649,14 @@ async def activate_billing(item: BillingRestore, user=router.private.user):
                 item.paypal.subscription  # 새로운 구독의 유효성 확인 & 다음 결제일 가져오기
             )
             if user["paypal_subscription_id"]:
-                await PayPalAPI(  # 기존 paypal 구독 취소
-                    f"/v1/billing/subscriptions/{user['paypal_subscription_id']}/cancel"
-                ).post({"reason": "Reactivate Billing"})
+                subscription = await PayPalAPI(
+                    f"/v1/billing/subscriptions/{user['paypal_subscription_id']}"
+                ).get()
+                # 사용자가 PayPal 서비스에서 구독을 캔슬할 수 있으므로 핸들링
+                if subscription["status"] != "CANCELLED":
+                    await PayPalAPI(  # 기존 paypal 구독 취소
+                        f"/v1/billing/subscriptions/{user['paypal_subscription_id']}/cancel"
+                    ).post({"reason": "Reactivate Billing"})
             sql_list.append(
                 db.SQL(
                     "UPDATE users SET paypal_subscription_id={subscription_id}, billing_method={method} WHERE id={user_id}",

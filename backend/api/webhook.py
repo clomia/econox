@@ -115,7 +115,7 @@ async def billing():
     - 대금이 지불되지 않았거나 비활성화된 계정의 맴버십 유효기간이 지난 경우 계정을 비활성화한다.
     """
 
-    query = "SELECT * FROM users WHERE next_billing_date < now()"
+    query = "SELECT * FROM users WHERE next_billing_date < now() AND NOT billing_status='require'"
     target_users = await db.SQL(query, fetch="all").exec()
     if not target_users:
         log.info(f"[GET /webhook/billing: No Action] 비용 처리가 필요한 유저가 없습니다.")

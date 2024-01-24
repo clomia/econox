@@ -84,7 +84,8 @@ export interface UiText {
     PaymentMethod_Benefit: "New Member Benefit Applied" | "첫 회원가입 혜택 적용중";
     PaymentMethod_BenefitEnd: "Payment Method Registration Required" | "결제수단 등록 필요";
     PaymentMethod_ChangeNotAllow_DueDate: "No changes allowed on due date" | "결제 예정일에는 변경할 수 없습니다";
-    PaymentMethod_ChangeNotAllow_Waiting: "No changes allowed while payment method is being verified. Please try again in a moment" | "결제수단 확인 중에는 변경할 수 없습니다 잠시 후 다시 시도해주세요";
+    PaymentMethod_ChangeNotAllow_StatusError: "This is an account with payment deactivated. Please check your account status" | "결제가 비활성화 된 계정입니다. 계정 상태를 확인해주세요";
+    PaymentMethod_ChangeNotAllow_Waiting: "Changes cannot be made while the payment method is being verified. Please try again after a moment. Refresh the page to update the status" | "결제수단 확인 중에는 변경할 수 없습니다. 잠시 후 다시 시도해주세요. 상태를 업데이트하려면 페이지를 새로고침하세요";
     PaymentMethod_ChangeCompleted: "Done! We've successfully changed your payment method" | "결제수단이 변경되었습니다";
     PaymentMethod_Change: "Update Payment Method" | "결제수단 변경";
     PaymentMethod_Enter: "Enter Payment Method" | "결제수단 입력";
@@ -142,5 +143,5 @@ export interface UiText {
     f_FactorLoadingInfo: "Collecting factors for {element}..." | "{element}에 대한 펙터를 수집 중입니다...";
     f_ChartLoadingInfo: "Collecting data on {factor} related to {element}..." | "{element}에 대한 {factor} 데이터를 수집 중입니다...";
     f_TheElementDoesNotContainThisFactor: "We attempted to collect data for {factor} related to {element},  but were unable to find any. This outcome has been reflected in our service.  Thank you for contributing to the improvement of our service." | "{element}에 대한 {factor} 데이터 수집을 시도하였으나 데이터를 찾지 못하였습니다.  이 결과를 서비스에 반영하였습니다. 서비스 개선에 기여해주셔서 감사합니다.";
-    f_WillMembershipBilling: "The selected {membership} Membership fee of {amount} will be charged." | "선택된 {membership} 맴버십 비용({amount})이 결제됩니다.";
+    f_WillMembershipBilling: "The {membership} Membership fee of {amount} will be charged." | "{membership} 맴버십 비용({amount})이 결제됩니다.";
 }

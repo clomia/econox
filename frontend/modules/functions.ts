@@ -2,7 +2,6 @@ import axios from "axios";
 import { onMount } from "svelte";
 import { get } from "svelte/store";
 import { navigate } from "svelte-routing";
-import Swal from "sweetalert2";
 import { api } from "./request";
 import { Text, UserInfo, Lang, CountryCodeMap } from "./state";
 import { loadUiText } from "./uiText";

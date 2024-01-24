@@ -41,6 +41,16 @@
    * @returns 결제정보 수정 가능 여부
    */
   const billingChangeAvailableCheck = async (): Promise<boolean> => {
+    if ($UserInfo["billing"]["status"] !== "active") {
+      await Swal.fire({
+        ...SwalStyle,
+        width: "30rem",
+        icon: "info",
+        showDenyButton: false,
+        title: $Text.PaymentMethod_ChangeNotAllow_StatusError,
+      });
+      return false;
+    }
     if (
       $UserInfo["billing"]["currency"] === "USD" &&
       $UserInfo["billing"]["registered"]
@@ -115,7 +125,10 @@
 
   const membershipChange = (target: "basic" | "professional") => {
     return async () => {
-      if (membershipChangeLoader) {
+      const available = await billingChangeAvailableCheck();
+      if (!available) {
+        return;
+      } else if (membershipChangeLoader) {
         // 이미 전송된 동일한 요청을 계속 보내지 못하도록
         return await Swal.fire({
           ...defaultToastStyle,
@@ -132,10 +145,6 @@
             membership: membershipMapping[$UserInfo["membership"]],
           }),
         });
-      }
-      const available = await billingChangeAvailableCheck();
-      if (!available) {
-        return;
       } else if (
         $UserInfo["billing"]["currency"] === "USD" &&
         $UserInfo["billing"]["registered"]

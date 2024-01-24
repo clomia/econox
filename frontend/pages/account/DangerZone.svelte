@@ -84,6 +84,7 @@
     loading = false;
     await Swal.fire({
       ...defaultSwalStyle,
+      width: "27rem",
       icon: "info",
       showDenyButton: false,
       title: $Text.StopBillingComplete,

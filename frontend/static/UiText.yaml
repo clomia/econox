@@ -401,6 +401,9 @@ Normalize:
 SelectFileFormat:
   en: "Select Your Preferred File Format"
   ko: "원하는 파일 형식을 선택하세요"
+DeleteAccountComplete:
+  en: "Your account has been successfully deleted"
+  ko: "탈퇴가 완료되었습니다"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

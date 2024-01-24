@@ -10,6 +10,7 @@
     UnivariateFactorSelected,
   } from "../../../../modules/state";
   import { downloadFile } from "../functions";
+  import type { ElementType, FactorType } from "../../../../modules/state";
 
   export let normalized: boolean;
 
@@ -25,10 +26,11 @@
 
   const current = {
     normalized,
-    elementSection: $UnivariateElementSelected.section,
-    elementCode: $UnivariateElementSelected.code,
-    factorSection: $UnivariateFactorSelected.section.code,
-    factorCode: $UnivariateFactorSelected.code,
+    // 이 다운로드 컴포넌트가 실행되었으면 무조건 단변량이 선택되어 있음
+    elementSection: ($UnivariateElementSelected as ElementType).section,
+    elementCode: ($UnivariateElementSelected as ElementType).code,
+    factorSection: ($UnivariateFactorSelected as FactorType).section.code,
+    factorCode: ($UnivariateFactorSelected as FactorType).code,
   };
   let downloading = false;
   const downloadCsv = async () => {

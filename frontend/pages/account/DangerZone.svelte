@@ -4,7 +4,7 @@
   import { paypalWidget } from "../../modules/paypal";
   import { Text, UserInfo } from "../../modules/state";
   import { api } from "../../modules/request";
-  import { defaultSwalStyle, format } from "../../modules/functions";
+  import { defaultSwalStyle, format, logout } from "../../modules/functions";
   import type { AxiosError } from "axios";
 
   let status: string;
@@ -192,8 +192,25 @@
       inputPlaceholder: $Text.DeleteAccountConfirmCheck,
       preConfirm: async (input: string) => {
         if (input === $Text.DeleteAccountConfirmCheck) {
-          await api.private.delete("/user");
-          location.reload();
+          try {
+            await api.private.delete("/user");
+            await Swal.fire({
+              ...defaultSwalStyle,
+              icon: "info",
+              showDenyButton: false,
+              title: $Text.DeleteAccountComplete,
+              confirmButtonText: $Text.Ok,
+            });
+            await logout();
+          } catch {
+            await Swal.fire({
+              ...defaultSwalStyle,
+              icon: "error",
+              showDenyButton: false,
+              title: $Text.UnexpectedError,
+              confirmButtonText: $Text.Ok,
+            });
+          }
         } else {
           Swal.showValidationMessage($Text.InvalidInput);
         }

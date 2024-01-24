@@ -128,6 +128,7 @@ export interface UiText {
     ElementLoadingInfo: "Loading elements saved in the account..." | "계정에 저장된 요소들을 불러오는 중입니다...";
     Normalize: "Normalize" | "정규화";
     SelectFileFormat: "Select Your Preferred File Format" | "원하는 파일 형식을 선택하세요";
+    DeleteAccountComplete: "Your account has been successfully deleted" | "탈퇴가 완료되었습니다";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

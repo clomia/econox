@@ -174,9 +174,10 @@ class SQL:
 
 
 class InsertSQL(SQL):
-    def __init__(self, table: str, **params):
+    def __init__(self, table: str, returning: bool = False, **params):
         """
         - table: 데이터를 삽입할 테이블
+        - returning: 실행 시 삽입에 성공한 레코드가 모두 반환됩니다.
         - params: 컬럼명, 값 쌍들
         """
         keys = tuple(params.keys())
@@ -184,7 +185,9 @@ class InsertSQL(SQL):
         values_str = ", ".join([f"{{{key}}}" for key in keys])
         # 테이블 이름은 파라미터화 할 수 없습니다.
         query = f"INSERT INTO {table} {keys_str} VALUES ({values_str})"
-        super().__init__(query, params, fetch=False)
+        if returning:
+            query += " RETURNING *"
+        super().__init__(query, params, fetch="one" if returning else False)
 
 
 class ManyInsertSQL(SQL):

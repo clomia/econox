@@ -2,12 +2,13 @@
 - /api/feature/... 
 - feature를 다루는 기능을 제공합니다. ( user <-> element <-> factor )
 """
+import random
 import asyncio
 from math import ceil
 from typing import Literal
 
 import psycopg
-from pydantic import constr
+from pydantic import BaseModel, constr
 from fastapi import HTTPException, Query
 
 from backend import db
@@ -230,3 +231,68 @@ async def get_factor_from_element(
     pages = ceil(len(all_factors) / per_page)
     factors = await asyncio.gather(*[translate(factor) for factor in target])
     return {"factors": factors, "pages": pages}
+
+
+@router.basic.post("/group")
+async def create_feature_group(
+    name: constr(min_length=1, max_length=200),  # DB->VARCHAR(255)
+    description: str,
+    user=router.basic.user,
+):
+    feature_group = await db.InsertSQL(
+        table="feature_groups",
+        returning=True,
+        user_id=user["id"],
+        name=name,
+        description=description,
+    ).exec()
+    return {"message": f"Feature group created", "group_id": feature_group["id"]}
+
+
+class Property(BaseModel):
+    section: constr(min_length=1)
+    code: constr(min_length=1)
+
+
+class GroupFeature(BaseModel):
+    """그룹에 속한 피쳐 정의"""
+
+    group_id: int
+    element: Property
+    factor: Property
+
+
+color_palette = [
+    "rgb(60,100,255)",
+    "rgb(225, 170, 54)",
+    "rgb(240, 244, 250)",
+    "rgb(255, 252, 44)",
+    "rgb(170, 128, 234)",
+    "rgb(1,245,178)",
+    "rgb(250, 160, 244)",
+    "rgb(255, 200, 90)",
+    "rgb(250, 110, 200)",
+]
+
+
+@router.basic.post("/group/feature")
+async def insert_feature_in_feature_group(item: GroupFeature, user=router.basic.user):
+    features = await db.SQL(
+        "SELECT * FROM feature_groups_features WHERE feature_group_id={group_id}",
+        params={"group_id": item.group_id},
+        fetch="all",
+    ).exec()
+    exist_colors = [feature["feature_color"] for feature in features]  # 그룹에서 이미 사용중인 색들
+    available_colors = [color for color in color_palette if color not in exist_colors]
+    color = available_colors[0] if available_colors else random.choice(color_palette)
+
+    """
+    INSERT INTO feature_groups_features (feature_group_id, feature_color, feature_id)
+    SELECT {group_id}, {color}, ef.id
+    FROM elements e
+    JOIN factors f ON e.section = {ele_section} AND e.code = {ele_code}
+    JOIN elements_factors ef ON ef.element_id = e.id AND ef.factor_id = f.id
+    WHERE f.section = {fac_section} AND f.code = {fac_code};
+    """
+
+    # https://chat.openai.com/share/3685dee5-6bca-41d3-aff9-3719836f7535

@@ -78,7 +78,7 @@ async def insert_element_to_user(
     params = {"user_id": user["id"], "section": section, "code": code}
     await db.SQL(query, params).exec()
     # 실제로 삭제 동작을 했는지는 모르지만 결과가 무결하므로 200 응답
-    return {"message": "As a result, element does not exist in user"}
+    return {"message": f"As a result, {code} element does not exist in user"}
 
 
 @router.basic.get("/user/elements")
@@ -233,20 +233,65 @@ async def get_factor_from_element(
     return {"factors": factors, "pages": pages}
 
 
+class FeatureGroupInit(BaseModel):
+    name: constr(min_length=1, max_length=200)  # DB->VARCHAR(255)
+    description: str
+
+
 @router.basic.post("/group")
 async def create_feature_group(
-    name: constr(min_length=1, max_length=200),  # DB->VARCHAR(255)
-    description: str,
+    item: FeatureGroupInit,
     user=router.basic.user,
 ):
+    """유저에게 피쳐 그룹을 생성하고 그룹 아이디를 응답합니다."""
     feature_group = await db.InsertSQL(
         table="feature_groups",
         returning=True,
         user_id=user["id"],
-        name=name,
-        description=description,
+        name=item.name,
+        description=item.description,
     ).exec()
     return {"message": f"Feature group created", "group_id": feature_group["id"]}
+
+
+class FeatureGroupUpdate(BaseModel):
+    group_id: int
+    name: constr(min_length=1) | None = None
+    description: str | None = None
+    chart_type: constr(min_length=1) | None = None
+    normalized: bool | None = None
+
+
+@router.basic.patch("/group")
+async def update_feature_group(item: FeatureGroupUpdate):
+    """
+    - 피쳐 그룹의 정보를 업데이트합니다.
+    - 요청 본문에 group_id 명시 후 업데이트하고자 하는 필드만 정의해주세요.
+        - 업데이트 가능 필드: name, description, chart_type, normalized
+    """
+    values = ""
+    if item.name is not None:
+        values += "name={name},"
+    if item.description is not None:
+        values += "description={description},"
+    if item.chart_type is not None:
+        values += "chart_type={chart_type},"
+    if item.normalized is not None:
+        values += "normalized={normalized},"
+    values = values.rstrip(",")
+    await db.SQL(
+        f"UPDATE feature_groups SET {values} WHERE " "id={group_id}", params=dict(item)
+    ).exec()
+    return {"message": f"Feature group({item.group_id}) update complete"}
+
+
+@router.basic.delete("/group")
+async def delete_feature_group(group_id: int):
+    """유저에게서 피쳐 그룹을 제거합니다."""
+    await db.SQL(
+        "DELETE FROM feature_groups WHERE id={id}", params={"id": group_id}
+    ).exec()
+    return {"message": f"As a result, {group_id} feature group does not exist in user"}
 
 
 class Property(BaseModel):
@@ -277,6 +322,7 @@ color_palette = [
 
 @router.basic.post("/group/feature")
 async def insert_feature_in_feature_group(item: GroupFeature, user=router.basic.user):
+    """피쳐 그룹에 피쳐를 추가합니다."""
     features = await db.SQL(
         "SELECT * FROM feature_groups_features WHERE feature_group_id={group_id}",
         params={"group_id": item.group_id},
@@ -286,7 +332,7 @@ async def insert_feature_in_feature_group(item: GroupFeature, user=router.basic.
     available_colors = [color for color in color_palette if color not in exist_colors]
     color = available_colors[0] if available_colors else random.choice(color_palette)
 
-    """
+    insert_query = """
     INSERT INTO feature_groups_features (feature_group_id, feature_color, feature_id)
     SELECT {group_id}, {color}, ef.id
     FROM elements e
@@ -294,5 +340,18 @@ async def insert_feature_in_feature_group(item: GroupFeature, user=router.basic.
     JOIN elements_factors ef ON ef.element_id = e.id AND ef.factor_id = f.id
     WHERE f.section = {fac_section} AND f.code = {fac_code};
     """
+    await db.SQL(
+        insert_query,
+        params={
+            "group_id": item.group_id,
+            "color": color,
+            "ele_section": item.element.section,
+            "ele_code": item.element.code,
+            "fac_section": item.factor.section,
+            "fac_code": item.factor.code,
+        },
+    ).exec()
 
-    # https://chat.openai.com/share/3685dee5-6bca-41d3-aff9-3719836f7535
+    return {
+        "message": f"A feature has been added to the feature group({item.group_id})"
+    }

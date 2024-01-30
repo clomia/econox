@@ -57,7 +57,7 @@ async def insert_element_to_user(
 
 
 @router.basic.delete("/user/element")
-async def insert_element_to_user(
+async def delete_element_from_user(
     code: constr(min_length=1),
     section: ele_section_type,
     user=router.basic.user,
@@ -82,7 +82,7 @@ async def insert_element_to_user(
 
 
 @router.basic.get("/user/elements")
-async def get_element_from_user(lang: str, user=router.basic.user):
+async def get_elements_from_user(lang: str, user=router.basic.user):
     """
     - 유저에게 저장된 엘리먼트들을 가져옵니다.
     - lang: 응답 데이터의 언어 (ISO 639-1)
@@ -111,7 +111,7 @@ async def get_element_from_user(lang: str, user=router.basic.user):
 
 
 @router.basic.get("/element/factors")
-async def get_factor_from_element(
+async def get_factors_from_element(
     element_code: str,
     element_section: str,
     lang: str = Query(..., min_length=2, max_length=2),  # ISO Alpha-2 (2글자만 허용)
@@ -239,7 +239,7 @@ class FeatureGroupInit(BaseModel):
 
 
 @router.basic.post("/group")
-async def create_feature_group(
+async def create_feature_group_to_user(
     item: FeatureGroupInit,
     user=router.basic.user,
 ):
@@ -289,7 +289,7 @@ async def update_feature_group(item: FeatureGroupUpdate, user=router.basic.user)
 
 
 @router.basic.delete("/group")
-async def delete_feature_group(group_id: int, user=router.basic.user):
+async def delete_feature_group_from_user(group_id: int, user=router.basic.user):
     """
     - 유저에게서 피쳐 그룹을 제거합니다.
     - 유저가 소유하지 않은 피쳐 그룹을 요청한 경우 200을 응답하나, 제거되지 않습니다.
@@ -299,6 +299,11 @@ async def delete_feature_group(group_id: int, user=router.basic.user):
         params={"group_id": group_id, "user_id": user["id"]},
     ).exec()
     return {"message": "Request processed"}
+
+
+@router.basic.get("/groups")
+async def get_feature_groups_from_user(user=router.basic.user):
+    pass
 
 
 class ElementProperty(BaseModel):
@@ -333,12 +338,12 @@ color_palette = [
 
 
 @router.basic.post("/group/feature")
-async def insert_feature_in_feature_group(item: GroupFeature, user=router.basic.user):
+async def insert_feature_to_feature_group(item: GroupFeature, user=router.basic.user):
     """
     - 피쳐 그룹에 피쳐를 추가합니다.
     - 유저가 소유하지 않은 피쳐 그룹을 요청한 경우 409 클라이언트 에러를 응답합니다.
     """
-    ownership = await db.SQL(
+    ownership = await db.SQL(  # 소유권 확인 쿼리
         """ 
         SELECT EXISTS (
             SELECT * FROM feature_groups 

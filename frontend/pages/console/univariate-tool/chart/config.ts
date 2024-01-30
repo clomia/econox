@@ -202,17 +202,24 @@ export const option = (
     },
     tooltip: {
       formatter: (params: any) => {
+        const data = params instanceof Array ? params[0].data : params.data;
         const formatter = new Intl.NumberFormat(undefined, {
           maximumFractionDigits: 2,
           useGrouping: true,
         });
-        return `${params.data[0]} ${formatter.format(params.data[1])}`;
+        return `${data[0]} ${formatter.format(data[1])}`;
       },
       backgroundColor: "rgb(44, 57, 75)",
       borderColor: "rgba(255,255,255,0.6)",
       padding: [3, 7],
       textStyle: { color: "white" },
       extraCssText: "border-radius: 1.5px;",
+    },
+    axisPointer: {
+      show: true,
+      snap: true,
+      triggerEmphasis: false, // 강조 표시 버그 해결
+      label: { show: false }, // 미관상 방해되서 없앰
     },
   };
 };

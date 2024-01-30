@@ -2,6 +2,7 @@
 - /api/feature/... 
 - feature를 다루는 기능을 제공합니다. ( user <-> element <-> factor )
 """
+import re
 import random
 import asyncio
 from math import ceil
@@ -9,7 +10,7 @@ from typing import Literal
 from collections import defaultdict
 
 import psycopg
-from pydantic import BaseModel, constr
+from pydantic import BaseModel, constr, validator
 from fastapi import HTTPException, Query
 
 from backend import db
@@ -190,7 +191,7 @@ async def get_factors_from_element(
         params={"section": element_section, "code": element_code},
     ).exec()
     db_element = await db.SQL(  # Element ID 가져오기
-        "SELECT * FROM elements WHERE section={s} and code={c}",
+        "SELECT * FROM elements WHERE section={s} AND code={c}",
         {"s": element_section, "c": element_code},
         fetch="one",
     ).exec()
@@ -269,7 +270,7 @@ async def update_feature_group(item: FeatureGroupUpdate, user=router.basic.user)
     - 피쳐 그룹의 정보를 업데이트합니다.
     - 요청 본문에 group_id 명시 후 업데이트하고자 하는 필드만 정의해주세요.
         - 업데이트 가능 필드: name, description, chart_type, normalized
-    - 유저가 소유하지 않은 피쳐 그룹을 요청한 경우 200을 응답하나, 아무런 변화도 일어나지 않습니다.
+    - 유저가 소유하지 않은 피쳐 그룹에 대해서는 200을 응답하지만, 아무런 변화도 일어나지 않습니다.
     """
     values = ""
     if item.name is not None:
@@ -283,7 +284,7 @@ async def update_feature_group(item: FeatureGroupUpdate, user=router.basic.user)
     values = values.rstrip(",")
     await db.SQL(
         f"UPDATE feature_groups SET {values} WHERE "
-        "id={group_id} and user_id={user_id}",
+        "id={group_id} AND user_id={user_id}",
         params=dict(item) | {"user_id": user["id"]},
     ).exec()
     return {"message": f"Feature group({item.group_id}) update complete"}
@@ -293,10 +294,10 @@ async def update_feature_group(item: FeatureGroupUpdate, user=router.basic.user)
 async def delete_feature_group_from_user(group_id: int, user=router.basic.user):
     """
     - 유저에게서 피쳐 그룹을 제거합니다.
-    - 유저가 소유하지 않은 피쳐 그룹을 요청한 경우 200을 응답하나, 제거되지 않습니다.
+    - 유저가 소유하지 않은 피쳐 그룹에 대해서는 200을 응답하나, 제거되지 않습니다.
     """
     await db.SQL(
-        "DELETE FROM feature_groups WHERE id={group_id} and user_id={user_id}",
+        "DELETE FROM feature_groups WHERE id={group_id} AND user_id={user_id}",
         params={"group_id": group_id, "user_id": user["id"]},
     ).exec()
     return {"message": "Request processed"}
@@ -328,7 +329,7 @@ async def get_feature_groups_from_user(user=router.basic.user):
     LEFT JOIN elements_factors ef ON fgf.feature_id = ef.id
     LEFT JOIN elements e ON ef.element_id = e.id
     LEFT JOIN factors f ON ef.factor_id = f.id
-    WHERE fg.user_id = {user_id};
+    WHERE fg.user_id = {user_id}
     """
     features = await db.SQL(query, params={"user_id": user["id"]}, fetch="all").exec()
 
@@ -363,6 +364,7 @@ async def get_feature_groups_from_user(user=router.basic.user):
     array = [{"id": group_id} | tree[group_id] for group_id in tree.keys()]
     array.sort(key=lambda group: group["created"], reverse=True)
 
+    # todo 아무런 피쳐도 없는 그룹에 피쳐 리스트는 비어있어야 함
     def feature_sort(feature) -> int:
         """그룹에 아무런 피쳐도 없는 경우 added 값이 None이므로 정렬 함수를 이렇게 구성하였다."""
         if feature["added"] is None:
@@ -385,7 +387,7 @@ class FactorProperty(BaseModel):
     code: constr(min_length=1)
 
 
-class GroupFeature(BaseModel):
+class GroupFeatureInit(BaseModel):
     """그룹에 속한 피쳐 정의"""
 
     group_id: int
@@ -407,36 +409,24 @@ color_palette = [
 
 
 @router.basic.post("/group/feature")
-async def insert_feature_to_feature_group(item: GroupFeature, user=router.basic.user):
+async def insert_feature_to_feature_group(
+    item: GroupFeatureInit, user=router.basic.user
+):
     """
     - 피쳐 그룹에 피쳐를 추가합니다.
-    - 유저가 소유하지 않은 피쳐 그룹을 요청한 경우 409 클라이언트 에러를 응답합니다.
-    - 유효하지 않은 피쳐에 대해서는 200을 응답하나, 아무런 동작도 하지 않습니다.
+    - 유저가 소유하지 않은 피쳐 그룹이거나 유효하지 않은 피쳐에 대해서도 200을 응답하나, 아무런 동작도 하지 않습니다.
         - 이 API는 실제로 시계열 데이터 수집에 성공했던 피쳐만 다룹니다.
         - 이 API를 사용하기 전에 별도의 데이터 조회 API를 통해 유효한 피쳐인지 확인하세요.
+    - 이미 그룹에 존재하는 피쳐를 중복하여 추가하는 요청에는 409 에러를 응답합니다.
     """
-    ownership = await db.SQL(  # 소유권 확인 쿼리
-        """ 
-        SELECT EXISTS (
-            SELECT * FROM feature_groups 
-            WHERE id={group_id} and user_id={user_id} 
-        )
-        """,
-        params={"group_id": item.group_id, "user_id": user["id"]},
-        fetch="one",
-    ).exec()
-    if not ownership["exists"]:
-        raise HTTPException(  # 401, 402, 403은 frontend에서 처리하는 로직과 의미가 맞지 않아서 409 사용
-            status_code=409, detail="This user has no ownership of the feature group"
-        )
 
     features = await db.SQL(
         "SELECT * FROM feature_groups_features WHERE feature_group_id={group_id}",
         params={"group_id": item.group_id},
         fetch="all",
     ).exec()
-
-    exist_colors = [feature["feature_color"] for feature in features]  # 그룹에서 이미 사용중인 색들
+    # 피쳐 색상을 설정하기 위해 기존에 할당된 모든 색을 불러옵니다.
+    exist_colors = [feature["feature_color"] for feature in features]
     available_colors = [color for color in color_palette if color not in exist_colors]
     color = available_colors[0] if available_colors else random.choice(color_palette)
 
@@ -446,11 +436,17 @@ async def insert_feature_to_feature_group(item: GroupFeature, user=router.basic.
     FROM elements e
     JOIN factors f ON e.section = {ele_section} AND e.code = {ele_code}
     JOIN elements_factors ef ON ef.element_id = e.id AND ef.factor_id = f.id
-    WHERE f.section = {fac_section} AND f.code = {fac_code};
-    """
-    await db.SQL(
+    WHERE f.section = {fac_section} AND f.code = {fac_code}
+    AND EXISTS (
+        SELECT 1
+        FROM feature_groups
+        WHERE id = {group_id} AND user_id = {user_id}
+    )
+    """  # EXISTS 조건에서 유저의 그룹 소유권을 확인합니다.
+    sql = db.SQL(
         insert_query,
         params={
+            "user_id": user["id"],
             "group_id": item.group_id,
             "color": color,
             "ele_section": item.element.section,
@@ -458,8 +454,76 @@ async def insert_feature_to_feature_group(item: GroupFeature, user=router.basic.
             "fac_section": item.factor.section,
             "fac_code": item.factor.code,
         },
-    ).exec()
+    )
+    try:
+        await sql.exec()
+    except psycopg.errors.UniqueViolation:
+        raise HTTPException(
+            status_code=409, detail="The feature already exists in the group"
+        )
 
-    return {
-        "message": f"A feature has been added to the feature group({item.group_id})"
-    }
+    return {"message": f"Feature has been added to the feature group({item.group_id})"}
+
+
+class GroupFeatureUpdateTarget(BaseModel):
+    color: str
+
+    @validator("color")
+    def validate_color(cls, v):
+        """color는 rgb 형식의 CSS 호환 문자열만 허용됩니다."""
+        pattern = r"rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)"
+        if not re.match(pattern, v):
+            raise ValueError("Invalid RGB color format")
+        r, g, b = map(int, re.match(pattern, v).groups())
+        if not all(0 <= val <= 255 for val in [r, g, b]):
+            raise ValueError("RGB values must be between 0 and 255")
+        return v
+
+
+class GroupFeatureUpdate(BaseModel):
+    group_id: int
+    element: ElementProperty
+    factor: FactorProperty
+    target: GroupFeatureUpdateTarget
+
+
+@router.basic.patch("/group/feature")  # 변경 가능한 부분은 color밖에 없음
+async def update_feature_from_feature_group(
+    item: GroupFeatureUpdate, user=router.basic.user
+):
+    """
+    - 피쳐 그룹에 속한 피쳐의 속성을 변경합니다.
+        - 변경 가능한 유일한 속성은 color 입니다.
+    - 유저가 소유하지 않은 피쳐 그룹이거나 유효하지 않은 피쳐에 대해서도 200을 응답하나, 아무런 동작도 하지 않습니다.
+    """
+    query = """
+    UPDATE feature_groups_features
+    SET feature_color = {color}
+    WHERE feature_group_id IN (
+        SELECT id
+        FROM feature_groups
+        WHERE user_id = {user_id}
+    )
+    AND feature_id = (
+        SELECT ef.id
+        FROM elements_factors ef
+        JOIN elements e ON ef.element_id = e.id
+        JOIN factors f ON ef.factor_id = f.id
+        WHERE e.section = {element_section}
+        AND e.code = {element_code}
+        AND f.section = {factor_section}
+        AND f.code = {factor_code}
+    )
+    """  # IN 조건절에서 유저의 피쳐 그룹 소유권을 확인합니다.
+    await db.SQL(
+        query,
+        params={
+            "color": item.target.color,
+            "user_id": user["id"],
+            "element_section": item.element.section,
+            "element_code": item.element.code,
+            "factor_section": item.factor.section,
+            "factor_code": item.factor.code,
+        },
+    ).exec()
+    return {"message": "complete"}

@@ -18,13 +18,13 @@ from backend.integrate import get_element
 
 router = APIRouter("feature")
 
-section_type = Literal["symbol", "country", "custom"]
+ele_section_type = Literal["symbol", "country", "custom"]
 
 
 @router.basic.post("/user/element")
 async def insert_element_to_user(
     code: constr(min_length=1),
-    section: section_type,
+    section: ele_section_type,
     user=router.basic.user,
 ):
     """엘리먼트를 유저에게 저장합니다."""
@@ -59,7 +59,7 @@ async def insert_element_to_user(
 @router.basic.delete("/user/element")
 async def insert_element_to_user(
     code: constr(min_length=1),
-    section: section_type,
+    section: ele_section_type,
     user=router.basic.user,
 ):
     # Element 검증은 저장할때 하므로 삭제할떄는 필요없음
@@ -263,11 +263,12 @@ class FeatureGroupUpdate(BaseModel):
 
 
 @router.basic.patch("/group")
-async def update_feature_group(item: FeatureGroupUpdate):
+async def update_feature_group(item: FeatureGroupUpdate, user=router.basic.user):
     """
     - 피쳐 그룹의 정보를 업데이트합니다.
     - 요청 본문에 group_id 명시 후 업데이트하고자 하는 필드만 정의해주세요.
         - 업데이트 가능 필드: name, description, chart_type, normalized
+    - 유저가 소유하지 않은 피쳐 그룹을 요청한 경우 200을 응답하나, 아무런 변화도 일어나지 않습니다.
     """
     values = ""
     if item.name is not None:
@@ -280,21 +281,32 @@ async def update_feature_group(item: FeatureGroupUpdate):
         values += "normalized={normalized},"
     values = values.rstrip(",")
     await db.SQL(
-        f"UPDATE feature_groups SET {values} WHERE " "id={group_id}", params=dict(item)
+        f"UPDATE feature_groups SET {values} WHERE "
+        "id={group_id} and user_id={user_id}",
+        params=dict(item) | {"user_id": user["id"]},
     ).exec()
     return {"message": f"Feature group({item.group_id}) update complete"}
 
 
 @router.basic.delete("/group")
-async def delete_feature_group(group_id: int):
-    """유저에게서 피쳐 그룹을 제거합니다."""
+async def delete_feature_group(group_id: int, user=router.basic.user):
+    """
+    - 유저에게서 피쳐 그룹을 제거합니다.
+    - 유저가 소유하지 않은 피쳐 그룹을 요청한 경우 200을 응답하나, 제거되지 않습니다.
+    """
     await db.SQL(
-        "DELETE FROM feature_groups WHERE id={id}", params={"id": group_id}
+        "DELETE FROM feature_groups WHERE id={group_id} and user_id={user_id}",
+        params={"group_id": group_id, "user_id": user["id"]},
     ).exec()
-    return {"message": f"As a result, {group_id} feature group does not exist in user"}
+    return {"message": "Request processed"}
 
 
-class Property(BaseModel):
+class ElementProperty(BaseModel):
+    section: ele_section_type
+    code: constr(min_length=1)
+
+
+class FactorProperty(BaseModel):
     section: constr(min_length=1)
     code: constr(min_length=1)
 
@@ -303,8 +315,8 @@ class GroupFeature(BaseModel):
     """그룹에 속한 피쳐 정의"""
 
     group_id: int
-    element: Property
-    factor: Property
+    element: ElementProperty
+    factor: FactorProperty
 
 
 color_palette = [
@@ -322,12 +334,31 @@ color_palette = [
 
 @router.basic.post("/group/feature")
 async def insert_feature_in_feature_group(item: GroupFeature, user=router.basic.user):
-    """피쳐 그룹에 피쳐를 추가합니다."""
+    """
+    - 피쳐 그룹에 피쳐를 추가합니다.
+    - 유저가 소유하지 않은 피쳐 그룹을 요청한 경우 409 클라이언트 에러를 응답합니다.
+    """
+    ownership = await db.SQL(
+        """ 
+        SELECT EXISTS (
+            SELECT * FROM feature_groups 
+            WHERE id={group_id} and user_id={user_id} 
+        )
+        """,
+        params={"group_id": item.group_id, "user_id": user["id"]},
+        fetch="one",
+    ).exec()
+    if not ownership["exists"]:
+        raise HTTPException(  # 401, 402, 403은 frontend에서 처리하는 로직과 의미가 맞지 않아서 409 사용
+            status_code=409, detail="This user has no ownership of the feature group"
+        )
+
     features = await db.SQL(
         "SELECT * FROM feature_groups_features WHERE feature_group_id={group_id}",
         params={"group_id": item.group_id},
         fetch="all",
     ).exec()
+
     exist_colors = [feature["feature_color"] for feature in features]  # 그룹에서 이미 사용중인 색들
     available_colors = [color for color in color_palette if color not in exist_colors]
     color = available_colors[0] if available_colors else random.choice(color_palette)

@@ -30,7 +30,6 @@ print(element) # {'id': 8, 'section': 'country', 'code': 'AAPLE'}
 from __future__ import annotations
 
 import re
-import time
 import json
 import asyncio
 from typing import List, Tuple, Dict, Any, Literal

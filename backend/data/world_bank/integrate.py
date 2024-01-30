@@ -13,11 +13,11 @@ from backend.data.world_bank.data_class import *
 
 class Country:
     attr_name = {  # 펙터 클래스에 대한 속성 이름
-        "Trade": "trade",
-        "Natural": "natural",
         "Population": "population",
-        "Industry": "industry",
         "Economy": "economy",
+        "Natural": "natural",
+        "Trade": "trade",
+        "Industry": "industry",
     }
 
     def __init__(self, code: str):
@@ -32,17 +32,17 @@ class Country:
         self.info = {"name": None, "note": None}
         self.is_loaded = False
         (
-            self.trade,
-            self.natural,
             self.population,
-            self.industry,
             self.economy,
+            self.natural,
+            self.trade,
+            self.industry,
         ) = self.sections = [
-            Trade(code),
-            Natural(code),
             Population(code),
-            Industry(code),
             Economy(code),
+            Natural(code),
+            Trade(code),
+            Industry(code),
         ]
 
     def __repr__(self) -> str:

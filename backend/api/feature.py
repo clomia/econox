@@ -345,7 +345,8 @@ async def get_feature_groups_from_user(user=router.basic.user):
 
         if tree[group_id].get("features") is None:
             tree[group_id]["features"] = []
-
+        if feature["group_feature_created"] is None:
+            continue  # 피쳐 그룹에 아무런 피쳐도 없는 경우이다.
         tree[group_id]["features"].append(
             {
                 "added": feature["group_feature_created"],
@@ -364,15 +365,8 @@ async def get_feature_groups_from_user(user=router.basic.user):
     array = [{"id": group_id} | tree[group_id] for group_id in tree.keys()]
     array.sort(key=lambda group: group["created"], reverse=True)
 
-    # todo 아무런 피쳐도 없는 그룹에 피쳐 리스트는 비어있어야 함
-    def feature_sort(feature) -> int:
-        """그룹에 아무런 피쳐도 없는 경우 added 값이 None이므로 정렬 함수를 이렇게 구성하였다."""
-        if feature["added"] is None:
-            return 0
-        return feature["added"].timestamp()
-
     for group in array:  # 모든 그룹에 대해 피쳐를 추가한 날짜 순으로 정렬
-        group["features"].sort(key=feature_sort, reverse=True)
+        group["features"].sort(key=lambda ft: ft["added"], reverse=True)
 
     return array
 
@@ -526,4 +520,4 @@ async def update_feature_from_feature_group(
             "factor_code": item.factor.code,
         },
     ).exec()
-    return {"message": "complete"}
+    return {"message": "update completed"}

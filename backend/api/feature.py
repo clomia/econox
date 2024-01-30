@@ -6,6 +6,7 @@ import random
 import asyncio
 from math import ceil
 from typing import Literal
+from collections import defaultdict
 
 import psycopg
 from pydantic import BaseModel, constr
@@ -303,7 +304,75 @@ async def delete_feature_group_from_user(group_id: int, user=router.basic.user):
 
 @router.basic.get("/groups")
 async def get_feature_groups_from_user(user=router.basic.user):
-    pass
+    """
+    - 유저가 소유한 모든 피쳐 그룹과 피쳐 그룹에 속한 모든 피쳐를 응답합니다.
+    - 모든 배열은 요소의 생성, 수정 날짜에 따라 정렬되어 있습니다.
+        - 최근에 변경된 것이 앞으로 오도록
+    """
+    query = """
+    SELECT 
+        fg.id AS group_id,
+        fg.name AS group_name,
+        fg.description AS group_description,
+        fg.chart_type AS group_chart_type,
+        fg.normalized AS group_normalized,
+        fg.created AS group_created,
+        fgf.feature_color AS group_feature_color,
+        fgf.created AS group_feature_created,
+        e.section AS feature_element_section,
+        e.code AS feature_element_code,
+        f.section AS feature_factor_section,
+        f.code AS feature_factor_code
+    FROM feature_groups fg
+    LEFT JOIN feature_groups_features fgf ON fg.id = fgf.feature_group_id
+    LEFT JOIN elements_factors ef ON fgf.feature_id = ef.id
+    LEFT JOIN elements e ON ef.element_id = e.id
+    LEFT JOIN factors f ON ef.factor_id = f.id
+    WHERE fg.user_id = {user_id};
+    """
+    features = await db.SQL(query, params={"user_id": user["id"]}, fetch="all").exec()
+
+    tree = defaultdict(dict)
+    for feature in features:
+        group_id = feature["group_id"]
+
+        tree[group_id]["created"] = feature["group_created"]
+        tree[group_id]["name"] = feature["group_name"]
+        tree[group_id]["description"] = feature["group_description"]
+        tree[group_id]["chart_type"] = feature["group_chart_type"]
+        tree[group_id]["normalized"] = feature["group_normalized"]
+
+        if tree[group_id].get("features") is None:
+            tree[group_id]["features"] = []
+
+        tree[group_id]["features"].append(
+            {
+                "added": feature["group_feature_created"],
+                "color": feature["group_feature_color"],
+                "element": {
+                    "section": feature["feature_element_section"],
+                    "code": feature["feature_element_code"],
+                },
+                "factor": {
+                    "section": feature["feature_factor_section"],
+                    "code": feature["feature_factor_code"],
+                },
+            }
+        )
+
+    array = [{"id": group_id} | tree[group_id] for group_id in tree.keys()]
+    array.sort(key=lambda group: group["created"], reverse=True)
+
+    def feature_sort(feature) -> int:
+        """그룹에 아무런 피쳐도 없는 경우 added 값이 None이므로 정렬 함수를 이렇게 구성하였다."""
+        if feature["added"] is None:
+            return 0
+        return feature["added"].timestamp()
+
+    for group in array:  # 모든 그룹에 대해 피쳐를 추가한 날짜 순으로 정렬
+        group["features"].sort(key=feature_sort, reverse=True)
+
+    return array
 
 
 class ElementProperty(BaseModel):
@@ -342,6 +411,9 @@ async def insert_feature_to_feature_group(item: GroupFeature, user=router.basic.
     """
     - 피쳐 그룹에 피쳐를 추가합니다.
     - 유저가 소유하지 않은 피쳐 그룹을 요청한 경우 409 클라이언트 에러를 응답합니다.
+    - 유효하지 않은 피쳐에 대해서는 200을 응답하나, 아무런 동작도 하지 않습니다.
+        - 이 API는 실제로 시계열 데이터 수집에 성공했던 피쳐만 다룹니다.
+        - 이 API를 사용하기 전에 별도의 데이터 조회 API를 통해 유효한 피쳐인지 확인하세요.
     """
     ownership = await db.SQL(  # 소유권 확인 쿼리
         """ 

@@ -4,6 +4,7 @@
   import Factors from "./Factors.svelte";
   import Note from "./Note.svelte";
   import Chart from "./chart/Index.svelte";
+  import GroupButton from "./GroupButton.svelte";
   import { setElements } from "./functions";
   import { Text } from "../../../modules/state";
 
@@ -22,6 +23,7 @@
   {/await}
   <div class="note"><Note /></div>
   <div class="chart"><Chart /></div>
+  <div class="group-button"><GroupButton /></div>
 </main>
 
 <style>

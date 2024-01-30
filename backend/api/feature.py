@@ -294,7 +294,7 @@ async def update_feature_group(item: FeatureGroupUpdate, user=router.basic.user)
 async def delete_feature_group_from_user(group_id: int, user=router.basic.user):
     """
     - 유저에게서 피쳐 그룹을 제거합니다.
-    - 유저가 소유하지 않은 피쳐 그룹에 대해서는 200을 응답하나, 제거되지 않습니다.
+    - 유저가 소유하지 않은 피쳐 그룹에 대해서도 200을 응답하지만, 제거되지 않습니다.
     """
     await db.SQL(
         "DELETE FROM feature_groups WHERE id={group_id} AND user_id={user_id}",

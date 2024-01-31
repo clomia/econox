@@ -15,6 +15,9 @@
   const selectGroup = async (group: FeatureGroupType) => {
     $FeatureGroupSelected = group;
   };
+  const deleteGroup = async (group: FeatureGroupType) => {
+    console.log(group, "삭제해야대~");
+  };
 </script>
 
 <main>
@@ -44,7 +47,9 @@
           {group.name}
         </button>
         <button class="list__group__edit"> <EditIcon /> </button>
-        <button class="list__group__delete"> <MinusIcon size={1.2} /> </button>
+        <button class="list__group__delete" on:click={() => deleteGroup(group)}>
+          <MinusIcon size={1.2} />
+        </button>
       </div>
     {/each}
   </div>

@@ -14,7 +14,7 @@ from pydantic import BaseModel, constr, validator
 from fastapi import HTTPException, Query
 
 from backend import db
-from backend.math import datetime2utcstr
+from backend.math import datetime2utcstr, utcstr2datetime
 from backend.http import APIRouter
 from backend.integrate import get_element
 
@@ -337,7 +337,7 @@ async def get_feature_groups_from_user(user=router.basic.user):
     for feature in features:
         group_id = feature["group_id"]
 
-        tree[group_id]["created"] = feature["group_created"]
+        tree[group_id]["created"] = datetime2utcstr(feature["group_created"])
         tree[group_id]["name"] = feature["group_name"]
         tree[group_id]["description"] = feature["group_description"]
         tree[group_id]["chart_type"] = feature["group_chart_type"]
@@ -349,7 +349,7 @@ async def get_feature_groups_from_user(user=router.basic.user):
             continue  # 피쳐 그룹에 아무런 피쳐도 없는 경우이다.
         tree[group_id]["features"].append(
             {
-                "added": feature["group_feature_created"],
+                "added": datetime2utcstr(feature["group_feature_created"]),
                 "color": feature["group_feature_color"],
                 "element": {
                     "section": feature["feature_element_section"],
@@ -363,10 +363,12 @@ async def get_feature_groups_from_user(user=router.basic.user):
         )
 
     array = [{"id": group_id} | tree[group_id] for group_id in tree.keys()]
-    array.sort(key=lambda group: group["created"], reverse=True)
+    array.sort(key=lambda group: utcstr2datetime(group["created"]), reverse=True)
 
     for group in array:  # 모든 그룹에 대해 피쳐를 추가한 날짜 순으로 정렬
-        group["features"].sort(key=lambda ft: ft["added"], reverse=True)
+        group["features"].sort(
+            key=lambda ft: utcstr2datetime(ft["added"]), reverse=True
+        )
 
     return array
 

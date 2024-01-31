@@ -4,7 +4,8 @@
   import Magnifier from "../../../assets/icon/Magnifier.svelte";
   import MinusIcon from "../../../assets/icon/MinusIcon.svelte";
   import Check from "../../../assets/icon/Check.svelte";
-  import { deleteElement, setFactors, attrQuerySort } from "./functions";
+  import { deleteElement, setFactors } from "./functions";
+  import { attrQuerySort } from "../../../modules/functions";
   import { Text, CountryCodeMap } from "../../../modules/state";
   import {
     UnivariateElements,

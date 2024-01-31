@@ -95,6 +95,26 @@ export interface ChartSourceType {
   [key: string]: SourceType;
 }
 
+export interface FeatureGroupType {
+  id: number;
+  created: string;
+  name: string;
+  description: string;
+  chart_type: string;
+  normalized: boolean;
+  features: {
+    added: string;
+    color: string;
+    element: {
+      section: string;
+      code: string;
+    };
+    factor: {
+      section: string;
+      code: string;
+    };
+  }[];
+}
 // ============= 전역적으로 사용되는 상태들 =============
 
 export const Lang = writable("en");
@@ -177,3 +197,7 @@ export const UnivariateNoteHovered = writable<CurrentNoteTargetType>({
 });
 
 export const UnivariateChartSource = writable<ChartSourceType>({});
+
+// console.multivariate-tool 상태
+export const FeatureGroups = writable<FeatureGroupType[]>([]);
+export const FeatureGroupSelected = writable<FeatureGroupType | null>(null);

@@ -10,7 +10,8 @@
     UnivariateFactorsProgress,
   } from "../../../modules/state";
   import { format } from "../../../modules/functions";
-  import { attrQuerySort, setChartSource } from "./functions";
+  import { setChartSource } from "./functions";
+  import { attrQuerySort } from "../../../modules/functions";
   import type { FactorType } from "../../../modules/state";
 
   const select = async (fac: FactorType) => {

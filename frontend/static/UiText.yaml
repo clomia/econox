@@ -410,6 +410,9 @@ SelectFileFormat:
 DeleteAccountComplete:
   en: "Your account has been successfully deleted"
   ko: "탈퇴가 완료되었습니다"
+TextSpaceNotAllowed:
+  en: "Spaces are not allowed"
+  ko: "공백 문자는 허용되지 않습니다"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

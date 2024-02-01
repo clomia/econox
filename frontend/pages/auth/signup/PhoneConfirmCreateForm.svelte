@@ -4,6 +4,7 @@
   import { getCountryCallingCode } from "libphonenumber-js";
   import { api } from "../../../modules/request";
   import { Text, auth } from "../../../modules/state";
+  import { inputStrip } from "../../../modules/functions";
   import CircleDotLoader from "../../../assets/animation/CircleDotLoader.svelte";
   import type { CountryCode } from "libphonenumber-js";
 
@@ -56,7 +57,12 @@
   {/await}
   <label class="phone-number">
     <span>{$Text.EnterPhoneNumber}</span>
-    <input bind:value={phoneNumber} name="phone" type="text" />
+    <input
+      bind:value={phoneNumber}
+      name="phone"
+      type="text"
+      on:input={inputStrip}
+    />
   </label>
   <div class="message">{message}</div>
   {#if !(response instanceof Promise)}

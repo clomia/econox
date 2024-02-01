@@ -1,7 +1,7 @@
 <svg
-  height="512"
+  height="16"
   viewBox="0 0 512 512"
-  width="512"
+  width="16"
   xmlns="http://www.w3.org/2000/svg"
   ><g id="_02_User" data-name="02 User"
     ><path
@@ -11,3 +11,9 @@
     /></g
   ></svg
 >
+
+<style>
+  svg {
+    fill: white;
+  }
+</style>

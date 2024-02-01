@@ -2,7 +2,7 @@
   import Swal from "sweetalert2";
   import { Text, UserInfo } from "../../modules/state";
   import { api } from "../../modules/request";
-  import { defaultSwalStyle, logout } from "../../modules/functions";
+  import { defaultSwalStyle, logout, hasGap } from "../../modules/functions";
   import type { AxiosError } from "axios";
 
   const SwalStyle = {
@@ -19,7 +19,10 @@
       input: "password",
       text: $Text.EnterNewPassword,
       preConfirm: async (input: string) => {
-        if (input.length < 6) {
+        if (input.length === 0) {
+          Swal.showValidationMessage($Text.TextSpaceNotAllowed);
+          return;
+        } else if (input.length < 6) {
           Swal.showValidationMessage($Text.IncorrectPasswordLength);
           return;
         }

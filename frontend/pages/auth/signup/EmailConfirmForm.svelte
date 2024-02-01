@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from "svelte";
   import { api } from "../../../modules/request";
-  import { secondToString } from "../../../modules/functions";
+  import { secondToString, inputStrip } from "../../../modules/functions";
   import { Text, auth } from "../../../modules/state";
   import CircleDotLoader from "../../../assets/animation/CircleDotLoader.svelte";
   import type { AxiosResponse } from "axios";
@@ -86,6 +86,7 @@
         name="code"
         placeholder={placeHolder}
         autocomplete="off"
+        on:input={inputStrip}
       />
     </label>
   </section>

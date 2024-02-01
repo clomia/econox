@@ -2,6 +2,7 @@
   import Swal from "sweetalert2";
   import { Text, UserInfo } from "../../modules/state";
   import { api } from "../../modules/request";
+  import { strip } from "../../modules/functions";
   import { defaultSwalStyle, format } from "../../modules/functions";
 
   const SwalStyle = {
@@ -24,7 +25,7 @@
           return;
         }
         try {
-          await api.private.patch("/user/name", { new_name: newName });
+          await api.private.patch("/user/name", { new_name: strip(newName) });
           location.reload();
         } catch {
           Swal.showValidationMessage($Text.UnexpectedError);

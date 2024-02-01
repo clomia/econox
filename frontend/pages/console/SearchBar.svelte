@@ -18,7 +18,12 @@
   import Megaphone from "../../assets/icon/Megaphone.svelte";
   import { api } from "../../modules/request";
   import { Text, Lang, UnivariateElements } from "../../modules/state";
-  import { defaultSwalStyle, format, isSame } from "../../modules/functions";
+  import {
+    defaultSwalStyle,
+    format,
+    isSame,
+    strip,
+  } from "../../modules/functions";
   import CloseButton from "../../components/CloseButton.svelte";
   import type { ElementType, RespPacketType } from "../../modules/state";
 
@@ -78,7 +83,7 @@
 
   let inputText = "";
   const createPacket = async () => {
-    const query = inputText.trim();
+    const query = strip(inputText.trim());
     if (!query) {
       return;
     }

@@ -1,8 +1,13 @@
 <script lang="ts">
-  import { login, defaultSwalStyle, format } from "../../modules/functions";
+  import Swal from "sweetalert2";
+  import {
+    login,
+    defaultSwalStyle,
+    format,
+    inputStrip,
+  } from "../../modules/functions";
   import { Text } from "../../modules/state";
   import { api } from "../../modules/request";
-  import Swal from "sweetalert2";
   import CircleDotLoader from "../../assets/animation/CircleDotLoader.svelte";
   import CircleLoader from "../../assets/animation/CircleLoader.svelte";
   import type { AxiosResponse, AxiosError } from "axios";
@@ -141,6 +146,7 @@
         type="text"
         name="email"
         autocomplete="email"
+        on:input={inputStrip}
       />
     </label>
   </section>
@@ -152,6 +158,7 @@
         type="password"
         name="password"
         autocomplete="current-password"
+        on:input={inputStrip}
       />
       <button on:click={resetPassword} type="button" class="reset-password-btn"
         >{$Text.ForgotPassword}</button

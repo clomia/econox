@@ -271,19 +271,22 @@ export const querySort = (arr: string[], query: string): string[] => {
  * @param attrKey 검색 속성, 2단계 이상의 깊이는 배열을 통해 정의
  * @returns 정렬된 배열
  */
-export const attrQuerySort = (
-  arr: any[],
+export const attrQuerySort = <T>(
+  arr: T[],
   query: string,
-  attrKey: string | string[]
-): any[] => {
+  attrKey: keyof T | Array<keyof T>
+): T[] => {
   const _arr = [...arr];
-  const result: any[] = [];
+  const result: T[] = [];
 
   const getAttr = (obj: any) => {
     if (typeof attrKey === "string") {
-      return obj[attrKey];
+      return obj[attrKey as keyof T];
     } else if (Array.isArray(attrKey)) {
-      return attrKey.reduce((currentObj, key) => currentObj[key], obj);
+      return attrKey.reduce(
+        (currentObj, key) => currentObj[key as keyof T],
+        obj
+      );
     }
   };
 
@@ -297,4 +300,26 @@ export const attrQuerySort = (
     }
   });
   return result;
+};
+
+/**
+ * 문자열 input 요소에 on:input 헨들러로 달아놓으면 공백 입력을 막아줍니다.
+ */
+export const inputStrip = (event: any) => {
+  event.target.value = event.target.value.replace(/\s+/g, "");
+};
+
+/**
+ * 문자열에서 공백을 정리합니다.
+ */
+export const strip = (inputString: string) => {
+  return inputString.replace(/\s+/g, " ").trim();
+};
+
+/**
+ * 문자열에 공백이 있는지 확인합니다.
+ */
+export const hasGap = (inputString: string): boolean => {
+  const whitespaceRegex = /\s/;
+  return whitespaceRegex.test(inputString);
 };

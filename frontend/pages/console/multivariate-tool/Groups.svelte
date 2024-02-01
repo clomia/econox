@@ -1,23 +1,66 @@
 <script lang="ts">
+  import { api } from "../../../modules/request";
   import { FeatureGroups, FeatureGroupSelected } from "../../../modules/state";
   import ClosedFolder from "../../../assets/icon/ClosedFolder.svelte";
   import Folder from "../../../assets/icon/Folder.svelte";
   import Magnifier from "../../../assets/icon/Magnifier.svelte";
   import MinusIcon from "../../../assets/icon/MinusIcon.svelte";
   import EditIcon from "../../../assets/icon/EditIcon.svelte";
-  import { attrQuerySort } from "../../../modules/functions";
+  import Check from "../../../assets/icon/Check.svelte";
+  import CancelIcon from "../../../assets/icon/CancelIcon.svelte";
+  import { attrQuerySort, strip } from "../../../modules/functions";
   import type { FeatureGroupType } from "../../../modules/state";
 
   let searchQuery = "";
   $: groups = attrQuerySort($FeatureGroups, searchQuery, "name");
 
   let groupHovered: FeatureGroupType | null = null;
-  const selectGroup = async (group: FeatureGroupType) => {
+  let groupEditingTarget: FeatureGroupType | null = null;
+  let groupEditingInput: HTMLInputElement | null = null;
+
+  const selectGroup = (group: FeatureGroupType) => {
     $FeatureGroupSelected = group;
   };
   const deleteGroup = async (group: FeatureGroupType) => {
-    console.log(group, "삭제해야대~");
+    $FeatureGroups = $FeatureGroups.filter((g) => g.id !== group.id);
+    await api.member.delete("feature/group", {
+      params: { group_id: group.id },
+    });
   };
+  const editGroup = (group: FeatureGroupType) => {
+    groupEditingTarget = group;
+  };
+
+  const editGroupDone = () => {
+    groupEditingTarget = null;
+    groupEditingInput = null;
+  };
+  const editGroupConform = async (group: FeatureGroupType) => {
+    const newName = strip(groupEditingInput.value);
+    const target = $FeatureGroups.find((g) => g.id === group.id);
+    editGroupDone();
+    if (target.name === newName) {
+      return;
+    }
+    target.name = newName;
+    await api.member.patch("/feature/group", {
+      group_id: group.id,
+      name: newName,
+    });
+  };
+  const editGroupConformKeyHandler = async (
+    event: KeyboardEvent,
+    group: FeatureGroupType
+  ) => {
+    // input에 대해 엔터키 눌러도 confirm되도록 구현
+    if (event.key === "Enter") {
+      await editGroupConform(group);
+    }
+  };
+  $: if (groupEditingInput) {
+    // 편집 버튼 누르면 해당 input에 자동으로 포커싱 해주기 구현
+    groupEditingInput.focus();
+  }
 </script>
 
 <main>
@@ -44,12 +87,40 @@
               <ClosedFolder />
             {/if}
           </div>
-          {group.name}
+          {#if groupEditingTarget === group}
+            <input
+              class="list__group__main__edit"
+              type="text"
+              value={group.name}
+              bind:this={groupEditingInput}
+              placeholder={group.name}
+              on:keydown={(event) => editGroupConformKeyHandler(event, group)}
+            />
+          {:else}
+            {group.name}
+          {/if}
         </button>
-        <button class="list__group__edit"> <EditIcon /> </button>
-        <button class="list__group__delete" on:click={() => deleteGroup(group)}>
-          <MinusIcon size={1.2} />
-        </button>
+        {#if groupEditingTarget === group}
+          <button
+            class="list__group__edit-confirm"
+            on:click={() => editGroupConform(group)}
+          >
+            <Check />
+          </button>
+          <button class="list__group__edit-cancel" on:click={editGroupDone}>
+            <CancelIcon />
+          </button>
+        {:else}
+          <button class="list__group__edit" on:click={() => editGroup(group)}>
+            <EditIcon />
+          </button>
+          <button
+            class="list__group__delete"
+            on:click={() => deleteGroup(group)}
+          >
+            <MinusIcon size={1.2} />
+          </button>
+        {/if}
       </div>
     {/each}
   </div>
@@ -101,24 +172,31 @@
     cursor: pointer;
     color: white;
   }
+  .list__group__main__edit {
+    color: var(--white);
+    width: 90%;
+    border-bottom: thin solid rgba(255, 255, 255, 0.4);
+    padding-bottom: 0.3rem;
+  }
   .list__group__main__icon {
     width: 3rem;
     opacity: 0.9;
   }
   .list__group__edit,
-  .list__group__delete {
+  .list__group__delete,
+  .list__group__edit-confirm,
+  .list__group__edit-cancel {
     height: 2.6rem;
     width: 2.6rem;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  .list__group__edit,
-  .list__group__delete {
     opacity: 0.7;
   }
   .list__group__edit:hover,
-  .list__group__delete:hover {
+  .list__group__delete:hover,
+  .list__group__edit-confirm:hover,
+  .list__group__edit-cancel:hover {
     background-color: rgba(255, 255, 255, 0.2);
     cursor: pointer;
     opacity: 1;

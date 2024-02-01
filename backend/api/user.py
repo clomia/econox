@@ -12,6 +12,7 @@ from fastapi import HTTPException, Body
 
 from backend import db
 from backend.system import SECRETS, MEMBERSHIP, run_async
+from backend.data.text.method import strip
 from backend.http import (
     APIRouter,
     TosspaymentsAPI,
@@ -348,7 +349,7 @@ async def change_user_name(
     """유저 이름 변경"""
     await db.SQL(
         "UPDATE users SET name={new_name} WHERE id={id}",
-        params={"id": user["id"], "new_name": new_name},
+        params={"id": user["id"], "new_name": strip(new_name)},
     ).exec()
     return {"message": "Changed successfully"}
 
@@ -380,6 +381,10 @@ async def change_password(
         raise HTTPException(status_code=429, detail="Too many requests")
     except cognito.exceptions.CodeMismatchException:
         raise HTTPException(status_code=409, detail="Invalid code")
+    except Exception as e:
+        raise HTTPException(
+            status_code=400, detail=f"Request value is invalid ({e.__class__.__name__})"
+        )
     else:
         return {"message": "Password change successful"}
 

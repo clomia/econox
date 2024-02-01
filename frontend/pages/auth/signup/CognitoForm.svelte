@@ -4,6 +4,7 @@
   import { Text, auth } from "../../../modules/state";
   import CircleDotLoader from "../../../assets/animation/CircleDotLoader.svelte";
   import CircleLoader from "../../../assets/animation/CircleLoader.svelte";
+  import { inputStrip } from "../../../modules/functions";
   import type { AxiosResponse } from "axios";
 
   const InputResult = auth.signup.InputResult;
@@ -67,7 +68,12 @@
   <section>
     <label>
       <span>{$Text.Email}</span>
-      <input type="text" name="email" autocomplete="off" />
+      <input
+        type="text"
+        name="email"
+        autocomplete="off"
+        on:input={inputStrip}
+      />
     </label>
   </section>
   <section>
@@ -78,6 +84,7 @@
         type="password"
         name="password"
         autocomplete="off"
+        on:input={inputStrip}
       />
     </label>
   </section>
@@ -89,6 +96,7 @@
         type="password"
         name="retypePassword"
         autocomplete="off"
+        on:input={inputStrip}
       />
     </label>
   </section>

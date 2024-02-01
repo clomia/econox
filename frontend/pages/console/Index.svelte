@@ -4,14 +4,19 @@
   import UnivariateTool from "./univariate-tool/Index.svelte";
   import MultivariateTool from "./multivariate-tool/Index.svelte";
 
-  verify({ conds: { billingOk: true }, failRedirect: "/account" });
+  const verifyPromise = verify({
+    conds: { billingOk: true },
+    failRedirect: "/account",
+  });
 </script>
 
-<div class="search-bar"><SearchBar /></div>
-<div class="tools">
-  <div class="tool"><UnivariateTool /></div>
-  <div class="tool"><MultivariateTool /></div>
-</div>
+{#await verifyPromise then}
+  <div class="search-bar"><SearchBar /></div>
+  <div class="tools">
+    <div class="tool"><UnivariateTool /></div>
+    <div class="tool"><MultivariateTool /></div>
+  </div>
+{/await}
 
 <style>
   .search-bar {

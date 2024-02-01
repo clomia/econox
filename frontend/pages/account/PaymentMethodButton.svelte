@@ -33,13 +33,23 @@
    */
   const billingChangeAvailableCheck = async (): Promise<boolean> => {
     if ($UserInfo["billing"]["status"] !== "active") {
-      await Swal.fire({
-        ...SwalStyle,
-        width: "30rem",
-        icon: "info",
-        showDenyButton: false,
-        title: $Text.PaymentMethod_ChangeNotAllow_StatusError,
-      });
+      if ($UserInfo["billing"]["registered"]) {
+        await Swal.fire({
+          ...SwalStyle,
+          width: "30rem",
+          icon: "info",
+          showDenyButton: false,
+          title: $Text.PaymentMethod_ChangeNotAllow_StatusError,
+        });
+      } else {
+        await Swal.fire({
+          ...SwalStyle,
+          width: "35rem",
+          icon: "info",
+          showDenyButton: false,
+          title: $Text.PaymentMethod_BenefitEnd_ChangeAlert,
+        });
+      }
       return false;
     }
     if (
@@ -82,23 +92,13 @@
     if (!available) {
       return;
     } else if (!$UserInfo["billing"]["registered"]) {
-      if ($UserInfo["billing"]["status"] == "active") {
-        // -> Benefit~
-        await Swal.fire({
-          ...SwalStyle,
-          icon: "info",
-          showDenyButton: false,
-          title: $Text.PaymentMethod_Benefit_ChangeAlert,
-        });
-      } else {
-        await Swal.fire({
-          ...SwalStyle,
-          width: "33rem",
-          icon: "info",
-          showDenyButton: false,
-          title: $Text.PaymentMethod_BenefitEnd_ChangeAlert,
-        });
-      }
+      // -> Benefit~
+      await Swal.fire({
+        ...SwalStyle,
+        icon: "info",
+        showDenyButton: false,
+        title: $Text.PaymentMethod_Benefit_ChangeAlert,
+      });
     } else if ($UserInfo["billing"]["currency"] === "USD") {
       // -> PayPal!
       loading = true;

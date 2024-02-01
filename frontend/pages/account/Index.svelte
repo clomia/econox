@@ -1,10 +1,13 @@
 <script lang="ts">
+  import Swal from "sweetalert2";
+  import { onMount } from "svelte";
   import {
     format,
     logout,
     timeString,
     paymentMethodString,
     verify,
+    defaultSwalStyle,
   } from "../../modules/functions";
   import { Text, UserInfo } from "../../modules/state";
   import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
@@ -15,6 +18,21 @@
   import DangerZone from "./DangerZone.svelte";
 
   verify({ conds: { login: true }, failRedirect: "/auth" });
+  onMount(async () => {
+    if (
+      $UserInfo["billing"]["status"] !== "active" &&
+      !$UserInfo["billing"]["registered"]
+    )
+      await Swal.fire({
+        ...defaultSwalStyle,
+        confirmButtonText: $Text.Ok,
+        denyButtonText: $Text.Cancel,
+        width: "35rem",
+        icon: "info",
+        showDenyButton: false,
+        title: $Text.PaymentMethod_BenefitEnd_ChangeAlert,
+      });
+  });
 
   /**
    *  언어에 맞게 금액을 표현하는 문자열을 변환

@@ -35,6 +35,9 @@ LoginInfoIncorrect:
 UnexpectedError:
   en: "An unexpected error has occurred"
   ko: "예기치 못한 오류가 발생했습니다"
+LoginRequired:
+  en: "Access Denied. Please Log In to Continue"
+  ko: "로그인 후 이용할 수 있습니다"
 Ok:
   en: "OK"
   ko: "확인"
@@ -75,8 +78,8 @@ SelectMembership:
   en: "Select Membership"
   ko: "맴버십 선택"
 SelectMembershipSubtitle:
-  en: "New members receive their chosen membership free for the first month with no charge!"
-  ko: "첫 회원가입 고객을 대상으로 선택한 맴버십이 첫 한달간 결제 없이 무료로 제공됩니다!"
+  en: "New members receive their chosen membership free for the first three days with no charge!"
+  ko: "첫 회원가입 고객을 대상으로 선택한 맴버십이 첫 3일간 결제 없이 무료로 제공됩니다!"
 ChangeMembership:
   en: "Change Membership"
   ko: "맴버십 변경"
@@ -146,10 +149,10 @@ SignupComplete:
   ko: "회원가입이 완료되었습니다"
 BenefitExplanation:
   en: >
-    Enjoy your first month of membership for free as part of our new member benefits! 
-    After that, you'll be asked to enter your payment details, and your monthly subscription fee will apply
+    Enjoy a free membership for the first three days as a benefit of your initial signup! After the benefit period ends, 
+    you will be prompted to register a payment method, and the monthly membership fee will be charged.
   ko: >
-    최초 회원가입 혜택으로 첫 달 맴버십이 무료로 제공됩니다! 
+    최초 회원가입 혜택으로 첫 3일간 맴버십이 무료로 제공됩니다! 
     혜택 종료 후 결제수단 등록으로 안내되며 매달 맴버십 금액이 청구됩니다
 EmailConfirmIncompleted:
   en: "Email verification is not yet completed"
@@ -254,8 +257,8 @@ PaymentMethod_ChangeNotAllow_DueDate:
   en: "No changes allowed on due date"
   ko: "결제 예정일에는 변경할 수 없습니다"
 PaymentMethod_ChangeNotAllow_StatusError:
-  en: "This is an account with payment deactivated. Please check your account status"
-  ko: "결제가 비활성화 된 계정입니다. 계정 상태를 확인해주세요"
+  en: "Payment is currently deactivated. Please activate your account"
+  ko: "결제가 비활성화된 상태입니다. 계정을 활성화 해주세요"
 PaymentMethod_ChangeNotAllow_Waiting:
   en: "Changes cannot be made while the payment method is being verified. Please try again after a moment. Refresh the page to update the status"
   ko: "결제수단 확인 중에는 변경할 수 없습니다. 잠시 후 다시 시도해주세요. 상태를 업데이트하려면 페이지를 새로고침하세요"
@@ -276,10 +279,10 @@ PaymentMethod_Benefit_ChangeAlert:
   ko: "첫 회원가입 혜택이 적용중이므로 결제수단 등록이 필요하지 않습니다"
 PaymentMethod_BenefitEnd_ChangeAlert:
   en: >
-    Your one-month free trial offered as a first-time signup benefit has ended. 
+    Your three-day free trial offered as a first-time signup benefit has ended. 
     Please click the 'Activate Account' button to register your payment method and start your membership!
   ko: >
-    첫 회원가입 혜택으로 제공된 한달 무료 사용이 종료되었습니다. 
+    첫 회원가입 혜택으로 제공된 3일 무료 사용이 종료되었습니다. 
     '계정 활성화' 버튼을 눌러 결제수단을 등록하고 맴버십을 시작하세요!
 PaymentHistoryLimit:
   en: "Only the last 15 payment transactions will be displayed"
@@ -326,14 +329,14 @@ DeleteAccountMessage:
     To delete your account, please enter 'Confirmed'
   ko: >
     계정이 즉시 삭제됩니다. 결제된 금액은 환불되지 않습니다. 이 작업은 되돌릴 수 없습니다. 
-    모든 개인정보는 일정 기간이 지난 후 파기됩니다. 비용 결제 중단이 목적이라면 결제 중단 기능을 사용하세요. 
+    모든 개인정보는 일정 기간이 지난 후 파기됩니다. 결제 중단이 목적이라면 결제 중단 기능을 사용하세요. 
     계정을 삭제하려면 '확인하였습니다' 를 입력해주세요
 DeleteAccountConfirmCheck:
   en: "Confirmed"
   ko: "확인하였습니다"
 DeactivatedAccountBillingRequire:
-  en: "Billing is required. Please check your account status"
-  ko: "비용 청구가 필요합니다. 계정 상태를 확인해주세요"
+  en: "Billing is required. Please activate your account"
+  ko: "비용 청구가 필요합니다. 계정을 활성화 해주세요"
 ProfessionalMembershipRequire:
   en: "Your request requires Professional Membership. Please upgrade your account membership"
   ko: "해당 요청은 전문가 맴버십이 필요합니다. 계정의 맴버십을 변경해주세요"

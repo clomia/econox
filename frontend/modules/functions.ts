@@ -1,7 +1,6 @@
 import axios from "axios";
-import { onMount } from "svelte";
+import Swal from "sweetalert2";
 import { get } from "svelte/store";
-import { navigate } from "svelte-routing";
 import { api } from "./request";
 import { Text, UserInfo, Lang, CountryCodeMap } from "./state";
 import { loadUiText } from "./uiText";
@@ -111,24 +110,48 @@ type VerificationArgs = {
  * @param conds 충족해야 하는 요구 조건
  * @param failRedirect 요구 조건을 충족하지 못할 때 리디렉션할 경로
  */
-export const verify = (
+export const verify = async (
   {
     conds: { login = null, membership = null, billingOk = null },
     failRedirect = "/",
   }: VerificationArgs = { conds: {} }
 ) => {
-  onMount(async () => {
-    const userInfo = get(UserInfo);
-    const failureConditions = [
-      login !== null && login !== Boolean(userInfo.id),
-      membership !== null && membership !== userInfo.membership,
-      billingOk && !["active", "deactive"].includes(userInfo.billing.status),
-    ]; // require 혹은 ''(기본값)인 경우는 billingOk가 아님
+  const userInfo = get(UserInfo);
+  const isBillingOk = ["active", "deactive"].includes(userInfo.billing.status); // require 혹은 ''(기본값)인 경우는 billingOk가 아님
+  const isLoggedIn = Boolean(userInfo.id);
+  const failureConditions = [
+    login !== null && login !== isLoggedIn,
+    membership !== null && membership !== userInfo.membership,
+    billingOk && !isBillingOk,
+  ];
 
-    if (failureConditions.some(Boolean)) {
-      navigate(failRedirect);
+  const text = get(Text);
+
+  if (failureConditions.some(Boolean)) {
+    if ((login || billingOk) && !isLoggedIn) {
+      // 로그인이 필요한데 로그인되어 있지 않은 경우
+      // billingOk는 로그인이 필요하다는 의미도 포함함
+      await Swal.fire({
+        ...defaultSwalStyle,
+        width: "25rem",
+        icon: "info",
+        showDenyButton: false,
+        title: text.LoginRequired,
+        confirmButtonText: text.Ok,
+      });
+    } else if (billingOk && !isBillingOk) {
+      // 로그인 되어있고, 유료 회원용 페이지에 접속했으나 결제 상태가 올바르지 않은 경우
+      await Swal.fire({
+        ...defaultSwalStyle,
+        width: "33rem",
+        icon: "info",
+        showDenyButton: false,
+        title: text.DeactivatedAccountBillingRequire,
+        confirmButtonText: text.Ok,
+      });
     }
-  });
+    window.location.replace(window.location.origin + failRedirect);
+  }
 };
 
 /**

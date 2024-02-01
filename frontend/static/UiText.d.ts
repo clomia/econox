@@ -14,6 +14,7 @@ export interface UiText {
     RetypePassword: "Retype password" | "비밀번호 확인";
     LoginInfoIncorrect: "Email or password is incorrect" | "이메일 또는 비밀번호가 올바르지 않습니다";
     UnexpectedError: "An unexpected error has occurred" | "예기치 못한 오류가 발생했습니다";
+    LoginRequired: "Access Denied. Please Log In to Continue" | "로그인 후 이용할 수 있습니다";
     Ok: "OK" | "확인";
     Close: "Close" | "닫기";
     Submit: "Submit" | "확인";
@@ -27,7 +28,7 @@ export interface UiText {
     Next: "Next" | "다음";
     Membership: "Membership" | "맴버십";
     SelectMembership: "Select Membership" | "맴버십 선택";
-    SelectMembershipSubtitle: "New members receive their chosen membership free for the first month with no charge!" | "첫 회원가입 고객을 대상으로 선택한 맴버십이 첫 한달간 결제 없이 무료로 제공됩니다!";
+    SelectMembershipSubtitle: "New members receive their chosen membership free for the first three days with no charge!" | "첫 회원가입 고객을 대상으로 선택한 맴버십이 첫 3일간 결제 없이 무료로 제공됩니다!";
     ChangeMembership: "Change Membership" | "맴버십 변경";
     BasicPlan: "Basic" | "일반";
     BasicPlanDollerPrice: "$9.99/month" | "$9.99/월";
@@ -49,7 +50,7 @@ export interface UiText {
     TooManyRequests: "Too many requests detected. Please try again later" | "너무 많은 요청이 감지되었습니다. 나중에 다시 시도하세요";
     ConfirmCodeSended: "Verification code has been sent" | "인증 코드가 전송되었습니다";
     SignupComplete: "Signup is complete" | "회원가입이 완료되었습니다";
-    BenefitExplanation: "Enjoy your first month of membership for free as part of our new member benefits!  After that, you'll be asked to enter your payment details, and your monthly subscription fee will apply" | "최초 회원가입 혜택으로 첫 달 맴버십이 무료로 제공됩니다!  혜택 종료 후 결제수단 등록으로 안내되며 매달 맴버십 금액이 청구됩니다";
+    BenefitExplanation: "Enjoy a free membership for the first three days as a benefit of your initial signup! After the benefit period ends,  you will be prompted to register a payment method, and the monthly membership fee will be charged." | "최초 회원가입 혜택으로 첫 3일간 맴버십이 무료로 제공됩니다!  혜택 종료 후 결제수단 등록으로 안내되며 매달 맴버십 금액이 청구됩니다";
     EmailConfirmIncompleted: "Email verification is not yet completed" | "이메일 인증이 완료되지 않았습니다";
     UnusualSignupRequest: "This is not a valid signup request" | "정상적인 회원가입 요청이 아닙니다";
     EmailFormatIncorrect: "The email format is not valid" | "이메일 형식이 올바르지 않습니다";
@@ -84,14 +85,14 @@ export interface UiText {
     PaymentMethod_Benefit: "New Member Benefit Applied" | "첫 회원가입 혜택 적용중";
     PaymentMethod_BenefitEnd: "Payment Method Registration Required" | "결제수단 등록 필요";
     PaymentMethod_ChangeNotAllow_DueDate: "No changes allowed on due date" | "결제 예정일에는 변경할 수 없습니다";
-    PaymentMethod_ChangeNotAllow_StatusError: "This is an account with payment deactivated. Please check your account status" | "결제가 비활성화 된 계정입니다. 계정 상태를 확인해주세요";
+    PaymentMethod_ChangeNotAllow_StatusError: "Payment is currently deactivated. Please activate your account" | "결제가 비활성화된 상태입니다. 계정을 활성화 해주세요";
     PaymentMethod_ChangeNotAllow_Waiting: "Changes cannot be made while the payment method is being verified. Please try again after a moment. Refresh the page to update the status" | "결제수단 확인 중에는 변경할 수 없습니다. 잠시 후 다시 시도해주세요. 상태를 업데이트하려면 페이지를 새로고침하세요";
     PaymentMethod_ChangeCompleted: "Done! We've successfully changed your payment method" | "결제수단이 변경되었습니다";
     PaymentMethod_Change: "Update Payment Method" | "결제수단 변경";
     PaymentMethod_Enter: "Enter Payment Method" | "결제수단 입력";
     PaymentMethod_EnterNewCard: "Please enter your new card details to update your payment information." | "새롭게 등록할 카드 정보를 입력해주세요";
     PaymentMethod_Benefit_ChangeAlert: "Since the New Member Benefit is active, there is no need to register a payment method" | "첫 회원가입 혜택이 적용중이므로 결제수단 등록이 필요하지 않습니다";
-    PaymentMethod_BenefitEnd_ChangeAlert: "Your one-month free trial offered as a first-time signup benefit has ended.  Please click the 'Activate Account' button to register your payment method and start your membership!" | "첫 회원가입 혜택으로 제공된 한달 무료 사용이 종료되었습니다.  '계정 활성화' 버튼을 눌러 결제수단을 등록하고 맴버십을 시작하세요!";
+    PaymentMethod_BenefitEnd_ChangeAlert: "Your three-day free trial offered as a first-time signup benefit has ended.  Please click the 'Activate Account' button to register your payment method and start your membership!" | "첫 회원가입 혜택으로 제공된 3일 무료 사용이 종료되었습니다.  '계정 활성화' 버튼을 눌러 결제수단을 등록하고 맴버십을 시작하세요!";
     PaymentHistoryLimit: "Only the last 15 payment transactions will be displayed" | "결제 내역은 최근 15건까지만 표시됩니다";
     AlreadyProgressPleaseWait: "Your request is already in progress. Please wait a moment" | "요청이 이미 처리 중입니다. 잠시만 기다려주세요";
     StopBilling: "Suspend Billing" | "결제 중단";
@@ -104,9 +105,9 @@ export interface UiText {
     AccountStatusActive: "Account status: Active" | "계정 상태가 정상입니다";
     AccountStatusDeactive: "Account status: Deactive" | "계정이 비활성 상태입니다";
     ConnotStopPayment: "You have no registered payment method" | "등록된 결제수단이 존재하지 않습니다";
-    DeleteAccountMessage: "Your account will be immediately deleted.  Any payments made will not be refunded. This action is irreversible.  All personal data will be destroyed after a certain period of time.  If your intention is to stop payments, please use the 'Suspend Billing' feature.  To delete your account, please enter 'Confirmed'" | "계정이 즉시 삭제됩니다. 결제된 금액은 환불되지 않습니다. 이 작업은 되돌릴 수 없습니다.  모든 개인정보는 일정 기간이 지난 후 파기됩니다. 비용 결제 중단이 목적이라면 결제 중단 기능을 사용하세요.  계정을 삭제하려면 '확인하였습니다' 를 입력해주세요";
+    DeleteAccountMessage: "Your account will be immediately deleted.  Any payments made will not be refunded. This action is irreversible.  All personal data will be destroyed after a certain period of time.  If your intention is to stop payments, please use the 'Suspend Billing' feature.  To delete your account, please enter 'Confirmed'" | "계정이 즉시 삭제됩니다. 결제된 금액은 환불되지 않습니다. 이 작업은 되돌릴 수 없습니다.  모든 개인정보는 일정 기간이 지난 후 파기됩니다. 결제 중단이 목적이라면 결제 중단 기능을 사용하세요.  계정을 삭제하려면 '확인하였습니다' 를 입력해주세요";
     DeleteAccountConfirmCheck: "Confirmed" | "확인하였습니다";
-    DeactivatedAccountBillingRequire: "Billing is required. Please check your account status" | "비용 청구가 필요합니다. 계정 상태를 확인해주세요";
+    DeactivatedAccountBillingRequire: "Billing is required. Please activate your account" | "비용 청구가 필요합니다. 계정을 활성화 해주세요";
     ProfessionalMembershipRequire: "Your request requires Professional Membership. Please upgrade your account membership" | "해당 요청은 전문가 맴버십이 필요합니다. 계정의 맴버십을 변경해주세요";
     ProfessionalMembershipRequire_ConfirmText: "Update Account Settings" | "계정 설정 변경하기";
     SearchBar_Placeholder: "Enter country, company, stock, commodity, forex, or crypto name/code" | "국가, 기업, 주식, 원자제, 외환, 암호화폐 이름 또는 코드 입력";

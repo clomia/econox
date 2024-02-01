@@ -199,5 +199,6 @@ export const UnivariateNoteHovered = writable<CurrentNoteTargetType>({
 export const UnivariateChartSource = writable<ChartSourceType>({});
 
 // console.multivariate-tool 상태
+export const FeatureGroupsLoaded = writable(false);
 export const FeatureGroups = writable<FeatureGroupType[]>([]);
 export const FeatureGroupSelected = writable<FeatureGroupType | null>(null);

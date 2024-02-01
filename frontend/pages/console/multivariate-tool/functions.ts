@@ -1,7 +1,12 @@
+import { get } from "svelte/store";
 import { api } from "../../../modules/request";
-import { FeatureGroups } from "../../../modules/state";
+import { FeatureGroups, FeatureGroupsLoaded } from "../../../modules/state";
 
 export const loadGroups = async () => {
+  if (get(FeatureGroupsLoaded)) {
+    return; // 이미 로딩되어 있다면 아무런 동작 안함
+  }
   const resp = await api.member.get("/feature/groups");
   FeatureGroups.set(resp.data);
+  FeatureGroupsLoaded.set(true);
 };

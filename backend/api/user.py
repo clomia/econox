@@ -91,80 +91,81 @@ async def signup(item: SignupInfo):
     now = datetime.now()
     next_billing: datetime = calc_next_billing_date(base=now, current=now)
     signup_history = await db.signup_history_exists(email=item.email, phone=item.phone)
-    if signup_history:
-        # 회원가입 내역이 있다면 결제정보 필요함
-        if item.currency == "KRW" and item.tosspayments:  # 토스페이먼츠 빌링
-            tosspayments = TosspaymentsBilling(user_id)
-            try:
-                billing_key = await tosspayments.get_billing_key(
-                    item.tosspayments.card_number,
-                    item.tosspayments.expiration_year,
-                    item.tosspayments.expiration_month,
-                    item.tosspayments.owner_id,
-                )
-                payment = await tosspayments.billing(
-                    billing_key,
-                    order_name=f"Econox {item.membership.capitalize()} Membership",
-                    amount=MEMBERSHIP[item.membership][item.currency],
-                    email=item.email,
-                )
-            except httpx.HTTPStatusError:
-                raise HTTPException(
-                    status_code=402,
-                    detail=f"[Tosspayments] Your payment information is incorrect.",
-                )
-            insert_tosspayments_billing = db.InsertSQL(
-                "tosspayments_billings",
-                user_id=user_id,
-                order_id=payment["orderId"],
-                transaction_time=datetime.fromisoformat(payment["approvedAt"]),
-                payment_key=payment["paymentKey"],
-                order_name=payment["orderName"],
-                total_amount=payment["totalAmount"],
-                supply_price=payment["suppliedAmount"],
-                vat=payment["vat"],
-                card_issuer=payment["card"]["issuerCode"],
-                card_acquirer=payment["card"]["acquirerCode"],
-                card_number_masked=payment["card"]["number"],
-                card_approve_number=payment["card"]["approveNo"],
-                card_type=payment["card"]["cardType"],
-                card_owner_type=payment["card"]["ownerType"],
-                receipt_url=payment["receipt"]["url"],
+    if not signup_history:  # 회원가입 내역이 없다면 3일 무료사용
+        next_billing = now + timedelta(days=3)
+    # 회원가입 내역이 있다면 결제정보 필요함
+    elif item.currency == "KRW" and item.tosspayments:  # 토스페이먼츠 빌링
+        tosspayments = TosspaymentsBilling(user_id)
+        try:
+            billing_key = await tosspayments.get_billing_key(
+                item.tosspayments.card_number,
+                item.tosspayments.expiration_year,
+                item.tosspayments.expiration_month,
+                item.tosspayments.owner_id,
             )
-            billing_method = payment["card"]["number"]
-        elif item.currency == "USD" and item.paypal:  # 페이팔 빌링
-            # -- 빌링 성공여부 확인 --
-            # DB 데이터 입력은 웹훅 API가 수행합니다.(POST /api/webhook/paypal/payment-sale-complete)
-            order_detail_api = f"/v2/checkout/orders/{item.paypal.order}"
-            subscription_detail_api = (
-                f"/v1/billing/subscriptions/{item.paypal.subscription}"
+            payment = await tosspayments.billing(
+                billing_key,
+                order_name=f"Econox {item.membership.capitalize()} Membership",
+                amount=MEMBERSHIP[item.membership][item.currency],
+                email=item.email,
             )
-            try:
-                order, subscription = await pooling(
-                    target=partial(
-                        asyncio.gather,  # 주문과 구독 정보를 가져옵니다.
-                        PayPalAPI(order_detail_api).get(),
-                        PayPalAPI(subscription_detail_api).get(),
-                    ),
-                    inspecter=(  # 주문 정보와 구독 정보가 완료상태인지 확인합니다.
-                        lambda results: results[0]["status"] == "APPROVED"
-                        and results[1]["status"] == "ACTIVE"
-                    ),
-                )  # timeout이 초과되어도 조건이 만족되지 않으면 AssertionError
-                next_billing = utcstr2datetime(
-                    subscription["billing_info"]["next_billing_time"]
-                )
-                billing_method = "Paypal"
-            except (httpx.HTTPStatusError, AssertionError):
-                raise HTTPException(
-                    status_code=402,
-                    detail=f"[PayPal] Your subscription or order status in paypal server is incorrect",
-                )
-        else:
+        except httpx.HTTPStatusError:
             raise HTTPException(
                 status_code=402,
-                detail="Correct billing information is required",
+                detail=f"[Tosspayments] Your payment information is incorrect.",
             )
+        insert_tosspayments_billing = db.InsertSQL(
+            "tosspayments_billings",
+            user_id=user_id,
+            order_id=payment["orderId"],
+            transaction_time=datetime.fromisoformat(payment["approvedAt"]),
+            payment_key=payment["paymentKey"],
+            order_name=payment["orderName"],
+            total_amount=payment["totalAmount"],
+            supply_price=payment["suppliedAmount"],
+            vat=payment["vat"],
+            card_issuer=payment["card"]["issuerCode"],
+            card_acquirer=payment["card"]["acquirerCode"],
+            card_number_masked=payment["card"]["number"],
+            card_approve_number=payment["card"]["approveNo"],
+            card_type=payment["card"]["cardType"],
+            card_owner_type=payment["card"]["ownerType"],
+            receipt_url=payment["receipt"]["url"],
+        )
+        billing_method = payment["card"]["number"]
+    elif item.currency == "USD" and item.paypal:  # 페이팔 빌링
+        # -- 빌링 성공여부 확인 --
+        # DB 데이터 입력은 웹훅 API가 수행합니다.(POST /api/webhook/paypal/payment-sale-complete)
+        order_detail_api = f"/v2/checkout/orders/{item.paypal.order}"
+        subscription_detail_api = (
+            f"/v1/billing/subscriptions/{item.paypal.subscription}"
+        )
+        try:
+            order, subscription = await pooling(
+                target=partial(
+                    asyncio.gather,  # 주문과 구독 정보를 가져옵니다.
+                    PayPalAPI(order_detail_api).get(),
+                    PayPalAPI(subscription_detail_api).get(),
+                ),
+                inspecter=(  # 주문 정보와 구독 정보가 완료상태인지 확인합니다.
+                    lambda results: results[0]["status"] == "APPROVED"
+                    and results[1]["status"] == "ACTIVE"
+                ),
+            )  # timeout이 초과되어도 조건이 만족되지 않으면 AssertionError
+            next_billing = utcstr2datetime(
+                subscription["billing_info"]["next_billing_time"]
+            )
+            billing_method = "Paypal"
+        except (httpx.HTTPStatusError, AssertionError):
+            raise HTTPException(
+                status_code=402,
+                detail=f"[PayPal] Your subscription or order status in paypal server is incorrect",
+            )
+    else:
+        raise HTTPException(
+            status_code=402,
+            detail="Correct billing information is required",
+        )
 
     tosspayments_billing_key = billing_key if item.tosspayments else None
     paypal_subscription_id = item.paypal.subscription if item.paypal else None

@@ -222,7 +222,7 @@ async def billing():
         f"비용 처리가 필요한 대상자는 {len(target_users)}명입니다. "
         f"{complete}명에게 청구를 완료하였으며 청구에 실패한 미납자는 {failure}명 입니다. "
         f"또한, 3일 이상 청구에 실패한 {deactive_detail['non_payer']}명과 "
-        f"첫달 무료 혜택이 종료된 {deactive_detail['benefit_end']}명, "
+        f"3일 무료 혜택이 종료된 {deactive_detail['benefit_end']}명, "
         f"그리고 결제 중지가 요청된 {deactive_detail['deactivater']}명까지 "
         f"총 {deactive}개의 계정을 비활성화 하였습니다."
     )

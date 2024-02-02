@@ -35,6 +35,10 @@
     groupEditingTarget = null;
     groupEditingInput = null;
   };
+  const editHandler = () => {
+    // 58글자 초과 입력하지 못하도록 제한
+    groupEditingInput.value = groupEditingInput.value.slice(0, 58);
+  };
   const editGroupConform = async (group: FeatureGroupType) => {
     const newName = strip(groupEditingInput.value);
     const target = $FeatureGroups.find((g) => g.id === group.id);
@@ -95,9 +99,10 @@
               bind:this={groupEditingInput}
               placeholder={group.name}
               on:keydown={(event) => editGroupConformKeyHandler(event, group)}
+              on:input={editHandler}
             />
           {:else}
-            {group.name}
+            <div class="list__group__main__name">{group.name}</div>
           {/if}
         </button>
         {#if groupEditingTarget === group}
@@ -164,6 +169,7 @@
     color: var(--white);
     width: 36.6rem;
     height: 100%;
+    text-align: start;
   }
   .list__group__main.shrink {
     width: 35.35rem;
@@ -177,9 +183,14 @@
     width: 90%;
     border-bottom: thin solid rgba(255, 255, 255, 0.4);
     padding-bottom: 0.3rem;
+    margin-left: 1rem;
+  }
+  .list__group__main__name {
+    margin-left: 1rem;
+    width: 40rem;
   }
   .list__group__main__icon {
-    width: 3rem;
+    width: 2rem;
     opacity: 0.9;
   }
   .list__group__edit,

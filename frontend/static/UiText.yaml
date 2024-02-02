@@ -413,6 +413,9 @@ DeleteAccountComplete:
 TextSpaceNotAllowed:
   en: "Spaces are not allowed"
   ko: "공백 문자는 허용되지 않습니다"
+GroupLoadingInfo:
+  en: "Loading data groups saved in the account..."
+  ko: "계정에 저장된 데이터 그룹을 불러오는 중입니다..."
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

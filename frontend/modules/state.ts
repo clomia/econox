@@ -95,6 +95,24 @@ export interface ChartSourceType {
   [key: string]: SourceType;
 }
 
+export interface FeatureType {
+  added: string;
+  color: string;
+  element: {
+    section: string;
+    code: string;
+  };
+  factor: {
+    section: string;
+    code: string;
+  };
+  name: {
+    element: string;
+    factor_section: string;
+    factor: string;
+  };
+}
+
 export interface FeatureGroupType {
   id: number;
   created: string;
@@ -102,23 +120,7 @@ export interface FeatureGroupType {
   description: string;
   chart_type: string;
   normalized: boolean;
-  features: {
-    added: string;
-    color: string;
-    element: {
-      section: string;
-      code: string;
-    };
-    factor: {
-      section: string;
-      code: string;
-    };
-    name: {
-      element: string;
-      factor_section: string;
-      factor: string;
-    };
-  }[];
+  features: FeatureType[];
 }
 // ============= 전역적으로 사용되는 상태들 =============
 

@@ -5,7 +5,7 @@
 <main>
   {#each $FeatureGroupSelected.features as feature}
     <div class="li">
-      <div class="li__colorbox"></div>
+      <div class="li__colorbox" style="background-color: {feature.color};" />
       <div class="li__feature">
         <div class="li__feature__ele">
           <div class="li__feature__ele__code">
@@ -43,12 +43,21 @@
   .li {
     display: flex;
     align-items: center;
+    padding-left: 0.5rem;
   }
   .li__colorbox {
-    width: 5rem;
-    height: 5rem;
-    background-color: bisque;
-    border-color: red;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 0.5rem;
+    margin: 0 0.5rem;
+    box-shadow: 0 0 2rem 0.1rem black;
+    border: thin solid white;
+  }
+  .li__colorbox:first-of-type {
+    margin-top: 1rem;
+  }
+  .li__feature {
+    width: 37rem;
   }
   .li__feature__ele {
     display: flex;

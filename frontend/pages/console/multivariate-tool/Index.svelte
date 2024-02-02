@@ -1,7 +1,8 @@
 <script lang="ts">
   import { loadGroups } from "./functions";
-  import { Text } from "../../../modules/state";
+  import { Text, FeatureGroupSelected } from "../../../modules/state";
   import Groups from "./Groups.svelte";
+  import Note from "./Note.svelte";
   import BouncingCubeLoader from "../../../assets/animation/BouncingCubeLoader.svelte";
 
   const loadGroupsPromise = loadGroups();
@@ -14,7 +15,10 @@
       <div class="load-info">{$Text.GroupLoadingInfo}</div>
     </div>
   {:then}
-    <Groups />
+    <div class="section"><Groups /></div>
+    {#if $FeatureGroupSelected}
+      <div class="section"><Note /></div>
+    {/if}
   {/await}
 </main>
 
@@ -41,5 +45,11 @@
     left: 0;
     padding-bottom: 15.5rem;
     color: rgba(255, 255, 255, 0.6);
+  }
+  .section {
+    border-bottom: thin solid rgba(255, 255, 255, 0.2);
+  }
+  .section:last-of-type {
+    border: none;
   }
 </style>

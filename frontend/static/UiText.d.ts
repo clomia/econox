@@ -133,6 +133,8 @@ export interface UiText {
     DeleteAccountComplete: "Your account has been successfully deleted" | "탈퇴가 완료되었습니다";
     TextSpaceNotAllowed: "Spaces are not allowed" | "공백 문자는 허용되지 않습니다";
     GroupLoadingInfo: "Loading data groups saved in the account..." | "계정에 저장된 데이터 그룹을 불러오는 중입니다...";
+    GroupNotePlaceholder: "Please write a detailed description for this data group" | "이 데이터 그룹에 대한 상세한 설명을 작성해주세요";
+    GroupNoteNoneText: "There is no description written for this data group." | "이 데이터 그룹에 대해 작성된 설명이 없습니다.";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

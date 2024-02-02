@@ -46,6 +46,9 @@
     if (target.name === newName) {
       return;
     }
+    if (target === $FeatureGroupSelected) {
+      $FeatureGroupSelected.name = newName;
+    }
     target.name = newName;
     await api.member.patch("/feature/group", {
       group_id: group.id,
@@ -183,7 +186,7 @@
     width: 90%;
     border-bottom: thin solid rgba(255, 255, 255, 0.4);
     padding-bottom: 0.3rem;
-    margin-left: 1rem;
+    margin-left: 0.64rem;
   }
   .list__group__main__name {
     margin-left: 1rem;
@@ -192,6 +195,7 @@
   .list__group__main__icon {
     width: 2rem;
     opacity: 0.9;
+    margin-left: 0.5rem;
   }
   .list__group__edit,
   .list__group__delete,

@@ -76,9 +76,10 @@
 
 <style>
   .group-name {
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     margin-top: 1rem;
     padding: 0 1rem;
+    padding-left: 1.5rem;
     color: var(--white);
     display: flex;
     align-items: flex-start;
@@ -88,8 +89,8 @@
   }
   main {
     display: flex;
-    padding: 1rem;
-    padding-right: 0;
+    padding-bottom: 1rem;
+    padding-left: 1.5rem;
   }
   textarea,
   .content,

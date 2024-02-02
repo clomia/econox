@@ -3,6 +3,7 @@
   import { Text, FeatureGroupSelected } from "../../../modules/state";
   import Groups from "./Groups.svelte";
   import Note from "./Note.svelte";
+  import Features from "./Features.svelte";
   import BouncingCubeLoader from "../../../assets/animation/BouncingCubeLoader.svelte";
 
   const loadGroupsPromise = loadGroups();
@@ -18,6 +19,7 @@
     <div class="section"><Groups /></div>
     {#if $FeatureGroupSelected}
       <div class="section"><Note /></div>
+      <div class="section"><Features /></div>
     {/if}
   {/await}
 </main>

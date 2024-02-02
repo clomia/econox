@@ -113,6 +113,11 @@ export interface FeatureGroupType {
       section: string;
       code: string;
     };
+    name: {
+      element: string;
+      factor_section: string;
+      factor: string;
+    };
   }[];
 }
 // ============= 전역적으로 사용되는 상태들 =============

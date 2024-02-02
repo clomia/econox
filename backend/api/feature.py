@@ -6,7 +6,7 @@ import re
 import random
 import asyncio
 from math import ceil
-from typing import Literal
+from typing import Literal, List
 from collections import defaultdict
 
 import psycopg
@@ -84,7 +84,10 @@ async def delete_element_from_user(
 
 
 @router.basic.get("/user/elements")
-async def get_elements_from_user(lang: str, user=router.basic.user):
+async def get_elements_from_user(
+    lang: str = Query(..., min_length=2, max_length=2),
+    user=router.basic.user,
+):
     """
     - 유저에게 저장된 엘리먼트들을 가져옵니다.
     - lang: 응답 데이터의 언어 (ISO 639-1)
@@ -303,8 +306,45 @@ async def delete_feature_group_from_user(group_id: int, user=router.basic.user):
     return {"message": "Request processed"}
 
 
+class ElementProperty(BaseModel):
+    section: ele_section_type
+    code: constr(min_length=1)
+
+
+class FactorProperty(BaseModel):
+    section: constr(min_length=1)
+    code: constr(min_length=1)
+
+
+class FeatureGroup(BaseModel):
+    id: int
+    created: str
+    name: str
+    description: str
+    chart_type: str
+    normalized: bool
+
+    class Feature(BaseModel):
+        added: str
+        color: str
+
+        class Name(BaseModel):
+            element: str
+            factor_section: str
+            factor: str
+
+        element: ElementProperty
+        factor: FactorProperty
+        name: Name
+
+    features: List[Feature]
+
+
 @router.basic.get("/groups")
-async def get_feature_groups_from_user(user=router.basic.user):
+async def get_feature_groups_from_user(
+    lang: str = Query(..., min_length=2, max_length=2),
+    user=router.basic.user,
+) -> List[FeatureGroup]:
     """
     - 유저가 소유한 모든 피쳐 그룹과 피쳐 그룹에 속한 모든 피쳐를 응답합니다.
     - 모든 배열은 요소의 생성, 수정 날짜에 따라 정렬되어 있습니다.
@@ -333,6 +373,41 @@ async def get_feature_groups_from_user(user=router.basic.user):
     """
     features = await db.SQL(query, params={"user_id": user["id"]}, fetch="all").exec()
 
+    def get_key(feature):
+        """feature를 나타내는 고유 불변 객체"""
+        return (
+            feature["feature_element_section"],
+            feature["feature_element_code"],
+            feature["feature_factor_section"],
+            feature["feature_factor_code"],
+        )
+
+    async def get_name(key: tuple):
+        """feature를 유저에게 보여줄 때 필요한 구성요소의 이름 추출"""
+        ele_sec, ele_code, fac_sec, fac_code = key
+        ele = await get_element(section=ele_sec, code=ele_code)
+        factor_section = getattr(ele, ele.attr_name[fac_sec])
+        factor = getattr(factor_section, fac_code)
+        ele_name, factor_section_name, factor_name = await asyncio.gather(
+            ele.name.en(),
+            factor_section.name.trans(to=lang),
+            factor.name.trans(to=lang),
+        )
+        data = {
+            "element": ele_name,
+            "factor_section": factor_section_name,
+            "factor": factor_name,
+        }
+        return (key, data)
+
+    namekeys = {
+        get_key(feature)
+        for feature in features  # 중복제거 & 빈 그룹 제거
+        if feature["group_feature_created"] is not None
+    }
+    namelist = await asyncio.gather(*[get_name(feature) for feature in namekeys])
+    names = {key: data for key, data in namelist}
+
     tree = defaultdict(dict)
     for feature in features:
         group_id = feature["group_id"]
@@ -359,6 +434,7 @@ async def get_feature_groups_from_user(user=router.basic.user):
                     "section": feature["feature_factor_section"],
                     "code": feature["feature_factor_code"],
                 },
+                "name": names[get_key(feature)],
             }
         )
 
@@ -371,16 +447,6 @@ async def get_feature_groups_from_user(user=router.basic.user):
         )
 
     return array
-
-
-class ElementProperty(BaseModel):
-    section: ele_section_type
-    code: constr(min_length=1)
-
-
-class FactorProperty(BaseModel):
-    section: constr(min_length=1)
-    code: constr(min_length=1)
 
 
 class GroupFeatureInit(BaseModel):

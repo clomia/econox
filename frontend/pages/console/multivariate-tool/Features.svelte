@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { api } from "../../../modules/request";
   import { FeatureGroupSelected, CountryCodeMap } from "../../../modules/state";
 </script>
 

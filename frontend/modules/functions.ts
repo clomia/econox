@@ -274,7 +274,7 @@ export const querySort = (arr: string[], query: string): string[] => {
 export const attrQuerySort = <T>(
   arr: T[],
   query: string,
-  attrKey: keyof T | Array<keyof T>
+  attrKey: string | string[]
 ): T[] => {
   const _arr = [...arr];
   const result: T[] = [];

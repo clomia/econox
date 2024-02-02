@@ -16,12 +16,18 @@
 
   const select = async (fac: FactorType) => {
     $UnivariateFactorSelected = fac;
-    await setChartSource(
-      $UnivariateElementSelected.code,
-      $UnivariateElementSelected.section,
-      fac.code,
-      fac.section.code
-    );
+    if (
+      // for typescript
+      $UnivariateElementSelected?.code &&
+      $UnivariateElementSelected?.section
+    ) {
+      await setChartSource(
+        $UnivariateElementSelected.code,
+        $UnivariateElementSelected.section,
+        fac.code,
+        fac.section.code
+      );
+    }
   };
 
   $: ele = $UnivariateElementSelected;

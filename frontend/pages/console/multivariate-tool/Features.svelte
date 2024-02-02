@@ -121,10 +121,10 @@
     $FeatureGroups = updatedGroups;
   }
 
-  function scrollToTargetElement(
+  const scrollToTargetElement = (
     container: HTMLElement,
     targetElement: HTMLElement
-  ) {
+  ) => {
     const containerRect = container.getBoundingClientRect();
     const targetRect = targetElement.getBoundingClientRect();
 
@@ -139,14 +139,45 @@
       top: scrollToPosition,
       behavior: "smooth",
     });
-  }
+  };
 
   $: if (colorPickerElement) {
     // 컬러 피커 요소가 나타나면 해당 요소가 잘 보이도록 스크롤 이동
     scrollToTargetElement(main, colorPickerElement);
   }
 
-  const del = (feature: FeatureType) => {};
+  const del = async (feature: FeatureType) => {
+    // 복사
+    let updated = $FeatureGroupSelected;
+    let updatedGroups = $FeatureGroups;
+
+    const targetIndex = updatedGroups.findIndex(
+      (group) => group === $FeatureGroupSelected
+    );
+
+    // 변경사항 반영
+    updated.features = updated.features.filter((f) => f !== feature);
+    updatedGroups[targetIndex] = updated;
+
+    // 변경사항 적용
+    $FeatureGroupSelected = updated;
+    $FeatureGroups = updatedGroups;
+
+    // 서버에 반영 요청
+    await api.member.delete("/feature/group/feature", {
+      data: {
+        group_id: $FeatureGroupSelected.id,
+        element: {
+          section: feature.element.section,
+          code: feature.element.code,
+        },
+        factor: {
+          section: feature.factor.section,
+          code: feature.factor.code,
+        },
+      },
+    });
+  };
 </script>
 
 <main bind:this={main}>
@@ -227,7 +258,8 @@
     margin: 1rem;
     margin-right: 0.5rem;
     overflow: auto;
-    height: 30rem;
+    max-height: 30rem;
+    /* todo min-height 정의해야 함! */
   }
   .li {
     display: flex;

@@ -449,7 +449,7 @@ async def get_feature_groups_from_user(
     return array
 
 
-class GroupFeatureInit(BaseModel):
+class GroupFeature(BaseModel):
     """그룹에 속한 피쳐 정의"""
 
     group_id: int
@@ -471,9 +471,7 @@ color_palette = [
 
 
 @router.basic.post("/group/feature")
-async def insert_feature_to_feature_group(
-    item: GroupFeatureInit, user=router.basic.user
-):
+async def insert_feature_to_feature_group(item: GroupFeature, user=router.basic.user):
     """
     - 피쳐 그룹에 피쳐를 추가합니다.
     - 유저가 소유하지 않은 피쳐 그룹이거나 유효하지 않은 피쳐에 대해서도 200을 응답하나, 아무런 동작도 하지 않습니다.
@@ -542,10 +540,7 @@ class GroupFeatureUpdateTarget(BaseModel):
         return v
 
 
-class GroupFeatureUpdate(BaseModel):
-    group_id: int
-    element: ElementProperty
-    factor: FactorProperty
+class GroupFeatureUpdate(GroupFeature):
     target: GroupFeatureUpdateTarget
 
 
@@ -589,3 +584,37 @@ async def update_feature_from_feature_group(
         },
     ).exec()
     return {"message": "update completed"}
+
+
+@router.basic.delete("/group/feature")
+async def delete_feature_from_feature_group(item: GroupFeature, user=router.basic.user):
+    """
+    - 피쳐 그룹에서 피쳐를 제거합니다.
+    - 유저가 소유하지 않은 피쳐 그룹에 대해서도 200을 응답하지만, 실제로 동작하지 않습니다.
+    """
+    await db.SQL(
+        """
+        DELETE FROM feature_groups_features
+        WHERE feature_id IN (
+            SELECT ef.id
+            FROM elements_factors ef
+            JOIN elements e ON ef.element_id = e.id
+            JOIN factors f ON ef.factor_id = f.id
+            WHERE e.section = {element_section} AND e.code = {element_code}
+            AND f.section = {factor_section} AND f.code = {factor_code}
+        )
+        AND feature_group_id IN (
+            SELECT fg.id
+            FROM feature_groups fg
+            WHERE fg.id = {feature_group_id} AND fg.user_id = {user_id}
+        )""",
+        params={
+            "user_id": user["id"],
+            "feature_group_id": item.group_id,
+            "element_section": item.element.section,
+            "element_code": item.element.code,
+            "factor_section": item.factor.section,
+            "factor_code": item.factor.code,
+        },
+    ).exec()
+    return {"message": "Request processed"}

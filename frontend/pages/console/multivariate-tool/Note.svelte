@@ -33,10 +33,11 @@
     });
   };
   const editCancel = () => {
+    // Cancel이자 init이다. 포커싱이 바뀔때마다 실행해줘야 한다.
     textareaValue = $FeatureGroupSelected.description;
     editOn = false;
   };
-  $: if (editOn && beforeSelected !== $FeatureGroupSelected) {
+  $: if (beforeSelected !== $FeatureGroupSelected) {
     editCancel();
     beforeSelected = $FeatureGroupSelected;
   }
@@ -78,8 +79,9 @@
   .group-name {
     font-size: 1.1rem;
     margin-top: 1rem;
-    padding: 0 1rem;
+    padding-right: 1rem;
     padding-left: 1.5rem;
+    padding-bottom: 0.5rem;
     color: var(--white);
     display: flex;
     align-items: flex-start;

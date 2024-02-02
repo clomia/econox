@@ -9,9 +9,11 @@
   import EditIcon from "../../../assets/icon/EditIcon.svelte";
   import type { FeatureType } from "../../../modules/state";
 
+  let main: HTMLElement;
   let colorHovered: FeatureType | null = null;
   let colorPickerOn: FeatureType | null = null;
   let colorPicked: { r: number; g: number; b: number; a: number } | null = null;
+  let colorPickerPositionTop: number = 96;
 
   /**
    * 컬러 피커 밖을 클릭하면 해당 색상이 적용되도록 구현하기 위해서
@@ -30,10 +32,6 @@
       },
     };
   };
-  const colorUpdate = () => {
-    colorPickerOn = null;
-    // todo: 여기 작성해야 함 -> api 요청 보내서 완전 적용 해야 함
-  };
 
   /**
    * rgb(r,g,b) 형식의 문자열을 ColorPicker 호환 RGBA 객체로 변환합니다.
@@ -51,44 +49,84 @@
       throw new Error("Invalid input format");
     }
   };
-  const colorDecode = ({ r, g, b, a = 1 }) =>
-    `rgb(${r}, ${g}, ${b})${a < 1 ? ` rgba(${r}, ${g}, ${b}, ${a})` : ""}`;
+  const colorDecode = ({ r, g, b }) => `rgb(${r}, ${g}, ${b})`;
+
+  const colorUpdate = async () => {
+    const request = {
+      group_id: $FeatureGroupSelected.id,
+      element: {
+        section: colorPickerOn.element.section,
+        code: colorPickerOn.element.code,
+      },
+      factor: {
+        section: colorPickerOn.factor.section,
+        code: colorPickerOn.factor.code,
+      },
+      target: {
+        color: colorDecode(colorPicked),
+      },
+    };
+    colorPickerOn = null;
+    // 색 변경이 실시간으로 모든 상태 변수에 반영되기 때문에 변경 전, 후를 비교할 수가 없음
+    // 항상 API 요청을 보내서 매번 마지막 상태를 서버에 반영하는 수밖에 없음
+    await api.member.patch("/feature/group/feature", request);
+  };
 
   const onColorPicker = (feature: FeatureType) => {
+    const index = $FeatureGroupSelected.features.findIndex(
+      (f) => f === feature
+    ); // overflow를 처리하기 위해 해당 DOM 높이를 기반으로 위젯의 위치를 계산해야 함
+    const liElement = main.getElementsByClassName("li")[index];
+    colorPickerPositionTop = liElement.clientHeight + 9; // 9가 가장 적절함
     colorPickerOn = feature;
     colorPicked = colorEncode(feature.color);
   };
 
   $: if (colorPickerOn && colorPicked) {
+    // 전역 스토어에 색상 변경 사항을 실시간으로 반영합니다.
     const target = colorPickerOn;
     const newColor = colorDecode(colorPicked);
+
+    // 복사
     let updated = $FeatureGroupSelected;
+    let updatedGroups = $FeatureGroups;
+
+    const targetIndex = updatedGroups.findIndex(
+      (group) => group === $FeatureGroupSelected
+    );
+
+    // 변경사항 반영
     updated.features.find((f) => f === target).color = newColor;
+    updatedGroups[targetIndex] = updated;
+
+    // 변경사항 적용
     $FeatureGroupSelected = updated;
-
-    // todo: FeatureGroups 상태에도 실시간으로 변경사항을 적용해주게 해야 함
+    $FeatureGroups = updatedGroups;
   }
-
-  // todo: 펙터쪽 이름 길어서 넘칠때 colorPicker 위젯 위치가 이상하게 잡힘
 </script>
 
-<main>
+<main bind:this={main}>
   {#each $FeatureGroupSelected.features as feature}
     <div class="li">
       <button
         class="li__colorbox"
         style="background-color: {feature.color};"
         class:border-none={colorHovered === feature}
+        class:hover-none={colorPickerOn}
         on:click={() => onColorPicker(feature)}
         on:mouseenter={() => (colorHovered = feature)}
         on:mouseleave={() => (colorHovered = null)}
       >
-        {#if colorHovered === feature}
+        {#if colorHovered === feature && !colorPickerOn}
           <div class="li__colorbox__edit-icon"><EditIcon /></div>
         {/if}
       </button>
       {#if colorPickerOn === feature}
-        <div class="li__colorpicker" use:clickOutside={colorUpdate}>
+        <div
+          class="li__colorpicker"
+          use:clickOutside={colorUpdate}
+          style="top: {colorPickerPositionTop}px;"
+        >
           <ColorPicker
             bind:rgb={colorPicked}
             isAlpha={false}
@@ -139,10 +177,9 @@
   .li__colorpicker {
     position: absolute;
     z-index: 10;
-    top: 6rem;
     left: 0.3rem;
     --cp-bg-color: #333;
-    --cp-border-color: rgba(255, 255, 255, 0.7);
+    --cp-border-color: rgba(255, 255, 255, 0.6);
     --cp-input-color: #555;
     --cp-button-hover-color: #777;
   }
@@ -215,5 +252,9 @@
   }
   .border-none {
     border: none;
+  }
+  .hover-none:hover {
+    cursor: default;
+    border: thin solid white;
   }
 </style>

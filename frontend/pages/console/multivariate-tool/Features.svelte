@@ -9,10 +9,18 @@
   import EditIcon from "../../../assets/icon/EditIcon.svelte";
   import type { FeatureType } from "../../../modules/state";
 
+  interface color {
+    r: number;
+    g: number;
+    b: number;
+    a: number;
+  }
+
   let main: HTMLElement;
   let colorHovered: FeatureType | null = null;
   let colorPickerOn: FeatureType | null = null;
-  let colorPicked: { r: number; g: number; b: number; a: number } | null = null;
+  let colorPicked: color | null = null;
+  let colorBeforeApply: color | null = null;
   let colorPickerPositionTop: number = 96;
 
   /**
@@ -53,6 +61,7 @@
 
   const colorUpdate = async () => {
     const request = {
+      // 요청 본문 정의
       group_id: $FeatureGroupSelected.id,
       element: {
         section: colorPickerOn.element.section,
@@ -67,19 +76,25 @@
       },
     };
     colorPickerOn = null;
-    // 색 변경이 실시간으로 모든 상태 변수에 반영되기 때문에 변경 전, 후를 비교할 수가 없음
-    // 항상 API 요청을 보내서 매번 마지막 상태를 서버에 반영하는 수밖에 없음
+    if (colorBeforeApply === colorPicked) {
+      return; // 변경사항이 없으므로 API 요청 안보냄
+    } else {
+      colorBeforeApply = colorPicked;
+      // 이제 적용될거니까 동일한 API 요청이 없도록 업데이트
+    }
     await api.member.patch("/feature/group/feature", request);
   };
 
   const onColorPicker = (feature: FeatureType) => {
+    const initColor = colorEncode(feature.color);
     const index = $FeatureGroupSelected.features.findIndex(
       (f) => f === feature
     ); // overflow를 처리하기 위해 해당 DOM 높이를 기반으로 위젯의 위치를 계산해야 함
     const liElement = main.getElementsByClassName("li")[index];
     colorPickerPositionTop = liElement.clientHeight + 9; // 9가 가장 적절함
     colorPickerOn = feature;
-    colorPicked = colorEncode(feature.color);
+    colorPicked = initColor;
+    colorBeforeApply = initColor;
   };
 
   $: if (colorPickerOn && colorPicked) {

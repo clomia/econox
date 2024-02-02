@@ -7,6 +7,7 @@
     CountryCodeMap,
   } from "../../../modules/state";
   import EditIcon from "../../../assets/icon/EditIcon.svelte";
+  import MinusIcon from "../../../assets/icon/MinusIcon.svelte";
   import type { FeatureType } from "../../../modules/state";
 
   interface color {
@@ -22,6 +23,7 @@
   let colorPicked: color | null = null;
   let colorBeforeApply: color | null = null;
   let colorPickerPositionTop: number = 96;
+  let colorPickerElement: HTMLElement | null = null;
 
   /**
    * 컬러 피커 밖을 클릭하면 해당 색상이 적용되도록 구현하기 위해서
@@ -118,6 +120,33 @@
     $FeatureGroupSelected = updated;
     $FeatureGroups = updatedGroups;
   }
+
+  function scrollToTargetElement(
+    container: HTMLElement,
+    targetElement: HTMLElement
+  ) {
+    const containerRect = container.getBoundingClientRect();
+    const targetRect = targetElement.getBoundingClientRect();
+
+    // 대상 요소의 하단이 컨테이너의 하단으로부터 얼마나 떨어져 있는지 계산
+    const relativeBottom = targetRect.bottom - containerRect.top;
+
+    // 컨테이너의 높이를 고려하여 실제 스크롤 위치 계산
+    const scrollToPosition =
+      relativeBottom - container.clientHeight + container.scrollTop;
+
+    container.scrollTo({
+      top: scrollToPosition,
+      behavior: "smooth",
+    });
+  }
+
+  $: if (colorPickerElement) {
+    // 컬러 피커 요소가 나타나면 해당 요소가 잘 보이도록 스크롤 이동
+    scrollToTargetElement(main, colorPickerElement);
+  }
+
+  const del = (feature: FeatureType) => {};
 </script>
 
 <main bind:this={main}>
@@ -127,12 +156,12 @@
         class="li__colorbox"
         style="background-color: {feature.color};"
         class:border-none={colorHovered === feature}
-        class:hover-none={colorPickerOn}
+        class:hover-none={colorPickerOn === feature}
         on:click={() => onColorPicker(feature)}
         on:mouseenter={() => (colorHovered = feature)}
         on:mouseleave={() => (colorHovered = null)}
       >
-        {#if colorHovered === feature && !colorPickerOn}
+        {#if colorHovered === feature && colorPickerOn !== feature}
           <div class="li__colorbox__edit-icon"><EditIcon /></div>
         {/if}
       </button>
@@ -140,32 +169,43 @@
         <div
           class="li__colorpicker"
           use:clickOutside={colorUpdate}
+          bind:this={colorPickerElement}
           style="top: {colorPickerPositionTop}px;"
         >
           <ColorPicker
             bind:rgb={colorPicked}
             isAlpha={false}
             isDialog={false}
+            --cp-bg-color="#333"
+            --cp-border-color="rgba(255, 255, 255, 0.6)"
+            --cp-input-color="#555"
+            --cp-button-hover-color="#777"
+            --slider-width="30px"
           />
         </div>
       {/if}
       <div class="li__feature">
         <div class="li__feature__ele">
-          <div class="li__feature__ele__code">
-            {feature.element.code}
+          <div class="li__feature__ele__head">
+            <div class="li__feature__ele__head__code">
+              {feature.element.code}
+            </div>
+            <div class="li__feature__ele__head__name">
+              {feature.name.element}
+              {#if feature.element.section === "country" && $CountryCodeMap}
+                {@const code = feature.element.code}
+                {@const flagCode = $CountryCodeMap[code].toLowerCase()}
+                <img
+                  src={`https://flagcdn.com/w40/${flagCode}.png`}
+                  alt={feature.name.element}
+                  width="30px"
+                />
+              {/if}
+            </div>
           </div>
-          <div class="li__feature__ele__name">
-            {feature.name.element}
-            {#if feature.element.section === "country" && $CountryCodeMap}
-              {@const code = feature.element.code}
-              {@const flagCode = $CountryCodeMap[code].toLowerCase()}
-              <img
-                src={`https://flagcdn.com/w40/${flagCode}.png`}
-                alt={feature.name.element}
-                width="30px"
-              />
-            {/if}
-          </div>
+          <button class="li__feature__ele__del" on:click={() => del(feature)}>
+            <MinusIcon size={1.2} />
+          </button>
         </div>
         <div class="li__feature__fac">
           <div class="li__feature__fac__section">
@@ -183,20 +223,21 @@
 </main>
 
 <style>
+  main {
+    margin: 1rem;
+    margin-right: 0.5rem;
+    overflow: auto;
+    height: 30rem;
+  }
   .li {
     display: flex;
     align-items: center;
-    padding-left: 0.5rem;
     position: relative;
   }
   .li__colorpicker {
     position: absolute;
     z-index: 10;
-    left: 0.3rem;
-    --cp-bg-color: #333;
-    --cp-border-color: rgba(255, 255, 255, 0.6);
-    --cp-input-color: #555;
-    --cp-button-hover-color: #777;
+    left: -0.2rem;
   }
   .li__colorbox,
   .li__colorbox__edit-icon {
@@ -206,14 +247,11 @@
   }
   .li__colorbox {
     margin: 0 0.5rem;
-    box-shadow: 0 0 2rem 0.1rem black;
+    box-shadow: 0 0 0.7rem 0 rgba(0, 0, 0, 0.6);
     border: thin solid white;
   }
   .li__colorbox:hover {
     cursor: pointer;
-  }
-  .li__colorbox:first-of-type {
-    margin-top: 1rem;
   }
   .li__colorbox__edit-icon {
     background-color: rgba(0, 0, 0, 0.5);
@@ -224,21 +262,39 @@
   .li__feature {
     width: 37rem;
   }
-  .li__feature__ele {
+  .li__feature__ele,
+  .li__feature__ele__head {
     display: flex;
     align-items: center;
   }
-  .li__feature__ele__code {
+  .li__feature__ele__head {
+    width: 33.9rem;
+  }
+  .li__feature__ele__head__code {
     background-color: #41425e;
   }
-  .li__feature__ele__name {
+  .li__feature__ele__head__name {
     color: var(--white);
     display: flex;
     align-items: center;
     text-align: start;
   }
-  .li__feature__ele__name img {
+  .li__feature__ele__head__name img {
     margin-left: 0.5rem;
+  }
+  .li__feature__ele__del {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.15rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+  }
+  .li__feature__ele__del:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    opacity: 1;
   }
   .li__feature__fac {
     display: flex;
@@ -250,7 +306,7 @@
   .li__feature__fac__name {
     background-color: #40533e;
   }
-  .li__feature__ele__code,
+  .li__feature__ele__head__code,
   .li__feature__fac__section,
   .li__feature__fac__name {
     margin: 0.5rem;

@@ -88,10 +88,10 @@
     {#each groups as group}
       {@const selected = $FeatureGroupSelected === group}
       {@const hovered = groupHovered === group}
-      <div class="list__group" class:selected class:shrink={groups.length >= 6}>
+      <div class="list__group" class:selected class:shrink={groups.length >= 7}>
         <button
           class="list__group__main"
-          class:shrink={groups.length >= 6}
+          class:shrink={groups.length >= 7}
           on:click={() => selectGroup(group)}
           on:mouseenter={() => (groupHovered = group)}
           on:mouseleave={() => (groupHovered = null)}

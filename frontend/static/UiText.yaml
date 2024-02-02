@@ -420,8 +420,11 @@ GroupNotePlaceholder:
   en: "Please write a detailed description for this data group"
   ko: "이 데이터 그룹에 대한 상세한 설명을 작성해주세요"
 GroupNoteNoneText:
-  en: "There is no description written for this data group."
-  ko: "이 데이터 그룹에 대해 작성된 설명이 없습니다."
+  en: "There is no description written for this data group"
+  ko: "이 데이터 그룹에 대해 작성된 설명이 없습니다"
+GroupFeaturesEmpty:
+  en: "This data group is empty"
+  ko: "이 데이터 그룹은 비어있습니다"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

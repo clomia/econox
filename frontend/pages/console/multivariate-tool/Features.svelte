@@ -2,6 +2,7 @@
   import ColorPicker from "svelte-awesome-color-picker";
   import { api } from "../../../modules/request";
   import {
+    Text,
     FeatureGroups,
     FeatureGroupSelected,
     CountryCodeMap,
@@ -180,7 +181,10 @@
   };
 </script>
 
-<main bind:this={main}>
+<main
+  bind:this={main}
+  style="height: {$FeatureGroupSelected.features.length ? 26 : 3}rem"
+>
   {#each $FeatureGroupSelected.features as feature}
     <div class="li">
       <button
@@ -249,7 +253,7 @@
       </div>
     </div>
   {:else}
-    피쳐가 하나도 안들어 있어..
+    <div class="empty">{$Text.GroupFeaturesEmpty}</div>
   {/each}
 </main>
 
@@ -258,8 +262,14 @@
     margin: 1rem;
     margin-right: 0.5rem;
     overflow: auto;
-    max-height: 30rem;
-    /* todo min-height 정의해야 함! */
+  }
+  .empty {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    opacity: 0.7;
   }
   .li {
     display: flex;

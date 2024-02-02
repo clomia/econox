@@ -107,7 +107,7 @@
     align-items: center;
     justify-content: center;
     opacity: 0.7;
-    padding-bottom: 3rem;
+    padding-bottom: 2rem;
   }
   .btns {
     display: flex;

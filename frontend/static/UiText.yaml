@@ -425,6 +425,9 @@ GroupNoteNoneText:
 GroupFeaturesEmpty:
   en: "This data group is empty"
   ko: "이 데이터 그룹은 비어있습니다"
+AddDataToGroup:
+  en: "Add this data to a data group"
+  ko: "이 데이터를 데이터 그룹에 추가하세요"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

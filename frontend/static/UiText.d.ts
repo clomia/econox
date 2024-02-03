@@ -136,6 +136,7 @@ export interface UiText {
     GroupNotePlaceholder: "Please write a detailed description for this data group" | "이 데이터 그룹에 대한 상세한 설명을 작성해주세요";
     GroupNoteNoneText: "There is no description written for this data group" | "이 데이터 그룹에 대해 작성된 설명이 없습니다";
     GroupFeaturesEmpty: "This data group is empty" | "이 데이터 그룹은 비어있습니다";
+    AddDataToGroup: "Add this data to a data group" | "이 데이터를 데이터 그룹에 추가하세요";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

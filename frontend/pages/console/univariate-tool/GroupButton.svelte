@@ -1,5 +1,6 @@
 <script lang="ts">
   import {
+    Text,
     UnivariateElementSelected,
     UnivariateFactorSelected,
     UnivariateChartSource,
@@ -49,7 +50,7 @@
 
 {#if buttonAvaliable}
   <main>
-    <button> 이 시계열 데이터를 그룹에 추가하세요 </button>
+    <button>{$Text.AddDataToGroup}</button>
   </main>
 {/if}
 

@@ -1,12 +1,4 @@
-<!-- 다변량 툴 개발을 위해서 임시로 만들어놓는 버튼, 다변량 툴 개발 후 이쁘게 재작성 할 예정 -->
 <script lang="ts">
-  /**
-   * 버튼 기능: 펙터를 추가할 그룹 선택
-   *   - 기존 그룹 리스트와 그룹 추가 버튼 제공
-   *     - 그룹 리스트는 검색 툴도 있고 크고 좋아야 함
-   *     - 그룹 추가 기능도 크고 좋아야 함
-   */
-
   import {
     UnivariateElementSelected,
     UnivariateFactorSelected,
@@ -57,34 +49,33 @@
 
 {#if buttonAvaliable}
   <main>
-    <input type="number" placeholder="Select ID" bind:value={groupId} />
-    <input type="text" placeholder="Create Name" bind:value={groupName} />
-    <input
-      type="text"
-      placeholder="Create Description"
-      bind:value={groupDescription}
-    />
-    <button on:click={proc}>그룹에 추가</button>
+    <button> 이 시계열 데이터를 그룹에 추가하세요 </button>
   </main>
 {/if}
 
 <style>
   main {
-    border-top: thin solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.5rem;
+    margin-bottom: 1.7em;
   }
   button {
-    padding: 2rem;
-    color: white;
-    background-color: blue;
+    display: flex;
+    width: 30rem;
+    height: 3rem;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    border-radius: 0.2rem;
+    border: thin solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 2rem 0.1rem rgba(0, 0, 0, 0.2);
   }
   button:hover {
     cursor: pointer;
-    background-color: red;
-  }
-  input {
-    min-width: 10rem;
-    height: 3rem;
-    background-color: rgba(255, 255, 255, 0.5);
-    color: black;
+    box-shadow: inset 0 0 0.5rem 0.2rem rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+    border-color: rgba(255, 255, 255, 0.45);
   }
 </style>

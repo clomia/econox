@@ -174,7 +174,7 @@
 
 {#await response}
   <div class="loader">
-    <CircleLoader />
+    <CircleLoader disableScroll={true} />
   </div>
 {/await}
 

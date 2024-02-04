@@ -72,8 +72,10 @@
     close();
     await swal(format($Text.f_DataAddedToGroup, { groupName: group.name }));
     const updatedDom = document.getElementById("multivariate-tool__features");
-    updatedDom.scrollIntoView({ behavior: "instant", block: "start" });
-    // behavior: smooth로 설정하면 스크롤 동작이 쬐끔 되더니 마는 문제가 있어서 instant로 함
+    if (updatedDom) {
+      updatedDom.scrollIntoView({ behavior: "instant", block: "start" });
+      // behavior: smooth로 설정하면 스크롤 동작이 쬐끔 되더니 마는 문제가 있어서 instant로 함
+    }
   };
   const create = async () => {
     if (isLoading) {

@@ -118,7 +118,12 @@
       {#each groups as group}
         <button class="list__exist" on:click={() => select(group)}>
           <div class="list__exist__icon"><ClosedFolder /></div>
-          <div class="list__exist__name">{group.name}</div>
+          <div class="list__exist__name">
+            {group.name}
+            <div class="list__exist__name__feature-count">
+              {group.features.length}
+            </div>
+          </div>
         </button>
       {/each}
     </div>
@@ -202,6 +207,14 @@
   .list__exist__name {
     width: 94%;
     text-align: start;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .list__exist__name__feature-count {
+    color: white;
+    margin: 0 0.5rem;
+    opacity: 0.2;
   }
   .list__add input {
     color: var(--white);

@@ -179,12 +179,28 @@
       },
     });
   };
+  let featureListHeight = 3;
+  $: {
+    // 계산 시작
+    let value = 0;
+    if (!$FeatureGroupSelected.features.length) {
+      value = 3;
+    } else if ($FeatureGroupSelected.features.length <= 2) {
+      value = 11;
+    } else {
+      value = $FeatureGroupSelected.features.length * 5.3;
+    }
+    // 계산 종료
+    // 할당 (26이 최대치임)
+    if (value > 26 || colorPickerOn) {
+      featureListHeight = 26;
+    } else {
+      featureListHeight = value;
+    }
+  }
 </script>
 
-<main
-  bind:this={main}
-  style="height: {$FeatureGroupSelected.features.length ? 26 : 3}rem"
->
+<main bind:this={main} style="height: {featureListHeight}rem;">
   {#each $FeatureGroupSelected.features as feature}
     <div class="li">
       <button

@@ -115,7 +115,13 @@
               on:input={editHandler}
             />
           {:else}
-            <div class="list__group__main__name">{group.name}</div>
+            <div class="list__group__main__name">
+              {group.name}
+              <!-- 이 요소의 width가 고정이라 이렇게 자식 요소로 두어야 함 -->
+              <div class="list__group__main__name__feature-count">
+                {group.features.length}
+              </div>
+            </div>
           {/if}
         </button>
         {#if groupEditingTarget === group}
@@ -201,6 +207,14 @@
   .list__group__main__name {
     margin-left: 1rem;
     width: 40rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .list__group__main__name__feature-count {
+    color: white;
+    margin-left: 0.5rem;
+    opacity: 0.2;
   }
   .list__group__main__icon {
     width: 2rem;

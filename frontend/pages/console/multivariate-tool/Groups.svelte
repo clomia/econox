@@ -212,7 +212,7 @@
   }
   .list__group__main__name__feature-count {
     color: white;
-    margin-left: 0.5rem;
+    margin: 0 0.5rem;
     opacity: 0.2;
   }
   .list__group__main__icon {

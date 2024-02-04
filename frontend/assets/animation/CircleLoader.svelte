@@ -1,3 +1,10 @@
+<!-- 이 컴포넌트는 전체 창 로딩 에니메이션 용이며, 활성화되어있는 동안 스크롤이 잠깁니다! -->
+<script>
+  import { onMount, onDestroy } from "svelte";
+  onMount(() => (document.body.style.overflow = "hidden"));
+  onDestroy(() => (document.body.style.overflow = ""));
+</script>
+
 <div id="preloader">
   <div id="loader" />
 </div>

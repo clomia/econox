@@ -23,6 +23,12 @@
     };
   };
 
+  onMount(() => {
+    document.body.style.overflow = "hidden";
+  });
+
+  const dispatch = createEventDispatcher();
+
   const filter = (groups: FeatureGroupType[]) => {
     // 이미 targetFeature가 포함된 그룹은 표시되지 않도록 합니다.
     return groups.filter((group) => {
@@ -45,17 +51,15 @@
     newGroupName = newGroupName.slice(0, 58);
   }
 
-  onMount(() => {
-    document.body.style.overflow = "hidden";
-  });
-  const dispatch = createEventDispatcher();
-
   const close = () => {
     document.body.style.overflow = "";
     dispatch("close");
   };
 
   const select = async (group: FeatureGroupType) => {
+    if (isLoading) {
+      return; // 중복 동작 방지
+    }
     isLoading = true;
     // 서버가 피쳐 색상을 지정해 줘야 UI를 만들 수 있어서 낙관적 업데이트를 할 수 없음
     await api.member.post("/feature/group/feature", {
@@ -72,6 +76,9 @@
     // behavior: smooth로 설정하면 스크롤 동작이 쬐끔 되더니 마는 문제가 있어서 instant로 함
   };
   const create = async () => {
+    if (isLoading) {
+      return; // 중복 동작 방지
+    }
     const name = strip(newGroupName);
     if (!name) {
       return; // 빈 값은 허용되지 않음
@@ -213,7 +220,8 @@
   }
   .list__exist__name__feature-count {
     color: white;
-    margin: 0 0.5rem;
+    margin-left: 0.5rem;
+    margin-right: 0.83rem;
     opacity: 0.2;
   }
   .list__add input {

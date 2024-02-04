@@ -117,7 +117,6 @@
           {:else}
             <div class="list__group__main__name">
               {group.name}
-              <!-- 이 요소의 width가 고정이라 이렇게 자식 요소로 두어야 함 -->
               <div class="list__group__main__name__feature-count">
                 {group.features.length}
               </div>

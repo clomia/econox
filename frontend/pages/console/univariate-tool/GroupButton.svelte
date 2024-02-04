@@ -5,14 +5,17 @@
     UnivariateFactorSelected,
     UnivariateChartSource,
   } from "../../../modules/state";
-  import { api } from "../../../modules/request";
+  import GroupSelector from "./GroupSelector.svelte";
   import type { SourceType } from "../../../modules/state";
 
+  // 장황해 보이지만 그룹에 추가할 수 있는지 여부를 확인할 수 있는 가장 간결한 방법이다..
   let chartSource: null | SourceType = null;
   let elementCode: any;
   let elementSection: any;
   let factorCode: any;
   let factorSection: any;
+  let targetFeature: any;
+  let buttonAvaliable: boolean = false;
   $: if ($UnivariateElementSelected && $UnivariateFactorSelected) {
     elementCode = $UnivariateElementSelected.code;
     elementSection = $UnivariateElementSelected.section;
@@ -23,35 +26,39 @@
   } else {
     chartSource = null;
   }
-  $: buttonAvaliable =
-    chartSource && chartSource.original.length && chartSource.normalized.length;
+  $: if (
+    chartSource &&
+    chartSource.original.length &&
+    chartSource.normalized.length
+  ) {
+    buttonAvaliable = true;
+    targetFeature = {
+      element: {
+        section: $UnivariateElementSelected.section,
+        code: $UnivariateElementSelected.code,
+      },
+      factor: {
+        section: $UnivariateFactorSelected.section.code,
+        code: $UnivariateFactorSelected.code,
+      },
+    };
+  } else {
+    buttonAvaliable = false;
+  }
 
-  let groupId: number;
-  let groupName: string;
-  let groupDescription: string = "";
-  const proc = async () => {
-    if (groupName) {
-      // 그룹 생성 & 추가
-      const resp = await api.member.post("/feature/group", {
-        name: groupName,
-        description: groupDescription,
-      });
-      groupId = resp.data["group_id"];
-    }
-    // 이미 있는 그룹에 추가
-    const resp = await api.member.post("/feature/group/feature", {
-      group_id: groupId,
-      element: { section: elementSection, code: elementCode },
-      factor: { section: factorSection, code: factorCode },
-    });
-    console.log(resp.data);
+  let selector = false;
+  const selectorOff = () => {
+    selector = false;
   };
 </script>
 
 {#if buttonAvaliable}
   <main>
-    <button>{$Text.AddDataToGroup}</button>
+    <button on:click={() => (selector = true)}>{$Text.AddDataToGroup}</button>
   </main>
+{/if}
+{#if selector}
+  <GroupSelector {targetFeature} on:close={selectorOff} />
 {/if}
 
 <style>

@@ -22,6 +22,7 @@
     $FeatureGroupSelected = group;
   };
   const deleteGroup = async (group: FeatureGroupType) => {
+    $FeatureGroupSelected = null;
     $FeatureGroups = $FeatureGroups.filter((g) => g.id !== group.id);
     await api.member.delete("feature/group", {
       params: { group_id: group.id },
@@ -52,7 +53,7 @@
     if (!target) {
       return; // for typescript
     }
-    if (target.name === newName) {
+    if (!newName || target.name === newName) {
       return;
     }
     if (target === $FeatureGroupSelected) {

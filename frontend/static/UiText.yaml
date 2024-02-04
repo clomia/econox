@@ -428,6 +428,23 @@ GroupFeaturesEmpty:
 AddDataToGroup:
   en: "Add this data to a data group"
   ko: "이 데이터를 데이터 그룹에 추가하세요"
+AddDataToGroupTitle:
+  en: "Please select a group to add data to"
+  ko: "데이터를 추가할 그룹을 선택하세요"
+AddDataToGroupDescription:
+  en: >
+    Econox is a multivariate time series analysis tool. 
+    Create data groups and understand the relationships among various time series. 
+    Grasp the past and predict the future!
+  ko: >
+    에코녹스는 다변량 시계열 분석 도구입니다. 데이터 그룹을 만들고 
+    여러 시계열 간의 관계를 파악하세요. 과거를 이해하고 미래를 예측하세요!
+FindGroup:
+  en: "Find Group"
+  ko: "그룹 찾기"
+CreateGroup:
+  en: "Create Group"
+  ko: "그룹 만들기"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"
@@ -475,3 +492,6 @@ f_TheElementDoesNotContainThisFactor:
 f_WillMembershipBilling:
   en: "The {membership} Membership fee of {amount} will be charged."
   ko: "{membership} 맴버십 비용({amount})이 결제됩니다."
+f_DataAddedToGroup:
+  en: "Data has been added to the group '{groupName}'"
+  ko: "그룹 '{groupName}'에 데이터가 추가되었습니다"

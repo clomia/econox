@@ -323,3 +323,18 @@ export const hasGap = (inputString: string): boolean => {
   const whitespaceRegex = /\s/;
   return whitespaceRegex.test(inputString);
 };
+
+/**
+ * OK 버튼이 나오는 Swal 띄우기
+ */
+export const swal = async (message: string, width = "33rem") => {
+  const text = get(Text);
+  await Swal.fire({
+    ...defaultSwalStyle,
+    width,
+    icon: "info",
+    showDenyButton: false,
+    title: message,
+    confirmButtonText: text.Ok,
+  });
+};

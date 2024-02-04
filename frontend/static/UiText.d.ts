@@ -137,6 +137,10 @@ export interface UiText {
     GroupNoteNoneText: "There is no description written for this data group" | "이 데이터 그룹에 대해 작성된 설명이 없습니다";
     GroupFeaturesEmpty: "This data group is empty" | "이 데이터 그룹은 비어있습니다";
     AddDataToGroup: "Add this data to a data group" | "이 데이터를 데이터 그룹에 추가하세요";
+    AddDataToGroupTitle: "Please select a group to add data to" | "데이터를 추가할 그룹을 선택하세요";
+    AddDataToGroupDescription: "Econox is a multivariate time series analysis tool.  Create data groups and understand the relationships among various time series.  Grasp the past and predict the future!" | "에코녹스는 다변량 시계열 분석 도구입니다. 데이터 그룹을 만들고  여러 시계열 간의 관계를 파악하세요. 과거를 이해하고 미래를 예측하세요!";
+    FindGroup: "Find Group" | "그룹 찾기";
+    CreateGroup: "Create Group" | "그룹 만들기";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";
@@ -151,4 +155,5 @@ export interface UiText {
     f_ChartLoadingInfo: "Collecting data on {factor} related to {element}..." | "{element}에 대한 {factor} 데이터를 수집 중입니다...";
     f_TheElementDoesNotContainThisFactor: "We attempted to collect data for {factor} related to {element},  but were unable to find any. This outcome has been reflected in our service.  Thank you for contributing to the improvement of our service." | "{element}에 대한 {factor} 데이터 수집을 시도하였으나 데이터를 찾지 못하였습니다.  이 결과를 서비스에 반영하였습니다. 서비스 개선에 기여해주셔서 감사합니다.";
     f_WillMembershipBilling: "The {membership} Membership fee of {amount} will be charged." | "{membership} 맴버십 비용({amount})이 결제됩니다.";
+    f_DataAddedToGroup: "Data has been added to the group '{groupName}'" | "그룹 '{groupName}'에 데이터가 추가되었습니다";
 }

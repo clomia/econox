@@ -19,7 +19,7 @@
     <div class="section"><Groups /></div>
     {#if $FeatureGroupSelected}
       <div class="section"><Note /></div>
-      <div class="section"><Features /></div>
+      <div class="section" id="multivariate-tool__features"><Features /></div>
     {/if}
   {/await}
 </main>

@@ -2,6 +2,7 @@
 - /api/feature/... 
 - feature를 다루는 기능을 제공합니다. ( user <-> element <-> factor )
 """
+
 import re
 import random
 import asyncio
@@ -240,7 +241,7 @@ async def get_factors_from_element(
 
 class FeatureGroupInit(BaseModel):
     name: constr(min_length=1, max_length=200)  # DB->VARCHAR(255)
-    description: str
+    description: str = ""
 
 
 @router.basic.post("/group")

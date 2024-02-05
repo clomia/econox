@@ -2,13 +2,15 @@
 - /api/data/...
 - 데이터 제공합니다.
 """
+
 import asyncio
-from typing import Literal
+from typing import Literal, List
 
 import numpy as np
 import xarray as xr
 from aiocache import cached
-from fastapi import HTTPException, Response
+from pydantic import BaseModel
+from fastapi import HTTPException, Response, Query
 
 from backend import db
 from backend.http import APIRouter
@@ -101,9 +103,6 @@ async def search_news_related_to_symbols(symbol: str, lang: str):
     }
 
 
-# 다변량은 GET /data/features 로 만들자
-
-
 @router.basic.get("/feature")
 async def get_feature_time_series(
     element_section: str, element_code: str, factor_section: str, factor_code: str
@@ -154,6 +153,19 @@ async def get_feature_time_series(
             status_code=404,
             detail=f"The {factor_code} factor is not supported by this element",
         )
+
+
+@router.basic.get("/features")
+async def get_features_time_series(group_id: int):
+    """
+    - Element의 Factor 시계열 데이터를 응답합니다.
+    - 해당 Element가 Factor를 지원하지 않는 경우 Element에서 Factor를 제거합니다.
+        - 서버가 이 사실을 처음 알게 되었을때 수행됩니다.
+    - response: {original: 원본 시계열, normalized: 표준화 시계열}
+        - 각 시계열 안에는 동일한 길이의 값 배열(v)과 날짜 배열(t)이 들어있습니다.
+    """
+    # feature = Feature(element_section, element_code, factor_section, factor_code)
+    # data = await feature.get()
 
 
 @router.professional.get("/feature/file")

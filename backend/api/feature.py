@@ -17,7 +17,7 @@ from fastapi import HTTPException, Query
 from backend import db
 from backend.math import datetime2utcstr, utcstr2datetime
 from backend.http import APIRouter
-from backend.integrate import get_element
+from backend.integrate import get_element, get_name
 
 router = APIRouter("feature")
 
@@ -383,30 +383,16 @@ async def get_feature_groups_from_user(
             feature["feature_factor_code"],
         )
 
-    async def get_name(key: tuple):
-        """feature를 유저에게 보여줄 때 필요한 구성요소의 이름 추출"""
-        ele_sec, ele_code, fac_sec, fac_code = key
-        ele = await get_element(section=ele_sec, code=ele_code)
-        factor_section = getattr(ele, ele.attr_name[fac_sec])
-        factor = getattr(factor_section, fac_code)
-        ele_name, factor_section_name, factor_name = await asyncio.gather(
-            ele.name.en(),
-            factor_section.name.trans(to=lang),
-            factor.name.trans(to=lang),
-        )
-        data = {
-            "element": ele_name,
-            "factor_section": factor_section_name,
-            "factor": factor_name,
-        }
-        return (key, data)
-
     namekeys = {
         get_key(feature)
         for feature in features  # 중복제거 & 빈 그룹 제거
         if feature["group_feature_created"] is not None
     }
-    namelist = await asyncio.gather(*[get_name(feature) for feature in namekeys])
+
+    async def _get_name(key: tuple):  # gather 사용을 위해 wrapper로 재정의
+        return (key, await get_name(lang, *key))
+
+    namelist = await asyncio.gather(*[_get_name(key) for key in namekeys])
     names = {key: data for key, data in namelist}
 
     tree = defaultdict(dict)

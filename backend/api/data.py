@@ -122,15 +122,6 @@ class FeatureProperty(BaseModel):
     code: str
 
 
-class FeatureDetailTimeSeries(BaseModel):
-    """메타정보가 포함된 시계열 데이터"""
-
-    element: FeatureProperty
-    factor: FeatureProperty
-    original: TimeSeries
-    normalized: TimeSeries
-
-
 @router.basic.get("/feature")
 async def get_feature_time_series(
     element_section: str, element_code: str, factor_section: str, factor_code: str
@@ -198,8 +189,15 @@ query_get_features_in_feature_group = """
 """
 
 
+class GroupFeatureTimeSeries(TimeSeries):
+    """메타정보가 포함된 시계열 데이터"""
+
+    element: FeatureProperty
+    factor: FeatureProperty
+
+
 @router.basic.get("/features")
-async def get_feature_group_time_series(group_id: int) -> List[FeatureDetailTimeSeries]:
+async def get_feature_group_time_series(group_id: int) -> List[GroupFeatureTimeSeries]:
     """
     - 피쳐 그룹에 속한 모든 피쳐의 시계열 데이터를 응답합니다.
     - 응답 본문의 크기는 많이 잡았을때 5 ~ 10 MB 이내입니다.
@@ -277,12 +275,12 @@ async def download_feature_group_time_series(
         params={"feature_group_id": group_id},
         fetch="all",
     ).exec()
-    features = await asyncio.gather(*[Feature(**target).get() for target in targets])
-    result = []
-    for feature, target in zip(filter(bool, features), targets):
-        feature
+    # # features = await asyncio.gather(*[Feature(**target).get() for target in targets])
+    # result = []
+    # for feature, target in zip(filter(bool, features), targets):
+    #     feature
 
-    func = {"csv": feature.to_csv, "xlsx": feature.to_xlsx}
+    # func = {"csv": feature.to_csv, "xlsx": feature.to_xlsx}
     headers = {
         "csv": {"Content-Disposition": "attachment; filename=file.csv"},
         "xlsx": {"Content-Disposition": "attachment; filename=file.xlsx"},
@@ -293,7 +291,7 @@ async def download_feature_group_time_series(
     }
 
     return Response(
-        content=await func[file_format](normalized),
+        # content=await func[file_format](normalized),
         media_type=media_type[file_format],
         headers=headers[file_format],
     )

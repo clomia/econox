@@ -4,7 +4,7 @@
 
 import io
 import asyncio
-from typing import List
+from typing import List, Dict
 
 import xarray as xr
 import pandas as pd
@@ -44,6 +44,32 @@ async def get_element(section: str, code: str):
         raise HTTPException(status_code=404, detail=e.message)
     else:
         return element
+
+
+async def get_name(
+    lang: str,
+    ele_sec: str,
+    ele_code: str,
+    fac_sec: str,
+    fac_code: str,
+) -> Dict[str, str]:
+    """
+    - feature를 유저에게 보여줄 때 필요한 구성요소의 이름 추출
+    - return: { element: ..., factor_section: ..., factor: ... }
+    """
+    ele = await get_element(section=ele_sec, code=ele_code)
+    factor_section = getattr(ele, ele.attr_name[fac_sec])
+    factor = getattr(factor_section, fac_code)
+    ele_name, factor_section_name, factor_name = await asyncio.gather(
+        ele.name.en(),
+        factor_section.name.trans(to=lang),
+        factor.name.trans(to=lang),
+    )
+    return {
+        "element": ele_name,
+        "factor_section": factor_section_name,
+        "factor": factor_name,
+    }
 
 
 class Feature:
@@ -125,38 +151,61 @@ class Feature:
         return buffer.getvalue()
 
 
-class FeatureDetail:
-    def __init__(
-        self,
-        feature: Feature,
-        ele_sec: str,
-        ele_code: str,
-        fac_sec: str,
-        fac_code: str,
-    ):
-        self.feature = feature
-        self.ele_sec = ele_sec
-        self.ele_code = ele_code
-        self.fac_sec = fac_sec
-        self.fac_code = fac_code
-
-
-class FeatureGroupTable:
+class FeatureGroup:
     """
-    - 피쳐 그룹을 테이블로 변환하는 클래스
+    - 피쳐들을 묶어서 그룹으로 사용 가능한 데이터를 제공합니다.
+    - 시계열 데이터는 정규화되며 모든 데이터의 길이가 동일하도록 자릅니다.
     - Pandas dataframe 객체나 xlsx, csv 파일로 뽑아낼 수 있습니다.
     """
 
-    def __init__(self, *features: FeatureDetail):
-        """매개변수로 FeatureDetail 객체들을 넣으세요"""
+    def __init__(self, *features: Feature):
+        """
+        - features: 그룹으로 정의할 Feature 객체들
+        - 인스턴스 생성 방법:
+            - `group = await FeatureGroup(...).init()`
+        """
         self.features = features
+        self._columns = []  # for caching
+
+    def init():
+        pass
+
+    async def get_columns(self, lang: str):
+        """
+        - lang: 테이블 컬럼명에 사용할 언어
+        """
+        if self._columns:
+            return self._columns
+        names = await asyncio.gather(
+            *[
+                get_name(
+                    lang,
+                    feature.element_section,
+                    feature.element_code,
+                    feature.factor_section,
+                    feature.factor_code,
+                )
+                for feature in self.features
+            ]
+        )
+        columns = [
+            f"[{name['element']}] {name['factor_section']}({name['factor']})"
+            for name in names
+        ]
+        self._columns = columns
+        return columns
 
     async def to_dataframe(self, normalized: bool = False) -> pd.DataFrame:
         """
         - 인덱스와 time, value 컬럼을 가진 dataframe을 반환합니다.
         """
-        data_set = await self.get()
-        data_array = data_set.daily if normalized else denormalize(data_set)
+        data_sets = await asyncio.gather(*[feature.get() for feature in self.features])
+        data_arrays = [
+            data_set.daily if normalized else denormalize(data_set)
+            for data_set in data_sets
+        ]
+        return data_arrays
+
         data_frame = data_array.to_dataframe().reset_index()
         data_frame.t = data_frame.t.dt.date
         data_frame.columns = ["time", "value"]

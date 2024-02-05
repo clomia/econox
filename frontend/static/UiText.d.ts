@@ -118,6 +118,7 @@ export interface UiText {
     ElementNewsNotSupported: "News is not supported for this item" | "뉴스가 지원되지 않는 항목입니다";
     ElementsListBlank: "The list is empty. Add elements through search to populate it." | "리스트가 비어있습니다. 검색을 통해 요소를 추가하세요.";
     FactorsListBlank: "No elements selected. Please choose an element from the list." | "선택된 요소가 없습니다. 리스트에서 요소를 선택하세요.";
+    GroupsListBlank: "The list of data groups is empty. Please select data, create a group, and then start the multivariate analysis." | "데이터 그룹 리스트가 비어있습니다. 데이터 선택 후 그룹을 생성한 뒤 다변량 분석을 시작하세요.";
     NewsGetFailed: "Failed to retrieve news" | "뉴스를 가져오지 못했습니다";
     ScrollMore: "Scroll Down for More" | "스크롤하여 더보기";
     ServerOverload: "Due to server overload, we are unable to process your request at the moment.  We are currently expanding our server capacity. Please try again shortly." | "서버 과부하로 인해 요청을 처리할 수 없습니다.  현재 서버 용량을 확장하고 있습니다. 잠시 후 다시 시도해주세요.";

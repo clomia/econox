@@ -367,6 +367,9 @@ ElementsListBlank:
 FactorsListBlank:
   en: "No elements selected. Please choose an element from the list."
   ko: "선택된 요소가 없습니다. 리스트에서 요소를 선택하세요."
+GroupsListBlank:
+  en: "The list of data groups is empty. Please select data, create a group, and then start the multivariate analysis."
+  ko: "데이터 그룹 리스트가 비어있습니다. 데이터 선택 후 그룹을 생성한 뒤 다변량 분석을 시작하세요."
 NewsGetFailed:
   en: "Failed to retrieve news"
   ko: "뉴스를 가져오지 못했습니다"

@@ -1,6 +1,10 @@
 <script lang="ts">
   import { loadGroups } from "./functions";
-  import { Text, FeatureGroupSelected } from "../../../modules/state";
+  import {
+    Text,
+    FeatureGroupSelected,
+    FeatureGroups,
+  } from "../../../modules/state";
   import Groups from "./Groups.svelte";
   import Note from "./Note.svelte";
   import Features from "./Features.svelte";
@@ -16,10 +20,14 @@
       <div class="load-info">{$Text.GroupLoadingInfo}</div>
     </div>
   {:then}
-    <div class="section"><Groups /></div>
-    {#if $FeatureGroupSelected}
-      <div class="section"><Note /></div>
-      <div class="section" id="multivariate-tool__features"><Features /></div>
+    {#if $FeatureGroups.length === 0}
+      <div class="empty">{$Text.GroupsListBlank}</div>
+    {:else}
+      <div class="section"><Groups /></div>
+      {#if $FeatureGroupSelected}
+        <div class="section"><Note /></div>
+        <div class="section" id="multivariate-tool__features"><Features /></div>
+      {/if}
     {/if}
   {/await}
 </main>
@@ -37,16 +45,25 @@
     padding-top: 4.5rem;
   }
   .load-info {
-    position: absolute;
-    display: flex;
     width: 100%;
     height: 100%;
+    position: absolute;
+    display: flex;
     align-items: center;
     justify-content: center;
     bottom: 0;
     left: 0;
     padding-bottom: 15.5rem;
     color: rgba(255, 255, 255, 0.6);
+  }
+  .empty {
+    display: flex;
+    height: 10rem;
+    text-align: start;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 3rem;
+    color: rgba(255, 255, 255, 0.5);
   }
   .section {
     border-bottom: thin solid rgba(255, 255, 255, 0.2);

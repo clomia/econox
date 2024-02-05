@@ -1,7 +1,10 @@
 """
 - api와 data 모듈의 통합 로직 중 반복되는 부분을 함수로 제공합니다.
 """
+
 import io
+import asyncio
+from typing import List
 
 import xarray as xr
 import pandas as pd
@@ -82,6 +85,71 @@ class Feature:
             )
 
         return await factor.get()
+
+    async def to_dataframe(self, normalized: bool = False) -> pd.DataFrame:
+        """
+        - 인덱스와 time, value 컬럼을 가진 dataframe을 반환합니다.
+        """
+        data_set = await self.get()
+        data_array = data_set.daily if normalized else denormalize(data_set)
+        data_frame = data_array.to_dataframe().reset_index()
+        data_frame.t = data_frame.t.dt.date
+        data_frame.columns = ["time", "value"]
+        data_frame.index.name = "index"
+        return data_frame
+
+    async def to_csv(self, normalized: bool = False) -> bytes:
+        """
+        - normalized: 정규화 여부
+        - return: 파일 데이터를 bytes로 반환합니다. 디스크를 사용하지 않습니다.
+        """
+        data_frame = await self.to_dataframe(normalized)
+        data_frame.to_csv(buffer := io.BytesIO())
+        return buffer.getvalue()
+
+    async def to_xlsx(self, normalized: bool = False) -> bytes:
+        """
+        - normalized: 정규화 여부
+        - return: 파일 데이터를 bytes로 반환합니다. 디스크를 사용하지 않습니다.
+        """
+        data_frame = await self.to_dataframe(normalized)
+        sheet_name = f"econox"
+        with pd.ExcelWriter(
+            buffer := io.BytesIO(), date_format="YYYY-MM-DD", engine="openpyxl"
+        ) as writer:
+            data_frame.to_excel(writer, sheet_name=sheet_name)
+            sheet = writer.sheets[sheet_name]
+            # 컬럼 길이가 글자 길이보다 작으면 깨지므로 여유롭게 설정
+            sheet.column_dimensions["B"].width = 15
+            sheet.column_dimensions["C"].width = 23
+        return buffer.getvalue()
+
+
+class FeatureDetail:
+    def __init__(
+        self,
+        feature: Feature,
+        ele_sec: str,
+        ele_code: str,
+        fac_sec: str,
+        fac_code: str,
+    ):
+        self.feature = feature
+        self.ele_sec = ele_sec
+        self.ele_code = ele_code
+        self.fac_sec = fac_sec
+        self.fac_code = fac_code
+
+
+class FeatureGroupTable:
+    """
+    - 피쳐 그룹을 테이블로 변환하는 클래스
+    - Pandas dataframe 객체나 xlsx, csv 파일로 뽑아낼 수 있습니다.
+    """
+
+    def __init__(self, *features: FeatureDetail):
+        """매개변수로 FeatureDetail 객체들을 넣으세요"""
+        self.features = features
 
     async def to_dataframe(self, normalized: bool = False) -> pd.DataFrame:
         """

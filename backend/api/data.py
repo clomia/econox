@@ -10,7 +10,7 @@ import numpy as np
 import xarray as xr
 from aiocache import cached
 from pydantic import BaseModel
-from fastapi import HTTPException, Response, Query
+from fastapi import HTTPException, Response
 
 from backend import db
 from backend.http import APIRouter
@@ -103,10 +103,38 @@ async def search_news_related_to_symbols(symbol: str, lang: str):
     }
 
 
+class TimeSeries(BaseModel):
+    v: List[float | int]
+    t: List[str]
+
+
+class FeatureTimeSeries(BaseModel):
+    """시계열 데이터만"""
+
+    original: TimeSeries
+    normalized: TimeSeries
+
+
+class FeatureProperty(BaseModel):
+    """시계열 데이터의 메타정보"""
+
+    section: str
+    code: str
+
+
+class FeatureDetailTimeSeries(BaseModel):
+    """메타정보가 포함된 시계열 데이터"""
+
+    element: FeatureProperty
+    factor: FeatureProperty
+    original: TimeSeries
+    normalized: TimeSeries
+
+
 @router.basic.get("/feature")
 async def get_feature_time_series(
     element_section: str, element_code: str, factor_section: str, factor_code: str
-):
+) -> FeatureTimeSeries:
     """
     - Element의 Factor 시계열 데이터를 응답합니다.
     - 해당 Element가 Factor를 지원하지 않는 경우 Element에서 Factor를 제거합니다.
@@ -155,17 +183,59 @@ async def get_feature_time_series(
         )
 
 
+# 피쳐 그룹에 들어있는 피쳐들의 정보를 가져오는 쿼리
+query_get_features_in_feature_group = """ 
+    SELECT 
+        e.section AS element_section,
+        e.code AS element_code,
+        f.section AS factor_section,
+        f.code AS factor_code
+    FROM feature_groups_features fgf
+    JOIN elements_factors ef ON fgf.feature_id = ef.id
+    JOIN elements e ON ef.element_id = e.id
+    JOIN factors f ON ef.factor_id = f.id
+    WHERE fgf.feature_group_id = {feature_group_id}
+"""
+
+
 @router.basic.get("/features")
-async def get_features_time_series(group_id: int):
+async def get_feature_group_time_series(group_id: int) -> List[FeatureDetailTimeSeries]:
     """
-    - Element의 Factor 시계열 데이터를 응답합니다.
-    - 해당 Element가 Factor를 지원하지 않는 경우 Element에서 Factor를 제거합니다.
-        - 서버가 이 사실을 처음 알게 되었을때 수행됩니다.
-    - response: {original: 원본 시계열, normalized: 표준화 시계열}
-        - 각 시계열 안에는 동일한 길이의 값 배열(v)과 날짜 배열(t)이 들어있습니다.
+    - 피쳐 그룹에 속한 모든 피쳐의 시계열 데이터를 응답합니다.
+    - 응답 본문의 크기는 많이 잡았을때 5 ~ 10 MB 이내입니다.
+        - 본문이 커서 swagger 문서는 응답을 표시하지 못합니다.
     """
-    # feature = Feature(element_section, element_code, factor_section, factor_code)
-    # data = await feature.get()
+    targets = await db.SQL(
+        query_get_features_in_feature_group,
+        params={"feature_group_id": group_id},
+        fetch="all",
+    ).exec()
+    features = await asyncio.gather(*[Feature(**target).get() for target in targets])
+    result = []
+    for feature, target in zip(filter(bool, features), targets):
+        original = denormalize(feature)
+        normalized: xr.DataArray = feature.daily
+        result.append(
+            {
+                "element": {
+                    "section": target["element_section"],
+                    "code": target["element_code"],
+                },
+                "factor": {
+                    "section": target["factor_section"],
+                    "code": target["factor_code"],
+                },
+                "original": {
+                    "v": original.values.tolist(),
+                    "t": np.datetime_as_string(original.t.values, unit="D").tolist(),
+                },
+                "normalized": {
+                    "v": normalized.values.tolist(),
+                    "t": np.datetime_as_string(normalized.t.values, unit="D").tolist(),
+                },
+            }
+        )
+    return result
 
 
 @router.professional.get("/feature/file")
@@ -178,6 +248,39 @@ async def download_feature_time_series(
     factor_code: str,
 ):
     feature = Feature(element_section, element_code, factor_section, factor_code)
+
+    func = {"csv": feature.to_csv, "xlsx": feature.to_xlsx}
+    headers = {
+        "csv": {"Content-Disposition": "attachment; filename=file.csv"},
+        "xlsx": {"Content-Disposition": "attachment; filename=file.xlsx"},
+    }
+    media_type = {
+        "csv": "text/csv",
+        "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    }
+
+    return Response(
+        content=await func[file_format](normalized),
+        media_type=media_type[file_format],
+        headers=headers[file_format],
+    )
+
+
+@router.professional.get("/feature/file")
+async def download_feature_group_time_series(
+    group_id: int,
+    normalized: bool,
+    file_format: Literal["csv", "xlsx"],
+):
+    targets = await db.SQL(
+        query_get_features_in_feature_group,
+        params={"feature_group_id": group_id},
+        fetch="all",
+    ).exec()
+    features = await asyncio.gather(*[Feature(**target).get() for target in targets])
+    result = []
+    for feature, target in zip(filter(bool, features), targets):
+        feature
 
     func = {"csv": feature.to_csv, "xlsx": feature.to_xlsx}
     headers = {

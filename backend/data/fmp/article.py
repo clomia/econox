@@ -3,7 +3,7 @@ from typing import List
 from datetime import datetime
 
 from backend.http import FmpAPI
-from backend.math import marge_lists
+from backend.calc import marge_lists
 from backend.data.text import Multilingual
 
 __all__ = ["news"]

@@ -2,6 +2,7 @@
 - data_class.json으로 클라이언트 클래스를 생성하는 메타클래스 모듈 
 - FMP의 모든 시계열 데이터 API를 일관된 인터페이스로 제공한다.
 """
+
 import json
 from typing import Dict
 from pathlib import PosixPath
@@ -13,7 +14,7 @@ import xarray as xr
 from httpx import HTTPStatusError
 
 from backend.http import FmpAPI
-from backend.math import normalize
+from backend.calc import normalize
 from backend.data.model import Factor
 from backend.data.text import Multilingual
 from backend.data.io import xr_open_zarr, xr_to_zarr
@@ -56,10 +57,14 @@ class ClientMeta(type):
         except:
             raise NotImplementedError(f"{CLASS_PATH}의 {name} 구성이 정의되지 않음.")
         if not config.get("setting"):
-            raise NotImplementedError(f"{CLASS_PATH} {name}에 대한 setting가 정의되지 않음.")
+            raise NotImplementedError(
+                f"{CLASS_PATH} {name}에 대한 setting가 정의되지 않음."
+            )
         for i in meta.mandatory:
             if i not in config["setting"].keys():
-                raise NotImplementedError(f"{meta.__name__}의 필수 구성 인자 {i}가 정의되지 않음.")
+                raise NotImplementedError(
+                    f"{meta.__name__}의 필수 구성 인자 {i}가 정의되지 않음."
+                )
         return config
 
     def __new__(meta, name, *_args):
@@ -115,7 +120,9 @@ class ClientMeta(type):
         """
         series: list = await FmpAPI(cache=False).get(self.api, **self.api_params)
         if not series:  # 데이터가 없는 경우 ValueError
-            raise ValueError(f"FMP에 {self.symbol} symbol에 대한 데이터가 존재하지 않습니다.")
+            raise ValueError(
+                f"FMP에 {self.symbol} symbol에 대한 데이터가 존재하지 않습니다."
+            )
         t = np.array([np.datetime64(day[self.t_key], "ns") for day in series])
         collected = {}
         for factor in self.factors:
@@ -181,7 +188,9 @@ class HistoricalPriceFullMeta(ClientMeta):
 
         # 값이 historical 안에 들어있으며, 값이 없으면 historical 키도 없음
         if not (series := data.get("historical")):
-            raise ValueError(f"FMP에 {self.symbol} symbol에 대한 데이터가 존재하지 않습니다.")
+            raise ValueError(
+                f"FMP에 {self.symbol} symbol에 대한 데이터가 존재하지 않습니다."
+            )
 
         # 나머지는 부모클래스 코드와 동일
         t = np.array([np.datetime64(day[self.t_key], "ns") for day in series])

@@ -5,7 +5,7 @@ from datetime import datetime, date
 import numpy as np
 import xarray as xr
 
-from backend.math import normalize
+from backend.calc import normalize
 from backend.http import WorldBankAPI
 from backend.system import EFS_VOLUME_PATH
 from backend.data.model import Factor

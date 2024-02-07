@@ -1,4 +1,5 @@
 """ /api/user """
+
 import asyncio
 from typing import Literal, List
 from datetime import datetime, timedelta
@@ -21,7 +22,7 @@ from backend.http import (
     pooling,
     get_paypal_next_billing_date,
 )
-from backend.math import (
+from backend.calc import (
     utcstr_type,
     utcstr2datetime,
     datetime2utcstr,
@@ -434,7 +435,9 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.u
             paypal_subscription_id={subscription_id}
         WHERE id={user_id}"""  # paypal_subscription_id 업데이트 필요
 
-    if user["current_billing_date"] is None:  # 결제가 필요 없는 계정이므로 맴버십만 바꾸면 됌
+    if (
+        user["current_billing_date"] is None
+    ):  # 결제가 필요 없는 계정이므로 맴버십만 바꾸면 됌
         await db.SQL(
             update_query_trial,
             params={"new_membership": item.new_membership, "user_id": user["id"]},
@@ -629,9 +632,12 @@ async def activate_billing(item: BillingRestore, user=router.private.user):
         - 결제정보가 올바르지 않은 경우에도 402 에러가 응답됩니다.
     """
     is_benefit_end = not payment_method_exists(user)
-    proper_payment_method_in_request = (  # 통화 종류에 맞는 결제 정보가 요청에 들어있는지 확인
-        user["currency"] == "KRW" and item.tosspayments
-    ) or (user["currency"] == "USD" and item.paypal)
+    proper_payment_method_in_request = (
+        (  # 통화 종류에 맞는 결제 정보가 요청에 들어있는지 확인
+            user["currency"] == "KRW" and item.tosspayments
+        )
+        or (user["currency"] == "USD" and item.paypal)
+    )
     if is_benefit_end and not proper_payment_method_in_request:
         raise HTTPException(
             status_code=402,
@@ -642,7 +648,9 @@ async def activate_billing(item: BillingRestore, user=router.private.user):
 
     sql_list = []
     now = datetime.now()
-    if user["next_billing_date"] - timedelta(days=1) < now:  # 결제 주기를 벗어남 (계정 정지 상태)
+    if (
+        user["next_billing_date"] - timedelta(days=1) < now
+    ):  # 결제 주기를 벗어남 (계정 정지 상태)
         # 결제가 정확한 시간에 이루어지는게 아니라서 결제 예정일 하루 전을 기준으로 함, paypal 웹훅 딜레이 있어서 billing_status로 구분하면 안됌
         # 결제 예정일 당일에 처리하면 Paypal 결제 웹훅 처리와 중복되어 2번 결제, 구독될 위험성이 있기 때문
         if user["currency"] == "USD":  # Paypal

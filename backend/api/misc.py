@@ -1,4 +1,5 @@
 """ 모듈로 분류하기 어려운 앤드포인트들 """
+
 from datetime import datetime
 
 import ipinfo
@@ -6,7 +7,7 @@ from fastapi import Request, HTTPException
 
 from backend import db
 from backend.system import SECRETS, MEMBERSHIP, log
-from backend.math import (
+from backend.calc import (
     datetime2utcstr,
     calc_next_billing_date,
     calc_next_billing_date_adjust_membership_change,

@@ -10,14 +10,14 @@ import numpy as np
 import xarray as xr
 from aiocache import cached
 from pydantic import BaseModel
-from fastapi import HTTPException, Response
+from fastapi import HTTPException, Response, Query
 
 from backend import db
 from backend.http import APIRouter
-from backend.math import datetime2utcstr, denormalize
+from backend.calc import datetime2utcstr, denormalize
 from backend.data import fmp, world_bank
 from backend.system import ElasticRedisCache, CacheTTL, log
-from backend.integrate import get_element, Feature
+from backend.integrate import get_element, Feature, FeatureGroup
 
 
 router = APIRouter("data")
@@ -25,7 +25,9 @@ router = APIRouter("data")
 
 @router.basic.get("/elements")
 @cached(cache=ElasticRedisCache, ttl=CacheTTL.MID)  # 실시간성이 없는 검색이므로 캐싱
-async def search_symbols_and_countries(query: str, lang: str):
+async def search_symbols_and_countries(
+    query: str, lang: str = Query(..., min_length=2, max_length=2)
+):
     """
     - 검색어(자연어)로 국가를 포함하는 시계열 요소들을 검색합니다.
     - query: 검색어
@@ -68,7 +70,9 @@ async def search_symbols_and_countries(query: str, lang: str):
 
 
 @router.basic.get("/news")
-async def search_news_related_to_symbols(symbol: str, lang: str):
+async def search_news_related_to_symbols(
+    symbol: str, lang: str = Query(..., min_length=2, max_length=2)
+):
     """
     - symbol에 대한 최신 뉴스들을 가져옵니다. (국가에 대한 뉴스는 지원되지 않음)
     - lang: 응답 데이터의 언어 (ISO 639-1)
@@ -115,13 +119,6 @@ class FeatureTimeSeries(BaseModel):
     normalized: TimeSeries
 
 
-class FeatureProperty(BaseModel):
-    """시계열 데이터의 메타정보"""
-
-    section: str
-    code: str
-
-
 @router.basic.get("/feature")
 async def get_feature_time_series(
     element_section: str, element_code: str, factor_section: str, factor_code: str
@@ -134,7 +131,7 @@ async def get_feature_time_series(
         - 각 시계열 안에는 동일한 길이의 값 배열(v)과 날짜 배열(t)이 들어있습니다.
     """
     feature = Feature(element_section, element_code, factor_section, factor_code)
-    if (data := await feature.get()) is not None:
+    if (data := await feature.to_dataset()) is not None:
         original = denormalize(data)
         normalized: xr.DataArray = data.daily
         return {
@@ -189,7 +186,14 @@ query_get_features_in_feature_group = """
 """
 
 
-class GroupFeatureTimeSeries(TimeSeries):
+class FeatureProperty(BaseModel):
+    """시계열 데이터의 메타정보"""
+
+    section: str
+    code: str
+
+
+class GroupFeatureTimeSeries(FeatureTimeSeries):
     """메타정보가 포함된 시계열 데이터"""
 
     element: FeatureProperty
@@ -200,28 +204,32 @@ class GroupFeatureTimeSeries(TimeSeries):
 async def get_feature_group_time_series(group_id: int) -> List[GroupFeatureTimeSeries]:
     """
     - 피쳐 그룹에 속한 모든 피쳐의 시계열 데이터를 응답합니다.
-    - 응답 본문의 크기는 많이 잡았을때 5 ~ 10 MB 이내입니다.
-        - 본문이 커서 swagger 문서는 응답을 표시하지 못합니다.
+    - 응답 본문의 크기는 대략 5 ~ 10 MB 이내입니다.
+        - 본문이 커서 swagger 문서가 응답을 표시하지 못합니다.
     """
-    targets = await db.SQL(
+    feature_attrs = await db.SQL(
         query_get_features_in_feature_group,
         params={"feature_group_id": group_id},
         fetch="all",
     ).exec()
-    features = await asyncio.gather(*[Feature(**target).get() for target in targets])
+    features = [Feature(**feature_attr) for feature_attr in feature_attrs]
+    group = await FeatureGroup(*features).init()
+    ds_original = group.to_dataset(normalized=False)
+    ds_normalized = group.to_dataset(normalized=True)
+
     result = []
-    for feature, target in zip(filter(bool, features), targets):
-        original = denormalize(feature)
-        normalized: xr.DataArray = feature.daily
+    for feature in features:
+        original = ds_original[feature.repr_str()]
+        normalized = ds_normalized[feature.repr_str()]
         result.append(
             {
                 "element": {
-                    "section": target["element_section"],
-                    "code": target["element_code"],
+                    "section": feature.element_section,
+                    "code": feature.element_code,
                 },
                 "factor": {
-                    "section": target["factor_section"],
-                    "code": target["factor_code"],
+                    "section": feature.factor_section,
+                    "code": feature.factor_code,
                 },
                 "original": {
                     "v": original.values.tolist(),
@@ -245,12 +253,17 @@ async def download_feature_time_series(
     factor_section: str,
     factor_code: str,
 ):
+    """
+    - Element의 Factor 시계열 데이터를 파일로 만들어서 응답합니다.
+    - 파일 형식은 csv와 xlsx만 지원됩니다.
+    """
     feature = Feature(element_section, element_code, factor_section, factor_code)
 
     func = {"csv": feature.to_csv, "xlsx": feature.to_xlsx}
+    filename = f"{feature.element_code}-{feature.factor_section}-{feature.factor_code}"
     headers = {
-        "csv": {"Content-Disposition": "attachment; filename=file.csv"},
-        "xlsx": {"Content-Disposition": "attachment; filename=file.xlsx"},
+        "csv": {"Content-Disposition": f"attachment; filename={filename}.csv"},
+        "xlsx": {"Content-Disposition": f"attachment; filename={filename}.xlsx"},
     }
     media_type = {
         "csv": "text/csv",
@@ -264,26 +277,29 @@ async def download_feature_time_series(
     )
 
 
-@router.professional.get("/feature/file")
+@router.professional.get("/features/file")
 async def download_feature_group_time_series(
-    group_id: int,
-    normalized: bool,
     file_format: Literal["csv", "xlsx"],
+    normalized: bool,
+    group_id: int,
+    lang: str = Query(..., min_length=2, max_length=2),
 ):
-    targets = await db.SQL(
+    """
+    - 피쳐 그룹에 속한 모든 피쳐의 시계열 데이터를 파일로 만들어서 응답합니다.
+    - 파일 형식은 csv와 xlsx만 지원됩니다.
+    """
+    feature_attrs = await db.SQL(
         query_get_features_in_feature_group,
         params={"feature_group_id": group_id},
         fetch="all",
     ).exec()
-    # # features = await asyncio.gather(*[Feature(**target).get() for target in targets])
-    # result = []
-    # for feature, target in zip(filter(bool, features), targets):
-    #     feature
+    features = [Feature(**feature_attr) for feature_attr in feature_attrs]
+    group = await FeatureGroup(*features).init()
 
-    # func = {"csv": feature.to_csv, "xlsx": feature.to_xlsx}
+    func = {"csv": group.to_csv, "xlsx": group.to_xlsx}
     headers = {
-        "csv": {"Content-Disposition": "attachment; filename=file.csv"},
-        "xlsx": {"Content-Disposition": "attachment; filename=file.xlsx"},
+        "csv": {"Content-Disposition": f"attachment; filename=group({group_id}).csv"},
+        "xlsx": {"Content-Disposition": f"attachment; filename=group({group_id}).xlsx"},
     }
     media_type = {
         "csv": "text/csv",
@@ -291,7 +307,7 @@ async def download_feature_group_time_series(
     }
 
     return Response(
-        # content=await func[file_format](normalized),
+        content=await func[file_format](lang=lang, normalized=normalized),
         media_type=media_type[file_format],
         headers=headers[file_format],
     )

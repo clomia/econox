@@ -1,4 +1,5 @@
 """ 고성능 수학 연산 모듈 """
+
 import math
 from typing import Callable
 from datetime import datetime, timedelta
@@ -60,6 +61,18 @@ def normalize(
     )
 
 
+def restore_scale(normalized: xr.Dataset) -> xr.DataArray:
+    """
+    - normalize 데이터에서 Min-Max Scale만 복원
+    - normalized: normalize 함수에서 반환된 Dataset
+    - return: 스케일이 복원된 daily DataArray
+    """
+    dataset = normalized.compute()
+    origin_min = dataset.attrs["normalize"]["scaling"]["origin_min"]
+    origin_max = dataset.attrs["normalize"]["scaling"]["origin_max"]
+    return dataset.daily * (origin_max - origin_min) + origin_min
+
+
 def denormalize(normalized: xr.Dataset) -> xr.DataArray:
     """
     - normalize의 역함수
@@ -69,11 +82,8 @@ def denormalize(normalized: xr.Dataset) -> xr.DataArray:
     - 원본 데이터가 일단위보다 작은 해상도를 가질 경우 복원이 불가능합니다.
     """
     dataset = normalized.compute()
-    origin_min = dataset.attrs["normalize"]["scaling"]["origin_min"]
-    origin_max = dataset.attrs["normalize"]["scaling"]["origin_max"]
-    origin_x = dataset.daily[dataset.mask]
-    restored = origin_x * (origin_max - origin_min) + origin_min
-    return restored
+    restored_scale = restore_scale(dataset)
+    return restored_scale[dataset.mask]
 
 
 def marge_lists(*lists: list, limit: int) -> list:

@@ -46,6 +46,6 @@ def xr_to_zarr(dataset: xr.Dataset, path: Path):
     - xarray의 to_zarr에 대한 wrapper
     - EFS 사용에 따른 동시성 취약 문제를 핸들링해줍니다.
     - 현재까지 발견된 문제들
-        - 동시접속으로 인한 PermissionError, 그리고 결과적으로 전파되는 FileNotFoundError등
+        - 동시접속으로 인한 PermissionError, 그리고 이후 전파되는 FileNotFoundError등
     """
     return _pooling(partial(dataset.to_zarr, path, mode="w"))

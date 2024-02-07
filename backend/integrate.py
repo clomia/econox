@@ -6,15 +6,17 @@ import io
 import asyncio
 from typing import List, Dict
 
+import numpy as np
 import xarray as xr
 import pandas as pd
+from openpyxl.utils import get_column_letter
 from fastapi import HTTPException, Request
 from fastapi.responses import JSONResponse
 
 from backend.data import fmp, world_bank
 from backend.data.model import Factor
 from backend.data.exceptions import ElementDoesNotExist, LanguageNotSupported
-from backend.math import denormalize
+from backend.calc import denormalize, restore_scale
 
 
 async def lang_exception_handler(request: Request, call_next):
@@ -54,7 +56,7 @@ async def get_name(
     fac_code: str,
 ) -> Dict[str, str]:
     """
-    - feature를 유저에게 보여줄 때 필요한 구성요소의 이름 추출
+    - feature를 유저에게 보여줄 때 필요한 구성요소의 자연어 이름 가져오기
     - return: { element: ..., factor_section: ..., factor: ... }
     """
     ele = await get_element(section=ele_sec, code=ele_code)
@@ -90,7 +92,11 @@ class Feature:
         self.factor_section = factor_section
         self.factor_code = factor_code
 
-    async def get(self) -> xr.Dataset:
+    def repr_str(self):
+        """피쳐를 나타내는 유니크 문자열"""
+        return f"Feature<[{self.element_section}]{self.element_code}-{self.factor_section}({self.factor_code})>"
+
+    async def to_dataset(self) -> xr.Dataset:
         """
         - 원본 형식인 Dataset 객체를 반환합니다.
         - 계산은 가급적 이 Dataset 객체를 통해 수행하세요.
@@ -116,7 +122,7 @@ class Feature:
         """
         - 인덱스와 time, value 컬럼을 가진 dataframe을 반환합니다.
         """
-        data_set = await self.get()
+        data_set = await self.to_dataset()
         data_array = data_set.daily if normalized else denormalize(data_set)
         data_frame = data_array.to_dataframe().reset_index()
         data_frame.t = data_frame.t.dt.date
@@ -146,8 +152,8 @@ class Feature:
             data_frame.to_excel(writer, sheet_name=sheet_name)
             sheet = writer.sheets[sheet_name]
             # 컬럼 길이가 글자 길이보다 작으면 깨지므로 여유롭게 설정
-            sheet.column_dimensions["B"].width = 15
-            sheet.column_dimensions["C"].width = 23
+            sheet.column_dimensions[get_column_letter(2)].width = 15
+            sheet.column_dimensions[get_column_letter(3)].width = 23
         return buffer.getvalue()
 
 
@@ -156,6 +162,12 @@ class FeatureGroup:
     - 피쳐들을 묶어서 그룹으로 사용 가능한 데이터를 제공합니다.
     - 시계열 데이터는 정규화되며 모든 데이터의 길이가 동일하도록 자릅니다.
     - Pandas dataframe 객체나 xlsx, csv 파일로 뽑아낼 수 있습니다.
+
+    ```python
+    group = await FeatureGroup(feature1, feature2, feature3).init()
+    feature2_from_group:xr.Dataset = group[feature2] # 그룹에 맞게 슬라이싱된 Dataset
+    group.dataset # 그룹 자체에 대한 Dataset
+    ```
     """
 
     def __init__(self, *features: Feature):
@@ -164,76 +176,112 @@ class FeatureGroup:
         - 인스턴스 생성 방법:
             - `group = await FeatureGroup(...).init()`
         """
-        self.features = features
-        self._columns = []  # for caching
+        self.src = features
+        self._init = False  # init 여부
 
-    def init():
-        pass
+    def __getitem__(self, fe: Feature) -> xr.Dataset:
+        assert self._init
+        return self._dict[fe.repr_str()]  # key에 해당하는 값을 반환
 
-    async def get_columns(self, lang: str):
+    def __setitem__(self, *args):
+        raise PermissionError("이 객체는 읽기 전용입니다.")
+
+    def __delitem__(self, *args):
+        raise PermissionError("이 객체는 읽기 전용입니다.")
+
+    async def init(self):
+        ds_arr = await asyncio.gather(*[fe.to_dataset() for fe in self.src])
+
+        min_t = np.max([ds.t[0].to_numpy() for ds in ds_arr])
+        max_t = np.min([ds.t[-1].to_numpy() for ds in ds_arr])
+
+        self._dict = {  # 그룹의 개별 데이터셋 접근자 활성화
+            fe.repr_str(): ds.sel(t=slice(min_t, max_t))
+            for fe, ds in zip(self.src, ds_arr)
+        }
+
+        self._init = True
+        return self
+
+    async def get_columns(self, lang: str) -> List[str]:
         """
         - lang: 테이블 컬럼명에 사용할 언어
         """
-        if self._columns:
-            return self._columns
+        assert self._init
         names = await asyncio.gather(
             *[
                 get_name(
                     lang,
-                    feature.element_section,
-                    feature.element_code,
-                    feature.factor_section,
-                    feature.factor_code,
+                    fe.element_section,
+                    fe.element_code,
+                    fe.factor_section,
+                    fe.factor_code,
                 )
-                for feature in self.features
+                for fe in self.src
             ]
         )
-        columns = [
+        return [
             f"[{name['element']}] {name['factor_section']}({name['factor']})"
             for name in names
         ]
-        self._columns = columns
-        return columns
 
-    async def to_dataframe(self, normalized: bool = False) -> pd.DataFrame:
+    def to_dataset(self, normalized: bool = False) -> xr.Dataset:
         """
-        - 인덱스와 time, value 컬럼을 가진 dataframe을 반환합니다.
+        - normalized: 스케일 복원 여부
         """
-        data_sets = await asyncio.gather(*[feature.get() for feature in self.features])
-        data_arrays = [
-            data_set.daily if normalized else denormalize(data_set)
-            for data_set in data_sets
-        ]
-        return data_arrays
+        assert self._init
+        attrs = {fe.repr_str(): self[fe].attrs for fe in self.src}
+        if normalized:
+            return xr.Dataset(
+                {fe.repr_str(): self[fe].daily for fe in self.src}, attrs=attrs
+            )
+        else:
+            return xr.Dataset(
+                {fe.repr_str(): restore_scale(self[fe]) for fe in self.src},
+                attrs=attrs,
+            )
 
-        data_frame = data_array.to_dataframe().reset_index()
+    async def to_dataframe(self, lang: str, normalized: bool = False) -> pd.DataFrame:
+        """
+        - normalized: 스케일 복원 여부
+        - lang: 컬럼 명으로 사용할 언어
+        """
+        assert self._init
+        data_set = self.to_dataset(normalized)
+        data_frame = data_set.to_dataframe().reset_index()
         data_frame.t = data_frame.t.dt.date
-        data_frame.columns = ["time", "value"]
+        data_frame.columns = ["time"] + await self.get_columns(lang)
         data_frame.index.name = "index"
         return data_frame
 
-    async def to_csv(self, normalized: bool = False) -> bytes:
+    async def to_csv(self, lang: str, normalized: bool = False) -> bytes:
         """
-        - normalized: 정규화 여부
-        - return: 파일 데이터를 bytes로 반환합니다. 디스크를 사용하지 않습니다.
+        - normalized: 스케일 복원 여부
+        - lang: 컬럼 명으로 사용할 언어
         """
-        data_frame = await self.to_dataframe(normalized)
+        assert self._init
+        data_frame = await self.to_dataframe(lang, normalized)
         data_frame.to_csv(buffer := io.BytesIO())
         return buffer.getvalue()
 
-    async def to_xlsx(self, normalized: bool = False) -> bytes:
+    async def to_xlsx(self, lang: str, normalized: bool = False) -> bytes:
         """
-        - normalized: 정규화 여부
-        - return: 파일 데이터를 bytes로 반환합니다. 디스크를 사용하지 않습니다.
+        - normalized: 스케일 복원 여부
+        - lang: 컬럼 명으로 사용할 언어
         """
-        data_frame = await self.to_dataframe(normalized)
+        assert self._init
+        data_frame = await self.to_dataframe(lang, normalized)
         sheet_name = f"econox"
         with pd.ExcelWriter(
             buffer := io.BytesIO(), date_format="YYYY-MM-DD", engine="openpyxl"
         ) as writer:
             data_frame.to_excel(writer, sheet_name=sheet_name)
             sheet = writer.sheets[sheet_name]
-            # 컬럼 길이가 글자 길이보다 작으면 깨지므로 여유롭게 설정
-            sheet.column_dimensions["B"].width = 15
-            sheet.column_dimensions["C"].width = 23
+            # 컬럼 길이를 여유롭게 설정
+
+            for idx, name in enumerate(data_frame.columns):
+                colume_letter = get_column_letter(idx + 2)
+                # 23을 최소값으로 두고 이름 길이에 따라 길이 계산 (1.15는 실험적으로 구함)
+                sheet.column_dimensions[colume_letter].width = max(23, len(name) * 1.15)
+            sheet.column_dimensions[get_column_letter(2)].width = 15
         return buffer.getvalue()

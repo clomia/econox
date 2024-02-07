@@ -6,7 +6,7 @@ from fastapi import Body, Depends, HTTPException
 
 from backend import db
 from backend.system import Idempotent, log, MEMBERSHIP
-from backend.math import utcstr2datetime, calc_next_billing_date
+from backend.calc import utcstr2datetime, calc_next_billing_date
 from backend.http import (
     APIRouter,
     PayPalAPI,
@@ -43,7 +43,8 @@ async def paypal_payment_webhook(event: dict = Body(...)):
             )
             return {"message": "Apply success"}
         plan = await PayPalAPI(f"/v1/billing/plans/{subscription['plan_id']}").get()
-        user = await pooling(  # 유저 생성이 완료되기 전에 요청을 수신했을 때를 대비한 풀링
+        # 유저 생성이 완료되기 전에 요청을 수신했을 때를 대비한 풀링
+        user = await pooling(
             db.SQL(
                 "SELECT * FROM users WHERE paypal_subscription_id={sid} LIMIT 1",
                 params={"sid": subscription_id},
@@ -118,7 +119,9 @@ async def billing():
     query = "SELECT * FROM users WHERE next_billing_date < now() AND NOT billing_status='require'"
     target_users = await db.SQL(query, fetch="all").exec()
     if not target_users:
-        log.info(f"[GET /webhook/billing: No Action] 비용 처리가 필요한 유저가 없습니다.")
+        log.info(
+            f"[GET /webhook/billing: No Action] 비용 처리가 필요한 유저가 없습니다."
+        )
         return {"message": "Process complete (No Action)"}
 
     now = datetime.now()

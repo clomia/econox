@@ -1,4 +1,5 @@
 """ 외부 리소스 (클라우드 서비스, 데이터 API 등)에 대한 비동기 통신 클라이언트 객체들 """
+
 import re
 import json
 import time
@@ -17,7 +18,7 @@ from fastapi import routing, HTTPException, Request, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from backend import db
-from backend.math import utcstr2datetime
+from backend.calc import utcstr2datetime
 from backend.system import ElasticRedisCache, CacheTTL, SECRETS, log
 
 T = TypeVar("T")
@@ -81,7 +82,8 @@ class CognitoToken:
 
     async def get_jwk(self, key_id: str):
         matching = [item for item in self.jwks["keys"] if item["kid"] == key_id]
-        if not matching:  # Cognito에서 키 jwks가 변경(롤오버)되었다고 간주하고 업데이트 후 재시도
+        if not matching:
+            # Cognito에서 키 jwks가 변경(롤오버)되었다고 간주하고 업데이트 후 재시도
             log.info(f"매칭되는 JWK가 없습니다. Cognito로부터 jwks를 업데이트합니다.")
             async with httpx.AsyncClient(
                 base_url="https://cognito-idp.us-east-1.amazonaws.com/",
@@ -161,7 +163,8 @@ class CognitoTokenBearer(HTTPBearer):
                     detail=f"Authorization failed, user does not exists",
                 )
             user = user_info | db_user
-            user["id"] = str(user["id"])  # UUID -> str (UUID 타입 쓸모 없음 코드 복잡도만 늘어남)
+            # UUID -> str (UUID 타입 쓸모 없음 코드 복잡도만 늘어남)
+            user["id"] = str(user["id"])
             return user
         except jwt.PyJWTError as e:
             e_str = str(e)
@@ -183,7 +186,8 @@ class ServiceTokenBearer(CognitoTokenBearer):
     @staticmethod
     def billing_status_handler(db_user):
         if db_user["billing_status"] == "require":
-            if db_user["origin_billing_date"]:  # 대금 미납 유저 & 비활성화를 선택한 유저
+            if db_user["origin_billing_date"]:
+                # 대금 미납 유저 & 비활성화를 선택한 유저
                 raise HTTPException(
                     status_code=402,
                     detail="This account has unpaid membership fees. Payment is required",
@@ -506,7 +510,8 @@ class PayPalAPI:
         """API 요청을 실행하고 토큰을 갱신하는 부분을 캡슐화"""
         try:
             resp = await request
-            if resp.status_code == 401:  # 토큰이 만료됨 (만약 다른곳에서 토큰 발급시 이전 토큰이 만료됨)
+            if resp.status_code == 401:
+                # 토큰이 만료됨 (만약 다른곳에서 토큰 발급시 이전 토큰이 만료됨)
                 raise httpx.LocalProtocolError(message=f"Received 401: {resp.content}")
         except httpx.LocalProtocolError as e:
             # 토큰이 없는 경우는 LocalProtocolError가 바로 raise 됨

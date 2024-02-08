@@ -193,7 +193,11 @@ class FeatureProperty(BaseModel):
     code: str
 
 
-class GroupFeatureTimeSeries(FeatureTimeSeries):
+class FeatureGroupTimeSeries(FeatureTimeSeries):
+    ratio: TimeSeries
+
+
+class GroupFeatureTimeSeries(FeatureGroupTimeSeries):
     """메타정보가 포함된 시계열 데이터"""
 
     element: FeatureProperty
@@ -206,6 +210,7 @@ async def get_feature_group_time_series(group_id: int) -> List[GroupFeatureTimeS
     - 피쳐 그룹에 속한 모든 피쳐의 시계열 데이터를 응답합니다.
     - 응답 본문의 크기는 대략 5 ~ 10 MB 이내입니다.
         - 본문이 커서 swagger 문서가 응답을 표시하지 못합니다.
+    - ratio는 해당 시점에서 피쳐의 비율을 나타냅니다. 0~1 사이의 실수입니다.
     """
     feature_attrs = await db.SQL(
         query_get_features_in_feature_group,
@@ -217,10 +222,17 @@ async def get_feature_group_time_series(group_id: int) -> List[GroupFeatureTimeS
     ds_original = group.to_dataset(normalized=False)
     ds_normalized = group.to_dataset(normalized=True)
 
+    _sum = ds_original.to_array(dim="v").sum(
+        dim="v"
+    )  # 각 시점(t)에서 모든 변수의 합계를 계산
+    ds_ratio = ds_original / _sum  # 각 변수를 해당 시점의 합계로 나누어 비율 계산
+
     result = []
     for feature in features:
-        original = ds_original[feature.repr_str()]
-        normalized = ds_normalized[feature.repr_str()]
+        key = feature.repr_str()
+        original = ds_original[key]
+        normalized = ds_normalized[key]
+        ratio = ds_ratio[key]
         result.append(
             {
                 "element": {
@@ -238,6 +250,10 @@ async def get_feature_group_time_series(group_id: int) -> List[GroupFeatureTimeS
                 "normalized": {
                     "v": normalized.values.tolist(),
                     "t": np.datetime_as_string(normalized.t.values, unit="D").tolist(),
+                },
+                "ratio": {
+                    "v": ratio.values.tolist(),
+                    "t": np.datetime_as_string(ratio.t.values, unit="D").tolist(),
                 },
             }
         )

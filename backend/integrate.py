@@ -94,7 +94,8 @@ class Feature:
 
     def repr_str(self):
         """피쳐를 나타내는 유니크 문자열"""
-        return f"Feature<[{self.element_section}]{self.element_code}-{self.factor_section}({self.factor_code})>"
+        # Python 속성명으로 사용 가능한 문자열
+        return f"{self.element_section}__{self.element_code}__{self.factor_section}__{self.factor_code}"
 
     async def to_dataset(self) -> xr.Dataset:
         """

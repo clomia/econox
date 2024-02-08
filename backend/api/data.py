@@ -222,9 +222,8 @@ async def get_feature_group_time_series(group_id: int) -> List[GroupFeatureTimeS
     ds_original = group.to_dataset(normalized=False)
     ds_normalized = group.to_dataset(normalized=True)
 
-    _sum = ds_original.to_array(dim="v").sum(
-        dim="v"
-    )  # 각 시점(t)에서 모든 변수의 합계를 계산
+    # 각 시점(t)에서 모든 변수의 합계를 계산
+    _sum = ds_original.to_array(dim="v").sum(dim="v")
     ds_ratio = ds_original / _sum  # 각 변수를 해당 시점의 합계로 나누어 비율 계산
 
     result = []

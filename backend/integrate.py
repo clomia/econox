@@ -228,7 +228,7 @@ class FeatureGroup:
 
     def to_dataset(self, normalized: bool = False) -> xr.Dataset:
         """
-        - normalized: 스케일 복원 여부
+        - normalized: False인 경우 스케일을 복원합니다.
         """
         assert self._init
         attrs = {fe.repr_str(): self[fe].attrs for fe in self.src}

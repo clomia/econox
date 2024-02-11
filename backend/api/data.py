@@ -14,7 +14,7 @@ from fastapi import HTTPException, Response, Query
 
 from backend import db
 from backend.http import APIRouter
-from backend.calc import datetime2utcstr, denormalize
+from backend.calc import datetime2utcstr, denormalize, MultivariateAnalyzer
 from backend.data import fmp, world_bank
 from backend.system import ElasticRedisCache, CacheTTL, log
 from backend.integrate import get_element, Feature, FeatureGroup
@@ -257,6 +257,27 @@ async def get_feature_group_time_series(group_id: int) -> List[GroupFeatureTimeS
             }
         )
     return result
+
+
+@router.basic.get("/features/analysis/{func}")
+async def get_feature_group_time_series(
+    group_id: int, func: Literal["grangercausality", "cointegration"]
+) -> List[GroupFeatureTimeSeries]:
+    """
+    - 다변량 분석 API
+    """
+    # todo 초안으로 작성함, 실 사용을 위해서 고도화 해야 함
+    feature_attrs = await db.SQL(
+        query_get_features_in_feature_group,
+        params={"feature_group_id": group_id},
+        fetch="all",
+    ).exec()
+    features = [Feature(**feature_attr) for feature_attr in feature_attrs]
+    group = await FeatureGroup(*features).init()
+    dataset = group.to_dataset(normalized=True)
+    analyzer = MultivariateAnalyzer(dataset)
+    target_func = getattr(analyzer, func)
+    return target_func()
 
 
 @router.professional.get("/feature/file")

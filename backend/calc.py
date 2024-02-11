@@ -2,13 +2,16 @@
 
 import math
 from typing import Callable
+from itertools import permutations
 from datetime import datetime, timedelta
 
 import pytz
 import numpy as np
 import xarray as xr
-from scipy.interpolate import PchipInterpolator
+from numpy.typing import NDArray
 from pydantic import constr
+from scipy.interpolate import PchipInterpolator
+from statsmodels.tsa.stattools import grangercausalitytests, coint
 
 from backend.system import MEMBERSHIP
 
@@ -206,3 +209,105 @@ def calc_next_billing_date_adjust_membership_change(
 
     new_remaining_days = math.floor(remaining_amount / new_daily_amount)
     return change_day + timedelta(days=new_remaining_days)
+
+
+class PairwiseAnalyzer:
+    def __init__(self, xt: NDArray, yt: NDArray):
+        self.xt = xt
+        self.yt = yt
+
+    @staticmethod
+    def _interpret_p_value(p_value):
+        """
+        - p_value가 0.05보다 큰 경우 기각합니다. 0을 반환합니다.
+        - p_value가 0.05보다 작은 경우 0에서 1사이의 역수로 변환해 반환합니다.
+            - 1에 가까울수록 긍정, 0에 가까울수록 부정입니다.
+        """
+        if p_value >= 0.05:  # p-value가 0.05 이상인 경우, 기각
+            return 0
+        else:  # p-value가 0.05 미만인 경우, 0에서 1 사이의 역수로 표현
+            return (0.05 - p_value) / 0.05
+
+    @staticmethod
+    def _gen_lags_list(data_length, total_lags=10):
+        """
+        - 그레인저 인과관계 계산에 사용될 lags 리스트를 생성합니다.
+        - 최대 lag는 30과 data_length/5 중 작은 값입니다.
+        - 리스트는 최대 total_lags 길이를 가지며 최대한 동일한 간격인 lag들을 가집니다.
+        """
+        max_lags = 30
+
+        # 가능한 최대 lags 계산
+        possible_lag = min(data_length // 5, max_lags)
+
+        # 균일한 간격으로 lags 리스트 생성
+        if possible_lag >= total_lags:
+            step = max(1, (possible_lag - 1) // (total_lags - 1))
+            lags = [v for i in range(total_lags) if (v := 1 + i * step) <= possible_lag]
+        else:
+            lags = list(range(1, possible_lag + 1))
+
+        if not lags:
+            raise ValueError(
+                "[grangercausality] 대상 시계열 길이가 너무 짧아 계산을 수행할 수 없습니다."
+            )
+        return lags
+
+    def grangercausality(self):
+        """
+        - 선후관계 정도 계산
+        - xt가 yt에 선행하는 정도를 계산해서 0에서 1사이의 값을 반환합니다.
+        """
+        data = np.column_stack([self.xt, self.yt])
+        lags = self._gen_lags_list(data.shape[0])
+
+        # todo 이거 로그 안뜨게 하는 법 모르겠음
+        result = grangercausalitytests(data, maxlag=lags, addconst=True)
+
+        # 여러 검정 결과의 p-value를 저장할 리스트
+        all_p_values = []
+
+        # 각 lag에 대한 검정 결과를 순회하며 p-value를 수집합니다.
+        for lag, result in result.items():
+            for test in result[0].values():
+                # 각 검정의 p-value를 리스트에 추가합니다.
+                all_p_values.append(test[1])
+
+        # 모든 p-value의 평균을 계산합니다.
+        avg_p_value = np.mean(all_p_values)
+        return self._interpret_p_value(avg_p_value)
+
+    def cointegration(self) -> float:
+        """
+        - 유사한 정도 계산
+        - 공적분 관계의 강도를 나타내는 0에서 1 사이의 값을 반환합니다.
+        """
+        _, p_value, _ = coint(self.xt, self.yt)
+        return self._interpret_p_value(p_value)
+
+
+class MultivariateAnalyzer:
+
+    def __init__(self, dataset: xr.Dataset):
+        self.dataset = dataset
+        self.pairs = list(permutations(self.dataset.data_vars, 2))
+
+    def grangercausality(self):
+        result = {}
+        for pair in self.pairs:
+            value = PairwiseAnalyzer(
+                xt=self.dataset[pair[0]].values, yt=self.dataset[pair[1]].values
+            ).grangercausality()
+            if value:
+                result[pair] = value
+        return result
+
+    def cointegration(self):
+        result = {}
+        for pair in self.pairs:
+            value = PairwiseAnalyzer(
+                xt=self.dataset[pair[0]].values, yt=self.dataset[pair[1]].values
+            ).cointegration()
+            if value:
+                result[pair] = value
+        return result

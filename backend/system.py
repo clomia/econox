@@ -132,9 +132,8 @@ redis_connection_pool = redis.BlockingConnectionPool(
     # AWS ElastiCache는 SSL이 필수다. 로컬에서는 SSL 쓸 수 없다.
     connection_class=redis.SSLConnection if not is_local else redis.Connection,
     # max_connections 제한 거는 BlockingConnectionPool 자체가 로컬에서만 필요하다.
-    max_connections=(
-        200 if is_local else None
-    ),  # 일단 ElastiCache는 제한 없이 쓰는게 맞다.
+    max_connections=200 if is_local else None,
+    # ElastiCache는 제한 없이 써야 문제가 안생기므로 None
     host=SECRETS["REDIS_HOST"],
     timeout=None,  # 이것도 Uvicorn의 Timeout에 의존
 )

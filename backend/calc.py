@@ -2,7 +2,7 @@
 
 import math
 from typing import Callable
-from itertools import permutations
+from itertools import permutations, combinations
 from datetime import datetime, timedelta
 
 import pytz
@@ -233,6 +233,7 @@ class PairwiseAnalyzer:
         """
         - 그레인저 인과관계 계산에 사용될 lags 리스트를 생성합니다.
         - 최대 lag는 30과 data_length/5 중 작은 값입니다.
+            - 계산 함수에서 lag가 데이터 길이의 20% 이상인 경우 잘못된 lag라는 에러가 발생하기 때문
         - 리스트는 최대 total_lags 길이를 가지며 최대한 동일한 간격인 lag들을 가집니다.
         """
         max_lags = 30
@@ -286,6 +287,7 @@ class PairwiseAnalyzer:
         - 유사한 정도 계산
         - 공적분 관계의 강도를 나타내는 0에서 1 사이의 값을 반환합니다.
         """
+        # 시계열 데이터는 대부분 추세가 있으므로 ct를 사용합니다.
         _, p_value, _ = coint(self.xt, self.yt)
         return self._interpret_p_value(p_value)
 
@@ -298,11 +300,12 @@ class MultivariateAnalyzer:
 
     def __init__(self, dataset: xr.Dataset):
         self.dataset = dataset
-        self.pairs = list(permutations(self.dataset.data_vars, 2))
+        self.perm_pairs = list(permutations(self.dataset.data_vars, 2))
+        self.comb_pairs = list(combinations(self.dataset.data_vars, 2))
 
     def grangercausality(self):
         result = {}
-        for pair in self.pairs:
+        for pair in self.perm_pairs:
             value = PairwiseAnalyzer(
                 xt=self.dataset[pair[0]].values,
                 yt=self.dataset[pair[1]].values,
@@ -313,10 +316,10 @@ class MultivariateAnalyzer:
 
     def cointegration(self):
         result = {}
-        for pair in self.pairs:
+        for pair in self.comb_pairs:
             value = PairwiseAnalyzer(
                 xt=self.dataset[pair[0]].values, yt=self.dataset[pair[1]].values
             ).cointegration()
             if value:
                 result[pair] = value
-        return result
+        return result  # 공적분은 순서 안중요함

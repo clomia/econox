@@ -266,7 +266,6 @@ async def get_feature_group_time_series(
     """
     - 다변량 분석 API
     """
-    # todo 초안으로 작성함, 실 사용을 위해서 고도화 해야 함
     feature_attrs = await db.SQL(
         query_get_features_in_feature_group,
         params={"feature_group_id": group_id},

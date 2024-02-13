@@ -97,6 +97,15 @@ class Feature:
         # Python 속성명으로 사용 가능한 문자열
         return f"{self.element_section}__{self.element_code}__{self.factor_section}__{self.factor_code}"
 
+    def repr_dict(self):
+        """피쳐를 나타내는 딕셔너리 객체"""
+        return {
+            "element_section": self.element_section,
+            "element_code": self.element_code,
+            "factor_section": self.factor_section,
+            "factor_code": self.factor_code,
+        }
+
     async def to_dataset(self) -> xr.Dataset:
         """
         - 원본 형식인 Dataset 객체를 반환합니다.

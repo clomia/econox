@@ -262,7 +262,7 @@ async def get_feature_group_time_series(group_id: int) -> List[GroupFeatureTimeS
 @router.basic.get("/features/analysis/{func}")
 async def get_feature_group_time_series(
     group_id: int, func: Literal["grangercausality", "cointegration"]
-) -> List[GroupFeatureTimeSeries]:
+):
     """
     - 다변량 분석 API
     """
@@ -274,10 +274,32 @@ async def get_feature_group_time_series(
     ).exec()
     features = [Feature(**feature_attr) for feature_attr in feature_attrs]
     group = await FeatureGroup(*features).init()
-    dataset = group.to_dataset(normalized=True)
+    dataset = group.to_dataset()
     analyzer = MultivariateAnalyzer(dataset)
     target_func = getattr(analyzer, func)
-    return target_func()
+
+    try:
+        result: dict = target_func()
+    except Exception as e:
+        log.info(
+            f"[GET /api/features/analysis/{func}] 결과 산출 불가능, 빈 배열을 응답합니다. "
+            f"[{e.__class__.__name__}: {e}]"
+        )
+        return []
+
+    response = []
+    feature_map = {feature.repr_str(): feature for feature in features}
+    for (xt_key, yt_key), value in result.items():
+        # FeatureGroup에서 repr_str를 통해 피쳐를 구분하므로 이렇게 찾을 수 있음
+        response.append(
+            {
+                "xt": feature_map[xt_key].repr_dict(),
+                "yt": feature_map[yt_key].repr_dict(),
+                "value": value,
+            }
+        )
+    response.sort(key=lambda v: v["value"], reverse=True)
+    return response
 
 
 @router.professional.get("/feature/file")

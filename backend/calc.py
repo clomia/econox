@@ -13,7 +13,7 @@ from pydantic import constr
 from scipy.interpolate import PchipInterpolator
 from statsmodels.tsa.stattools import grangercausalitytests, coint
 
-from backend.system import MEMBERSHIP
+from backend.system import MEMBERSHIP, LogSuppressor
 
 
 def normalize(
@@ -261,8 +261,12 @@ class PairwiseAnalyzer:
         data = np.column_stack([self.xt, self.yt])
         lags = self._gen_lags_list(data.shape[0])
 
-        # todo 이거 로그 안뜨게 하는 법 모르겠음
-        result = grangercausalitytests(data, maxlag=lags, addconst=True)
+        with LogSuppressor():
+            # verbose가 deprecated임에도, False로 설정하지 않으면 내부적으로 verbose=True가 됌
+            # 이후 statsmodels 버전 업데이트 시 verbose 매개변수 제거하고 로그 출력 억제하는 법 알아봐야 함
+            result = grangercausalitytests(
+                data, maxlag=lags, addconst=True, verbose=False
+            )
 
         # 여러 검정 결과의 p-value를 저장할 리스트
         all_p_values = []
@@ -287,6 +291,10 @@ class PairwiseAnalyzer:
 
 
 class MultivariateAnalyzer:
+    """
+    - 다변량 시계열 관계 분석기
+    - 시계열은 dataset의 변수명으로 구분합니다.
+    """
 
     def __init__(self, dataset: xr.Dataset):
         self.dataset = dataset
@@ -296,7 +304,8 @@ class MultivariateAnalyzer:
         result = {}
         for pair in self.pairs:
             value = PairwiseAnalyzer(
-                xt=self.dataset[pair[0]].values, yt=self.dataset[pair[1]].values
+                xt=self.dataset[pair[0]].values,
+                yt=self.dataset[pair[1]].values,
             ).grangercausality()
             if value:
                 result[pair] = value

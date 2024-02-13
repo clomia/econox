@@ -47,6 +47,7 @@ class LogHandler(logging.NullHandler):
         print(content)
 
 
+logging.captureWarnings(True)  # warnings 모듈을 통해 출력되는걸 로깅 모듈로 리디렉션
 log = logging.getLogger("app")
 log.propagate = False  # FastAPI나 Uvicorn 등 다른 로깅 출력에 전파되지 않도록
 log.setLevel(logging.DEBUG)
@@ -55,6 +56,26 @@ log_handler = LogHandler()
 log_handler.setFormatter(formatter)
 log_handler.setLevel(logging.DEBUG)
 log.addHandler(log_handler)
+
+
+class LogSuppressor:
+    """
+    - 일시적으로 일반 로그 출력을 비활성화 합니다.
+    - 임시로 로그 레벨을 ERROR로 설정합니다.
+    - 아래와 같이 컨텍스트 메니저로 사용하세요.
+
+    ```python
+    with LogSuppressor():
+        ... # 불필요한 로그가 발생되는 함수 실행
+    ```
+    """
+
+    def __enter__(self):
+        logging.getLogger().setLevel(logging.ERROR)
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        logging.getLogger().setLevel(logging.NOTSET)
+
 
 # ==================== CONSTANTS ====================
 ROOT_PATH = Path(__file__).parent.parent
@@ -111,7 +132,9 @@ redis_connection_pool = redis.BlockingConnectionPool(
     # AWS ElastiCache는 SSL이 필수다. 로컬에서는 SSL 쓸 수 없다.
     connection_class=redis.SSLConnection if not is_local else redis.Connection,
     # max_connections 제한 거는 BlockingConnectionPool 자체가 로컬에서만 필요하다.
-    max_connections=200 if is_local else None,  # 일단 ElastiCache는 제한 없이 쓰는게 맞다.
+    max_connections=(
+        200 if is_local else None
+    ),  # 일단 ElastiCache는 제한 없이 쓰는게 맞다.
     host=SECRETS["REDIS_HOST"],
     timeout=None,  # 이것도 Uvicorn의 Timeout에 의존
 )

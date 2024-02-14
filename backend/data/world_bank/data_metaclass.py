@@ -5,7 +5,7 @@ from datetime import datetime, date
 import numpy as np
 import xarray as xr
 
-from backend.calc import normalize
+from backend.calc import interpolation
 from backend.http import WorldBankAPI
 from backend.system import EFS_VOLUME_PATH
 from backend.data.model import Factor
@@ -62,7 +62,7 @@ class DataManager:
         if np.count_nonzero(~np.isnan(data_array.values)) < 2:
             return  # 유효한 값 갯수가 2개 미만이면 결측치 취급
         self.zarr_path.parent.mkdir(parents=True, exist_ok=True)
-        xr_to_zarr(dataset=normalize(data_array), path=self.zarr_path)
+        xr_to_zarr(dataset=interpolation(data_array), path=self.zarr_path)
 
     async def get(self, default=None) -> xr.Dataset | None:
         """데이터가 없는 경우 default를 반환합니다."""

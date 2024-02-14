@@ -16,11 +16,9 @@ from statsmodels.tsa.stattools import grangercausalitytests, coint
 from backend.system import MEMBERSHIP, LogSuppressor
 
 
-def normalize(
-    data: xr.DataArray, *, interpolator: Callable = PchipInterpolator
-) -> xr.Dataset:
+def interpolation(data: xr.DataArray, *, interpolator: Callable = PchipInterpolator):
     """
-    - 시계열 데이터를 0~1 사이의 scale을 가지며 연속적인 일별 데이터로 변환합니다.
+    - 시계열 데이터를 연속적인 일별 데이터로 보간합니다.
     - data: 시간 t에 대한 값 x를 가지는 DataArrray
         - 결측치 있어도 됌, 정렬 되어있지 않아도 됌, 동일한 날짜 여러개 있어도 됌
     - interpolator: scipy.interpolate 함수 (default: PchipInterpolator)
@@ -41,13 +39,7 @@ def normalize(
         step=np.timedelta64(1, "D"),
     )
     daily_x: np.ndarray = interp(daily_t.astype(float))
-    min_x, max_x = daily_x.min(), daily_x.max()
-    if min_x != max_x:  # Min-Max Scaling
-        scaled_daily_x = (daily_x - min_x) / (max_x - min_x)
-    else:  # 모든 값이 같다면 모두 0.5로 변환
-        scaled_daily_x = np.full(daily_x.shape, 0.5)
-
-    daily = xr.DataArray(scaled_daily_x, dims=("t"), coords={"t": daily_t})
+    daily = xr.DataArray(daily_x, dims=("t"), coords={"t": daily_t})
     mask = ~cleansed.reindex(t=daily.t).isnull()  # 원본 값 찾기용
     metadata = {
         "normalize": {
@@ -55,7 +47,6 @@ def normalize(
                 "method": interpolator.__name__,
                 "ratio": 1 - float(mask.mean()),  # 보간된 값의 비율
             },
-            "scaling": {"origin_min": min_x, "origin_max": max_x},
         }
     }
     return xr.Dataset(
@@ -64,29 +55,29 @@ def normalize(
     )
 
 
-def restore_scale(normalized: xr.Dataset) -> xr.DataArray:
+def deinterpolate(dataset: xr.Dataset) -> xr.DataArray:
     """
-    - normalize 데이터에서 Min-Max Scale만 복원
-    - normalized: normalize 함수에서 반환된 Dataset
-    - return: 스케일이 복원된 daily DataArray
-    """
-    dataset = normalized.compute()
-    origin_min = dataset.attrs["normalize"]["scaling"]["origin_min"]
-    origin_max = dataset.attrs["normalize"]["scaling"]["origin_max"]
-    return dataset.daily * (origin_max - origin_min) + origin_min
-
-
-def denormalize(normalized: xr.Dataset) -> xr.DataArray:
-    """
-    - normalize의 역함수
-    - normalized: normalize 함수에서 반환된 Dataset
+    - interpolation의 역함수
+    - dataset: interpolation의 함수에서 반환된 Dataset
     - return: 원본 DataArray
         - 불가피하게 미세한 실수 오차가 발생합니다.
     - 원본 데이터가 일단위보다 작은 해상도를 가질 경우 복원이 불가능합니다.
     """
-    dataset = normalized.compute()
-    restored_scale = restore_scale(dataset)
-    return restored_scale[dataset.mask]
+    ds = dataset.compute()
+    return ds.daily[ds.mask]
+
+
+def scaling(arr: NDArray | xr.DataArray) -> NDArray | xr.DataArray:
+    """
+    - 시계열 데이터를 0~1 사이의 scale을 가지는 데이터로 변환합니다.
+    - Numpy Array, DataArray 모두 처리 가능합니다.
+    """
+    min_x, max_x = arr.min(), arr.max()
+    scaled_data = (  # 모든 값이 같다면 모두 0.5로 변환
+        (arr - min_x) / (max_x - min_x) if min_x != max_x else np.full(arr.shape, 0.5)
+    )
+    # 입력이 xarray.DataArray인 경우, 결과도 DataArray로 반환
+    return arr.copy(data=scaled_data) if isinstance(arr, xr.DataArray) else scaled_data
 
 
 def marge_lists(*lists: list, limit: int) -> list:

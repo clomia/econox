@@ -16,7 +16,7 @@ from fastapi.responses import JSONResponse
 from backend.data import fmp, world_bank
 from backend.data.model import Factor
 from backend.data.exceptions import ElementDoesNotExist, LanguageNotSupported
-from backend.calc import denormalize, restore_scale
+from backend.calc import deinterpolate, scaling
 
 
 async def lang_exception_handler(request: Request, call_next):
@@ -128,33 +128,40 @@ class Feature:
 
         return await factor.get()
 
-    async def to_dataframe(self, normalized: bool = False) -> pd.DataFrame:
+    async def to_dataframe(self, interpolate: bool = False) -> pd.DataFrame:
         """
         - 인덱스와 time, value 컬럼을 가진 dataframe을 반환합니다.
+        - interpolate: Default[False]
+            - True인 경우 모든 일(daily)가 채워진 데이터를 반환합니다.
+            - False인 경우 실제 원본 데이터를 반환합니다.
         """
         data_set = await self.to_dataset()
-        data_array = data_set.daily if normalized else denormalize(data_set)
+        data_array = data_set.daily if interpolate else deinterpolate(data_set)
         data_frame = data_array.to_dataframe().reset_index()
         data_frame.t = data_frame.t.dt.date
         data_frame.columns = ["time", "value"]
         data_frame.index.name = "index"
         return data_frame
 
-    async def to_csv(self, normalized: bool = False) -> bytes:
+    async def to_csv(self, interpolate: bool = False) -> bytes:
         """
-        - normalized: 정규화 여부
+        - interpolate: Default[False]
+            - True인 경우 모든 일(daily)가 채워진 데이터를 반환합니다.
+            - False인 경우 실제 원본 데이터를 반환합니다.
         - return: 파일 데이터를 bytes로 반환합니다. 디스크를 사용하지 않습니다.
         """
-        data_frame = await self.to_dataframe(normalized)
+        data_frame = await self.to_dataframe(interpolate)
         data_frame.to_csv(buffer := io.BytesIO())
         return buffer.getvalue()
 
-    async def to_xlsx(self, normalized: bool = False) -> bytes:
+    async def to_xlsx(self, interpolate: bool = False) -> bytes:
         """
-        - normalized: 정규화 여부
+        - interpolate: Default[False]
+            - True인 경우 모든 일(daily)가 채워진 데이터를 반환합니다.
+            - False인 경우 실제 원본 데이터를 반환합니다.
         - return: 파일 데이터를 bytes로 반환합니다. 디스크를 사용하지 않습니다.
         """
-        data_frame = await self.to_dataframe(normalized)
+        data_frame = await self.to_dataframe(interpolate)
         sheet_name = f"econox"
         with pd.ExcelWriter(
             buffer := io.BytesIO(), date_format="YYYY-MM-DD", engine="openpyxl"
@@ -235,52 +242,51 @@ class FeatureGroup:
             for name in names
         ]
 
-    def to_dataset(self, normalized: bool = False) -> xr.Dataset:
+    def to_dataset(self, minmax_scaling: bool = False) -> xr.Dataset:
         """
-        - normalized: False인 경우 스케일을 복원합니다.
+        - minmax_scaling: True인 경우 모든 값을 0에서 1사이로 Min-Max Scaling 합니다.
         """
         assert self._init
-        attrs = {fe.repr_str(): self[fe].attrs for fe in self.src}
-        if normalized:
-            return xr.Dataset(
-                {fe.repr_str(): self[fe].daily for fe in self.src}, attrs=attrs
-            )
-        else:
-            return xr.Dataset(
-                {fe.repr_str(): restore_scale(self[fe]) for fe in self.src},
-                attrs=attrs,
-            )
+        return xr.Dataset(
+            {
+                fe.repr_str(): (
+                    scaling(self[fe].daily) if minmax_scaling else self[fe].daily
+                )
+                for fe in self.src
+            },
+            attrs={fe.repr_str(): self[fe].attrs for fe in self.src},
+        )
 
-    async def to_dataframe(self, lang: str, normalized: bool = False) -> pd.DataFrame:
+    async def to_dataframe(self, lang: str, minmax_scaling: bool = False):
         """
-        - normalized: 스케일 복원 여부
+        - minmax_scaling: True인 경우 모든 값을 0에서 1사이로 Min-Max Scaling 합니다.
         - lang: 컬럼 명으로 사용할 언어
         """
         assert self._init
-        data_set = self.to_dataset(normalized)
+        data_set = self.to_dataset(minmax_scaling)
         data_frame = data_set.to_dataframe().reset_index()
         data_frame.t = data_frame.t.dt.date
         data_frame.columns = ["time"] + await self.get_columns(lang)
         data_frame.index.name = "index"
         return data_frame
 
-    async def to_csv(self, lang: str, normalized: bool = False) -> bytes:
+    async def to_csv(self, lang: str, minmax_scaling: bool = False) -> bytes:
         """
-        - normalized: 스케일 복원 여부
+        - minmax_scaling: True인 경우 모든 값을 0에서 1사이로 Min-Max Scaling 합니다.
         - lang: 컬럼 명으로 사용할 언어
         """
         assert self._init
-        data_frame = await self.to_dataframe(lang, normalized)
+        data_frame = await self.to_dataframe(lang, minmax_scaling)
         data_frame.to_csv(buffer := io.BytesIO())
         return buffer.getvalue()
 
-    async def to_xlsx(self, lang: str, normalized: bool = False) -> bytes:
+    async def to_xlsx(self, lang: str, minmax_scaling: bool = False) -> bytes:
         """
-        - normalized: 스케일 복원 여부
+        - minmax_scaling: True인 경우 모든 값을 0에서 1사이로 Min-Max Scaling 합니다.
         - lang: 컬럼 명으로 사용할 언어
         """
         assert self._init
-        data_frame = await self.to_dataframe(lang, normalized)
+        data_frame = await self.to_dataframe(lang, minmax_scaling)
         sheet_name = f"econox"
         with pd.ExcelWriter(
             buffer := io.BytesIO(), date_format="YYYY-MM-DD", engine="openpyxl"
@@ -291,7 +297,7 @@ class FeatureGroup:
 
             for idx, name in enumerate(data_frame.columns):
                 colume_letter = get_column_letter(idx + 2)
-                # 23을 최소값으로 두고 이름 길이에 따라 길이 계산 (1.15는 실험적으로 구함)
+                # 23을 최소값으로 두고 이름 길이에 따라 길이 계산 (1.15는 실험적으로 찾아낸 값)
                 sheet.column_dimensions[colume_letter].width = max(23, len(name) * 1.15)
             sheet.column_dimensions[get_column_letter(2)].width = 15
         return buffer.getvalue()

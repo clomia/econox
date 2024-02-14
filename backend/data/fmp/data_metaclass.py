@@ -14,7 +14,7 @@ import xarray as xr
 from httpx import HTTPStatusError
 
 from backend.http import FmpAPI
-from backend.calc import normalize
+from backend.calc import interpolation
 from backend.data.model import Factor
 from backend.data.text import Multilingual
 from backend.data.io import xr_open_zarr, xr_to_zarr
@@ -163,7 +163,7 @@ class ClientMeta(type):
         for factor, data_array in collected.items():
             if np.count_nonzero(~np.isnan(data_array.values)) < 2:
                 continue  # 유효한 값 갯수가 2개 미만이면 결측 factor로 취급
-            xr_to_zarr(dataset=normalize(data_array), path=self.zarr_path(factor))
+            xr_to_zarr(dataset=interpolation(data_array), path=self.zarr_path(factor))
 
     async def get(self, factor: str, default=None) -> xr.Dataset | None:
         """factor Dataset을 반환합니다. 데이터가 없는 경우 default를 반환합니다."""

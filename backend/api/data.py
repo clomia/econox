@@ -7,14 +7,13 @@ import asyncio
 from typing import Literal, List
 
 import numpy as np
-import xarray as xr
 from aiocache import cached
 from pydantic import BaseModel
 from fastapi import HTTPException, Response, Query
 
 from backend import db
 from backend.http import APIRouter
-from backend.calc import datetime2utcstr, denormalize, MultivariateAnalyzer
+from backend.calc import datetime2utcstr, MultivariateAnalyzer
 from backend.data import fmp, world_bank
 from backend.system import ElasticRedisCache, CacheTTL, log
 from backend.integrate import get_element, Feature, FeatureGroup
@@ -108,41 +107,24 @@ async def search_news_related_to_symbols(
 
 
 class TimeSeries(BaseModel):
-    v: List[float | int]
+    v: List[float]
     t: List[str]
-
-
-class FeatureTimeSeries(BaseModel):
-    """시계열 데이터만"""
-
-    original: TimeSeries
-    normalized: TimeSeries
 
 
 @router.basic.get("/feature")
 async def get_feature_time_series(
     element_section: str, element_code: str, factor_section: str, factor_code: str
-) -> FeatureTimeSeries:
+) -> TimeSeries:
     """
     - Element의 Factor 시계열 데이터를 응답합니다.
     - 해당 Element가 Factor를 지원하지 않는 경우 Element에서 Factor를 제거합니다.
         - 서버가 이 사실을 처음 알게 되었을때 수행됩니다.
-    - response: {original: 원본 시계열, normalized: 표준화 시계열}
-        - 각 시계열 안에는 동일한 길이의 값 배열(v)과 날짜 배열(t)이 들어있습니다.
     """
     feature = Feature(element_section, element_code, factor_section, factor_code)
     if (data := await feature.to_dataset()) is not None:
-        original = denormalize(data)
-        normalized: xr.DataArray = data.daily
         return {
-            "original": {
-                "v": original.values.tolist(),
-                "t": np.datetime_as_string(original.t.values, unit="D").tolist(),
-            },
-            "normalized": {
-                "v": normalized.values.tolist(),
-                "t": np.datetime_as_string(normalized.t.values, unit="D").tolist(),
-            },
+            "v": data.daily.values.tolist(),
+            "t": np.datetime_as_string(data.t.values, unit="D").tolist(),
         }
     else:
         await db.SQL(
@@ -186,8 +168,12 @@ query_get_features_in_feature_group = """
 """
 
 
+class TimeSeriesGroup(TimeSeries):
+    v: List[dict]
+
+
 @router.basic.get("/features")
-async def get_feature_group_time_series(group_id: int):
+async def get_feature_group_time_series(group_id: int) -> TimeSeriesGroup:
     """
     - 피쳐 그룹에 속한 모든 피쳐의 시계열 데이터를 응답합니다.
     - 응답 본문의 크기는 대략 5 ~ 10 MB 이내입니다.
@@ -201,8 +187,8 @@ async def get_feature_group_time_series(group_id: int):
     ).exec()
     features = [Feature(**feature_attr) for feature_attr in feature_attrs]
     group = await FeatureGroup(*features).init()
-    ds_original = group.to_dataset(normalized=False)
-    ds_normalized = group.to_dataset(normalized=True)
+    ds_original = group.to_dataset()
+    ds_scaled = group.to_dataset(minmax_scaling=True)
 
     # 각 시점(t)에서 모든 변수의 합계를 계산
     _sum = ds_original.to_array(dim="v").sum(dim="v")
@@ -211,9 +197,6 @@ async def get_feature_group_time_series(group_id: int):
     values = []
     for feature in features:
         key = feature.repr_str()
-        original = ds_original[key]
-        normalized = ds_normalized[key]
-        ratio = ds_ratio[key]
         values.append(
             {
                 "element": {
@@ -224,9 +207,9 @@ async def get_feature_group_time_series(group_id: int):
                     "section": feature.factor_section,
                     "code": feature.factor_code,
                 },
-                "original": original.values.tolist(),
-                "normalized": normalized.values.tolist(),
-                "ratio": ratio.values.tolist(),
+                "original": ds_original[key].values.tolist(),
+                "scaled": ds_scaled[key].values.tolist(),
+                "ratio": ds_ratio[key].values.tolist(),
             }
         )
     return {  # 시간축은 모두 동일함
@@ -280,7 +263,6 @@ async def get_feature_group_time_series(
 @router.professional.get("/feature/file")
 async def download_feature_time_series(
     file_format: Literal["csv", "xlsx"],
-    normalized: bool,
     element_section: str,
     element_code: str,
     factor_section: str,
@@ -304,7 +286,7 @@ async def download_feature_time_series(
     }
 
     return Response(
-        content=await func[file_format](normalized),
+        content=await func[file_format](),
         media_type=media_type[file_format],
         headers=headers[file_format],
     )
@@ -313,9 +295,9 @@ async def download_feature_time_series(
 @router.professional.get("/features/file")
 async def download_feature_group_time_series(
     file_format: Literal["csv", "xlsx"],
-    normalized: bool,
     group_id: int,
     lang: str = Query(..., min_length=2, max_length=2),
+    minmax_scaling: bool = False,
 ):
     """
     - 피쳐 그룹에 속한 모든 피쳐의 시계열 데이터를 파일로 만들어서 응답합니다.
@@ -340,7 +322,7 @@ async def download_feature_group_time_series(
     }
 
     return Response(
-        content=await func[file_format](lang=lang, normalized=normalized),
+        content=await func[file_format](lang=lang, minmax_scaling=minmax_scaling),
         media_type=media_type[file_format],
         headers=headers[file_format],
     )

@@ -1,4 +1,4 @@
---- Last commit: 2024-01-30 17:06:50 ---
+--- Last commit: 2024-02-14 20:19:57 ---
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ------------------------------------------------
@@ -139,7 +139,7 @@ CREATE TABLE feature_groups (
     "name" VARCHAR(255) NOT NULL, -- 그룹명
     "description" TEXT DEFAULT NULL, -- 그룹에 대한 설명
     "chart_type" VARCHAR(255) NOT NULL DEFAULT 'lines', -- 기본 차트 타입
-    "normalized" BOOLEAN NOT NULL DEFAULT FALSE,  -- 정규화 여부
+    "public" BOOLEAN NOT NULL DEFAULT FALSE, -- 공유 여부
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX idx_feature_groups_user_id ON feature_groups(user_id);

@@ -265,7 +265,7 @@ class FeatureGroupUpdate(BaseModel):
     name: constr(min_length=1) | None = None
     description: str | None = None
     chart_type: constr(min_length=1) | None = None
-    normalized: bool | None = None
+    public: bool | None = None
 
 
 @router.basic.patch("/group")
@@ -273,7 +273,7 @@ async def update_feature_group(item: FeatureGroupUpdate, user=router.basic.user)
     """
     - 피쳐 그룹의 정보를 업데이트합니다.
     - 요청 본문에 group_id 명시 후 업데이트하고자 하는 필드만 정의해주세요.
-        - 업데이트 가능 필드: name, description, chart_type, normalized
+        - 업데이트 가능 필드: name, description, chart_type, public
     - 유저가 소유하지 않은 피쳐 그룹에 대해서는 200을 응답하지만, 아무런 변화도 일어나지 않습니다.
     """
     values = ""
@@ -283,8 +283,8 @@ async def update_feature_group(item: FeatureGroupUpdate, user=router.basic.user)
         values += "description={description},"
     if item.chart_type is not None:
         values += "chart_type={chart_type},"
-    if item.normalized is not None:
-        values += "normalized={normalized},"
+    if item.public is not None:
+        values += "public={public},"
     values = values.rstrip(",")
     await db.SQL(
         f"UPDATE feature_groups SET {values} WHERE "
@@ -323,7 +323,7 @@ class FeatureGroup(BaseModel):
     name: str
     description: str
     chart_type: str
-    normalized: bool
+    public: bool
 
     class Feature(BaseModel):
         added: str
@@ -357,7 +357,7 @@ async def get_feature_groups_from_user(
         fg.name AS group_name,
         fg.description AS group_description,
         fg.chart_type AS group_chart_type,
-        fg.normalized AS group_normalized,
+        fg.public AS group_public,
         fg.created AS group_created,
         fgf.feature_color AS group_feature_color,
         fgf.created AS group_feature_created,
@@ -403,7 +403,7 @@ async def get_feature_groups_from_user(
         tree[group_id]["name"] = feature["group_name"]
         tree[group_id]["description"] = feature["group_description"]
         tree[group_id]["chart_type"] = feature["group_chart_type"]
-        tree[group_id]["normalized"] = feature["group_normalized"]
+        tree[group_id]["public"] = feature["group_public"]
 
         if tree[group_id].get("features") is None:
             tree[group_id]["features"] = []

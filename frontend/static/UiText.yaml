@@ -448,6 +448,9 @@ FindGroup:
 CreateGroup:
   en: "Create Group"
   ko: "그룹 만들기"
+DownloadComplete:
+  en: "Your file download has completed! Please check the Downloads tab in your browser!"
+  ko: "파일 다운로드가 완료되었습니다! 브라우저의 다운로드 탭을 확인해주세요!"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

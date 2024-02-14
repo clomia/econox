@@ -1,5 +1,7 @@
 <script lang="ts">
+  import Swal from "sweetalert2";
   import { createEventDispatcher, onMount } from "svelte";
+  import { defaultSwalStyle } from "../../../../modules/functions";
   import Excel from "../../../../assets/icon/Excel.svelte";
   import Csv from "../../../../assets/icon/Csv.svelte";
   import CloseButton from "../../../../components/CloseButton.svelte";
@@ -30,10 +32,22 @@
     factorCode: ($UnivariateFactorSelected as FactorType).code,
   };
   let downloading = false;
+  const completeMessage = async () => {
+    await Swal.fire({
+      ...defaultSwalStyle,
+      width: "32rem",
+      icon: "info",
+      showDenyButton: false,
+      title: $Text.DownloadComplete,
+      confirmButtonText: $Text.Ok,
+    });
+  };
   const downloadCsv = async () => {
     downloading = true;
     try {
       await downloadFile({ fileFormat: "csv", ...current });
+      await completeMessage();
+      close();
     } finally {
       downloading = false;
     }
@@ -42,6 +56,8 @@
     downloading = true;
     try {
       await downloadFile({ fileFormat: "xlsx", ...current });
+      await completeMessage();
+      close();
     } finally {
       downloading = false;
     }

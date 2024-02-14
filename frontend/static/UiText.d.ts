@@ -142,6 +142,7 @@ export interface UiText {
     AddDataToGroupDescription: "Econox is a multivariate time series analysis tool.  Create data groups and understand the relationships among various time series.  Grasp the past and predict the future!" | "에코녹스는 다변량 시계열 분석 도구입니다. 데이터 그룹을 만들고  여러 시계열 간의 관계를 파악하세요. 과거를 이해하고 미래를 예측하세요!";
     FindGroup: "Find Group" | "그룹 찾기";
     CreateGroup: "Create Group" | "그룹 만들기";
+    DownloadComplete: "Your file download has completed! Please check the Downloads tab in your browser!" | "파일 다운로드가 완료되었습니다! 브라우저의 다운로드 탭을 확인해주세요!";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

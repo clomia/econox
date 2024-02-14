@@ -12,8 +12,6 @@
   import { downloadFile } from "../functions";
   import type { ElementType, FactorType } from "../../../../modules/state";
 
-  export let normalized: boolean;
-
   onMount(() => {
     document.body.style.overflow = "hidden";
   });
@@ -25,7 +23,6 @@
   };
 
   const current = {
-    normalized,
     // 이 다운로드 컴포넌트가 실행되었으면 무조건 단변량이 선택되어 있음
     elementSection: ($UnivariateElementSelected as ElementType).section,
     elementCode: ($UnivariateElementSelected as ElementType).code,

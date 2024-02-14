@@ -8,9 +8,8 @@
     UnivariateChartSource,
   } from "../../../../modules/state";
   import { format } from "../../../../modules/functions";
-  import type { SourceType } from "../../../../modules/state";
 
-  let chartSource: null | SourceType = null;
+  let chartSource: null | [string, string | number][] = null;
   $: if ($UnivariateElementSelected && $UnivariateFactorSelected) {
     const elementCode = $UnivariateElementSelected.code;
     const elementSection = $UnivariateElementSelected.section;
@@ -24,7 +23,7 @@
 </script>
 
 {#if chartSource}
-  {#if chartSource.original.length && chartSource.normalized.length}
+  {#if chartSource.length}
     <main><Basic {chartSource} /></main>
   {:else}
     <main>

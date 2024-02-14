@@ -85,14 +85,9 @@ export interface CurrentNoteTargetType {
   factor: boolean;
 }
 
-export interface SourceType {
-  original: [string, string | number][];
-  normalized: [string, string | number][];
-}
-
 export interface ChartSourceType {
   // key(feature): '{elementSection}-{elementCode}_{factorSectionCode}-{factorCode}'
-  [key: string]: SourceType;
+  [key: string]: [string, string | number][];
 }
 
 export interface FeatureType {
@@ -119,7 +114,7 @@ export interface FeatureGroupType {
   name: string;
   description: string;
   chart_type: string;
-  normalized: boolean;
+  public: boolean;
   features: FeatureType[];
 }
 // ============= 전역적으로 사용되는 상태들 =============

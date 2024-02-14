@@ -13,7 +13,7 @@ from fastapi import HTTPException, Response, Query
 
 from backend import db
 from backend.http import APIRouter
-from backend.calc import datetime2utcstr, MultivariateAnalyzer
+from backend.calc import datetime2utcstr, MultivariateAnalyzer, deinterpolate
 from backend.data import fmp, world_bank
 from backend.system import ElasticRedisCache, CacheTTL, log
 from backend.integrate import get_element, Feature, FeatureGroup
@@ -121,9 +121,9 @@ async def get_feature_time_series(
         - 서버가 이 사실을 처음 알게 되었을때 수행됩니다.
     """
     feature = Feature(element_section, element_code, factor_section, factor_code)
-    if (data := await feature.to_dataset()) is not None:
+    if (data := await feature.to_data_array()) is not None:
         return {
-            "v": data.daily.values.tolist(),
+            "v": data.values.tolist(),
             "t": np.datetime_as_string(data.t.values, unit="D").tolist(),
         }
     else:

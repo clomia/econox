@@ -6,10 +6,9 @@
     UnivariateChartSource,
   } from "../../../modules/state";
   import GroupSelector from "./GroupSelector.svelte";
-  import type { SourceType } from "../../../modules/state";
 
   // 장황해 보이지만 그룹에 추가할 수 있는지 여부를 확인할 수 있는 가장 간결한 방법이다..
-  let chartSource: null | SourceType = null;
+  let chartSource: null | [string, string | number][] = null;
   let elementCode: any;
   let elementSection: any;
   let factorCode: any;
@@ -26,11 +25,7 @@
   } else {
     chartSource = null;
   }
-  $: if (
-    chartSource &&
-    chartSource.original.length &&
-    chartSource.normalized.length
-  ) {
+  $: if (chartSource?.length) {
     buttonAvaliable = true;
     targetFeature = {
       element: {

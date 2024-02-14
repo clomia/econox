@@ -2,16 +2,12 @@
   import * as echarts from "echarts";
   import { onMount } from "svelte";
   import { option } from "./config";
-  import { Text } from "../../../../modules/state";
-  import { wikiUrl } from "../../../../modules/wiki";
-  import Toggle from "../../../../components/Toggle.svelte";
   import DownloadIcon from "../../../../assets/icon/DownloadIcon.svelte";
   import FullScreenIcon from "../../../../assets/icon/FullScreenIcon.svelte";
   import Download from "./Download.svelte";
   import FullScreen from "./FullScreen.svelte";
-  import type { SourceType } from "../../../../modules/state";
 
-  export let chartSource: SourceType;
+  export let chartSource: [string, string | number][];
 
   let chartContainer: HTMLElement;
   let chart: echarts.ECharts;
@@ -32,18 +28,11 @@
     });
   };
 
-  let normalized = false;
-  let isMounted = false;
-  let currentData = chartSource.original;
-
-  onMount(() => (isMounted = true));
-
-  $: if (isMounted && chartSource && !normalized) {
-    currentData = chartSource.original;
-    initChart(currentData);
-  } else if (isMounted && chartSource && normalized) {
-    currentData = chartSource.normalized;
-    initChart(currentData);
+  let isMount = false;
+  onMount(() => (isMount = true));
+  $: if (isMount && chartSource) {
+    // 차트 소스가 바뀌면 다시 렌더링해줘야 함
+    initChart(chartSource);
   }
 
   let downloadWidget: boolean;
@@ -51,26 +40,14 @@
 </script>
 
 {#if downloadWidget}
-  <Download {normalized} on:close={() => (downloadWidget = false)} />
+  <Download on:close={() => (downloadWidget = false)} />
 {/if}
 
 {#if fullScreen}
-  <FullScreen data={currentData} on:close={() => (fullScreen = false)} />
+  <FullScreen data={chartSource} on:close={() => (fullScreen = false)} />
 {/if}
 
 <main>
-  <button class="toggle" on:click={() => (normalized = !normalized)}>
-    <Toggle value={normalized} />
-  </button>
-  <a
-    class="toggle-text"
-    class:emphasis={normalized}
-    href={wikiUrl.normalize()}
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    {$Text.Normalize}
-  </a>
   <button class="download" on:click={() => (downloadWidget = true)}>
     <DownloadIcon />
   </button>
@@ -89,26 +66,6 @@
     height: 23rem;
     padding-right: 2rem;
   }
-  .toggle {
-    position: absolute;
-    left: 3.5rem;
-    top: 0.9rem;
-    z-index: 1;
-  }
-  .toggle-text {
-    position: absolute;
-    top: 0.2rem;
-    left: 5.4rem;
-    color: white;
-    opacity: 0.4;
-    font-size: 0.95rem;
-    z-index: 1;
-    text-decoration: none;
-  }
-  .toggle-text:hover {
-    border-bottom: thin solid white;
-    cursor: pointer;
-  }
   .full-screen {
     position: absolute;
     right: 2.65rem;
@@ -119,9 +76,6 @@
   .full-screen:hover {
     opacity: 0.8;
     cursor: pointer;
-  }
-  .emphasis {
-    opacity: 0.8;
   }
   .download {
     position: absolute;

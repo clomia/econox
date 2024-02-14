@@ -110,6 +110,7 @@ class Feature:
         """
         - 원본 형식인 Dataset 객체를 반환합니다.
         - 계산은 가급적 이 Dataset 객체를 통해 수행하세요.
+        - 데이터가 존재하지 않는 경우 None 반환
         """
         element = await get_element(self.element_section, self.element_code)
         # ClientMeta 메타클래스가 만든 data_class 클래스의 인스턴스
@@ -128,15 +129,20 @@ class Feature:
 
         return await factor.get()
 
-    async def to_dataframe(self, interpolate: bool = False) -> pd.DataFrame:
+    async def to_data_array(self, interpolate: bool = False) -> xr.DataArray | None:
+        """데이터가 존재하지 않는 경우 None 반환"""
+        if dataset := await self.to_dataset():
+            return dataset.daily if interpolate else deinterpolate(dataset)
+
+    async def to_dataframe(self, interpolate: bool = False) -> pd.DataFrame | None:
         """
         - 인덱스와 time, value 컬럼을 가진 dataframe을 반환합니다.
         - interpolate: Default[False]
             - True인 경우 모든 일(daily)가 채워진 데이터를 반환합니다.
             - False인 경우 실제 원본 데이터를 반환합니다.
+        - 데이터가 존재하지 않는 경우 AssertionError
         """
-        data_set = await self.to_dataset()
-        data_array = data_set.daily if interpolate else deinterpolate(data_set)
+        assert (data_array := await self.to_data_array(interpolate)) is not None
         data_frame = data_array.to_dataframe().reset_index()
         data_frame.t = data_frame.t.dt.date
         data_frame.columns = ["time", "value"]
@@ -149,6 +155,7 @@ class Feature:
             - True인 경우 모든 일(daily)가 채워진 데이터를 반환합니다.
             - False인 경우 실제 원본 데이터를 반환합니다.
         - return: 파일 데이터를 bytes로 반환합니다. 디스크를 사용하지 않습니다.
+            - 데이터가 존재하지 않는 경우 AssertionError
         """
         data_frame = await self.to_dataframe(interpolate)
         data_frame.to_csv(buffer := io.BytesIO())
@@ -160,6 +167,7 @@ class Feature:
             - True인 경우 모든 일(daily)가 채워진 데이터를 반환합니다.
             - False인 경우 실제 원본 데이터를 반환합니다.
         - return: 파일 데이터를 bytes로 반환합니다. 디스크를 사용하지 않습니다.
+            - 데이터가 존재하지 않는 경우 AssertionError
         """
         data_frame = await self.to_dataframe(interpolate)
         sheet_name = f"econox"

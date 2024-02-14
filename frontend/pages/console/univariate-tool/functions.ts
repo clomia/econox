@@ -146,7 +146,7 @@ export const setChartSource = async (
   } else {
     UnivariateChartSource.set({
       ...get(UnivariateChartSource),
-      [sourceKey]: { original: [], normalized: [] },
+      [sourceKey]: [],
       // 중복 호출 방지 & 로딩 시작이라는 의미
       // 만약 서버가 빈 배열을 응답한다고 해도 ["t", "v"] 때문에 로딩 전 후는 구분 가능
     });
@@ -170,10 +170,7 @@ export const setChartSource = async (
     };
     UnivariateChartSource.set({
       ...get(UnivariateChartSource),
-      [sourceKey]: {
-        original: encode(resp.data.original),
-        normalized: encode(resp.data.normalized),
-      },
+      [sourceKey]: encode(resp.data),
     });
   } catch (error: any) {
     if (error?.response?.status === 404) {
@@ -220,7 +217,6 @@ export const setChartSource = async (
 
 interface RequestFormat {
   fileFormat: "csv" | "xlsx";
-  normalized: boolean;
   elementSection: string;
   elementCode: string;
   factorSection: string;
@@ -234,7 +230,6 @@ export const downloadFile = async (request: RequestFormat) => {
       element_code: request.elementCode,
       factor_section: request.factorSection,
       factor_code: request.factorCode,
-      normalized: request.normalized,
       file_format: request.fileFormat,
     },
     responseType: "blob",
@@ -243,9 +238,6 @@ export const downloadFile = async (request: RequestFormat) => {
   const link = document.createElement("a");
   link.href = url;
   let filename = `${request.elementCode}-${request.factorSection}-${request.factorCode}`;
-  if (request.normalized) {
-    filename += "-normalized";
-  }
   link.setAttribute("download", filename);
   document.body.appendChild(link);
   link.click();

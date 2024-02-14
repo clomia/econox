@@ -186,26 +186,8 @@ query_get_features_in_feature_group = """
 """
 
 
-class FeatureProperty(BaseModel):
-    """시계열 데이터의 메타정보"""
-
-    section: str
-    code: str
-
-
-class FeatureGroupTimeSeries(FeatureTimeSeries):
-    ratio: TimeSeries
-
-
-class GroupFeatureTimeSeries(FeatureGroupTimeSeries):
-    """메타정보가 포함된 시계열 데이터"""
-
-    element: FeatureProperty
-    factor: FeatureProperty
-
-
 @router.basic.get("/features")
-async def get_feature_group_time_series(group_id: int) -> List[GroupFeatureTimeSeries]:
+async def get_feature_group_time_series(group_id: int):
     """
     - 피쳐 그룹에 속한 모든 피쳐의 시계열 데이터를 응답합니다.
     - 응답 본문의 크기는 대략 5 ~ 10 MB 이내입니다.
@@ -226,13 +208,13 @@ async def get_feature_group_time_series(group_id: int) -> List[GroupFeatureTimeS
     _sum = ds_original.to_array(dim="v").sum(dim="v")
     ds_ratio = ds_original / _sum  # 각 변수를 해당 시점의 합계로 나누어 비율 계산
 
-    result = []
+    values = []
     for feature in features:
         key = feature.repr_str()
         original = ds_original[key]
         normalized = ds_normalized[key]
         ratio = ds_ratio[key]
-        result.append(
+        values.append(
             {
                 "element": {
                     "section": feature.element_section,
@@ -242,21 +224,15 @@ async def get_feature_group_time_series(group_id: int) -> List[GroupFeatureTimeS
                     "section": feature.factor_section,
                     "code": feature.factor_code,
                 },
-                "original": {
-                    "v": original.values.tolist(),
-                    "t": np.datetime_as_string(original.t.values, unit="D").tolist(),
-                },
-                "normalized": {
-                    "v": normalized.values.tolist(),
-                    "t": np.datetime_as_string(normalized.t.values, unit="D").tolist(),
-                },
-                "ratio": {
-                    "v": ratio.values.tolist(),
-                    "t": np.datetime_as_string(ratio.t.values, unit="D").tolist(),
-                },
+                "original": original.values.tolist(),
+                "normalized": normalized.values.tolist(),
+                "ratio": ratio.values.tolist(),
             }
         )
-    return result
+    return {  # 시간축은 모두 동일함
+        "t": np.datetime_as_string(ds_original.t.values, unit="D").tolist(),
+        "v": values,
+    }
 
 
 @router.basic.get("/features/analysis/{func}")

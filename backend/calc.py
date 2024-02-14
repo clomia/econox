@@ -322,4 +322,4 @@ class MultivariateAnalyzer:
             ).cointegration()
             if value:
                 result[pair] = value
-        return result  # 공적분은 순서 안중요함
+        return result

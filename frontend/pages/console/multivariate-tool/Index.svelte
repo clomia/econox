@@ -8,6 +8,7 @@
   import Groups from "./Groups.svelte";
   import Note from "./Note.svelte";
   import Features from "./Features.svelte";
+  import Chart from "./chart/Index.svelte";
   import BouncingCubeLoader from "../../../assets/animation/BouncingCubeLoader.svelte";
 
   const loadGroupsPromise = loadGroups();
@@ -27,6 +28,7 @@
       {#if $FeatureGroupSelected}
         <div class="section"><Note /></div>
         <div class="section" id="multivariate-tool__features"><Features /></div>
+        <div class="section"><Chart /></div>
       {/if}
     {/if}
   {/await}

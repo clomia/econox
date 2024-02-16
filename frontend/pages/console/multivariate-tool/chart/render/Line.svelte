@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as echarts from "echarts";
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import { getSrc } from "../../functions";
   import { generateOption } from "../options/line";
   import { FeatureGroupSelected } from "../../../../../modules/state";
@@ -14,6 +14,7 @@
     // 데이터를 불러와서 src로 할당
     async () => (src = await getSrc($FeatureGroupSelected.id, "original"))
   );
+  onDestroy(() => chart?.dispose()); // 메모리 누수 방지
   $: if (chartContainer) {
     // DOM이 생기면 차트 인스턴스 생성
     chart = echarts.init(chartContainer);
@@ -22,6 +23,7 @@
     // 차트 인스턴스 생기면 차트 옵션 생성
     chartOption = generateOption(src, $FeatureGroupSelected.id);
   }
+  //! 중요 메모: 이렇게 구현될 때 차트 옵션을 유지한 체로 그룹이 변경되면 Echarts의 아름다운 에니메이션로 차트가 자동 업데이트될거다!!
   $: if (chartOption && $FeatureGroupSelected) {
     // 기존 옵션이 있는 상태에서 특정 피쳐의 색상이 업데이트되면 옵션 객체도 업데이트
     const option = generateOption(src, $FeatureGroupSelected.id);

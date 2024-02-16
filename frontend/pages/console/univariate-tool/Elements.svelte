@@ -166,7 +166,7 @@
     position: relative;
   }
   .list__ele_with_scroll {
-    width: 98%;
+    width: 99%;
   }
   .list__ele.selected {
     border-color: rgba(255, 255, 255, 0.2);

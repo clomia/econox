@@ -451,6 +451,9 @@ CreateGroup:
 DownloadComplete:
   en: "Your file download has completed! Please check the Downloads tab in your browser!"
   ko: "파일 다운로드가 완료되었습니다! 브라우저의 다운로드 탭을 확인해주세요!"
+ShareDataGroup:
+  en: "Share this Data Group Publicly"
+  ko: "이 데이터 그룹을 외부로 공유하기"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

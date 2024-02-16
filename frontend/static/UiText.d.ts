@@ -143,6 +143,7 @@ export interface UiText {
     FindGroup: "Find Group" | "그룹 찾기";
     CreateGroup: "Create Group" | "그룹 만들기";
     DownloadComplete: "Your file download has completed! Please check the Downloads tab in your browser!" | "파일 다운로드가 완료되었습니다! 브라우저의 다운로드 탭을 확인해주세요!";
+    ShareDataGroup: "Share this Data Group Publicly" | "이 데이터 그룹을 외부로 공유하기";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

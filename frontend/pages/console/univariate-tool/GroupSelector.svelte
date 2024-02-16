@@ -228,7 +228,7 @@
   }
   .list__add input {
     color: var(--white);
-    width: 31.18rem;
+    width: 33rem;
   }
   .list__add input:hover,
   .list__add input:focus {

@@ -336,6 +336,10 @@
     display: flex;
     align-items: center;
     text-align: start;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.15rem;
+    background-color: #36446c;
+    margin: 0.5rem 0;
   }
   .li__feature__ele__head__name img {
     margin-left: 0.5rem;

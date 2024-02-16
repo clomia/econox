@@ -1,7 +1,8 @@
-import { convertRGBtoRGBA } from "../../functions";
+import { convertRGBtoRGBA, getColorMap } from "../../functions";
 import { colorBoxIcon } from "../../../../../assets/echarts";
 
-export const optionObject = (datasetSource: any, colorMap: any) => {
+export const generateOption = (datasetSource: any, groupId: number) => {
+  const colorMap = getColorMap(groupId);
   return {
     dataset: [{ source: datasetSource }],
     xAxis: {

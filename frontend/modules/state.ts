@@ -117,6 +117,17 @@ export interface FeatureGroupType {
   public: boolean;
   features: FeatureType[];
 }
+
+// featuresDataEncode함수를 통해 Echarts로 이식 가능하도록 인코딩 된 2차원 배열
+type featuresDataEncoded = [string, ...string[]] | [string, ...number[]];
+export interface FeatureGroupSrcType {
+  id: number;
+  original: featuresDataEncoded | null;
+  scaled: featuresDataEncoded | null;
+  ratio: featuresDataEncoded | null;
+  grangercausality: any | null;
+  cointegration: any | null;
+}
 // ============= 전역적으로 사용되는 상태들 =============
 
 export const Lang = writable("en");
@@ -204,3 +215,4 @@ export const UnivariateChartSource = writable<ChartSourceType>({});
 export const FeatureGroupsLoaded = writable(false);
 export const FeatureGroups = writable<FeatureGroupType[]>([]);
 export const FeatureGroupSelected = writable<FeatureGroupType | null>(null);
+export const FeatureGroupsSrc = writable<FeatureGroupSrcType[]>([]);

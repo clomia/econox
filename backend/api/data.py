@@ -13,8 +13,8 @@ from fastapi import HTTPException, Response, Query
 
 from backend import db
 from backend.http import APIRouter
-from backend.calc import datetime2utcstr, MultivariateAnalyzer, deinterpolate
-from backend.data import fmp, world_bank
+from backend.calc import datetime2utcstr, MultivariateAnalyzer
+from backend.data import fmp
 from backend.system import ElasticRedisCache, CacheTTL, log
 from backend.integrate import get_element, Feature, FeatureGroup
 
@@ -24,14 +24,15 @@ router = APIRouter("data")
 
 @router.basic.get("/elements")
 @cached(cache=ElasticRedisCache, ttl=CacheTTL.MID)  # 실시간성이 없는 검색이므로 캐싱
-async def search_symbols_and_countries(
+async def search_elements(
     query: str, lang: str = Query(..., min_length=2, max_length=2)
 ):
     """
     - 검색어(자연어)로 국가를 포함하는 시계열 요소들을 검색합니다.
     - query: 검색어
     - lang: 응답 데이터의 언어 (ISO 639-1)
-    - Response: code, name, note를 가지는 요소들. countries와 symbols로 키가 분리되어 두개의 리스트로 제공
+    - Response: code, name, note를 가지는 element들. 여러 element 타입을 제공할 예정이나,
+        현재는 FMP API를 통해 수집되는 Symbol만 지원함
     """
     query = query.strip()
 
@@ -43,29 +44,16 @@ async def search_symbols_and_countries(
             "note": note,
         }
 
-    symbol_objects, country_objects = await asyncio.gather(
-        fmp.search(query), world_bank.search(query), return_exceptions=True
-    )  # search 메서드는 API 요청이 매우 많으므로 실패할때를 대비해야 한다.
-    if isinstance(symbol_objects, Exception):
+    try:
+        symbol_objects = await fmp.search(query)
+    except Exception as e:
         log.error(
-            "FMP 검색에 실패했습니다. 빈 배열로 대체합니다. "
+            f"[{e.__class__.__name__}: {e}] FMP 검색에 실패했습니다. 빈 배열로 대체합니다. "
             f"{symbol_objects.__class__.__name__}: {symbol_objects}"
         )
         symbol_objects = []
-    if isinstance(country_objects, Exception):
-        log.error(
-            "World Bank 검색에 실패했습니다. 빈 배열로 대체합니다. "
-            f"{country_objects.__class__.__name__}: {country_objects}"
-        )
-        country_objects = []
-    symbols, countries = await asyncio.gather(  # 이건 단순한 번역이라 괜찮음
-        asyncio.gather(*[parsing(sym) for sym in symbol_objects]),
-        asyncio.gather(*[parsing(ctry) for ctry in country_objects]),
-    )
-    return {
-        "symbols": symbols,
-        "countries": countries,
-    }
+    symbols = await asyncio.gather(*[parsing(sym) for sym in symbol_objects])
+    return {"symbols": symbols}
 
 
 @router.basic.get("/news")
@@ -73,7 +61,7 @@ async def search_news_related_to_symbols(
     symbol: str, lang: str = Query(..., min_length=2, max_length=2)
 ):
     """
-    - symbol에 대한 최신 뉴스들을 가져옵니다. (국가에 대한 뉴스는 지원되지 않음)
+    - symbol타입의 element에 대한 최신 뉴스들을 가져옵니다. (국가에 대한 뉴스는 지원되지 않음)
     - lang: 응답 데이터의 언어 (ISO 639-1)
     """
 

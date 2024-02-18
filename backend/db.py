@@ -9,12 +9,12 @@ print(element) # {'id': 8, 'section': 'country', 'code': 'AAPLE'}
 read_sql = db.SQL("SELECT * FROM elements WHERE code={code}", params={"code": "AAPLE"})
 write_sql = db.SQL(
     "INSERT INTO elements (section, code) VALUES ({section}, {code})",
-    params={"section": "country", "code": "USA"},
+    params={"section": "symbol", "code": "META"},
     fetch=False,
 )
 fetched = await db.exec(read_sql, write_sql)
 element = fetched[read_sql]
-print(element) # {'id': 8, 'section': 'country', 'code': 'AAPLE'}
+print(element) # {'id': 8, 'section': 'symbol', 'code': 'AAPLE'}
 ```
 
 - SQL 클래스를 사용해서 단일 쿼리를 정의하세요.
@@ -27,6 +27,7 @@ print(element) # {'id': 8, 'section': 'country', 'code': 'AAPLE'}
     - __cause__ 속성을 통해 QueryError 객체에 접근할 수 있습니다.
     - QueryError의 sql 속성을 통해 실행된 SQL 객체에 접근할 수 있습니다.
 """
+
 from __future__ import annotations
 
 import re
@@ -89,7 +90,9 @@ async def exec(
             row_factory=dict_row,
         ) as conn:
             if _retry > 0:
-                log.info("[DB] Secrets Manager로부터 업데이트된 암호로 인증에 성공하였습니다.")
+                log.info(
+                    "[DB] Secrets Manager로부터 업데이트된 암호로 인증에 성공하였습니다."
+                )
             async with conn.cursor() as cur:
                 tasks = [_exec(_sql, cur) for _sql in sql]
                 if parallel:
@@ -206,7 +209,9 @@ class ManyInsertSQL(SQL):
         """
         list_lengths = [len(lst) for lst in params.values()]
         if not all(length == list_lengths[0] for length in list_lengths):
-            raise ValueError(f"[ManyInsertSQL] params 값 리스트의 길이가 동일하지 않습니다")
+            raise ValueError(
+                f"[ManyInsertSQL] params 값 리스트의 길이가 동일하지 않습니다"
+            )
         keys = tuple(params.keys())
         length = len(params[keys[0]])
 

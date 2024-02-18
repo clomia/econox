@@ -9,25 +9,30 @@
   let src = null;
   let chart: echarts.ECharts | null = null;
   let chartOption = null;
+  let srcGroupId: number;
 
-  onMount(
-    // 데이터를 불러와서 src로 할당
-    async () => (src = await getSrc($FeatureGroupSelected.id, "original"))
-  );
-  onDestroy(() => chart?.dispose()); // 메모리 누수 방지
-  $: if (chartContainer) {
-    // DOM이 생기면 차트 인스턴스 생성
-    chart = echarts.init(chartContainer);
-  }
-  $: if (chart) {
-    // 차트 인스턴스 생기면 차트 옵션 생성
+  const updateChart = async () => {
+    if ($FeatureGroupSelected.id !== srcGroupId) {
+      // 그룹 변경
+      src = null;
+      const groupId = $FeatureGroupSelected.id;
+      src = await getSrc(groupId, "original");
+      srcGroupId = groupId;
+    }
     chartOption = generateOption(src, $FeatureGroupSelected.id);
+  };
+
+  onMount(updateChart);
+  onDestroy(() => chart?.dispose()); // 메모리 누수 방지
+
+  $: if (chartContainer) {
+    chart = echarts.init(chartContainer); // DOM이 생기면 차트 인스턴스 생성
+    updateChart(); // 차트 인스턴스 생기면 차트 옵션 생성
   }
-  //! 중요 메모: 이렇게 구현될 때 차트 옵션을 유지한 체로 그룹이 변경되면 Echarts의 아름다운 에니메이션로 차트가 자동 업데이트될거다!!
-  $: if (chartOption && $FeatureGroupSelected) {
+  $: if (chart && $FeatureGroupSelected) {
     // 기존 옵션이 있는 상태에서 특정 피쳐의 색상이 업데이트되면 옵션 객체도 업데이트
-    const option = generateOption(src, $FeatureGroupSelected.id);
-    chart.setOption(option);
+    // 혹은 피쳐 그룹 변경 시 변경된 그룹의 시계열 데이터를 로드해서 업데이트
+    updateChart();
   }
   $: if (chart && chartOption) {
     // 옵션 변경사항을 차트에 반영

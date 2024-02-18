@@ -157,15 +157,11 @@
   let selectedElement: ElementType;
   let packetInfoOn = false;
   const onPacketInfo = async (query: string, resp: RespPacketType) => {
-    const countries = resp["countries"].map((obj) => {
-      obj.section = "country";
-      return obj;
-    });
     const symbols = resp["symbols"].map((obj) => {
       obj.section = "symbol";
       return obj;
     });
-    $PacketInfo = { query, resp, elements: [...countries, ...symbols] };
+    $PacketInfo = { query, resp, elements: [...symbols] };
     selectedElement = $PacketInfo.elements[0];
     packetInfoOn = true;
   };
@@ -225,7 +221,7 @@
         <div class="packet__query"><span>{query}</span></div>
         {#if loading}
           <div class="packet__loader"><DotLoader /></div>
-        {:else if resp.symbols.length === 0 && resp.countries.length === 0}
+        {:else if resp.symbols.length === 0}
           <button class="packet__result" on:click={noResultAlert}>
             <div in:fade class="folder-icon"><NoFolder /></div>
           </button>

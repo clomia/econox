@@ -13,7 +13,7 @@ from openpyxl.utils import get_column_letter
 from fastapi import HTTPException, Request
 from fastapi.responses import JSONResponse
 
-from backend.data import fmp, world_bank
+from backend.data import fmp
 from backend.data.model import Factor
 from backend.data.exceptions import ElementDoesNotExist, LanguageNotSupported
 from backend.calc import deinterpolate, scaling
@@ -35,8 +35,6 @@ async def get_element(section: str, code: str):
     try:
         if section == "symbol":
             element = await fmp.Symbol(code).load()
-        elif section == "country":
-            element = await world_bank.Country(code).load()
         else:
             raise HTTPException(
                 status_code=404,

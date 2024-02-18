@@ -1,20 +1,16 @@
---- Last commit: 2024-02-15 15:23:57 ---
+--- Last commit: 2024-02-18 15:55:56 ---
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ------------------------------------------------
 -- 유저
 ------------------------------------------------
-CREATE TYPE membership AS ENUM('basic', 'professional');
-CREATE TYPE currency AS ENUM('KRW', 'USD');
-CREATE TYPE billing_status AS ENUM('active', 'require', 'deactive'); -- 정상/미결제/정지
-
 CREATE TABLE users (
     "id" UUID PRIMARY KEY, -- Cognito id
     "email" VARCHAR(255) NOT NULL UNIQUE,
     "name" VARCHAR(255) NOT NULL, -- 회원가입시 자동생성, 이후 수정
     "phone" VARCHAR(255) NOT NULL, -- AWS SNS 전송에 사용 가능한 문자열
-    "membership" membership NOT NULL,  
-    "currency" currency NOT NULL,  
+    "membership" VARCHAR(255) NOT NULL,  
+    "currency" VARCHAR(3) NOT NULL,  
     "origin_billing_date" TIMESTAMP, -- 확정된 기준날짜 (실제로 결제가 발생하여 확정되면 반영됨)
     "base_billing_date" TIMESTAMP, -- 계산된 기준날짜 (결제 시작 혹은 결제일 변경 시 계산 결과가 바로 반영됨)
     "current_billing_date" TIMESTAMP,  -- 최근 청구 날짜 
@@ -22,7 +18,7 @@ CREATE TABLE users (
     "tosspayments_billing_key" VARCHAR(255), 
     "paypal_subscription_id" VARCHAR(255), 
     "billing_method" VARCHAR(255), 
-    "billing_status" billing_status DEFAULT 'active',
+    "billing_status" VARCHAR(255) DEFAULT 'active',
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 ); 
 CREATE INDEX idx_users_paypal_subscription_id ON users (paypal_subscription_id);
@@ -83,10 +79,9 @@ CREATE INDEX idx_paypal_billings_user_id ON paypal_billings(user_id);
 ------------------------------------------------
 -- 요소들
 ------------------------------------------------
-CREATE TYPE element_section AS ENUM('symbol', 'country', 'custom');
 CREATE TABLE elements (
     "id" SERIAL NOT NULL PRIMARY KEY,
-    "section" element_section NOT NULL,
+    "section" VARCHAR(255) NOT NULL,
     "code" VARCHAR(255) NOT NULL,
     UNIQUE ("section", "code") -- 이 순서가 인덱스 효율적임
 );

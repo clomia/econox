@@ -5,7 +5,6 @@ from datetime import datetime
 import ipinfo
 from fastapi import Request, HTTPException
 
-from backend import db
 from backend.system import SECRETS, MEMBERSHIP, log
 from backend.calc import (
     datetime2utcstr,

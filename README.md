@@ -16,7 +16,7 @@
     - 연산: Numpy, Scipy ... (+ Pandas 사용 지양)
     - 모델링: Xarray, Zarr, Dask (파일 기반 캐싱)
   - 데이터 수집:
-    - Financial Modeling Prep API, World Bank API
+    - Financial Modeling Prep API
   - 데이터 저장:
     - 파일 시스템: 연산용 데이터 (금융 데이터, 캐싱 등)
     - Postgresql: 비즈니스용 데이터 (고객관리, 커텐츠 등)

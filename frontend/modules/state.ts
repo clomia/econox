@@ -70,7 +70,6 @@ export interface FactorType {
 }
 
 export interface RespPacketType {
-  countries: ElementType[];
   symbols: ElementType[];
 }
 export interface PacketInfoType {
@@ -181,7 +180,7 @@ export const News = writable<any>({});
 export const CountryCodeMap = writable<any>(null);
 export const PacketInfo = writable<PacketInfoType>({
   query: "", // 초기값 세팅
-  resp: { countries: [], symbols: [] },
+  resp: { symbols: [] },
   elements: [],
 }); // 검색을 수행하는 비동기 함수는 컴포넌트가 없어진다고 멈추지 않음, 따라서 전역 상태로 관리 가능
 

@@ -165,6 +165,7 @@ query_get_features_in_feature_group = """
     JOIN elements e ON ef.element_id = e.id
     JOIN factors f ON ef.factor_id = f.id
     WHERE fgf.feature_group_id = {feature_group_id}
+    ORDER BY fgf.created DESC
 """
 
 
@@ -176,6 +177,7 @@ class TimeSeriesGroup(TimeSeries):
 async def get_feature_group_time_series(group_id: int) -> TimeSeriesGroup:
     """
     - 피쳐 그룹에 속한 모든 피쳐의 시계열 데이터를 응답합니다.
+        - 최근에 추가된 피쳐가 앞에 위치하도록 정렬되어 있습니다.
     - 응답 본문의 크기는 대략 5 ~ 10 MB 이내입니다.
         - 본문이 커서 swagger 문서가 응답을 표시하지 못합니다.
     - ratio는 해당 시점에서 피쳐의 비율을 나타냅니다. 0~1 사이의 실수입니다.

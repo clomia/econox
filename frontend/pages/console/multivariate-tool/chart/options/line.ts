@@ -1,5 +1,4 @@
 import { convertRGBtoRGBA, getColorMap } from "../../functions";
-import { colorBoxIcon } from "../../../../../assets/echarts";
 
 export const generateOption = (datasetSource: any, groupId: number) => {
   const colorMap = getColorMap(groupId);
@@ -164,17 +163,21 @@ export const generateOption = (datasetSource: any, groupId: number) => {
       },
     },
     legend: {
+      left: 0,
+      padding: [5, 5, 5, 40],
       type: "scroll",
       pageTextStyle: {
         color: "rgba(255,255,255,0.8)",
       },
       pageIconColor: "white",
       pageIconInactiveColor: "rgba(255,255,255,0.4)",
+      itemWidth: 25,
+      itemHeight: 25,
+      icon: "roundRect",
       formatter: () => "",
       data: datasetSource[0].slice(1).map((feature: any) => {
         return {
           name: feature,
-          icon: colorBoxIcon,
           inactiveColor: convertRGBtoRGBA(colorMap[feature]),
           itemStyle: { color: colorMap[feature], opacity: 1 },
         };

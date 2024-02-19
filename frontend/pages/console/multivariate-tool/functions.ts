@@ -6,13 +6,20 @@ import {
   FeatureGroups,
   FeatureGroupsLoaded,
   FeatureGroupSelected,
+  FgTsOrigin,
+  FgTsRatio,
+  FgTsScaled,
+  FgGranger,
+  FgCoint,
 } from "../../../modules/state";
 import type {
   FeatureGroupType,
   TsType,
+  FgTsType,
   StoreStateType,
   FgStoreStateType,
 } from "../../../modules/state";
+import type { Writable } from "svelte/store";
 
 /**
  * 기본적으로 동작 반복을 방지하나, must 매개변수로 true를 주면
@@ -91,59 +98,60 @@ export const getColorMap = (groupId: number) => {
  * GET /api/data/features 기반 API로 데이터를 불러와 Echarts Dataset source 형식으로 제공합니다.
  */
 class DataAPIProxy {
-  static avliableDataTypes = [
-    "original",
-    "scaled",
-    "ratio",
-    "grangercausality",
-    "cointegration",
-  ];
   groupId: number;
 
   constructor(groupId: number) {
     this.groupId = groupId;
   }
 
-  /**
-   * @param dataType GET /data/features API가 지원하는 original,scaled,ratio 만 혀용됩니다.
-   * @returns API로 데이터를 받은 후 Echarts에 바로 적용 가능하도록 2차원 배열로 변환해서 반환합니다.
-   */
-  private async getTimeSeries(dataType: string): Promise<TsType> {
+  async getTimeSeries(): Promise<{ [key: string]: TsType }> {
     const resp = await api.member.get("/data/features", {
       params: { group_id: this.groupId },
     });
-    const headersMap = new Map([["t", 0]]);
-    const headers = ["t"];
-    const rows = resp.data.t.map((date: string) => [date]);
-    resp.data.v.forEach((fe: any) => {
-      const key = `${fe.element.section}-${fe.element.code}_${fe.factor.section}-${fe.factor.code}`;
-      if (!headersMap.has(key)) {
-        headersMap.set(key, headers.length);
-        headers.push(key);
-      }
-      const columnIndex = headersMap.get(key) as number;
-      fe[dataType].forEach((value: any, rowIndex: any) => {
-        // 각 행에 대해 columnIndex 위치에 값을 할당
-        rows[rowIndex][columnIndex] = value;
+
+    const results: { [key: string]: any[] } = {
+      original: [],
+      scaled: [],
+      ratio: [],
+    };
+
+    Object.keys(results).forEach((dataType) => {
+      // 헤더 맵과 기본 헤더는 여기에서 초기화
+      const headersMap = new Map([["t", 0]]);
+      const headers = ["t"]; // dataType별로 헤더 배열을 초기화
+      const baseRows = resp.data.t.map((date: string) => [date]); // dataType별 기본 행 구성
+      const rows = baseRows.slice(); // 얕은 복사를 사용하여 기본 행 구성
+
+      resp.data.v.forEach((fe: any) => {
+        const key = `${fe.element.section}-${fe.element.code}_${fe.factor.section}-${fe.factor.code}`;
+        if (!headersMap.has(key)) {
+          headersMap.set(key, headers.length);
+          headers.push(key);
+        }
+        const columnIndex = headersMap.get(key);
+
+        // columnIndex가 유효한지 확인
+        if (typeof columnIndex === "number") {
+          fe[dataType].forEach((value: any, rowIndex: number) => {
+            // TsType에 맞추어 적절한 값을 할당
+            if (rows[rowIndex] && rows[rowIndex][columnIndex] === undefined) {
+              rows[rowIndex][columnIndex] = value;
+            }
+          });
+        }
       });
+
+      rows.unshift(headers); // 최상단에 헤더 행 추가
+      results[dataType] = rows;
     });
-    rows.unshift(headers); // 최상단에 헤더 행 추가
-    return rows;
+
+    return results as { [key: string]: TsType };
   }
 
-  async original() {
-    return await this.getTimeSeries("original");
-  }
-  async scaled() {
-    return await this.getTimeSeries("scaled");
-  }
-  async ratio() {
-    return await this.getTimeSeries("ratio");
-  }
-  async grangercausality() {
+  async getGrangercausality() {
     return {};
   }
-  async cointegration() {
+  async getCointegration() {
     return {};
   }
 }
@@ -246,5 +254,70 @@ export const fgDataStateTracker = (
   if (fgStoreStateIsSame(state, get(FgStoreState))) {
     // 반영된 내용이 기존 객체와 다른 경우 스토어를 업데이트합니다.
     FgStoreState.set(state);
+  }
+};
+
+// fgDataStateSynchronizer와 fgDataStateTracker는 chart/Index.svelte에 의해 긴밀하게 엮여있습니다.
+// 따라서 두 로직을 함께 읽어야 동작을 파악할 수 있습니다. 두 함수는 상호 의존적입니다.
+
+/**
+ * Fg 데이터 스토어에서 현재 필요한 부분만 업데이트합니다.
+ * 현재의 groupSelected를 매개변수로 받습니다.
+ */
+export const fgDataStateSynchronizer = async (
+  groupSelected: FeatureGroupType
+) => {
+  let state = get(FgStoreState);
+  switch (groupSelected.chart_type) {
+    case "line":
+    case "ratio":
+      if (state[groupSelected.id].FgTsOrigin !== "before") {
+        return; // before인 경우에만 아래 로직 실행
+      }
+      // 상태를 during으로 업데이트
+      FgStoreState.update((currentState) => {
+        const updatedState = { ...currentState };
+        updatedState[groupSelected.id] = {
+          ...updatedState[groupSelected.id],
+          FgTsOrigin: "during",
+          FgTsRatio: "during",
+          FgTsScaled: "during",
+        };
+        return updatedState;
+      });
+
+      // 데이터를 업데이트
+      const api = new DataAPIProxy(groupSelected.id);
+      const ts = await api.getTimeSeries();
+      [
+        [FgTsOrigin, "original"],
+        [FgTsScaled, "scaled"],
+        [FgTsRatio, "ratio"],
+      ].forEach(([store, name]) => {
+        let _store = store as Writable<FgTsType>;
+        let _name = name as string;
+        _store.update((currentState) => {
+          const newState = { ...currentState };
+          newState[groupSelected.id] = ts[_name];
+          return newState;
+        });
+      });
+
+      // 상태를 after로 업데이트
+      FgStoreState.update((currentState) => {
+        const updatedState = { ...currentState };
+        updatedState[groupSelected.id] = {
+          ...updatedState[groupSelected.id],
+          FgTsOrigin: "after",
+          FgTsRatio: "after",
+          FgTsScaled: "after",
+        };
+        return updatedState;
+      });
+      break;
+    case "granger":
+      break;
+    case "coint":
+      break;
   }
 };

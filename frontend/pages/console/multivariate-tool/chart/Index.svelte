@@ -5,7 +5,7 @@
     FeatureGroupSelected,
     FgStoreState,
   } from "../../../../modules/state";
-  import { fgDataStateTracker } from "../functions";
+  import { fgDataStateTracker, fgDataStateSynchronizer } from "../functions";
   import Header from "./Header.svelte";
   import Menu from "./Menu.svelte";
   import Note from "./Note.svelte";
@@ -20,9 +20,8 @@
     before = $FeatureGroups;
   }
 
-  // 디버깅용 콘솔 출력!!
-  $: if ($FgStoreState) {
-    console.log($FgStoreState);
+  $: if ($FeatureGroupSelected) {
+    fgDataStateSynchronizer($FeatureGroupSelected);
   }
 </script>
 

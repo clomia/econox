@@ -233,8 +233,8 @@ export const FeatureGroupSelected = writable<FeatureGroupType | null>(null);
 // Fg(FeatureGroups) Ts(TimeSeries)
 export const FgTsOrigin = writable<FgTsType>({});
 export const FgTsScaled = writable<FgTsType>({});
-export const FgTsRatio = writable<FgTsType>();
-export const FgGranger = writable(); // 미구현
-export const FgCoint = writable(); // 미구현
+export const FgTsRatio = writable<FgTsType>({});
+export const FgGranger = writable<FgTsType>({}); // 미구현
+export const FgCoint = writable<FgTsType>({}); // 미구현
 // 위의 데이터 스토어 상태 기록자
 export const FgStoreState = writable<FgStoreStateType>({});

@@ -156,7 +156,6 @@ export const generateOption = (datasetSource: any, groupId: number) => {
         const serializer = new XMLSerializer();
         // 정렬된 순서대로 툴팁 내용 구성
         params.forEach((item: any) => {
-          console.log(item);
           let seriesIndex = item.seriesIndex + 1;
           let value = item.value[seriesIndex]; // seriesIndex에 해당하는 값
 

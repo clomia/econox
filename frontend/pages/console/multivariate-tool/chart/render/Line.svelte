@@ -4,28 +4,31 @@
   import { getSrc } from "../../functions";
   import { generateOption } from "../options/line";
   import { FeatureGroupSelected } from "../../../../../modules/state";
+  import type { FeatureGroupType } from "../../../../../modules/state";
 
   let chartContainer: HTMLElement;
   let src = null;
   let chart: echarts.ECharts | null = null;
   let chartOption = null;
-  let srcGroupId: number;
+  let srcGroup: FeatureGroupType | null = null;
 
   const updateChart = async () => {
-    if ($FeatureGroupSelected.id !== srcGroupId) {
+    const group = $FeatureGroupSelected;
+    if (group.id !== srcGroup?.id) {
       // 그룹 변경
       src = null;
-      const groupId = $FeatureGroupSelected.id;
-      src = await getSrc(groupId, "original");
-      srcGroupId = groupId;
-    }
-    if ($FeatureGroupSelected.features.length !== src?.[0].length - 1) {
+      srcGroup = null;
+      src = await getSrc(group.id, "original");
+      srcGroup = group;
+    } else if (group.features.length !== srcGroup?.features.length) {
       // 그룹 피쳐 리스트 업데이트
       src = null;
-      src = await getSrc(srcGroupId, "original", false);
+      srcGroup = null;
+      src = await getSrc(srcGroup.id, "original", false);
+      srcGroup = group;
     }
     // 옵션 업데이트
-    chartOption = generateOption(src, $FeatureGroupSelected.id);
+    chartOption = generateOption(src, group.id);
   };
 
   onMount(updateChart);

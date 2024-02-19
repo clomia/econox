@@ -214,7 +214,10 @@ class FeatureGroup:
 
     async def init(self):
         ds_arr = await asyncio.gather(*[fe.to_dataset() for fe in self.src])
-
+        if not ds_arr:
+            raise HTTPException(
+                status_code=404, detail="Empty feature groups cannot be processed"
+            )
         min_t = np.max([ds.t[0].to_numpy() for ds in ds_arr])
         max_t = np.min([ds.t[-1].to_numpy() for ds in ds_arr])
 

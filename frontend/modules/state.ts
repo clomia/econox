@@ -117,16 +117,30 @@ export interface FeatureGroupType {
   features: FeatureType[];
 }
 
-// featuresDataEncode함수를 통해 Echarts로 이식 가능하도록 인코딩 된 2차원 배열
-type featuresDataEncoded = [string, ...string[]] | [string, ...number[]];
-export interface FeatureGroupSrcType {
-  id: number;
-  original: featuresDataEncoded | null;
-  scaled: featuresDataEncoded | null;
-  ratio: featuresDataEncoded | null;
-  grangercausality: any | null;
-  cointegration: any | null;
+// Echarts TimeSeries Dataset
+export type TsType = [string, ...string[]] | [string, ...number[]];
+// key: '{elementSection}-{elementCode}_{factorSectionCode}-{factorCode}'
+export type ColorMapType = { [key: string]: string };
+// key: Store Name
+export type StoreStateType = {
+  FgTsOrigin: "before" | "during" | "after";
+  FgTsScaled: "before" | "during" | "after";
+  FgTsRatio: "before" | "during" | "after";
+  FgGranger: "before" | "during" | "after";
+  FgCoint: "before" | "during" | "after";
+};
+
+// --- key: GroupId ---
+export interface FgTsType {
+  [key: string]: TsType;
 }
+export interface FgColorMapType {
+  [key: string]: ColorMapType;
+}
+export interface FgStoreStateType {
+  [key: string]: StoreStateType;
+}
+
 // ============= 전역적으로 사용되는 상태들 =============
 
 export const Lang = writable("en");
@@ -214,4 +228,13 @@ export const UnivariateChartSource = writable<ChartSourceType>({});
 export const FeatureGroupsLoaded = writable(false);
 export const FeatureGroups = writable<FeatureGroupType[]>([]);
 export const FeatureGroupSelected = writable<FeatureGroupType | null>(null);
-export const FeatureGroupsSrc = writable<FeatureGroupSrcType[]>([]);
+
+// console.multivariate-tool -> Chart Data
+// Fg(FeatureGroups) Ts(TimeSeries)
+export const FgTsOrigin = writable<FgTsType>({});
+export const FgTsScaled = writable<FgTsType>({});
+export const FgTsRatio = writable<FgTsType>();
+export const FgGranger = writable(); // 미구현
+export const FgCoint = writable(); // 미구현
+// 위의 데이터 스토어 상태 기록자
+export const FgStoreState = writable<FgStoreStateType>({});

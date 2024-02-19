@@ -1,8 +1,11 @@
 <script lang="ts">
+  import { get } from "svelte/store";
   import {
     FeatureGroups,
     FeatureGroupSelected,
+    FgStoreState,
   } from "../../../../modules/state";
+  import { fgDataStateTracker } from "../functions";
   import Header from "./Header.svelte";
   import Menu from "./Menu.svelte";
   import Note from "./Note.svelte";
@@ -10,6 +13,17 @@
   import RatioChart from "./render/Ratio.svelte";
 
   const chartMap = { line: LineChart, ratio: RatioChart };
+
+  let before = get(FeatureGroups);
+  $: if ($FeatureGroups) {
+    fgDataStateTracker(before, $FeatureGroups);
+    before = $FeatureGroups;
+  }
+
+  // 디버깅용 콘솔 출력!!
+  $: if ($FgStoreState) {
+    console.log($FgStoreState);
+  }
 </script>
 
 <main>

@@ -2,12 +2,17 @@ import { get } from "svelte/store";
 import { api } from "../../../modules/request";
 import {
   Lang,
+  FgStoreState,
   FeatureGroups,
   FeatureGroupsLoaded,
   FeatureGroupSelected,
-  FeatureGroupsSrc,
 } from "../../../modules/state";
-import type { FeatureGroupType } from "../../../modules/state";
+import type {
+  FeatureGroupType,
+  TsType,
+  StoreStateType,
+  FgStoreStateType,
+} from "../../../modules/state";
 
 /**
  * 기본적으로 동작 반복을 방지하나, must 매개변수로 true를 주면
@@ -103,7 +108,7 @@ class DataAPIProxy {
    * @param dataType GET /data/features API가 지원하는 original,scaled,ratio 만 혀용됩니다.
    * @returns API로 데이터를 받은 후 Echarts에 바로 적용 가능하도록 2차원 배열로 변환해서 반환합니다.
    */
-  private async getTimeSeries(dataType: string) {
+  private async getTimeSeries(dataType: string): Promise<TsType> {
     const resp = await api.member.get("/data/features", {
       params: { group_id: this.groupId },
     });
@@ -144,37 +149,102 @@ class DataAPIProxy {
 }
 
 /**
- * GET /api/data/features API 응답을 Echarts dataset source 형식으로 반환합니다.
- * 이미 수집된 데이터는 state.ts에 의해 캐싱되어 바로 응답됩니다.
- * @param groupId 데이터 그룹의 ID
- * @param dataType Echart 차트 타입
- * @param cache 기본값:True, False인 경우 동일한 API 요청을 허용하며 src가 강제 업데이트됨
+ * 두 FgStoreStateType 객체가 같은지 비교합니다.
+ * fgDataStateTracker가 불필요한 반응성 트리거를 막기 위해 사용합니다.
  */
-export const getSrc = async (
-  groupId: number,
-  dataType: string,
-  cache: boolean = true
+const fgStoreStateIsSame = (
+  obj1: FgStoreStateType,
+  obj2: FgStoreStateType
+): boolean => {
+  // 두 객체의 키 집합을 확인하여 길이가 다르면 바로 false 반환
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+  if (keys1.length !== keys2.length) return true;
+
+  for (const key of keys1) {
+    if (!obj2.hasOwnProperty(key)) {
+      return true;
+    }
+
+    const state1 = obj1[key];
+    const state2 = obj2[key];
+    const subKeys1 = Object.keys(state1);
+    const subKeys2 = Object.keys(state2);
+
+    // 하위 객체의 키 집합 길이 비교
+    if (subKeys1.length !== subKeys2.length) return true;
+
+    for (const subKey of subKeys1) {
+      if (state1[subKey] !== state2[subKey]) {
+        return true;
+      }
+    }
+  }
+
+  // 모든 조건을 통과했다면 두 객체는 동일함
+  return false;
+};
+
+/**
+ * FeatureGroups 상태의 변경사항을 추적하기 위한 함수입니다.
+ * 변경전, 변경후 객체를 받아서 FgStoreState 상태를 업데이트합니다.
+ */
+export const fgDataStateTracker = (
+  before: FeatureGroupType[],
+  after: FeatureGroupType[]
 ) => {
-  if (!DataAPIProxy.avliableDataTypes.includes(dataType)) {
-    throw Error(
-      `${dataType}은 유효한 타입이 아닙니다. 사용 가능한 타입: ${DataAPIProxy.avliableDataTypes}`
-    );
-  }
-  const src = get(FeatureGroupsSrc).find((group) => group.id === groupId);
-  if (cache && src?.[dataType]) {
-    return src[dataType];
-  }
-  const dataProxy = new DataAPIProxy(groupId);
-  const data = await dataProxy[dataType]();
-  const initObject = {
-    id: groupId,
-    original: null,
-    scaled: null,
-    ratio: null,
-    grangercausality: null,
-    cointegration: null,
+  const state = get(FgStoreState);
+
+  // 1. 그룹 자체가 배열에 추가되거나 삭제된 부분을 상태에 반영합니다.
+  const stateInitObj: StoreStateType = {
+    FgTsOrigin: "before",
+    FgTsScaled: "before",
+    FgTsRatio: "before",
+    FgGranger: "before",
+    FgCoint: "before",
   };
-  initObject[dataType] = data;
-  FeatureGroupsSrc.set([initObject, ...get(FeatureGroupsSrc)]);
-  return data;
+  const managedGroups = Object.keys(state);
+  const groups = after.map((group) => group.id.toString());
+  // groups에는 있지만 managedGroups에는 없는 요소들
+  const added = groups.filter((item) => !managedGroups.includes(item));
+  // 추가된 그룹을 상태 관리에 추가
+  added.forEach((groupId) => (state[groupId] = stateInitObj));
+  // managedGroups에는 있지만 groups에는 없는 요소들
+  const removed = managedGroups.filter((item) => !groups.includes(item));
+  // 삭제된 그룹을 상태 관리에서 제거
+  removed.forEach((groupId) => {
+    delete state[groupId];
+  });
+
+  // 2. 그룹 내부의 features가 추가되거나 삭제된 부분을 상태에 반영합니다.
+
+  // Map을 사용하여 before와 after 배열의 id를 키로 하는 객체로 변환합니다.
+  const beforeMap = new Map(
+    before.map((item) => [item.id, item.features.length])
+  );
+  const afterMap = new Map(
+    after.map((item) => [item.id, item.features.length])
+  );
+
+  const changedFeatureGroupIds = new Set<number>();
+  // features 배열 길이가 변경된 그룹 ID로 구성된 집합(set) 생성
+  before.forEach(({ id }) => {
+    if (beforeMap.get(id) !== afterMap.get(id)) {
+      changedFeatureGroupIds.add(id);
+    }
+  });
+
+  for (const groupId of changedFeatureGroupIds) {
+    // 데이터가 바뀐 그룹에 대해서
+    for (const key in state[groupId]) {
+      // 모든 데이터 스토어를 "업데이트 반영 전" 상태로 바꾼다.
+      if (state[groupId].hasOwnProperty(key)) {
+        state[groupId][key] = "before";
+      }
+    }
+  }
+  if (fgStoreStateIsSame(state, get(FgStoreState))) {
+    // 반영된 내용이 기존 객체와 다른 경우 스토어를 업데이트합니다.
+    FgStoreState.set(state);
+  }
 };

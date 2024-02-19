@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
   import * as echarts from "echarts";
   import { onMount, onDestroy } from "svelte";
   import { getSrc } from "../../functions";
@@ -66,4 +66,4 @@
     height: 23rem;
     padding-right: 2rem;
   }
-</style>
+</style> -->

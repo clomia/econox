@@ -19,6 +19,12 @@
       src = await getSrc(groupId, "original");
       srcGroupId = groupId;
     }
+    if ($FeatureGroupSelected.features.length !== src?.[0].length - 1) {
+      // 그룹 피쳐 리스트 업데이트
+      src = null;
+      src = await getSrc(srcGroupId, "original", false);
+    }
+    // 옵션 업데이트
     chartOption = generateOption(src, $FeatureGroupSelected.id);
   };
 

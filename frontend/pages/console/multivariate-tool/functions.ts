@@ -7,6 +7,7 @@ import {
   FeatureGroupSelected,
   FeatureGroupsSrc,
 } from "../../../modules/state";
+import type { FeatureGroupType } from "../../../modules/state";
 
 /**
  * 기본적으로 동작 반복을 방지하나, must 매개변수로 true를 주면
@@ -19,8 +20,16 @@ export const loadGroups = async (must = false) => {
   const resp = await api.member.get("/feature/groups", {
     params: { lang: get(Lang) },
   });
-  FeatureGroups.set(resp.data);
+  const data = resp.data as FeatureGroupType[];
+  FeatureGroups.set(data);
   FeatureGroupsLoaded.set(true);
+
+  const selected = get(FeatureGroupSelected);
+  const updated = data.find((group) => group.id === selected?.id);
+  // 만약 FeatureGroupSelected에 변경사항이 있는 경우 해당 상태도 업데이트
+  if (selected?.features.length !== updated?.features.length) {
+    FeatureGroupSelected.set(updated as FeatureGroupType);
+  }
 };
 
 /**
@@ -139,15 +148,20 @@ class DataAPIProxy {
  * 이미 수집된 데이터는 state.ts에 의해 캐싱되어 바로 응답됩니다.
  * @param groupId 데이터 그룹의 ID
  * @param dataType Echart 차트 타입
+ * @param cache 기본값:True, False인 경우 동일한 API 요청을 허용하며 src가 강제 업데이트됨
  */
-export const getSrc = async (groupId: number, dataType: string) => {
+export const getSrc = async (
+  groupId: number,
+  dataType: string,
+  cache: boolean = true
+) => {
   if (!DataAPIProxy.avliableDataTypes.includes(dataType)) {
     throw Error(
       `${dataType}은 유효한 타입이 아닙니다. 사용 가능한 타입: ${DataAPIProxy.avliableDataTypes}`
     );
   }
   const src = get(FeatureGroupsSrc).find((group) => group.id === groupId);
-  if (src?.[dataType]) {
+  if (cache && src?.[dataType]) {
     return src[dataType];
   }
   const dataProxy = new DataAPIProxy(groupId);

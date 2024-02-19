@@ -152,13 +152,22 @@ export const generateOption = (datasetSource: any, groupId: number) => {
           return b.value[bValueIndex] - a.value[aValueIndex]; // 내림차순 정렬
         });
 
+        const parser = new DOMParser();
+        const serializer = new XMLSerializer();
         // 정렬된 순서대로 툴팁 내용 구성
         params.forEach((item: any) => {
+          console.log(item);
           let seriesIndex = item.seriesIndex + 1;
           let value = item.value[seriesIndex]; // seriesIndex에 해당하는 값
-          result += item.marker + value.toFixed(3) + "<br/>"; // 색상 원과 함께 값을 포맷하여 추가
-        });
 
+          // 피쳐에 대한 색상 원 HTML 문자열 생성
+          const markerDom = parser.parseFromString(item.marker, "text/html");
+          const marker = markerDom.querySelector("span") as HTMLSpanElement;
+          marker.style.backgroundColor = colorMap[item.seriesName];
+          const markerString = serializer.serializeToString(marker);
+
+          result += markerString + value.toFixed(3) + "<br/>"; // 색상 원과 함께 값을 포맷하여 추가
+        });
         return result;
       },
     },

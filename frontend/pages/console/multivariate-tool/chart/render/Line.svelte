@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as echarts from "echarts";
-  import { onMount, onDestroy } from "svelte";
+  import { onDestroy } from "svelte";
   import Toggle from "../../../../../components/Toggle.svelte";
   import { generateOption } from "../options/line";
   import {
@@ -15,7 +15,6 @@
   let chartOption = null;
   let scaled: boolean = false;
 
-  onMount(() => (chart = echarts.init(chartContainer)));
   onDestroy(() => chart?.dispose()); // 메모리 누수 방지
 
   $: group = $FeatureGroupSelected; // shortcut
@@ -24,6 +23,9 @@
     chartOption = generateOption($FgTsScaled[group.id], group.id);
   } else if (group && ready && scaled === false) {
     chartOption = generateOption($FgTsOrigin[group.id], group.id);
+  }
+  $: if (chartContainer) {
+    chart = echarts.init(chartContainer); // chartContainer 바운드 되면 차트 인스턴스 생성
   }
   $: if (chart && chartOption) {
     chart.setOption(chartOption);

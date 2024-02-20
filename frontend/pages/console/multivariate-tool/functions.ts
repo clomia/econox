@@ -274,7 +274,11 @@ export const fgDataStateSynchronizer = async (
   const group = { ...after };
   const state = { ...get(FgStoreState) };
 
-  const toConfirm = before.confirm === false && after.confirm === true;
+  const toConfirm =
+    // 그룹이 바뀌진 않았으나, 그룹의 confirm이 false에서 true로 바뀌었으면 이것은 confirm 동작이 이루어진것임
+    before.id === after.id &&
+    before.confirm === false &&
+    after.confirm === true;
   const isUpdate = state[group.id].FgTsOrigin;
 
   switch (group.chart_type) {

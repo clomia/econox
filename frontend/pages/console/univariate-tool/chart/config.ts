@@ -221,5 +221,11 @@ export const option = (
       triggerEmphasis: false, // 강조 표시 버그 해결
       label: { show: false }, // 미관상 방해되서 없앰
     },
+    toolbox: {
+      left: 38,
+      feature: {
+        restore: {},
+      },
+    },
   };
 };

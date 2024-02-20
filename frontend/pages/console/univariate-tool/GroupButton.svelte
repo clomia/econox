@@ -4,7 +4,9 @@
     UnivariateElementSelected,
     UnivariateFactorSelected,
     UnivariateChartSource,
+    FeatureGroups,
   } from "../../../modules/state";
+  import { swal } from "../../../modules/functions";
   import GroupSelector from "./GroupSelector.svelte";
 
   // 장황해 보이지만 그룹에 추가할 수 있는지 여부를 확인할 수 있는 가장 간결한 방법이다..
@@ -45,11 +47,21 @@
   const selectorOff = () => {
     selector = false;
   };
+  const selectorOn = async () => {
+    if ($FeatureGroups.filter((g) => !g.confirm).length) {
+      // 모든 그룹이 confirm되지 않은 경우 변경할 수 없음
+      await swal(
+        "삭제 처리중인 데이터 그룹이 있습니다. 잠시 후 다시 시도해주세요"
+      );
+    } else {
+      selector = true;
+    }
+  };
 </script>
 
 {#if buttonAvaliable}
   <main>
-    <button on:click={() => (selector = true)}>{$Text.AddDataToGroup}</button>
+    <button on:click={selectorOn}>{$Text.AddDataToGroup}</button>
   </main>
 {/if}
 {#if selector}

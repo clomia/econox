@@ -28,7 +28,9 @@
       {#if $FeatureGroupSelected}
         <div class="section"><Note /></div>
         <div class="section" id="multivariate-tool__features"><Features /></div>
-        <div class="section"><Chart /></div>
+        {#if $FeatureGroupSelected.features.length}
+          <div class="section"><Chart /></div>
+        {/if}
       {/if}
     {/if}
   {/await}

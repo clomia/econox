@@ -20,6 +20,8 @@
 
   $: group = $FeatureGroupSelected; // shortcut
   $: ready = $FgStoreState[group.id].FgTsOrigin === "after";
+  $: columns = $FgTsOrigin[group.id] ? $FgTsOrigin[group.id][0] : [];
+
   $: if (group && ready && scaled === true) {
     chartOption = generateOption($FgTsScaled[group.id], group.id);
   } else if (group && ready && scaled === false) {
@@ -31,8 +33,9 @@
 
   let beforeColumns: string[];
   $: if (chart && chartOption) {
-    let afterColumns = [...$FgTsOrigin[group.id][0]];
+    let afterColumns = [...columns];
     if (!beforeColumns) {
+      // 첫 실행, 초기화
       beforeColumns = [...afterColumns];
     }
     if (isSameArray(beforeColumns, afterColumns)) {

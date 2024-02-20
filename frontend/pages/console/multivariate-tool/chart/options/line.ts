@@ -164,9 +164,9 @@ export const generateOption = (datasetSource: any, groupId: number) => {
           const marker = markerDom.querySelector("span") as HTMLSpanElement;
           marker.style.backgroundColor = colorMap[item.seriesName];
           const markerString = serializer.serializeToString(marker);
-
-          value = value ? value.toFixed(3) : 0; // 잠깐, value가 undefined인 경우 있음
-          result += markerString + value + "<br/>"; // 색상 원과 함께 값을 포맷하여 추가
+          if (value) {
+            result += markerString + value.toFixed(3) + "<br/>"; // 색상 원과 함께 값을 포맷하여 추가
+          }
         });
         return result;
       },

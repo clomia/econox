@@ -338,3 +338,16 @@ export const swal = async (message: string, width = "33rem") => {
     confirmButtonText: text.Ok,
   });
 };
+
+/**
+ * 두 배열이 동일한지 검사합니다.
+ * 1차원 배열이어야 합니다.
+ */
+export const isSameArray = (array1: any[], array2: any[]) => {
+  // 먼저 배열의 길이를 비교
+  if (array1.length !== array2.length) {
+    return false; // 길이가 다르면 두 배열은 동일할 수 없으므로 false 반환
+  }
+  // 길이가 같을 경우, 모든 요소가 동일한지 검사
+  return array1.every((element, index) => element === array2[index]);
+};

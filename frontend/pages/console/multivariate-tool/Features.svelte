@@ -149,15 +149,17 @@
 
   const del = async (feature: FeatureType) => {
     // 복사
-    let updated = $FeatureGroupSelected;
-    let updatedGroups = $FeatureGroups;
+    let updated = { ...$FeatureGroupSelected };
+    let updatedGroups = [...$FeatureGroups];
 
-    const targetIndex = updatedGroups.findIndex(
-      (group) => group === $FeatureGroupSelected
+    const targetGroupId = updated.id;
+    let targetIndex = updatedGroups.findIndex(
+      (group) => group.id === targetGroupId
     );
 
     // 변경사항 반영
     updated.features = updated.features.filter((f) => f !== feature);
+    updated.confirm = false; // 낙관적 업데이트일 뿐, 서버에는 아직 반영 안됨
     updatedGroups[targetIndex] = updated;
 
     // 변경사항 적용
@@ -167,7 +169,7 @@
     // 서버에 반영 요청
     await api.member.delete("/feature/group/feature", {
       data: {
-        group_id: $FeatureGroupSelected.id,
+        group_id: targetGroupId,
         element: {
           section: feature.element.section,
           code: feature.element.code,
@@ -178,6 +180,23 @@
         },
       },
     });
+
+    // 서버에 반영이 완료되었으니 confirm을 true로 업데이트
+    targetIndex = $FeatureGroups.findIndex(
+      (group) => group.id === targetGroupId
+    );
+    if (targetIndex !== -1) {
+      // 아직 해당 그룹이 존재할때만!
+      const groups = [...$FeatureGroups];
+      groups[targetIndex].confirm = true;
+      $FeatureGroups = groups;
+      const selected = { ...$FeatureGroupSelected };
+      if (selected.id === targetGroupId) {
+        // 해당 그룹이 선택된 그룹인 경우
+        selected.confirm = true;
+        $FeatureGroupSelected = selected;
+      }
+    }
   };
   let featureListHeight = 3;
   $: {

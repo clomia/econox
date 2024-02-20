@@ -32,7 +32,10 @@ export const loadGroups = async (must = false) => {
   const resp = await api.member.get("/feature/groups", {
     params: { lang: get(Lang) },
   });
-  const data = resp.data as FeatureGroupType[];
+  const data: FeatureGroupType[] = resp.data.map((group: any) => {
+    group.confirm = true;
+    return group;
+  });
   FeatureGroups.set(data);
   FeatureGroupsLoaded.set(true);
 
@@ -265,29 +268,41 @@ export const fgDataStateTracker = (
  * 현재의 groupSelected를 매개변수로 받습니다.
  */
 export const fgDataStateSynchronizer = async (
-  groupSelected: FeatureGroupType
+  before: FeatureGroupType,
+  after: FeatureGroupType
 ) => {
-  let state = get(FgStoreState);
-  switch (groupSelected.chart_type) {
+  const group = { ...after };
+  const state = { ...get(FgStoreState) };
+
+  const toConfirm = before.confirm === false && after.confirm === true;
+  const isUpdate = state[group.id].FgTsOrigin;
+
+  switch (group.chart_type) {
     case "line":
     case "ratio":
-      if (state[groupSelected.id].FgTsOrigin !== "before") {
-        return; // before인 경우에만 아래 로직 실행
+      if (isUpdate !== "before" && !toConfirm) {
+        // 데이터 업데이트 상태가 before 이어야만 통과 가능
+        // 만약 confirm을 하는 업데이트라면 before가 아니더라도 통과 가능
+        return;
       }
       // 상태를 during으로 업데이트
       FgStoreState.update((currentState) => {
         const updatedState = { ...currentState };
-        updatedState[groupSelected.id] = {
-          ...updatedState[groupSelected.id],
+        updatedState[group.id] = {
+          ...updatedState[group.id],
           FgTsOrigin: "during",
           FgTsRatio: "during",
           FgTsScaled: "during",
         };
         return updatedState;
       });
+      if (!group.confirm) {
+        // confirm되지 않은 경우 여기에서 스탑
+        return;
+      }
 
       // 데이터를 업데이트
-      const api = new DataAPIProxy(groupSelected.id);
+      const api = new DataAPIProxy(group.id);
       const ts = await api.getTimeSeries();
       [
         [FgTsOrigin, "original"],
@@ -298,7 +313,7 @@ export const fgDataStateSynchronizer = async (
         let _name = name as string;
         _store.update((currentState) => {
           const newState = { ...currentState };
-          newState[groupSelected.id] = ts[_name];
+          newState[group.id] = ts[_name];
           return newState;
         });
       });
@@ -306,8 +321,8 @@ export const fgDataStateSynchronizer = async (
       // 상태를 after로 업데이트
       FgStoreState.update((currentState) => {
         const updatedState = { ...currentState };
-        updatedState[groupSelected.id] = {
-          ...updatedState[groupSelected.id],
+        updatedState[group.id] = {
+          ...updatedState[group.id],
           FgTsOrigin: "after",
           FgTsRatio: "after",
           FgTsScaled: "after",

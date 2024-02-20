@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { get } from "svelte/store";
   import {
     FeatureGroups,
     FeatureGroupSelected,
@@ -14,14 +13,16 @@
 
   const chartMap = { line: LineChart, ratio: RatioChart };
 
-  let before = get(FeatureGroups);
+  let beforeGroups = [...$FeatureGroups];
   $: if ($FeatureGroups) {
-    fgDataStateTracker(before, $FeatureGroups);
-    before = $FeatureGroups;
+    fgDataStateTracker(beforeGroups, $FeatureGroups);
+    beforeGroups = [...$FeatureGroups];
   }
 
+  let beforeGroupSelected = { ...$FeatureGroupSelected };
   $: if ($FeatureGroupSelected) {
-    fgDataStateSynchronizer($FeatureGroupSelected);
+    fgDataStateSynchronizer(beforeGroupSelected, $FeatureGroupSelected);
+    beforeGroupSelected = { ...$FeatureGroupSelected };
   }
 </script>
 

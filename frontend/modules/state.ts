@@ -115,6 +115,7 @@ export interface FeatureGroupType {
   chart_type: string;
   public: boolean;
   features: FeatureType[];
+  confirm?: boolean;
 }
 
 // Echarts TimeSeries Dataset

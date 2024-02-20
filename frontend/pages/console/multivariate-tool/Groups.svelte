@@ -8,7 +8,7 @@
   import EditIcon from "../../../assets/icon/EditIcon.svelte";
   import Check from "../../../assets/icon/Check.svelte";
   import CancelIcon from "../../../assets/icon/CancelIcon.svelte";
-  import { attrQuerySort, strip } from "../../../modules/functions";
+  import { attrQuerySort, strip, swal } from "../../../modules/functions";
   import type { FeatureGroupType } from "../../../modules/state";
 
   let searchQuery = "";
@@ -18,8 +18,13 @@
   let groupEditingTarget: FeatureGroupType | null = null;
   let groupEditingInput: HTMLInputElement | null = null;
 
-  const selectGroup = (group: FeatureGroupType) => {
-    $FeatureGroupSelected = group;
+  const selectGroup = async (group: FeatureGroupType) => {
+    if ($FeatureGroups.filter((g) => !g.confirm).length) {
+      // 모든 그룹이 confirm되지 않은 경우 변경할 수 없음
+      await swal("삭제 처리가 완료될때까지 기다려주세요");
+    } else {
+      $FeatureGroupSelected = group;
+    }
   };
   const deleteGroup = async (group: FeatureGroupType) => {
     $FeatureGroupSelected = null;

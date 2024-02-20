@@ -210,9 +210,9 @@
       value = $FeatureGroupSelected.features.length * 5.3;
     }
     // 계산 종료
-    // 할당 (26이 최대치임)
-    if (value > 26 || colorPickerOn) {
-      featureListHeight = 26;
+    // 할당 (26.5가 최대치임, 딱 5개 들어감)
+    if (value > 26.5 || colorPickerOn) {
+      featureListHeight = 26.5;
     } else {
       featureListHeight = value;
     }

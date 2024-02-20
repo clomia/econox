@@ -60,13 +60,20 @@ export const selectGroup = (id: number) => {
  * rgb 문자열을 rgba문자열 형식으로 변환합니다.
  * 투명도를 추가할 때 사용하세요
  */
-export const convertRGBtoRGBA = (rgbString: string, alpha = 0.2) => {
+export const convertRGBtoRGBA = (rgbString: string, alpha = 1) => {
+  const errorDefault = "rgba(255,255,255)";
+  if (!rgbString) {
+    console.log(
+      `[convertRGBtoRGBA] ${rgbString}은 올바른 RGB 형식이 아닙니다!`
+    );
+    return errorDefault;
+  }
+
   // rgb 문자열에서 숫자를 추출하기 위한 정규 표현식
   const regex = /rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)/;
 
   // 정규 표현식을 사용하여 rgb 값 추출
   const matches = rgbString.match(regex);
-
   // 추출된 rgb 값을 rgba 문자열로 변환
   if (matches) {
     const r = matches[1];
@@ -76,7 +83,7 @@ export const convertRGBtoRGBA = (rgbString: string, alpha = 0.2) => {
   } else {
     // 입력된 문자열이 올바른 rgb 포맷이 아닌 경우, 오류 메시지 반환
     console.log(`[convertRGBtoRGBA] 문자열 ${rgbString}은 RGB형식이 아닙니다!`);
-    return "rgba(255,255,255,0.2)";
+    return errorDefault;
   }
 };
 

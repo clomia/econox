@@ -187,7 +187,7 @@ export const generateOption = (datasetSource: any, groupId: number) => {
       data: datasetSource[0].slice(1).map((feature: any) => {
         return {
           name: feature,
-          inactiveColor: convertRGBtoRGBA(colorMap[feature]),
+          inactiveColor: convertRGBtoRGBA(colorMap[feature], 0.2),
           itemStyle: { color: colorMap[feature], opacity: 1 },
         };
       }),

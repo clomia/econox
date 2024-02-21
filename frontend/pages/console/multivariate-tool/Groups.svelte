@@ -1,6 +1,10 @@
 <script lang="ts">
   import { api } from "../../../modules/request";
-  import { FeatureGroups, FeatureGroupSelected } from "../../../modules/state";
+  import {
+    Text,
+    FeatureGroups,
+    FeatureGroupSelected,
+  } from "../../../modules/state";
   import ClosedFolder from "../../../assets/icon/ClosedFolder.svelte";
   import Folder from "../../../assets/icon/Folder.svelte";
   import Magnifier from "../../../assets/icon/Magnifier.svelte";
@@ -21,7 +25,7 @@
   const selectGroup = async (group: FeatureGroupType) => {
     if ($FeatureGroups.filter((g) => !g.confirm).length) {
       // 모든 그룹이 confirm되지 않은 경우 변경할 수 없음
-      await swal("삭제 처리가 완료될때까지 기다려주세요");
+      await swal($Text.ReflectingToDeleteAlert);
     } else {
       $FeatureGroupSelected = group;
     }

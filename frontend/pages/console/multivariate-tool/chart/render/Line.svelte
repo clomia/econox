@@ -53,13 +53,6 @@
 
 <main>
   {#if chartOption}
-    {#if !ready}
-      {#if group.confirm}
-        <div style="color: white;">최신 데이터로 업데이트중입니다...</div>
-      {:else}
-        <div style="color: white;">삭제 처리중입니다...</div>
-      {/if}
-    {/if}
     <button class="toggle" on:click={() => (scaled = !scaled)}>
       <Toggle value={scaled} />
     </button>

@@ -4,11 +4,13 @@
   import Toggle from "../../../../../components/Toggle.svelte";
   import { generateOption } from "../options/line";
   import {
+    Text,
     FeatureGroupSelected,
     FgTsOrigin,
     FgTsScaled,
     FgStoreState,
   } from "../../../../../modules/state";
+  import { wikiUrl } from "../../../../../modules/wiki";
   import { isSameArray } from "../../../../../modules/functions";
 
   let chart: echarts.ECharts | null = null;
@@ -61,6 +63,16 @@
     <button class="toggle" on:click={() => (scaled = !scaled)}>
       <Toggle value={scaled} />
     </button>
+    <a
+      class="toggle-text"
+      class:emphasis={scaled}
+      href={wikiUrl.scaling()}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Min-Max Scaling
+    </a>
+    <div class="chart-background" />
     <div class="chart" bind:this={chartContainer}></div>
   {:else}
     로딩중!!
@@ -71,15 +83,37 @@
   main {
     position: relative;
   }
+  .chart-background {
+    height: 31rem;
+  }
   .chart {
-    width: 46rem;
-    height: 23rem;
-    padding-right: 2rem;
+    position: absolute;
+    width: 47rem;
+    height: 28rem;
+    left: -0.8rem;
+    top: 0.5rem;
   }
   .toggle {
     position: absolute;
-    left: 3.5rem;
-    top: 0.9rem;
+    left: 2.5rem;
+    top: -1rem;
     z-index: 1;
+  }
+  .toggle-text {
+    position: absolute;
+    top: -1.7rem;
+    left: 4.4rem;
+    color: white;
+    opacity: 0.4;
+    font-size: 0.9rem;
+    z-index: 1;
+    text-decoration: none;
+  }
+  .toggle-text:hover {
+    border-bottom: thin solid white;
+    cursor: pointer;
+  }
+  .emphasis {
+    opacity: 0.8;
   }
 </style>

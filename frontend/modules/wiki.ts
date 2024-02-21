@@ -10,7 +10,7 @@ import { Lang } from "./state";
 
 export const wikiHost = "https://www.econox.wiki";
 export const wikiUrl = {
-  normalize: () => `${wikiHost}/${get(Lang)}/normalize`,
+  scaling: () => `${wikiHost}/${get(Lang)}/scaling`,
   // todo 검색창 활용법 (코드 입력 방법)
   // todo 다변량 툴에서도 위키 많이 필요할듯
 };

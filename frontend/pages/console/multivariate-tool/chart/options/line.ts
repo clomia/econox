@@ -1,3 +1,4 @@
+import * as echarts from "echarts";
 import { convertRGBtoRGBA, getColorMap } from "../../functions";
 
 export const generateOption = (datasetSource: any, groupId: number) => {
@@ -93,27 +94,6 @@ export const generateOption = (datasetSource: any, groupId: number) => {
           );
         },
       },
-      {
-        // 이상치 제거용
-        orient: "vertical",
-        type: "slider",
-        filterMode: "empty",
-        borderRadius: 0,
-        borderColor: "rgba(255,255,255,0.5)",
-        backgroundColor: "rgba(0,0,0,0)",
-        fillerColor: "rgba(0,0,0,0)",
-        dataBackground: {
-          areaStyle: { color: "white", opacity: 0.1 },
-          lineStyle: { color: "white", opacity: 0.3 },
-        },
-        selectedDataBackground: {
-          areaStyle: { color: "white", opacity: 0.2 },
-          lineStyle: { color: "white", opacity: 0.3 },
-        },
-        moveHandleSize: 0,
-        handleStyle: { borderWidth: 0, color: "rgb(215, 215, 215)" },
-        textStyle: { color: "rgba(255,255,255,0.7)" },
-      },
     ],
     series: datasetSource[0].slice(1).map((feature: string) => {
       return {
@@ -121,6 +101,7 @@ export const generateOption = (datasetSource: any, groupId: number) => {
         type: "line",
         symbol: "none",
         emphasis: { disabled: true },
+        connectNulls: true,
         lineStyle: { color: colorMap[feature], opacity: 1, width: 1.5 },
         encode: {
           x: "t",
@@ -134,6 +115,28 @@ export const generateOption = (datasetSource: any, groupId: number) => {
         type: "cross",
         label: {
           backgroundColor: "rgb(44, 57, 75)",
+          formatter: (item: any) => {
+            if (item.axisDimension === "x") {
+              // 날짜
+              return item.seriesData[0].data[0];
+            } else {
+              // 값
+              const value = item.value;
+              const formatter = new Intl.NumberFormat(undefined, {
+                maximumFractionDigits: 1,
+              });
+              const sign = value < 0 ? "-" : "";
+              const absValue = Math.abs(value);
+              if (absValue >= 1000000000) {
+                return sign + formatter.format(absValue / 1000000000) + "B";
+              } else if (absValue >= 1000000) {
+                return sign + formatter.format(absValue / 1000000) + "M";
+              } else if (absValue >= 1000) {
+                return sign + formatter.format(absValue / 1000) + "K";
+              }
+              return sign + formatter.format(absValue);
+            }
+          },
         },
       },
       backgroundColor: "rgb(44, 57, 75)",
@@ -172,8 +175,8 @@ export const generateOption = (datasetSource: any, groupId: number) => {
       },
     },
     legend: {
-      left: 0,
-      padding: [5, 5, 5, 40],
+      left: 4,
+      padding: [5, 73, 5, 40],
       type: "scroll",
       pageTextStyle: {
         color: "rgba(255,255,255,0.8)",

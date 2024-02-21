@@ -146,6 +146,14 @@ export interface UiText {
     ShareDataGroup: "Share this Data Group Publicly" | "이 데이터 그룹을 외부로 공유하기";
     ReflectingToDelete: "Processing deletion..." | "삭제 처리중...";
     ReflectingToDeleteAlert: "Cannot be performed while deletion is in progress" | "삭제 처리중에는 수행할 수 없습니다";
+    FgLineChart_Name: "Parallel Line Chart" | "병렬 선 차트";
+    FgLineChart_Description: "The description of Parallel Line Chart" | "병렬 선 차트에 대한 설명";
+    FgRatioChart_Name: "Ratio Chart" | "비율 차트";
+    FgRatioChart_Description: "The description of Ratio Chart" | "비율 차트에 대한 설명";
+    FgGrangerChart_Name: "Granger Chart" | "그레인저 차트";
+    FgGrangerChart_Description: "The description of Granger Chart" | "그레인저 차트에 대한 설명";
+    FgCointChart_Name: "Coint Chart" | "코인트 차트";
+    FgCointChart_Description: "The description of Coint Chart" | "공적분 차트에 대한 설명";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

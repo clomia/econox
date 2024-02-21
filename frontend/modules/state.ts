@@ -239,3 +239,6 @@ export const FgGranger = writable<FgTsType>({}); // 미구현
 export const FgCoint = writable<FgTsType>({}); // 미구현
 // 위의 데이터 스토어 상태 기록자
 export const FgStoreState = writable<FgStoreStateType>({});
+
+// 해당 피쳐 그룹에 대한 기본 차트 타입
+export const FgDefaultChartType = writable<{ [key: string]: string }>({});

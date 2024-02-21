@@ -6,6 +6,7 @@ import {
   FeatureGroups,
   FeatureGroupsLoaded,
   FeatureGroupSelected,
+  FgDefaultChartType,
   FgTsOrigin,
   FgTsRatio,
   FgTsScaled,
@@ -38,6 +39,10 @@ export const loadGroups = async (must = false) => {
   });
   FeatureGroups.set(data);
   FeatureGroupsLoaded.set(true);
+
+  const defaultChartType = {};
+  data.forEach((g) => (defaultChartType[g.id] = g.chart_type));
+  FgDefaultChartType.set(defaultChartType);
 
   const selected = get(FeatureGroupSelected);
   const updated = data.find((group) => group.id === selected?.id);

@@ -1,9 +1,11 @@
 <script lang="ts">
+  import PinIcon from "../../../../assets/icon/PinIcon.svelte";
   import LineChartIcon from "../../../../assets/icon/LineChartIcon.svelte";
   import PieChartIcon from "../../../../assets/icon/PieChartIcon.svelte";
   import {
     FeatureGroups,
     FeatureGroupSelected,
+    FgDefaultChartType,
   } from "../../../../modules/state";
 
   $: group = $FeatureGroupSelected; // shortcut
@@ -21,18 +23,32 @@
 </script>
 
 <main>
-  <button
-    class:selected={group.chart_type === "line"}
-    on:click={() => changeChartType("line")}
-  >
-    <LineChartIcon size="2.3rem" />
-  </button>
-  <button
-    class:selected={group.chart_type === "ratio"}
-    on:click={() => changeChartType("ratio")}
-  >
-    <PieChartIcon size="2.3rem" />
-  </button>
+  <div class="chart-type">
+    <div class="chart-type__pin" class:selected={group.chart_type === "line"}>
+      {#if $FgDefaultChartType[group.id] === "line"}
+        <PinIcon />
+      {/if}
+    </div>
+    <button
+      class:selected={group.chart_type === "line"}
+      on:click={() => changeChartType("line")}
+    >
+      <LineChartIcon size="2.3rem" />
+    </button>
+  </div>
+  <div class="chart-type">
+    <div class="chart-type__pin" class:selected={group.chart_type === "line"}>
+      {#if $FgDefaultChartType[group.id] === "ratio"}
+        <PinIcon />
+      {/if}
+    </div>
+    <button
+      class:selected={group.chart_type === "ratio"}
+      on:click={() => changeChartType("ratio")}
+    >
+      <PieChartIcon size="2.3rem" />
+    </button>
+  </div>
 </main>
 
 <style>
@@ -42,6 +58,23 @@
     display: flex;
     align-items: center;
     padding: 0 0.5rem;
+  }
+  .chart-type {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+  .chart-type__pin {
+    width: 3rem;
+    height: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    opacity: 0.2;
+    position: absolute;
+    top: 0.4rem;
+    /* todo 이거 위치조정해야 함! */
+    left: 0;
   }
   button {
     width: 3rem;

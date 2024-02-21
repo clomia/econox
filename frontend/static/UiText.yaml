@@ -460,6 +460,30 @@ ReflectingToDelete:
 ReflectingToDeleteAlert:
   en: "Cannot be performed while deletion is in progress"
   ko: "삭제 처리중에는 수행할 수 없습니다"
+FgLineChart_Name:
+  en: "Parallel Line Chart"
+  ko: "병렬 선 차트"
+FgLineChart_Description:
+  en: "The description of Parallel Line Chart"
+  ko: "병렬 선 차트에 대한 설명"
+FgRatioChart_Name:
+  en: "Ratio Chart"
+  ko: "비율 차트"
+FgRatioChart_Description:
+  en: "The description of Ratio Chart"
+  ko: "비율 차트에 대한 설명"
+FgGrangerChart_Name:
+  en: "Granger Chart"
+  ko: "그레인저 차트"
+FgGrangerChart_Description:
+  en: "The description of Granger Chart"
+  ko: "그레인저 차트에 대한 설명"
+FgCointChart_Name:
+  en: "Coint Chart"
+  ko: "코인트 차트"
+FgCointChart_Description:
+  en: "The description of Coint Chart"
+  ko: "공적분 차트에 대한 설명"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

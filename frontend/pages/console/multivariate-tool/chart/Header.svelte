@@ -28,7 +28,7 @@
 </script>
 
 <main>
-  <div></div>
+  <div class="layout-div"></div>
   {#if ready}
     <button class="share">
       <LinkIcon size="1rem" />
@@ -72,6 +72,9 @@
   .share__text {
     color: white;
     margin-left: 0.5rem;
+  }
+  .layout-div {
+    width: 26px;
   }
   button {
     opacity: 0.5;

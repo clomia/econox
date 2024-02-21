@@ -37,7 +37,7 @@
   {:else if group.confirm}
     <div class="updating">
       <SpinLoader size={0.4} />
-      <div class="updating__text">{$Text.ReflectingToChanges}</div>
+      <div class="updating__text">Loading...</div>
     </div>
   {:else}
     <div class="updating">

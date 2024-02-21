@@ -144,7 +144,6 @@ export interface UiText {
     CreateGroup: "Create Group" | "그룹 만들기";
     DownloadComplete: "Your file download has completed! Please check the Downloads tab in your browser!" | "파일 다운로드가 완료되었습니다! 브라우저의 다운로드 탭을 확인해주세요!";
     ShareDataGroup: "Share this Data Group Publicly" | "이 데이터 그룹을 외부로 공유하기";
-    ReflectingToChanges: "Applying changes..." | "변경사항 반영중...";
     ReflectingToDelete: "Processing deletion..." | "삭제 처리중...";
     ReflectingToDeleteAlert: "Cannot be performed while deletion is in progress" | "삭제 처리중에는 수행할 수 없습니다";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";

@@ -454,9 +454,6 @@ DownloadComplete:
 ShareDataGroup:
   en: "Share this Data Group Publicly"
   ko: "이 데이터 그룹을 외부로 공유하기"
-ReflectingToChanges:
-  en: "Applying changes..."
-  ko: "변경사항 반영중..."
 ReflectingToDelete:
   en: "Processing deletion..."
   ko: "삭제 처리중..."

@@ -102,7 +102,7 @@ export const generateOption = (datasetSource: any, groupId: number) => {
         symbol: "none",
         emphasis: { disabled: true },
         connectNulls: true,
-        lineStyle: { color: colorMap[feature], opacity: 1, width: 1.5 },
+        lineStyle: { color: colorMap[feature], opacity: 1, width: 2 },
         encode: {
           x: "t",
           y: feature,

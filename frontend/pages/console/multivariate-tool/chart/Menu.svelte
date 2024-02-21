@@ -1,52 +1,62 @@
 <script lang="ts">
+  import LineChartIcon from "../../../../assets/icon/LineChartIcon.svelte";
+  import PieChartIcon from "../../../../assets/icon/PieChartIcon.svelte";
   import {
     FeatureGroups,
     FeatureGroupSelected,
   } from "../../../../modules/state";
 
+  $: group = $FeatureGroupSelected; // shortcut
+
   const changeChartType = (chartType: string) => {
-    const group = $FeatureGroupSelected;
-    if (group.chart_type === chartType) {
+    const _group = { ...group };
+    if (_group.chart_type === chartType) {
       return; // 변경사항이 없으면 패스
     }
-    const idx = $FeatureGroups.findIndex(
-      (group) => group.id === $FeatureGroupSelected.id
-    );
-    group.chart_type = chartType;
-    $FeatureGroups[idx] = group;
-    $FeatureGroupSelected = group;
+    const idx = $FeatureGroups.findIndex((g) => g.id === _group.id);
+    _group.chart_type = chartType;
+    $FeatureGroups[idx] = _group;
+    $FeatureGroupSelected = _group;
   };
 </script>
 
 <main>
-  <button on:click={() => changeChartType("line")}>라인차트</button>
-  <button on:click={() => changeChartType("ratio")}>비율차트</button>
-
-  <div class="test-monitor">
-    <div>이것은 메뉴입니다</div>
-    <div style="color: white;">
-      현재 선택된 차트 타입: {$FeatureGroupSelected.chart_type}
-    </div>
-  </div>
+  <button
+    class:selected={group.chart_type === "line"}
+    on:click={() => changeChartType("line")}
+  >
+    <LineChartIcon size="2.3rem" />
+  </button>
+  <button
+    class:selected={group.chart_type === "ratio"}
+    on:click={() => changeChartType("ratio")}
+  >
+    <PieChartIcon size="2.3rem" />
+  </button>
 </main>
 
 <style>
   main {
     border-top: thin solid rgba(255, 255, 255, 0.4);
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
   }
   button {
-    width: 10rem;
+    width: 3rem;
     height: 3rem;
     color: white;
-    background-color: brown;
+    opacity: 0.2;
+    margin: 0 1rem;
   }
   button:hover {
     cursor: pointer;
-    background-color: black;
   }
-  .test-monitor {
-    display: flex;
-    width: 100%;
-    justify-content: space-around;
+  .selected {
+    opacity: 1;
+  }
+  .selected:hover {
+    cursor: default;
   }
 </style>

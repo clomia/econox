@@ -7,6 +7,7 @@ import asyncio
 from typing import Literal, List
 
 import numpy as np
+import xarray as xr
 from aiocache import cached
 from pydantic import BaseModel
 from fastapi import HTTPException, Response, Query
@@ -168,7 +169,7 @@ async def get_feature_group_time_series(group_id: int) -> TimeSeriesGroup:
         - 최근에 추가된 피쳐가 앞에 위치하도록 정렬되어 있습니다.
     - 응답 본문의 크기는 대략 5 ~ 10 MB 이내입니다.
         - 본문이 커서 swagger 문서가 응답을 표시하지 못합니다.
-    - ratio는 해당 시점에서 피쳐의 비율을 나타냅니다. 0~1 사이의 실수입니다.
+    - ratio는 해당 시점에서 피쳐의 비율을 백분율로 나타냅니다.
     """
     feature_attrs = await db.SQL(
         query_get_features_in_feature_group,
@@ -180,9 +181,22 @@ async def get_feature_group_time_series(group_id: int) -> TimeSeriesGroup:
     ds_original = group.to_dataset()
     ds_scaled = group.to_dataset(minmax_scaling=True)
 
-    # 각 시점(t)에서 모든 변수의 합계를 계산
-    _sum = ds_original.to_array(dim="v").sum(dim="v")
-    ds_ratio = ds_original / _sum  # 각 변수를 해당 시점의 합계로 나누어 비율 계산
+    ds_pos = ds_original.copy(deep=True)
+    for var_name in ds_pos.data_vars:
+        # 비율 계산 시 음수는 취급할 수 없으므로 모든 음수를 0으로 변환
+        ds_pos[var_name] = xr.where(ds_pos[var_name] < 0, 0, ds_pos[var_name])
+    # 각 시점(t)에서 모든 변수의 합계를 계산 -> _sum
+    _sum = ds_pos.to_array(dim="v").sum(dim="v")
+    ds_ratio = (ds_pos / _sum) * 100
+    # 각 변수를 해당 시점의 합계로 나누어 비율 계산 후 100을 곱해서 백분율로 변환
+
+    # _sum이 0인 경우 0으로 나누어져서 값은 nan이 된다.
+    # _sum이 0이라는 것은 모든 값의 0이고 다시말해 비율이 동일하다는 뜻이므로 모두 동일한 비율로 처리
+    default = 100 / len(ds_original.data_vars)
+    for var_name in ds_ratio.data_vars:
+        ds_ratio[var_name] = xr.where(  # nan이면 default, 아니면 원래값
+            np.isnan(ds_ratio[var_name]), default, ds_ratio[var_name]
+        )
 
     values = []
     for feature in features:

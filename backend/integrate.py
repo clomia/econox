@@ -125,7 +125,7 @@ class Feature:
                 status_code=404, detail=f"factor_code {self.factor_code} does not exist"
             )
 
-        return await factor.get()
+        return (await factor.get()).compute()
 
     async def to_data_array(self, interpolate: bool = False) -> xr.DataArray | None:
         """데이터가 존재하지 않는 경우 None 반환"""
@@ -264,7 +264,7 @@ class FeatureGroup:
                 for fe in self.src
             },
             attrs={fe.repr_str(): self[fe].attrs for fe in self.src},
-        )
+        ).compute()
 
     async def to_dataframe(self, lang: str, minmax_scaling: bool = False):
         """

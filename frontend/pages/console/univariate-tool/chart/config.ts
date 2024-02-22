@@ -87,7 +87,7 @@ export const option = (
           },
         },
         handleStyle: { borderWidth: 0, color: "rgb(215, 215, 215)" },
-        textStyle: { color: "rgba(255,255,255,0.7)" },
+        textStyle: { color: "rgba(0,0,0,0)" },
         labelFormatter: (value) => {
           // 최대 해상도를 일로 고정
           const date = new Date(value);

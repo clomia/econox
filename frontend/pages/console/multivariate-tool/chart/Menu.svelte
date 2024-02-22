@@ -37,7 +37,7 @@
     </button>
   </div>
   <div class="chart-type">
-    <div class="chart-type__pin" class:selected={group.chart_type === "line"}>
+    <div class="chart-type__pin" class:selected={group.chart_type === "ratio"}>
       {#if $FgDefaultChartType[group.id] === "ratio"}
         <PinIcon />
       {/if}
@@ -72,9 +72,8 @@
     justify-content: flex-end;
     opacity: 0.2;
     position: absolute;
-    top: 0.4rem;
-    /* todo 이거 위치조정해야 함! */
-    left: 0;
+    top: -0.3rem;
+    left: 1.5rem;
   }
   button {
     width: 3rem;

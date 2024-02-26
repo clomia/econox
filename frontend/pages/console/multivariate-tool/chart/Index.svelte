@@ -26,11 +26,9 @@
     beforeGroups = [...$FeatureGroups];
   }
 
-  let beforeGroupSelected = { ...$FeatureGroupSelected };
-  $: if ($FeatureGroupSelected) {
-    fgDataStateSynchronizer(beforeGroupSelected, $FeatureGroupSelected);
-    beforeGroupSelected = { ...$FeatureGroupSelected };
-  }
+  $: if ($FeatureGroupSelected) fgDataStateSynchronizer($FeatureGroupSelected);
+
+  $: console.log($FgStoreState);
 </script>
 
 <main>

@@ -6,10 +6,11 @@
     FeatureGroups,
     FeatureGroupSelected,
     CountryCodeMap,
+    FgStoreState,
   } from "../../../modules/state";
   import EditIcon from "../../../assets/icon/EditIcon.svelte";
   import MinusIcon from "../../../assets/icon/MinusIcon.svelte";
-  import type { FeatureType } from "../../../modules/state";
+  import type { FeatureType, StoreStateType } from "../../../modules/state";
 
   interface color {
     r: number;
@@ -185,9 +186,22 @@
     targetIndex = $FeatureGroups.findIndex(
       (group) => group.id === targetGroupId
     );
+
     if (targetIndex !== -1) {
       // 아직 해당 그룹이 존재할때만!
       const groups = [...$FeatureGroups];
+
+      // 모두 before로 업데이트해서, 이후 fgDataStateTracker가 API를 재호출 하도록 하기
+      const stateInitObj: StoreStateType = {
+        FgTsOrigin: "before",
+        FgTsScaled: "before",
+        FgTsRatio: "before",
+        FgGranger: "before",
+        FgCoint: "before",
+      };
+      $FgStoreState[groups[targetIndex].id] = stateInitObj;
+
+      // confirm 상태 변경에 따른 fgDataStateTracker 트리거링 -> before니까 API 재호출!
       groups[targetIndex].confirm = true;
       $FeatureGroups = groups;
       const selected = { ...$FeatureGroupSelected };

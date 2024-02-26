@@ -288,26 +288,16 @@ export const fgDataStateTracker = (
  * Fg 데이터 스토어에서 현재 필요한 부분만 업데이트합니다.
  * 현재의 groupSelected를 매개변수로 받습니다.
  */
-export const fgDataStateSynchronizer = async (
-  before: FeatureGroupType,
-  after: FeatureGroupType
-) => {
-  const group = { ...after };
+export const fgDataStateSynchronizer = async (group: FeatureGroupType) => {
   const state = { ...get(FgStoreState) };
   const api = new DataAPIProxy(group.id);
-
-  const toConfirm =
-    // 그룹이 바뀌진 않았으나, 그룹의 confirm이 false에서 true로 바뀌었으면 이것은 confirm 동작이 이루어진것임
-    before.id === after.id &&
-    before.confirm === false &&
-    after.confirm === true;
 
   let isUpdate: string;
   switch (group.chart_type) {
     case "line":
     case "ratio":
       isUpdate = state[group.id].FgTsOrigin;
-      if (isUpdate !== "before" && !toConfirm) {
+      if (isUpdate !== "before") {
         // 데이터 업데이트 상태가 before 이어야만 통과 가능
         // 만약 confirm을 하는 업데이트라면 before가 아니더라도 통과 가능
         return;
@@ -356,7 +346,7 @@ export const fgDataStateSynchronizer = async (
       break;
     case "granger":
       isUpdate = state[group.id].FgGranger;
-      if (isUpdate !== "before" && !toConfirm) {
+      if (isUpdate !== "before") {
         return;
       }
       FgStoreState.update((currentState) => {
@@ -387,7 +377,7 @@ export const fgDataStateSynchronizer = async (
       break;
     case "coint":
       isUpdate = state[group.id].FgCoint;
-      if (isUpdate !== "before" && !toConfirm) {
+      if (isUpdate !== "before") {
         return;
       }
       FgStoreState.update((currentState) => {

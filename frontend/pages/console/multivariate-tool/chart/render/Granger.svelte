@@ -19,7 +19,6 @@
   $: ready = $FgStoreState[group.id].FgGranger === "after";
 
   $: if (group && ready) {
-    console.log($FgGranger);
     chartOption = generateOption($FgGranger[group.id], group.id);
   }
   $: if (chartContainer) {

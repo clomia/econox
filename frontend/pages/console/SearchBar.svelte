@@ -191,7 +191,6 @@
 
   let windowHeight: number;
   $: if (packetInfoOn && windowHeight) {
-    console.log(windowHeight);
     // 패킷 창이 떠도 body의 높이가 따라 변하지 않는 문제가 있어서 이렇게 해결
     document.body.style.height = `${windowHeight + 100}px`;
   } else {

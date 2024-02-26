@@ -151,7 +151,7 @@ export interface UiText {
     FgRatioChart_Name: "Ratio Chart" | "비율 차트";
     FgRatioChart_Description: "The description of Ratio Chart" | "비율 차트에 대한 설명";
     FgGrangerChart_Name: "Granger Chart" | "그레인저 차트";
-    FgGrangerChart_Description: "The description of Granger Chart" | "그레인저 차트에 대한 설명";
+    FgGrangerChart_Description: "The description of Granger Chart" | "그레인저 차트에 대한 설명, 최대 한달의 시차까지 고려되므로 그 이상의 해상도를 가지는 데이터의 계산 결과는 신뢰 ㄴㄴ";
     FgCointChart_Name: "Coint Chart" | "코인트 차트";
     FgCointChart_Description: "The description of Coint Chart" | "공적분 차트에 대한 설명";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";

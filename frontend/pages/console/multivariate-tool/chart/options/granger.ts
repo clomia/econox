@@ -37,8 +37,8 @@ export const generateOption = (apiResponse: any, groupId: number) => {
       layout: "force",
       force: {
         repulsion: 3500,
-        gravity: 0.35,
-        edgeLength: 50,
+        gravity: 0.5,
+        edgeLength: 100,
         friction: 0.2,
       },
       draggable: true,
@@ -46,13 +46,16 @@ export const generateOption = (apiResponse: any, groupId: number) => {
       nodes: node.map((feature) => ({
         name: feature,
         itemStyle: { color: colorMap[feature] },
-        symbolSize: Math.max(relCount[feature] * 12, 26),
+        symbolSize: 20 + (relCount[feature] * 6 || 0),
       })),
       links: causality.map((ele: any[]) => ({
         source: ele[0],
         target: ele[1],
         value: ele[2],
-        lineStyle: { color: `rgba(255,255,255,${ele[2]})`, width: 1 },
+        lineStyle: {
+          color: `rgba(255,255,255,${Math.max(ele[2] * 2, 0.3)})`,
+          width: 1,
+        },
         label: {
           show: true,
           formatter: (item: any) => (item.value * 100).toFixed(0) + "%",

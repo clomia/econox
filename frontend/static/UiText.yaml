@@ -477,7 +477,7 @@ FgGrangerChart_Name:
   ko: "그레인저 차트"
 FgGrangerChart_Description:
   en: "The description of Granger Chart"
-  ko: "그레인저 차트에 대한 설명"
+  ko: "그레인저 차트에 대한 설명, 최대 한달의 시차까지 고려되므로 그 이상의 해상도를 가지는 데이터의 계산 결과는 신뢰 ㄴㄴ"
 FgCointChart_Name:
   en: "Coint Chart"
   ko: "코인트 차트"

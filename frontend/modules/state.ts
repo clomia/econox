@@ -135,6 +135,20 @@ export type StoreStateType = {
 export interface FgTsType {
   [key: string]: TsType;
 }
+interface _Feature {
+  element_section: string;
+  element_code: string;
+  factor_section: string;
+  factor_code: string;
+}
+export interface GraphType {
+  xt: _Feature;
+  yt: _Feature;
+  value: number;
+}
+export interface FgGraphType {
+  [key: string]: GraphType;
+}
 export interface FgColorMapType {
   [key: string]: ColorMapType;
 }
@@ -235,8 +249,8 @@ export const FeatureGroupSelected = writable<FeatureGroupType | null>(null);
 export const FgTsOrigin = writable<FgTsType>({});
 export const FgTsScaled = writable<FgTsType>({});
 export const FgTsRatio = writable<FgTsType>({});
-export const FgGranger = writable<FgTsType>({}); // 미구현
-export const FgCoint = writable<FgTsType>({}); // 미구현
+export const FgGranger = writable<FgGraphType>({});
+export const FgCoint = writable<FgGraphType>({});
 // 위의 데이터 스토어 상태 기록자
 export const FgStoreState = writable<FgStoreStateType>({});
 

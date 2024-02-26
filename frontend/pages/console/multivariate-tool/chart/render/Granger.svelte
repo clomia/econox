@@ -5,10 +5,9 @@
   import { generateOption } from "../options/granger";
   import {
     FeatureGroupSelected,
-    FgTsRatio,
+    FgGranger,
     FgStoreState,
   } from "../../../../../modules/state";
-  import { isSameArray } from "../../../../../modules/functions";
 
   let chart: echarts.ECharts | null = null;
   let chartContainer: HTMLElement;
@@ -17,31 +16,18 @@
   onDestroy(() => chart?.dispose()); // 메모리 누수 방지
 
   $: group = $FeatureGroupSelected; // shortcut
-  $: ready = $FgStoreState[group.id].FgTsRatio === "after";
-  $: columns = $FgTsRatio[group.id] ? $FgTsRatio[group.id][0] : [];
+  $: ready = $FgStoreState[group.id].FgGranger === "after";
 
   $: if (group && ready) {
-    chartOption = generateOption([], [], []);
+    console.log($FgGranger);
+    chartOption = generateOption($FgGranger[group.id], group.id);
   }
   $: if (chartContainer) {
     chart = echarts.init(chartContainer); // chartContainer 바운드 되면 차트 인스턴스 생성
   }
 
-  let beforeColumns: string[];
   $: if (chart && chartOption) {
-    let afterColumns = [...columns];
-    if (!beforeColumns) {
-      // 첫 실행, 초기화
-      beforeColumns = [...afterColumns];
-    }
-    if (isSameArray(beforeColumns, afterColumns)) {
-      // 차트 구성만 변경된 경우 변경 사항만 병합
-      chart.setOption(chartOption);
-    } else {
-      // 데이터셋이 변경된 경우 전체 옵션 재할당
-      chart.setOption(chartOption, true);
-    }
-    beforeColumns = [...afterColumns];
+    chart.setOption(chartOption);
   }
 </script>
 
@@ -69,9 +55,9 @@
   }
   .chart {
     position: absolute;
-    width: 47rem;
+    width: 40rem;
     height: 28rem;
-    left: -0.8rem;
+    left: 2rem;
     top: 1rem;
   }
 </style>

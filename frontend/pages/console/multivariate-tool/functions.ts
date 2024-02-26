@@ -17,6 +17,7 @@ import type {
   FeatureGroupType,
   TsType,
   FgTsType,
+  GraphType,
   StoreStateType,
   FgStoreStateType,
 } from "../../../modules/state";
@@ -164,10 +165,18 @@ class DataAPIProxy {
   }
 
   async getGrangercausality() {
-    return {};
+    const resp = await api.member.get(
+      "/data/features/analysis/grangercausality",
+      { params: { group_id: this.groupId } }
+    );
+    return resp.data as GraphType;
   }
+
   async getCointegration() {
-    return {};
+    const resp = await api.member.get("/data/features/analysis/cointegration", {
+      params: { group_id: this.groupId },
+    });
+    return resp.data as GraphType;
   }
 }
 
@@ -285,17 +294,19 @@ export const fgDataStateSynchronizer = async (
 ) => {
   const group = { ...after };
   const state = { ...get(FgStoreState) };
+  const api = new DataAPIProxy(group.id);
 
   const toConfirm =
     // 그룹이 바뀌진 않았으나, 그룹의 confirm이 false에서 true로 바뀌었으면 이것은 confirm 동작이 이루어진것임
     before.id === after.id &&
     before.confirm === false &&
     after.confirm === true;
-  const isUpdate = state[group.id].FgTsOrigin;
 
+  let isUpdate: string;
   switch (group.chart_type) {
     case "line":
     case "ratio":
+      isUpdate = state[group.id].FgTsOrigin;
       if (isUpdate !== "before" && !toConfirm) {
         // 데이터 업데이트 상태가 before 이어야만 통과 가능
         // 만약 confirm을 하는 업데이트라면 before가 아니더라도 통과 가능
@@ -316,9 +327,6 @@ export const fgDataStateSynchronizer = async (
         // confirm되지 않은 경우 여기에서 스탑
         return;
       }
-
-      // 데이터를 업데이트
-      const api = new DataAPIProxy(group.id);
       const ts = await api.getTimeSeries();
       [
         [FgTsOrigin, "original"],
@@ -347,8 +355,66 @@ export const fgDataStateSynchronizer = async (
       });
       break;
     case "granger":
+      isUpdate = state[group.id].FgGranger;
+      if (isUpdate !== "before" && !toConfirm) {
+        return;
+      }
+      FgStoreState.update((currentState) => {
+        const updatedState = { ...currentState };
+        updatedState[group.id] = {
+          ...updatedState[group.id],
+          FgGranger: "during", // 상태를 during으로 업데이트
+        };
+        return updatedState;
+      });
+      if (!group.confirm) {
+        return;
+      }
+      const granger = await api.getGrangercausality(); // API 호출
+      FgGranger.update((currentState) => {
+        const newState = { ...currentState };
+        newState[group.id] = granger;
+        return newState;
+      });
+      FgStoreState.update((currentState) => {
+        const updatedState = { ...currentState };
+        updatedState[group.id] = {
+          ...updatedState[group.id],
+          FgGranger: "after", // 상태를 after로 업데이트
+        };
+        return updatedState;
+      });
       break;
     case "coint":
+      isUpdate = state[group.id].FgCoint;
+      if (isUpdate !== "before" && !toConfirm) {
+        return;
+      }
+      FgStoreState.update((currentState) => {
+        const updatedState = { ...currentState };
+        updatedState[group.id] = {
+          ...updatedState[group.id],
+          FgCoint: "during", // 상태를 during으로 업데이트
+        };
+        return updatedState;
+      });
+      if (!group.confirm) {
+        return;
+      }
+      const coint = await api.getCointegration(); // API 호출
+      FgCoint.update((currentState) => {
+        const newState = { ...currentState };
+        newState[group.id] = coint;
+        return newState;
+      });
+      FgStoreState.update((currentState) => {
+        const updatedState = { ...currentState };
+        updatedState[group.id] = {
+          ...updatedState[group.id],
+          FgCoint: "after", // 상태를 after로 업데이트
+        };
+        return updatedState;
+      });
       break;
   }
 };

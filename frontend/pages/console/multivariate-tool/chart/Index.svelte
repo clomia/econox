@@ -10,8 +10,15 @@
   import Note from "./Note.svelte";
   import LineChart from "./render/Line.svelte";
   import RatioChart from "./render/Ratio.svelte";
+  import GrangerChart from "./render/Granger.svelte";
+  import CointChart from "./render/Coint.svelte";
 
-  const chartMap = { line: LineChart, ratio: RatioChart };
+  const chartMap = {
+    line: LineChart,
+    ratio: RatioChart,
+    granger: GrangerChart,
+    coint: CointChart,
+  };
 
   let beforeGroups = [...$FeatureGroups];
   $: if ($FeatureGroups) {

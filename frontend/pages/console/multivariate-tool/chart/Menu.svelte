@@ -2,6 +2,8 @@
   import PinIcon from "../../../../assets/icon/PinIcon.svelte";
   import LineChartIcon from "../../../../assets/icon/LineChartIcon.svelte";
   import PieChartIcon from "../../../../assets/icon/PieChartIcon.svelte";
+  import GrangerChartIcon from "../../../../assets/icon/GrangerChartIcon.svelte";
+  import CointChartIcon from "../../../../assets/icon/CointChartIcon.svelte";
   import {
     FeatureGroups,
     FeatureGroupSelected,
@@ -47,6 +49,35 @@
       on:click={() => changeChartType("ratio")}
     >
       <PieChartIcon size="2.3rem" />
+    </button>
+  </div>
+  <div class="chart-type">
+    <div
+      class="chart-type__pin"
+      class:selected={group.chart_type === "granger"}
+    >
+      {#if $FgDefaultChartType[group.id] === "granger"}
+        <PinIcon />
+      {/if}
+    </div>
+    <button
+      class:selected={group.chart_type === "granger"}
+      on:click={() => changeChartType("granger")}
+    >
+      <GrangerChartIcon size="2.3rem" />
+    </button>
+  </div>
+  <div class="chart-type">
+    <div class="chart-type__pin" class:selected={group.chart_type === "coint"}>
+      {#if $FgDefaultChartType[group.id] === "coint"}
+        <PinIcon />
+      {/if}
+    </div>
+    <button
+      class:selected={group.chart_type === "coint"}
+      on:click={() => changeChartType("coint")}
+    >
+      <CointChartIcon size="2.6rem" />
     </button>
   </div>
 </main>

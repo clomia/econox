@@ -2,7 +2,7 @@
   import * as echarts from "echarts";
   import { onDestroy } from "svelte";
   import BouncingCubeLoader from "../../../../../assets/animation/BouncingCubeLoader.svelte";
-  import { generateOption } from "../options/ratio";
+  import { generateOption } from "../options/granger";
   import {
     FeatureGroupSelected,
     FgTsRatio,
@@ -21,7 +21,7 @@
   $: columns = $FgTsRatio[group.id] ? $FgTsRatio[group.id][0] : [];
 
   $: if (group && ready) {
-    chartOption = generateOption($FgTsRatio[group.id], group.id);
+    chartOption = generateOption([], [], []);
   }
   $: if (chartContainer) {
     chart = echarts.init(chartContainer); // chartContainer 바운드 되면 차트 인스턴스 생성

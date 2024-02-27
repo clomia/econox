@@ -147,13 +147,13 @@ export interface UiText {
     ReflectingToDelete: "Processing deletion..." | "삭제 처리중...";
     ReflectingToDeleteAlert: "Cannot be performed while deletion is in progress" | "삭제 처리중에는 수행할 수 없습니다";
     FgLineChart_Name: "Line Chart" | "선 차트";
-    FgLineChart_Description: "Visualize data groups with parallel line charts." | "병렬 선 차트로 데이터 그룹을 시각화합니다.";
+    FgLineChart_Description: "Visualize all time series in a data group as an intuitive line chart." | "데이터 그룹의 모든 시계열을 직관적인 선 차트로 시각화합니다.";
     FgRatioChart_Name: "Ratio Chart" | "비율 차트";
-    FgRatioChart_Description: "Visualize the proportion of data within a group." | "그룹에서 데이터가 차지하는 비율을 시각화합니다.";
+    FgRatioChart_Description: "Visualize the proportion of each time series in the data group as an area." | "데이터 그룹에서 각 시계열이 차지하는 비율을 영역으로 시각화합니다.";
     FgGrangerChart_Name: "Causal Inference" | "인과관계 추론";
-    FgGrangerChart_Description: "By utilizing Granger causality testing, this feature mathematically assesses the  extent to which one time series can predict the future values of another.  The resulting visualizations suggest potential causal relationships,  but they do not confirm actual causality." | "그레인저 인과관계 검정을 통해 한 시계열이 다른 시계열의 미래 값을 예측하는 데 얼마나  기여하는지 수학적으로 계산합니다. 시각화 결과는 논리적 인과관계가 있을 수 있음을  시사할 뿐 실제 인과성을 증명할 수 없습니다.";
+    FgGrangerChart_Description: "By utilizing Granger causality testing, this feature mathematically assesses the  extent to which one time series can predict the future values of another.  The resulting visualizations suggest potential causal relationships,  but they do not confirm actual causality." | "그레인저 인과관계 검정을 통해 한 시계열이 다른 시계열의 미래 값을 예측하는 데 얼마나  기여하는지 수학적으로 계산합니다. 시각화 결과는 특정 시계열간 논리적 인과관계가 있을 수 있음을  시사할 뿐 실제 인과성을 증명할 수 없습니다.";
     FgCointChart_Name: "Association Inference" | "연관관계 추론";
-    FgCointChart_Description: "Utilizing cointegration testing, this tool quantifies whether two time series are linked  over the long term. Note that the visualizations serve merely as indications of potential  long-term connections and should not be interpreted as definitive evidence of association." | "공적분 검정을 통해 두 시계열이 장기적으로 동행하는지 수학적으로 평가합니다.  시각화 결과는 데이터가 장기적으로 연관되어 있음을 시사할 뿐 실제 연관성을 증명하지 않습니다.";
+    FgCointChart_Description: "This tool quantitatively evaluates whether multiple time series share a common trend in the long term, using cointegration testing.  It is important to note that visualizations only suggest the possibility of long-term relationships between specific time series,  without providing definitive proof of actual association" | "공적분 검정을 통해 여러 시계열이 장기적으로 동행하는지 수학적으로 평가합니다.  시각화 결과는 특정 시계열들이 장기적으로 연관되어 있음을 시사할 뿐 실제 연관성을 증명할 수 없습니다.";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

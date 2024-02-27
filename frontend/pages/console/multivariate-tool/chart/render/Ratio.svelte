@@ -2,6 +2,7 @@
   import * as echarts from "echarts";
   import { onDestroy } from "svelte";
   import BouncingCubeLoader from "../../../../../assets/animation/BouncingCubeLoader.svelte";
+  import CloseButton from "../../../../../components/CloseButton.svelte";
   import { generateOption } from "../options/ratio";
   import {
     FeatureGroupSelected,
@@ -11,11 +12,19 @@
   } from "../../../../../modules/state";
   import { isSameArray } from "../../../../../modules/functions";
 
-  let chart: echarts.ECharts | null = null;
-  let chartContainer: HTMLElement;
   let chartOption = null;
 
-  onDestroy(() => chart?.dispose()); // 메모리 누수 방지
+  let chart: echarts.ECharts | null = null;
+  let chartContainer: HTMLElement;
+
+  let fullScreenChart: echarts.ECharts | null = null;
+  let fullScreenChartContainer: HTMLElement;
+
+  onDestroy(() => {
+    // 메모리 누수 방지
+    chart?.dispose();
+    fullScreenChart?.dispose();
+  });
 
   $: group = $FeatureGroupSelected; // shortcut
   $: ready = $FgStoreState[group.id].FgTsRatio === "after";
@@ -44,7 +53,33 @@
     }
     beforeColumns = [...afterColumns];
   }
+
+  $: if (fullScreenChartContainer && chartOption) {
+    document.body.style.overflow = "hidden";
+    // 전체화면을 켜서 컨테이너가 바인드되면 차트 인스턴스 생성
+    fullScreenChart = echarts.init(fullScreenChartContainer);
+    fullScreenChart.setOption(chartOption);
+    window.onresize = fullScreenChart.resize;
+  }
+  $: if (!$FgChartFullScreen) {
+    window.onresize = null;
+    document.body.style.overflow = "";
+    // 전체화면을 끄면 차트 인스턴스 삭제
+    fullScreenChart?.dispose();
+  }
 </script>
+
+{#if chartOption && $FgChartFullScreen}
+  <div class="full-screen">
+    <button
+      class="full-screen__close"
+      on:click={() => ($FgChartFullScreen = false)}
+    >
+      <CloseButton />
+    </button>
+    <div class="full-screen__chart" bind:this={fullScreenChartContainer}></div>
+  </div>
+{/if}
 
 <main>
   {#if chartOption}
@@ -74,5 +109,28 @@
     height: 28rem;
     left: -0.8rem;
     top: 1rem;
+  }
+  .full-screen {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 20;
+    background: var(--background);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .full-screen__close {
+    position: absolute;
+    top: 1.5rem;
+    right: 2rem;
+    z-index: 21;
+  }
+  .full-screen__chart {
+    width: 100%;
+    height: 100%;
+    padding: 2rem 0;
   }
 </style>

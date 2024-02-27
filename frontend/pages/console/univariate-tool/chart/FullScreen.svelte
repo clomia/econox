@@ -33,6 +33,7 @@
 
   const dispatch = createEventDispatcher();
   const close = () => {
+    window.onresize = null;
     document.body.style.overflow = "";
     dispatch("close");
   };

@@ -208,26 +208,14 @@ class PairwiseAnalyzer:
         self.yt = yt
 
     @staticmethod
-    def _interpret_p_value(p_value):
-        """
-        - p_value가 0.05보다 큰 경우 기각합니다. 0을 반환합니다.
-        - p_value가 0.05보다 작은 경우 0에서 1사이의 역수로 변환해 반환합니다.
-            - 1에 가까울수록 긍정, 0에 가까울수록 부정입니다.
-        """
-        if p_value >= 0.05:  # p-value가 0.05 이상인 경우, 기각
-            return 0
-        else:  # p-value가 0.05 미만인 경우, 0에서 1 사이의 역수로 표현
-            return (0.05 - p_value) / 0.05
-
-    @staticmethod
-    def _gen_lags_list(data_length, total_lags=10):
+    def _gen_lags_list(data_length, total_lags=5):
         """
         - 그레인저 인과관계 계산에 사용될 lags 리스트를 생성합니다.
         - 최대 lag는 30과 data_length/5 중 작은 값입니다.
             - 계산 함수에서 lag가 데이터 길이의 20% 이상인 경우 잘못된 lag라는 에러가 발생하기 때문
         - 리스트는 최대 total_lags 길이를 가지며 최대한 동일한 간격인 lag들을 가집니다.
         """
-        max_lags = 30
+        max_lags = 20
 
         # 가능한 최대 lags 계산
         possible_lag = min(data_length // 5, max_lags)
@@ -249,7 +237,10 @@ class PairwiseAnalyzer:
         """
         - 선후관계 정도 계산
         - xt가 yt에 선행하는 정도를 계산해서 0에서 1사이의 값을 반환합니다.
+            - lag를 1에서 최대 15까지 계산한 후 귀무가설이 기각된 lag의 비율을 반환합니다.
         """
+        SIGNIFICANCE_LEVEL = 0.01
+
         data = np.column_stack([self.xt, self.yt])
         lags = self._gen_lags_list(data.shape[0])
 
@@ -260,18 +251,16 @@ class PairwiseAnalyzer:
                 data, maxlag=lags, addconst=True, verbose=False
             )
 
-        # 여러 검정 결과의 p-value를 저장할 리스트
-        all_p_values = []
-
+        p_values = []
         # 각 lag에 대한 검정 결과를 순회하며 p-value를 수집합니다.
-        for lag, result in result.items():
-            for test in result[0].values():
-                # 각 검정의 p-value를 리스트에 추가합니다.
-                all_p_values.append(test[1])
+        for lag, rst in result.items():
+            for test in rst[0].values():
+                p_values.append(test[1])
+        dismissed_p_values = [v for v in p_values if v < SIGNIFICANCE_LEVEL]
 
-        # 모든 p-value의 평균을 계산합니다.
-        avg_p_value = np.mean(all_p_values)
-        return self._interpret_p_value(avg_p_value)
+        ratio = len(dismissed_p_values) / len(p_values)
+        adj = 0.5  # 보다 엄격하게, 50% ~ 100% -> 0% ~ 100%
+        return max(ratio - adj, 0) / (1 - adj)
 
     def cointegration(self) -> float:
         """
@@ -295,15 +284,28 @@ class MultivariateAnalyzer:
         self.comb_pairs = list(combinations(self.dataset.data_vars, 2))
 
     def grangercausality(self):
-        result = {}
+        relationships = {}
         for pair in self.perm_pairs:
             value = PairwiseAnalyzer(
                 xt=self.dataset[pair[0]].values,
                 yt=self.dataset[pair[1]].values,
             ).grangercausality()
             if value:
-                result[pair] = value
-        return result
+                relationships[pair] = value
+        filtered_relationships = relationships.copy()
+        removal_candidates = []
+        # 양방향 관계에서 Granger 인과관계 값이 낮은 쌍을 식별합니다.
+        for (a, b), value in relationships.items():
+            if (b, a) in relationships and (a, b) not in removal_candidates:
+                if relationships[(a, b)] > relationships[(b, a)]:
+                    removal_candidates.append((b, a))
+                else:
+                    removal_candidates.append((a, b))
+        # 식별된 쌍 제거
+        for pair in removal_candidates:
+            if pair in filtered_relationships:
+                del filtered_relationships[pair]
+        return filtered_relationships
 
     def cointegration(self):
         result = {}

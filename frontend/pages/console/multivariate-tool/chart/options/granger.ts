@@ -1,5 +1,5 @@
 import { get } from "svelte/store";
-import { getColorMap } from "../../functions";
+import { getColorMap, convertRGBtoRGBA } from "../../functions";
 import { FeatureGroups } from "../../../../../modules/state";
 import type { FeatureGroupType } from "../../../../../modules/state";
 
@@ -27,6 +27,27 @@ export const generateOption = (apiResponse: any, groupId: number) => {
     });
   });
   return {
+    legend: {
+      left: -40,
+      padding: [5, 73, 5, 40],
+      type: "scroll",
+      pageTextStyle: {
+        color: "rgba(255,255,255,0.8)",
+      },
+      pageIconColor: "white",
+      pageIconInactiveColor: "rgba(255,255,255,0.4)",
+      itemWidth: 25,
+      itemHeight: 25,
+      icon: "roundRect",
+      formatter: () => "",
+      data: node.map((feature) => {
+        return {
+          name: feature,
+          inactiveColor: convertRGBtoRGBA(colorMap[feature], 0.2),
+          itemStyle: { color: colorMap[feature], opacity: 1 },
+        };
+      }),
+    },
     toolbox: {
       right: 0,
       bottom: 0,
@@ -43,29 +64,24 @@ export const generateOption = (apiResponse: any, groupId: number) => {
       },
       draggable: true,
       edgeSymbol: ["none", "arrow"],
-      nodes: node.map((feature) => ({
+      nodes: node.map((feature, idx) => ({
         name: feature,
         itemStyle: { color: colorMap[feature] },
-        symbolSize: 20 + (relCount[feature] * 6 || 0),
+        symbolSize: 16 + (relCount[feature] * 6 || 0),
+        category: idx,
       })),
+      categories: node.map((s) => ({ name: s })),
       links: causality.map((ele: any[]) => ({
         source: ele[0],
         target: ele[1],
         value: ele[2],
         lineStyle: {
-          color: `rgba(255,255,255,${Math.max(ele[2] * 2, 0.3)})`,
+          color: `rgba(255,255,255,${Math.max(ele[2], 0.3)})`,
           width: 1,
-        },
-        label: {
-          show: true,
-          formatter: (item: any) => (item.value * 100).toFixed(0) + "%",
-          fontSize: 16,
-          color: `rgba(255,255,255,${Math.max(ele[2] * 2, 0.5)})`,
-          textBorderWidth: 0,
+          curveness: 0,
         },
       })),
       lineStyle: { opacity: 1 },
-      autoCurveness: 0.4,
       emphasis: { label: { show: false } },
       roam: true,
       scaleLimit: { min: 0.5, max: 2 },

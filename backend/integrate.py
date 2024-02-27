@@ -124,8 +124,8 @@ class Feature:
             raise HTTPException(
                 status_code=404, detail=f"factor_code {self.factor_code} does not exist"
             )
-
-        return (await factor.get()).compute()
+        ds = await factor.get()
+        return ds.compute() if ds else None
 
     async def to_data_array(self, interpolate: bool = False) -> xr.DataArray | None:
         """데이터가 존재하지 않는 경우 None 반환"""

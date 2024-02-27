@@ -461,29 +461,41 @@ ReflectingToDeleteAlert:
   en: "Cannot be performed while deletion is in progress"
   ko: "삭제 처리중에는 수행할 수 없습니다"
 FgLineChart_Name:
-  en: "Parallel Line Chart"
-  ko: "병렬 선 차트"
+  en: "Line Chart"
+  ko: "선 차트"
 FgLineChart_Description:
-  en: "The description of Parallel Line Chart"
-  ko: "병렬 선 차트에 대한 설명"
+  en: "Visualize data groups with parallel line charts."
+  ko: "병렬 선 차트로 데이터 그룹을 시각화합니다."
 FgRatioChart_Name:
   en: "Ratio Chart"
   ko: "비율 차트"
 FgRatioChart_Description:
-  en: "The description of Ratio Chart"
-  ko: "비율 차트에 대한 설명"
+  en: "Visualize the proportion of data within a group."
+  ko: "그룹에서 데이터가 차지하는 비율을 시각화합니다."
 FgGrangerChart_Name:
-  en: "Granger Chart"
-  ko: "그레인저 차트"
+  en: "Causal Inference"
+  ko: "인과관계 추론"
 FgGrangerChart_Description:
-  en: "The description of Granger Chart"
-  ko: "실험적인 기능입니다! 1일에서 15일까지의 간격을 고려하며 유의수준을 0.01로 하여 귀무가설이 기각된 간격의 비율을 시각화합니다."
+  en: >
+    By utilizing Granger causality testing, this feature mathematically assesses the 
+    extent to which one time series can predict the future values of another. 
+    The resulting visualizations suggest potential causal relationships, 
+    but they do not confirm actual causality.
+  ko: >
+    그레인저 인과관계 검정을 통해 한 시계열이 다른 시계열의 미래 값을 예측하는 데 얼마나 
+    기여하는지 수학적으로 계산합니다. 시각화 결과는 논리적 인과관계가 있을 수 있음을 
+    시사할 뿐 실제 인과성을 증명할 수 없습니다.
 FgCointChart_Name:
-  en: "Coint Chart"
-  ko: "코인트 차트"
+  en: "Association Inference"
+  ko: "연관관계 추론"
 FgCointChart_Description:
-  en: "The description of Coint Chart"
-  ko: "공적분 차트에 대한 설명"
+  en: >
+    Utilizing cointegration testing, this tool quantifies whether two time series are linked 
+    over the long term. Note that the visualizations serve merely as indications of potential 
+    long-term connections and should not be interpreted as definitive evidence of association.
+  ko: >
+    공적분 검정을 통해 두 시계열이 장기적으로 동행하는지 수학적으로 평가합니다. 
+    시각화 결과는 데이터가 장기적으로 연관되어 있음을 시사할 뿐 실제 연관성을 증명할 수 없습니다.
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

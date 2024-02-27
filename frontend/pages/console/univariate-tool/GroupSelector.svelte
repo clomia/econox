@@ -32,6 +32,10 @@
   const filter = (groups: FeatureGroupType[]) => {
     // 이미 targetFeature가 포함된 그룹은 표시되지 않도록 합니다.
     return groups.filter((group) => {
+      if (group.features.length >= 9) {
+        // 그룹은 피쳐를 10개 이상 가질 수 없다.
+        return false;
+      }
       return (
         group.features.length === 0 || // 텅 빈 그룹이거나
         group.features.filter(

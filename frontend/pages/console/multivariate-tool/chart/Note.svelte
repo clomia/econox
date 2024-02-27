@@ -97,6 +97,7 @@
     min-height: 7rem;
     overflow: auto;
     padding: 1rem;
+    padding-right: 3.3rem;
     color: var(--white);
   }
 </style>

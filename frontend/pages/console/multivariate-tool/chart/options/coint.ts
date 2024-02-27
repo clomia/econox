@@ -73,9 +73,8 @@ export const generateOption = (apiResponse: any, groupId: number) => {
       links: causality.map((ele: any[]) => ({
         source: ele[0],
         target: ele[1],
-        value: ele[2],
         lineStyle: {
-          color: `rgba(255,255,255,${Math.max(ele[2], 0.3)})`,
+          color: "white",
           width: 1,
           curveness: 0,
         },

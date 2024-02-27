@@ -208,6 +208,18 @@ class PairwiseAnalyzer:
         self.yt = yt
 
     @staticmethod
+    def _interpret_p_value(p_value):
+        """
+        - p_value가 0.05보다 큰 경우 기각합니다. 0을 반환합니다.
+        - p_value가 0.05보다 작은 경우 0에서 1사이의 역수로 변환해 반환합니다.
+            - 1에 가까울수록 긍정, 0에 가까울수록 부정입니다.
+        """
+        if p_value >= 0.05:  # p-value가 0.05 이상인 경우, 기각
+            return 0
+        else:  # p-value가 0.05 미만인 경우, 0에서 1 사이의 역수로 표현
+            return (0.05 - p_value) / 0.05
+
+    @staticmethod
     def _gen_lags_list(data_length, total_lags=5):
         """
         - 그레인저 인과관계 계산에 사용될 lags 리스트를 생성합니다.

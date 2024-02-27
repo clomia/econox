@@ -27,8 +27,6 @@
   }
 
   $: if ($FeatureGroupSelected) fgDataStateSynchronizer($FeatureGroupSelected);
-
-  $: console.log($FgStoreState);
 </script>
 
 <main>

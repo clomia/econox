@@ -256,3 +256,4 @@ export const FgStoreState = writable<FgStoreStateType>({});
 
 // 해당 피쳐 그룹에 대한 기본 차트 타입
 export const FgDefaultChartType = writable<{ [key: string]: string }>({});
+export const FgChartFullScreen = writable(false);

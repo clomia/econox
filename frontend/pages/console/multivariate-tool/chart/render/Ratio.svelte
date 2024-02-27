@@ -7,6 +7,7 @@
     FeatureGroupSelected,
     FgTsRatio,
     FgStoreState,
+    FgChartFullScreen,
   } from "../../../../../modules/state";
   import { isSameArray } from "../../../../../modules/functions";
 

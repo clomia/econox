@@ -6,6 +6,7 @@
   import {
     FeatureGroupSelected,
     FgStoreState,
+    FgChartFullScreen,
   } from "../../../../modules/state";
 
   $: group = $FeatureGroupSelected; // shortcut
@@ -45,7 +46,13 @@
       <div class="updating__text">{$Text.ReflectingToDelete}</div>
     </div>
   {/if}
-  <button class="fullscreen"><FullScreenIcon /></button>
+  {#if ready}
+    <button on:click={() => ($FgChartFullScreen = true)} class="fullscreen">
+      <FullScreenIcon />
+    </button>
+  {:else}
+    <div class="layout-div"></div>
+  {/if}
 </main>
 
 <style>
@@ -75,6 +82,7 @@
   }
   .layout-div {
     width: 26px;
+    height: 26px;
   }
   button {
     opacity: 0.5;

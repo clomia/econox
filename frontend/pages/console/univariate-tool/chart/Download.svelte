@@ -7,12 +7,12 @@
   import CloseButton from "../../../../components/CloseButton.svelte";
   import RippleLoader from "../../../../assets/animation/RippleLoader.svelte";
   import { Text } from "../../../../modules/state";
-  import {
-    UnivariateElementSelected,
-    UnivariateFactorSelected,
-  } from "../../../../modules/state";
   import { downloadFile } from "../functions";
-  import type { ElementType, FactorType } from "../../../../modules/state";
+
+  export let elementSection: string;
+  export let elementCode: string;
+  export let factorSection: string;
+  export let factorCode: string;
 
   onMount(() => {
     document.body.style.overflow = "hidden";
@@ -24,13 +24,6 @@
     dispatch("close");
   };
 
-  const current = {
-    // 이 다운로드 컴포넌트가 실행되었으면 무조건 단변량이 선택되어 있음
-    elementSection: ($UnivariateElementSelected as ElementType).section,
-    elementCode: ($UnivariateElementSelected as ElementType).code,
-    factorSection: ($UnivariateFactorSelected as FactorType).section.code,
-    factorCode: ($UnivariateFactorSelected as FactorType).code,
-  };
   let downloading = false;
   const completeMessage = async () => {
     await Swal.fire({
@@ -45,7 +38,13 @@
   const downloadCsv = async () => {
     downloading = true;
     try {
-      await downloadFile({ fileFormat: "csv", ...current });
+      await downloadFile({
+        fileFormat: "csv",
+        elementSection,
+        elementCode,
+        factorSection,
+        factorCode,
+      });
       await completeMessage();
       close();
     } finally {
@@ -55,7 +54,13 @@
   const downloadXlsx = async () => {
     downloading = true;
     try {
-      await downloadFile({ fileFormat: "xlsx", ...current });
+      await downloadFile({
+        fileFormat: "xlsx",
+        elementSection,
+        elementCode,
+        factorSection,
+        factorCode,
+      });
       await completeMessage();
       close();
     } finally {

@@ -6,6 +6,10 @@
   import FullScreenIcon from "../../../../assets/icon/FullScreenIcon.svelte";
   import Download from "./Download.svelte";
   import FullScreen from "./FullScreen.svelte";
+  import {
+    UnivariateElementSelected,
+    UnivariateFactorSelected,
+  } from "../../../../modules/state";
 
   export let chartSource: [string, string | number][];
 
@@ -33,7 +37,13 @@
 </script>
 
 {#if downloadWidget}
-  <Download on:close={() => (downloadWidget = false)} />
+  <Download
+    elementSection={$UnivariateElementSelected.section}
+    elementCode={$UnivariateElementSelected.code}
+    factorSection={$UnivariateFactorSelected.section.code}
+    factorCode={$UnivariateFactorSelected.code}
+    on:close={() => (downloadWidget = false)}
+  />
 {/if}
 
 {#if fullScreen}

@@ -10,6 +10,8 @@
   } from "../../../modules/state";
   import EditIcon from "../../../assets/icon/EditIcon.svelte";
   import MinusIcon from "../../../assets/icon/MinusIcon.svelte";
+  import DownloadIcon from "../../../assets/icon/DownloadIcon.svelte";
+  import Download from "../univariate-tool/chart/Download.svelte";
   import type { FeatureType, StoreStateType } from "../../../modules/state";
 
   interface color {
@@ -231,6 +233,21 @@
       featureListHeight = value;
     }
   }
+
+  let downloadWidget: boolean = false;
+  let downloadTarget = {
+    elementSection: "",
+    elementCode: "",
+    factorSection: "",
+    factorCode: "",
+  };
+  const download = (feature: FeatureType) => {
+    downloadTarget.elementSection = feature.element.section;
+    downloadTarget.elementCode = feature.element.code;
+    downloadTarget.factorSection = feature.factor.section;
+    downloadTarget.factorCode = feature.factor.code;
+    downloadWidget = true;
+  };
 </script>
 
 <main bind:this={main} style="height: {featureListHeight}rem;">
@@ -292,12 +309,20 @@
           </button>
         </div>
         <div class="li__feature__fac">
-          <div class="li__feature__fac__section">
-            {feature.name.factor_section}
+          <div class="li__feature__fac__head">
+            <div class="li__feature__fac__head__section">
+              {feature.name.factor_section}
+            </div>
+            <div class="li__feature__fac__head__name">
+              {feature.name.factor}
+            </div>
           </div>
-          <div class="li__feature__fac__name">
-            {feature.name.factor}
-          </div>
+          <button
+            class="li__feature__fac__download"
+            on:click={() => download(feature)}
+          >
+            <DownloadIcon width={21} height={21} />
+          </button>
         </div>
       </div>
     </div>
@@ -305,6 +330,16 @@
     <div class="empty">{$Text.GroupFeaturesEmpty}</div>
   {/each}
 </main>
+
+{#if downloadWidget}
+  <Download
+    elementSection={downloadTarget.elementSection}
+    elementCode={downloadTarget.elementCode}
+    factorSection={downloadTarget.factorSection}
+    factorCode={downloadTarget.factorCode}
+    on:close={() => (downloadWidget = false)}
+  />
+{/if}
 
 <style>
   main {
@@ -391,29 +426,48 @@
     cursor: pointer;
     opacity: 1;
   }
-  .li__feature__fac {
+  .li__feature__fac__download {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.15rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    fill: white;
+    opacity: 0.7;
+  }
+  .li__feature__fac__download:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    opacity: 1;
+  }
+  .li__feature__fac,
+  .li__feature__fac__head {
     display: flex;
     align-items: center;
   }
-  .li__feature__fac__section {
+  .li__feature__fac__head {
+    width: 33.9rem;
+  }
+  .li__feature__fac__head__section {
     background-color: #613a55;
   }
-  .li__feature__fac__name {
+  .li__feature__fac__head__name {
     background-color: #40533e;
   }
   .li__feature__ele__head__code,
-  .li__feature__fac__section,
-  .li__feature__fac__name {
+  .li__feature__fac__head__section,
+  .li__feature__fac__head__name {
     margin: 0.5rem;
     padding: 0.2rem 0.4rem;
     border-radius: 0.15rem;
     color: var(--white);
   }
-  .li__feature__fac__section,
-  .li__feature__fac__name {
+  .li__feature__fac__head__section,
+  .li__feature__fac__head__name {
     margin-top: 0;
   }
-  .li__feature__fac__name {
+  .li__feature__fac__head__name {
     margin-left: 0;
   }
   .border-none {

@@ -20,6 +20,7 @@
   verify({ conds: { login: true }, failRedirect: "/auth" });
   onMount(async () => {
     if (
+      $UserInfo.id &&
       $UserInfo["billing"]["status"] !== "active" &&
       !$UserInfo["billing"]["registered"]
     )

@@ -5,6 +5,8 @@
   import Folder from "../../../assets/icon/Folder.svelte";
   import Check from "../../../assets/icon/Check.svelte";
   import CancelIcon from "../../../assets/icon/CancelIcon.svelte";
+  import DownloadIcon from "../../../assets/icon/DownloadIcon.svelte";
+  import Download from "./Download.svelte";
 
   let editOn = false;
   // editOn 상태에서 다른 그룹을 선택하는 경우를 처리하기 위함
@@ -41,12 +43,28 @@
     editCancel();
     beforeSelected = $FeatureGroupSelected;
   }
+  let downloadWidget = false;
+
+  $: if (textareaValue?.length > 2000) {
+    // 설명은 2000자를 초과할 수 없다.
+    textareaValue = textareaValue.substring(0, 2000);
+  }
 </script>
 
-<div class="group-name">
-  <div class="group-name__icon"><Folder /></div>
-  {$FeatureGroupSelected.name}
+<div class="header">
+  <div class="header__group-name">
+    <div class="header__group-name__icon"><Folder /></div>
+    <div class="header__group-name__text">{$FeatureGroupSelected.name}</div>
+  </div>
+  <button class="header__download" on:click={() => (downloadWidget = true)}>
+    <DownloadIcon width={23} height={23} />
+  </button>
 </div>
+
+{#if downloadWidget}
+  <Download on:close={() => (downloadWidget = false)} />
+{/if}
+
 <main>
   {#if editOn}
     <textarea
@@ -63,7 +81,7 @@
     </div>
   {:else}
     {#if $FeatureGroupSelected.description}
-      <div class="content">{$FeatureGroupSelected.description}</div>
+      <pre class="content">{$FeatureGroupSelected.description}</pre>
     {:else}
       <div class="no-content">{$Text.GroupNoteNoneText}</div>
     {/if}
@@ -76,23 +94,42 @@
 </main>
 
 <style>
-  .group-name {
+  .header {
+    display: flex;
+    justify-content: space-between;
+  }
+  .header__group-name {
     font-size: 1.1rem;
     margin-top: 1rem;
-    padding-right: 1rem;
     padding-left: 1.5rem;
-    padding-bottom: 0.5rem;
     color: var(--white);
     display: flex;
     align-items: flex-start;
   }
-  .group-name__icon {
+  .header__group-name__icon {
     margin-right: 1rem;
+  }
+  .header__group-name__text {
+    width: 36.5rem;
+  }
+  .header__download {
+    width: 2.6rem;
+    height: 2.6rem;
+    fill: white;
+    opacity: 0.7;
+    margin-right: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .header__download:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    opacity: 1;
   }
   main {
     display: flex;
     padding-bottom: 1rem;
     padding-left: 1.5rem;
+    padding-top: 0.5rem;
   }
   textarea,
   .content,
@@ -101,6 +138,10 @@
     width: 41.3rem;
     color: var(--white);
     overflow: auto;
+  }
+  .content {
+    white-space: pre-wrap;
+    word-wrap: break-word;
   }
   .no-content {
     display: flex;

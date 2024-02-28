@@ -484,7 +484,7 @@ FgGrangerChart_Description:
   ko: >
     그레인저 인과관계 검정을 통해 한 시계열이 다른 시계열의 미래 값을 예측하는 데 얼마나 
     기여하는지 수학적으로 계산합니다. 시각화 결과는 특정 시계열간 논리적 인과관계가 있을 수 있음을 
-    시사할 뿐 실제 인과성을 증명할 수 없습니다.
+    시사할 뿐 실제 인과성을 증명하지 않습니다.
 FgCointChart_Name:
   en: "Association Inference"
   ko: "연관관계 추론"
@@ -495,7 +495,7 @@ FgCointChart_Description:
     without providing definitive proof of actual association
   ko: >
     공적분 검정을 통해 여러 시계열이 장기적으로 동행하는지 수학적으로 평가합니다. 
-    시각화 결과는 특정 시계열들이 장기적으로 연관되어 있음을 시사할 뿐 실제 연관성을 증명할 수 없습니다.
+    시각화 결과는 특정 시계열들이 장기적으로 연관되어 있음을 시사할 뿐 실제 연관성을 증명하지 않습니다.
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

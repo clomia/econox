@@ -122,6 +122,7 @@ const domCover = () => {
 
   // 생성된 요소를 body의 자식 요소로 추가합니다.
   document.body.appendChild(overlay);
+  document.body.style.overflow = "hidden"; // 스크롤 잠금
 };
 
 /**

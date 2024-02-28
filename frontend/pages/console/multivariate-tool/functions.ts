@@ -408,3 +408,35 @@ export const fgDataStateSynchronizer = async (group: FeatureGroupType) => {
       break;
   }
 };
+
+interface RequestFormat {
+  fileFormat: "csv" | "xlsx";
+  groupId: number;
+  lang: string;
+  minmaxScaling: boolean;
+}
+
+export const downloadFile = async (name: string, request: RequestFormat) => {
+  const resp = await api.member.get("/data/features/file", {
+    params: {
+      file_format: request.fileFormat,
+      group_id: request.groupId,
+      lang: request.lang,
+      minmax_scaling: request.minmaxScaling,
+    },
+    responseType: "blob",
+  });
+  const url = window.URL.createObjectURL(resp.data);
+  const link = document.createElement("a");
+  link.href = url;
+
+  let filename = name;
+  if (request.minmaxScaling) {
+    filename += "_Min-Max-Scaled";
+  }
+  link.setAttribute("download", filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  window.URL.revokeObjectURL(url);
+};

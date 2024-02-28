@@ -49,8 +49,8 @@
     if (!groupEditingInput) {
       return; // for typescript
     }
-    // 58글자 초과 입력하지 못하도록 제한
-    groupEditingInput.value = groupEditingInput.value.slice(0, 58);
+    // 35글자 초과 입력하지 못하도록 제한
+    groupEditingInput.value = groupEditingInput.value.slice(0, 35);
   };
   const editGroupConform = async (group: FeatureGroupType) => {
     if (!groupEditingInput || !$FeatureGroups) {

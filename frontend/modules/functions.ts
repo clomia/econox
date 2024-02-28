@@ -164,6 +164,7 @@ export const verify = async (
       });
       domCover();
       window.location.replace(window.location.origin + "/auth");
+      return;
     } else if (billingOk && !isBillingOk) {
       // 로그인 되어있고, 유료 회원용 페이지에 접속했으나 결제 상태가 올바르지 않은 경우
       await Swal.fire({

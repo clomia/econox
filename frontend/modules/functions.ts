@@ -128,7 +128,8 @@ const domCover = () => {
 /**
  * 클라이언트 상태에 따라 페이지 접근을 제한합니다.
  * 파라미터로 허용 조건을 입력하고 허용되지 않을 경우의 리디렉션 경로를 failRedirect에 입력하세요.
- * 사용 예시: `verify({conds: {login: true}, failRedirect: "/account"})`
+ * 사용 예시: `verify({conds: {login: true}, failRedirect: "/auth"})`
+ * [예외적 동작] 로그인이 안된 경우는 무조건 "/auth"로 리디렉션합니다.
  * @param conds 충족해야 하는 요구 조건
  * @param failRedirect 요구 조건을 충족하지 못할 때 리디렉션할 경로
  */
@@ -161,6 +162,7 @@ export const verify = async (
         title: text.LoginRequired,
         confirmButtonText: text.Ok,
       });
+      window.location.replace(window.location.origin + "/auth");
     } else if (billingOk && !isBillingOk) {
       // 로그인 되어있고, 유료 회원용 페이지에 접속했으나 결제 상태가 올바르지 않은 경우
       await Swal.fire({

@@ -80,7 +80,11 @@ export const generateOption = (apiResponse: any, groupId: number) => {
         },
       })),
       lineStyle: { opacity: 1 },
-      emphasis: { label: { show: false } },
+      emphasis: {
+        label: { show: false },
+        scale: false,
+        itemStyle: { shadowColor: "rgba(255,255,255,0.4)", shadowBlur: 10 },
+      },
       roam: true,
       scaleLimit: { min: 0.5, max: 2 },
     },

@@ -46,14 +46,20 @@ export const option = (
           const sign = value < 0 ? "-" : "";
           const absValue = Math.abs(value);
 
-          if (absValue >= 1000000000) {
-            return sign + formatter.format(absValue / 1000000000) + "B";
-          } else if (absValue >= 1000000) {
-            return sign + formatter.format(absValue / 1000000) + "M";
-          } else if (absValue >= 1000) {
-            return sign + formatter.format(absValue / 1000) + "K";
+          if (absValue >= 1e12) {
+            // 1조 이상인 경우, T로 표시
+            return sign + formatter.format(absValue / 1e12) + "T";
+          } else if (absValue >= 1e9) {
+            // 10억 이상 1조 미만인 경우, B로 표시
+            return sign + formatter.format(absValue / 1e9) + "B";
+          } else if (absValue >= 1e6) {
+            // 100만 이상 10억 미만인 경우, M으로 표시
+            return sign + formatter.format(absValue / 1e6) + "M";
+          } else if (absValue >= 1e3) {
+            // 1000 이상 100만 미만인 경우, K로 표시
+            return sign + formatter.format(absValue / 1e3) + "K";
           }
-          return sign + formatter.format(absValue);
+          return sign + formatter.format(absValue); // 1000 미만인 경우, 그대로 표시
         },
       },
     },

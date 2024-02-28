@@ -19,13 +19,6 @@
       ...option({ bar: false, scatter: false, line: true, area: false }),
       dataset: { source },
     });
-    // 아무런 범례도 선택되지 않은 경우 restore 수행
-    chart.on("legendselectchanged", (event: any) => {
-      const selected = event.selected;
-      if (Object.keys(selected).every((key) => !selected[key])) {
-        chart.dispatchAction({ type: "restore" });
-      }
-    });
   };
 
   let isMount = false;

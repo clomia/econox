@@ -104,6 +104,27 @@ type VerificationArgs = {
 };
 
 /**
+ * 모든 요소를 덮을 수 있는 커버 요소를 생성하여 리디렉션 중 노출되는 DOM이 없도록 가립니다.
+ */
+const domCover = () => {
+  // 새로운 div 요소를 생성합니다.
+  const overlay = document.createElement("div");
+
+  // 생성된 div에 스타일을 적용하여 전체 화면을 덮도록 합니다.
+  overlay.style.position = "fixed"; // 고정 위치
+  overlay.style.top = "0"; // 상단에서 0
+  overlay.style.left = "0"; // 왼쪽에서 0
+  overlay.style.width = "100vw"; // 뷰포트의 100% 너비
+  overlay.style.height = "100vh"; // 뷰포트의 100% 높이
+  overlay.style.background =
+    "linear-gradient(to top, #1f282c, #1f3036, #1f282c)"; // 반투명 검정색 배경
+  overlay.style.zIndex = "1000"; // 다른 요소 위에 표시
+
+  // 생성된 요소를 body의 자식 요소로 추가합니다.
+  document.body.appendChild(overlay);
+};
+
+/**
  * 클라이언트 상태에 따라 페이지 접근을 제한합니다.
  * 파라미터로 허용 조건을 입력하고 허용되지 않을 경우의 리디렉션 경로를 failRedirect에 입력하세요.
  * 사용 예시: `verify({conds: {login: true}, failRedirect: "/account"})`
@@ -150,6 +171,7 @@ export const verify = async (
         confirmButtonText: text.Ok,
       });
     }
+    domCover();
     window.location.replace(window.location.origin + failRedirect);
   }
 };

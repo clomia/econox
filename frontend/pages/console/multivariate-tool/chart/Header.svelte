@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Text } from "../../../../modules/state";
   import SpinLoader from "../../../../assets/animation/SpinLoader.svelte";
   import FullScreenIcon from "../../../../assets/icon/FullScreenIcon.svelte";
   import LinkIcon from "../../../../assets/icon/LinkIcon.svelte";
   import {
+    Text,
     FeatureGroupSelected,
     FgStoreState,
     FgChartFullScreen,
@@ -38,7 +38,7 @@
   {:else if group.confirm}
     <div class="updating">
       <SpinLoader size={0.4} />
-      <div class="updating__text">Loading...</div>
+      <div class="updating__text">{$Text.Loading}</div>
     </div>
   {:else}
     <div class="updating">

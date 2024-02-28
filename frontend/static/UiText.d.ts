@@ -127,6 +127,7 @@ export interface UiText {
     Section: "Section" | "섹션";
     Element: "Element" | "요소";
     Factor: "Factor" | "펙터";
+    Loading: "Loading..." | "불러오는 중...";
     LogoutReasonUseAnotherDevice: "You have been logged out because your account was accessed from a different device. Please log in again to continue using our service." | "다른 기기에서 계정에 접속되었기 때문에 로그아웃 되었습니다. 서비스를 계속 이용하시려면 다시 로그인해 주세요.";
     ElementLoadingInfo: "Loading elements saved in the account..." | "계정에 저장된 요소들을 불러오는 중입니다...";
     Normalize: "Normalize" | "정규화";

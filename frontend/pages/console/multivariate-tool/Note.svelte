@@ -56,9 +56,11 @@
     <div class="header__group-name__icon"><Folder /></div>
     <div class="header__group-name__text">{$FeatureGroupSelected.name}</div>
   </div>
-  <button class="header__download" on:click={() => (downloadWidget = true)}>
-    <DownloadIcon width={23} height={23} />
-  </button>
+  {#if $FeatureGroupSelected.features.length}
+    <button class="header__download" on:click={() => (downloadWidget = true)}>
+      <DownloadIcon width={23} height={23} />
+    </button>
+  {/if}
 </div>
 
 {#if downloadWidget}

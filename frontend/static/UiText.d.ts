@@ -33,7 +33,7 @@ export interface UiText {
     BasicPlan: "Basic" | "일반";
     BasicPlanDollerPrice: "$9.99/month" | "$9.99/월";
     BasicPlanWonPrice: "₩11,900/month" | "11,900원/월";
-    BasicPlanDescription: "Discover causality by comparing time-series from global markets, economies, and corporate data.  Grasp the macroeconomy at a glance and gain crucial investment insights." | "전세계 금융시장, 국가경제, 기업데이터 시계열을 비교해서 선후관계를 발견하세요.  거시경제를 한눈에 파악하고 투자에 필요한 통찰을 얻을 수 있습니다.";
+    BasicPlanDescription: "Discover causal relationships by comparing time series of global financial markets and corporate data.  Gain insights necessary for investment by grasping macroeconomics at a glance." | "전세계 금융시장, 기업데이터 시계열을 비교해서 선후관계를 발견하세요.  거시경제를 한눈에 파악하고 투자에 필요한 통찰을 얻을 수 있습니다.";
     ProfessionalPlan: "Professional" | "전문가";
     ProfessionalPlanDollerPrice: "$12.99/month" | "$12.99/월";
     ProfessionalPlanWonPrice: "₩15,900/month" | "15,900원/월";
@@ -110,7 +110,7 @@ export interface UiText {
     DeactivatedAccountBillingRequire: "Billing is required. Please activate your account" | "비용 청구가 필요합니다. 계정을 활성화 해주세요";
     ProfessionalMembershipRequire: "Your request requires Professional Membership. Please upgrade your account membership" | "해당 요청은 전문가 맴버십이 필요합니다. 계정의 맴버십을 변경해주세요";
     ProfessionalMembershipRequire_ConfirmText: "Update Account Settings" | "계정 설정 변경하기";
-    SearchBar_Placeholder: "Enter country, company, stock, commodity, forex, or crypto name/code" | "국가, 기업, 주식, 원자제, 외환, 암호화폐 이름 또는 코드 입력";
+    SearchBar_Placeholder: "Enter country, company, stock, commodity, forex, or crypto name/code" | "기업, 주식, 원자제, 외환, 암호화폐 이름 또는 코드 입력";
     SearchRequestAlreadyExist: "Results for this search term already exist or are being processed" | "검색 결과가 이미 존재하거나 처리중인 검색어입니다";
     SearchRequestRateTooFastMessage: "Your request rate is too fast. Please wait until the previous search is completed and try again" | "요청 속도가 너무 빠릅니다. 기존 검색이 완료된 후 다시 시도하세요";
     NoSearchResult: "No search results found" | "검색 결과가 없습니다";

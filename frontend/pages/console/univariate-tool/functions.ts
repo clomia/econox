@@ -237,7 +237,7 @@ export const downloadFile = async (request: RequestFormat) => {
   const url = window.URL.createObjectURL(resp.data);
   const link = document.createElement("a");
   link.href = url;
-  let filename = `${request.elementCode}-${request.factorSection}-${request.factorCode}`;
+  let filename = `${request.elementCode}-${request.factorSection}-${request.factorCode}.${request.fileFormat}`;
   link.setAttribute("download", filename);
   document.body.appendChild(link);
   link.click();

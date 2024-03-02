@@ -94,10 +94,10 @@ BasicPlanWonPrice:
   ko: "11,900원/월"
 BasicPlanDescription:
   en: >
-    Discover causality by comparing time-series from global markets, economies, and corporate data. 
-    Grasp the macroeconomy at a glance and gain crucial investment insights.
+    Discover causal relationships by comparing time series of global financial markets and corporate data. 
+    Gain insights necessary for investment by grasping macroeconomics at a glance.
   ko: >
-    전세계 금융시장, 국가경제, 기업데이터 시계열을 비교해서 선후관계를 발견하세요. 
+    전세계 금융시장, 기업데이터 시계열을 비교해서 선후관계를 발견하세요. 
     거시경제를 한눈에 파악하고 투자에 필요한 통찰을 얻을 수 있습니다.
 ProfessionalPlan:
   en: "Professional"
@@ -345,7 +345,7 @@ ProfessionalMembershipRequire_ConfirmText:
   ko: "계정 설정 변경하기"
 SearchBar_Placeholder:
   en: "Enter country, company, stock, commodity, forex, or crypto name/code"
-  ko: "국가, 기업, 주식, 원자제, 외환, 암호화폐 이름 또는 코드 입력"
+  ko: "기업, 주식, 원자제, 외환, 암호화폐 이름 또는 코드 입력"
 SearchRequestAlreadyExist:
   en: "Results for this search term already exist or are being processed"
   ko: "검색 결과가 이미 존재하거나 처리중인 검색어입니다"

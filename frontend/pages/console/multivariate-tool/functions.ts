@@ -434,6 +434,7 @@ export const downloadFile = async (name: string, request: RequestFormat) => {
   if (request.minmaxScaling) {
     filename += "_Min-Max-Scaled";
   }
+  filename += "." + request.fileFormat;
   link.setAttribute("download", filename);
   document.body.appendChild(link);
   link.click();

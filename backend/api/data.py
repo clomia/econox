@@ -7,17 +7,21 @@ import asyncio
 from typing import Literal, List
 
 import numpy as np
-import xarray as xr
 from aiocache import cached
 from pydantic import BaseModel
 from fastapi import HTTPException, Response, Query
 
 from backend import db
 from backend.http import APIRouter
-from backend.calc import datetime2utcstr, MultivariateAnalyzer
+from backend.calc import (
+    datetime2utcstr,
+    utcstr2datetime,
+    MultivariateAnalyzer,
+    get_ratio,
+)
 from backend.data import fmp
 from backend.system import ElasticRedisCache, CacheTTL, log
-from backend.integrate import get_element, Feature, FeatureGroup
+from backend.integrate import get_element, get_name, Feature, FeatureGroup
 
 
 router = APIRouter("data")
@@ -180,23 +184,7 @@ async def get_feature_group_time_series(group_id: int) -> TimeSeriesGroup:
     group = await FeatureGroup(*features).init()
     ds_original = group.to_dataset()
     ds_scaled = group.to_dataset(minmax_scaling=True)
-
-    ds_pos = ds_original.copy(deep=True)
-    for var_name in ds_pos.data_vars:
-        # 비율 계산 시 음수는 취급할 수 없으므로 모든 음수를 0으로 변환
-        ds_pos[var_name] = xr.where(ds_pos[var_name] < 0, 0, ds_pos[var_name])
-    # 각 시점(t)에서 모든 변수의 합계를 계산 -> _sum
-    _sum = ds_pos.to_array(dim="v").sum(dim="v")
-    ds_ratio = (ds_pos / _sum) * 100
-    # 각 변수를 해당 시점의 합계로 나누어 비율 계산 후 100을 곱해서 백분율로 변환
-
-    # _sum이 0인 경우 0으로 나누어져서 값은 nan이 된다.
-    # _sum이 0이라는 것은 모든 값의 0이고 다시말해 비율이 동일하다는 뜻이므로 모두 동일한 비율로 처리
-    default = 100 / len(ds_original.data_vars)
-    for var_name in ds_ratio.data_vars:
-        ds_ratio[var_name] = xr.where(  # nan이면 default, 아니면 원래값
-            np.isnan(ds_ratio[var_name]), default, ds_ratio[var_name]
-        )
+    ds_ratio = get_ratio(ds_original)
 
     values = []
     for feature in features:
@@ -244,7 +232,7 @@ async def get_feature_group_time_series(
         result: dict = target_func()
     except Exception as e:
         log.info(
-            f"[GET /api/features/analysis/{func}] 결과 산출 불가능, 빈 배열을 응답합니다. "
+            f"[GET /api/data/features/analysis/{func}] 결과 산출 불가능, 빈 배열을 응답합니다. "
             f"[{e.__class__.__name__}: {e}]"
         )
         return []
@@ -330,3 +318,143 @@ async def download_feature_group_time_series(
         media_type=media_type[file_format],
         headers=headers[file_format],
     )
+
+
+@router.public.get("/features/public")
+async def get_public_feature_group_data(
+    group_id: int,
+    lang: str = Query(..., min_length=2, max_length=2),
+):
+    """
+    - 퍼블릭 피쳐 그룹 데이터 제공
+    """
+    resp = await db.SQL(
+        """
+    SELECT 
+        u.name as user_name, 
+        u.billing_status as user_billing_status, 
+        fg.name as feature_group_name,
+        fg.description as feature_group_description,
+        fg.chart_type as feature_group_chart_type,
+        fg.public as feature_group_public,
+        fgf.feature_color as feature_color,
+        fgf.created as feature_added,
+        e.section as element_section,
+        e.code as element_code,
+        f.section as factor_section,
+        f.code as factor_code
+    FROM feature_groups fg
+    JOIN users u ON fg.user_id = u.id
+    JOIN feature_groups_features fgf ON fg.id = fgf.feature_group_id
+    JOIN elements_factors ef ON fgf.feature_id = ef.id
+    JOIN elements e ON ef.element_id = e.id
+    JOIN factors f ON ef.factor_id = f.id
+    WHERE fg.id = {group_id};
+    """,
+        params={"group_id": group_id},
+        fetch="all",
+    ).exec()
+    if not resp:  # 피쳐 그룹이 비어있거나 존재하지 않음
+        raise HTTPException(status_code=404)
+    db_user = {
+        "name": resp[0]["user_name"],
+        "billing": resp[0]["user_billing_status"],
+    }
+    db_fgroup = {
+        "name": resp[0]["feature_group_name"],
+        "description": resp[0]["feature_group_description"],
+        "chart_type": resp[0]["feature_group_chart_type"],
+        "public": resp[0]["feature_group_public"],
+    }
+    if db_user["billing"] == "require" or not db_fgroup["public"]:
+        raise HTTPException(status_code=423)  # Locked
+    features = [
+        Feature(
+            record["element_section"],
+            record["element_code"],
+            record["factor_section"],
+            record["factor_code"],
+        )
+        for record in resp
+    ]
+    fgroup = await FeatureGroup(*features).init()
+    dataset = fgroup.to_dataset()
+    match db_fgroup["chart_type"]:
+        case "line" | "ratio":
+            data = {
+                "t": np.datetime_as_string(dataset.t.values, unit="D").tolist(),
+                "v": [],
+            }
+            ds_scaled = fgroup.to_dataset(minmax_scaling=True)
+            ds_ratio = get_ratio(dataset)
+            for fe in features:
+                key = fe.repr_str()
+                data["v"].append(
+                    {
+                        "element": {
+                            "section": fe.element_section,
+                            "code": fe.element_code,
+                        },
+                        "factor": {
+                            "section": fe.factor_section,
+                            "code": fe.factor_code,
+                        },
+                        "original": dataset[key].values.tolist(),
+                        "scaled": ds_scaled[key].values.tolist(),
+                        "ratio": ds_ratio[key].values.tolist(),
+                    }
+                )
+        case "granger" | "coint":
+            data = []
+            if db_fgroup["chart_type"] == "granger":
+                func = MultivariateAnalyzer(dataset).grangercausality
+            elif db_fgroup["chart_type"] == "coint":
+                func = MultivariateAnalyzer(dataset).cointegration
+            try:
+                result = func()
+            except Exception as e:
+                log.info(
+                    f"[GET /api/data/features/public] {group_id} 그룹의 다변량 분석 차트 {db_fgroup['chart_type']} "
+                    f"계산 중 오류가 발생하였습니다. 빈 데이터로 대체합니다. [Error: {e.__class__.__name__}-{e}]"
+                )
+                result = {}
+            feature_map = {feature.repr_str(): feature for feature in features}
+            for (xt_key, yt_key), value in result.items():
+                # FeatureGroup에서 repr_str를 통해 피쳐를 구분하므로 이렇게 찾을 수 있음
+                data.append(
+                    {
+                        "xt": feature_map[xt_key].repr_dict(),
+                        "yt": feature_map[yt_key].repr_dict(),
+                        "value": value,
+                    }
+                )
+            data.sort(key=lambda v: v["value"], reverse=True)
+    feature_names = await asyncio.gather(
+        *[  # 언어에 맞는 자연어 텍스트 생성
+            get_name(
+                lang,
+                fe.element_section,
+                fe.element_code,
+                fe.factor_section,
+                fe.factor_code,
+            )
+            for fe in features
+        ]
+    )
+    feature_list = [
+        {  # DB 레코드와 자연어 텍스트를 합쳐서 피쳐 리스트 생성
+            "element": {"code": record["element_code"], "name": name["element"]},
+            "factor": {"section": name["factor_section"], "name": name["factor"]},
+            "color": record["feature_color"],
+            "added": datetime2utcstr(record["feature_added"]),
+        }
+        for record, name in zip(resp, feature_names)
+    ]
+    feature_list.sort(key=lambda f: utcstr2datetime(f["added"]), reverse=True)
+    del db_fgroup["public"]  # 응답 데이터에 필요 없는 키라 제거
+    return {
+        "user": db_user["name"],
+        "feature_group": db_fgroup,
+        "features": feature_list,
+        "data": data,
+    }

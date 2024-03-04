@@ -80,6 +80,29 @@ def scaling(arr: NDArray | xr.DataArray) -> NDArray | xr.DataArray:
     return arr.copy(data=scaled_data) if isinstance(arr, xr.DataArray) else scaled_data
 
 
+def get_ratio(dataset: xr.Dataset):
+    """
+    - 시계열 dataset에서 각 변수들의 비율을 나타내는 새로운 dataset 생성
+    """
+    ds_pos = dataset.copy(deep=True)
+    for var_name in ds_pos.data_vars:
+        # 비율 계산 시 음수는 취급할 수 없으므로 모든 음수를 0으로 변환
+        ds_pos[var_name] = xr.where(ds_pos[var_name] < 0, 0, ds_pos[var_name])
+    # 각 시점(t)에서 모든 변수의 합계를 계산 -> _sum
+    _sum = ds_pos.to_array(dim="v").sum(dim="v")
+    ds_ratio = (ds_pos / _sum) * 100
+    # 각 변수를 해당 시점의 합계로 나누어 비율 계산 후 100을 곱해서 백분율로 변환
+
+    # _sum이 0인 경우 0으로 나누어져서 값은 nan이 된다.
+    # _sum이 0이라는 것은 모든 값의 0이고 다시말해 비율이 동일하다는 뜻이므로 모두 동일한 비율로 처리
+    default = 100 / len(dataset.data_vars)
+    for var_name in ds_ratio.data_vars:
+        ds_ratio[var_name] = xr.where(  # nan이면 default, 아니면 원래값
+            np.isnan(ds_ratio[var_name]), default, ds_ratio[var_name]
+        )
+    return ds_ratio
+
+
 def marge_lists(*lists: list, limit: int) -> list:
     """
     여러 리스트들을 받아 limit에 지정된 수만큼의 요소를 포함하도록

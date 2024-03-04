@@ -2,4 +2,4 @@
   console.log("hello world");
 </script>
 
-<h1 style="color: var(--white);">This is landing page</h1>
+<h1 style="color: var(--white);">This is Intro page</h1>

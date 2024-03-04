@@ -21,8 +21,8 @@
   <main>
     <Router>
       {#each routes as route}
-        <Route path={route.path}>
-          <svelte:component this={route.page} />
+        <Route path={route.path} let:params>
+          <svelte:component this={route.page} {params} />
         </Route>
       {/each}
     </Router>

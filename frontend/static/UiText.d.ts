@@ -155,6 +155,8 @@ export interface UiText {
     FgGrangerChart_Description: "By utilizing Granger causality testing, this feature mathematically assesses the  extent to which one time series can predict the future values of another.  The resulting visualizations suggest potential causal relationships,  but they do not confirm actual causality." | "그레인저 인과관계 검정을 통해 한 시계열이 다른 시계열의 미래 값을 예측하는 데 얼마나  기여하는지 수학적으로 계산합니다. 시각화 결과는 특정 시계열간 논리적 인과관계가 있을 수 있음을  시사할 뿐 실제 인과성을 증명하지 않습니다.";
     FgCointChart_Name: "Association Inference" | "연관관계 추론";
     FgCointChart_Description: "This tool quantitatively evaluates whether multiple time series share a common trend in the long term, using cointegration testing.  It is important to note that visualizations only suggest the possibility of long-term relationships between specific time series,  without providing definitive proof of actual association" | "공적분 검정을 통해 여러 시계열이 장기적으로 동행하는지 수학적으로 평가합니다.  시각화 결과는 특정 시계열들이 장기적으로 연관되어 있음을 시사할 뿐 실제 연관성을 증명하지 않습니다.";
+    PublicFg404: "Data Group is empty or does not exist" | "데이터 그룹이 비어있거나 없습니다";
+    PublicFg423: "Data group is private" | "데이터 그룹이 비공개 상태입니다";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";
@@ -170,4 +172,5 @@ export interface UiText {
     f_TheElementDoesNotContainThisFactor: "We attempted to collect data for {factor} related to {element},  but were unable to find any. This outcome has been reflected in our service.  Thank you for contributing to the improvement of our service." | "{element}에 대한 {factor} 데이터 수집을 시도하였으나 데이터를 찾지 못하였습니다.  이 결과를 서비스에 반영하였습니다. 서비스 개선에 기여해주셔서 감사합니다.";
     f_WillMembershipBilling: "The {membership} Membership fee of {amount} will be charged." | "{membership} 맴버십 비용({amount})이 결제됩니다.";
     f_DataAddedToGroup: "Data has been added to the group '{groupName}'" | "그룹 '{groupName}'에 데이터가 추가되었습니다";
+    f_ShareTitle: "Shared by {name}" | "{name}님이 공유함";
 }

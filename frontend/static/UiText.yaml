@@ -499,6 +499,12 @@ FgCointChart_Description:
   ko: >
     공적분 검정을 통해 여러 시계열이 장기적으로 동행하는지 수학적으로 평가합니다. 
     시각화 결과는 특정 시계열들이 장기적으로 연관되어 있음을 시사할 뿐 실제 연관성을 증명하지 않습니다.
+PublicFg404:
+  en: "Data Group is empty or does not exist"
+  ko: "데이터 그룹이 비어있거나 없습니다"
+PublicFg423:
+  en: "Data group is private"
+  ko: "데이터 그룹이 비공개 상태입니다"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"
@@ -549,3 +555,6 @@ f_WillMembershipBilling:
 f_DataAddedToGroup:
   en: "Data has been added to the group '{groupName}'"
   ko: "그룹 '{groupName}'에 데이터가 추가되었습니다"
+f_ShareTitle:
+  en: "Shared by {name}"
+  ko: "{name}님이 공유함"

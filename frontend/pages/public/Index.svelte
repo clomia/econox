@@ -5,6 +5,7 @@
   import { requestData } from "./function";
   import Chart from "./chart/Index.svelte";
   import Header from "./Header.svelte";
+  import Features from "./Features.svelte";
   export let params: any;
 
   const request = requestData(params.featureGroupId);
@@ -28,8 +29,11 @@
       </div>
     </div>
   {:else}
-    <Header data={response} />
-    <Chart data={response} />
+    <div class="content">
+      <Header data={response} />
+      <Features data={response} />
+      <Chart data={response} />
+    </div>
   {/if}
 {/await}
 
@@ -56,5 +60,10 @@
     margin-top: 4rem;
     color: var(--white);
     font-size: 1.2rem;
+  }
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 </style>

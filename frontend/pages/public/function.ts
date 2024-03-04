@@ -2,9 +2,25 @@ import { get } from "svelte/store";
 import { api } from "../../modules/request";
 import { Lang } from "../../modules/state";
 
-export interface publicGroupType {
+export interface PublicFgRespType {
   user: string;
-  // todo 마저 써야 함
+  feature_group: {
+    name: string;
+    description: string;
+    chart_type: string;
+  };
+  features: {
+    added: string;
+    color: string;
+    element: {
+      code: string;
+      name: string;
+    };
+    factor: {
+      name: string;
+      section: string;
+    };
+  }[];
   data: any;
 }
 
@@ -15,12 +31,14 @@ export interface publicGroupType {
  * - 404, 423 에러 응답을 받으면 해당하는 숫자를 반환합니다.
  * - 성공 응답을 수신하면 본문 데이터를 반환합니다.
  */
-export const requestData = async (groupId: number) => {
+export const requestData = async (
+  groupId: number
+): Promise<number | PublicFgRespType> => {
   try {
     const response = await api.public.get("/data/features/public", {
       params: { group_id: groupId, lang: get(Lang) },
     });
-    return response.data;
+    return response.data as PublicFgRespType;
   } catch (error) {
     switch (error?.response?.status) {
       case 404: // 그룹이 비어있음
@@ -29,5 +47,6 @@ export const requestData = async (groupId: number) => {
         return 423;
       // 나머지 경우는 모두 예상치 못한 에러
     }
+    throw error;
   }
 };

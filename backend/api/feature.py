@@ -254,7 +254,7 @@ async def create_feature_group_to_user(
         table="feature_groups",
         returning=True,
         user_id=user["id"],
-        name=item.name,
+        name=item.name.strip(),
         description=item.description,
     ).exec()
     return {"message": f"Feature group created", "group_id": feature_group["id"]}
@@ -276,9 +276,11 @@ async def update_feature_group(item: FeatureGroupUpdate, user=router.basic.user)
         - 업데이트 가능 필드: name, description, chart_type, public
     - 유저가 소유하지 않은 피쳐 그룹에 대해서는 200을 응답하지만, 아무런 변화도 일어나지 않습니다.
     """
+    db_params = dict(item)
     values = ""
     if item.name is not None:
         values += "name={name},"
+        db_params["name"] = item.name.strip()
     if item.description is not None:
         values += "description={description},"
     if item.chart_type is not None:

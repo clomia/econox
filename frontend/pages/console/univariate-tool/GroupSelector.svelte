@@ -32,8 +32,8 @@
   const filter = (groups: FeatureGroupType[]) => {
     // 이미 targetFeature가 포함된 그룹은 표시되지 않도록 합니다.
     return groups.filter((group) => {
-      if (group.features.length >= 9) {
-        // 그룹은 피쳐를 10개 이상 가질 수 없다.
+      if (group.features.length >= 6) {
+        // 그룹의 피쳐 갯수는 6개를 초과할 수 없다. 6개 넘으면 계산 시간 너무 김
         return false;
       }
       return (

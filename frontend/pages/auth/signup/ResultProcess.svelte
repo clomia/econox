@@ -84,7 +84,7 @@
     if (animationEnd && event.target !== sucessBtn) {
       Swal.fire({
         ...defaultToastStyle,
-        position: "top",
+        position: "bottom-end",
         title: $Text.ClickLogin_for_SignupComplete,
       });
     }

@@ -27,6 +27,9 @@ export const defaultToastStyle = {
   showConfirmButton: false,
   timer: 2000,
   timerProgressBar: true,
+  position: "bottom-end",
+  color: "var(--white)",
+  background: "var(--widget-background)",
 };
 
 /**

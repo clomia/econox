@@ -157,6 +157,7 @@ export interface UiText {
     FgCointChart_Description: "This tool quantitatively evaluates whether multiple time series share a common trend in the long term, using cointegration testing.  It is important to note that visualizations only suggest the possibility of long-term relationships between specific time series,  without providing definitive proof of actual association" | "공적분 검정을 통해 여러 시계열이 장기적으로 동행하는지 수학적으로 평가합니다.  시각화 결과는 특정 시계열들이 장기적으로 연관되어 있음을 시사할 뿐 실제 연관성을 증명하지 않습니다.";
     PublicFg404: "Data Group is empty or does not exist" | "데이터 그룹이 비어있거나 없습니다";
     PublicFg423: "Data group is private" | "데이터 그룹이 비공개 상태입니다";
+    RequestTimeout: "Processing is taking longer than expected due to high computational load. It may take more than 20 seconds. Please wait a bit longer." | "연산량이 많아 응답이 지연되고 있습니다. 20초 이상 걸릴 수 있습니다. 잠시만 더 기다려 주십시오.";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

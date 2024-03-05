@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+  import Swal from "sweetalert2";
   import WavingCubes from "../../assets/animation/WavingCubes.svelte";
   import CuteEmpty from "../../assets/icon/CuteEmpty.svelte";
   import { Text } from "../../modules/state";
@@ -8,7 +10,28 @@
   import Features from "./Features.svelte";
   export let params: any;
 
+  let responseReceived = false;
   const request = requestData(params.featureGroupId);
+  onMount(async () => {
+    await request;
+    responseReceived = true;
+  });
+  setTimeout(() => {
+    if (!responseReceived) {
+      Swal.fire({
+        width: "46rem",
+        toast: true,
+        showConfirmButton: false,
+        timer: 7000,
+        timerProgressBar: true,
+        position: "bottom-end",
+        color: "var(--white)",
+        background: "var(--widget-background)",
+        title: $Text.RequestTimeout,
+      });
+    }
+  }, 10000);
+
   const failedMessages = {
     404: $Text.PublicFg404,
     423: $Text.PublicFg423,

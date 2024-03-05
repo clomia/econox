@@ -117,7 +117,7 @@
     } catch {
       await Swal.fire({
         ...defaultToastStyle,
-        position: "top",
+        position: "bottom-end",
         title: $Text.UnexpectedError,
       });
     }
@@ -132,7 +132,7 @@
         // 이미 전송된 동일한 요청을 계속 보내지 못하도록
         return await Swal.fire({
           ...defaultToastStyle,
-          position: "top",
+          position: "bottom-end",
           title: $Text.AlreadyProgressPleaseWait,
         });
       } else if (target === $UserInfo["membership"]) {

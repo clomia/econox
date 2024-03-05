@@ -1,7 +1,7 @@
 # 언어별 UI 텍스트 정의 문서 (영어 텍스트는 모든 항목에 필수입니다!)
 Econox:
   en: "Econox"
-  ko: "에코녹스"
+  ko: "이코녹스"
 FeatureHub:
   en: "Feature Hub"
   ko: "피처 허브"
@@ -443,7 +443,7 @@ AddDataToGroupDescription:
     Create data groups and understand the relationships among various time series. 
     Grasp the past and predict the future!
   ko: >
-    에코녹스는 다변량 시계열 분석 도구입니다. 데이터 그룹을 만들고 
+    이코녹스는 다변량 시계열 분석 도구입니다. 데이터 그룹을 만들고 
     여러 시계열 간의 관계를 파악하세요. 과거를 이해하고 미래를 예측하세요!
 FindGroup:
   en: "Find Group"

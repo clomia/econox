@@ -26,10 +26,10 @@
   main {
     width: 44rem;
     color: var(--white);
-    margin-top: 2rem;
+    margin-top: 1rem;
     padding-bottom: 1rem;
-    border-top: thin solid rgba(255, 255, 255, 0.2);
-    border-bottom: thin solid rgba(255, 255, 255, 0.2);
+    border-top: thin solid rgba(255, 255, 255, 0.35);
+    border-bottom: thin solid rgba(255, 255, 255, 0.35);
     display: flex;
     flex-direction: column;
     align-items: flex-start;

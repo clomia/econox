@@ -2,7 +2,7 @@
 // Refer to rollup.config.js and script/yaml2dts.py for the relevant logic.
 
 export interface UiText {
-    Econox: "Econox" | "에코녹스";
+    Econox: "Econox" | "이코녹스";
     FeatureHub: "Feature Hub" | "피처 허브";
     Console: "Console" | "콘솔";
     SignInOut: "Sign In/Out" | "로그인/회원가입";
@@ -140,7 +140,7 @@ export interface UiText {
     GroupFeaturesEmpty: "This data group is empty" | "이 데이터 그룹은 비어있습니다";
     AddDataToGroup: "Add this data to a data group" | "이 데이터를 데이터 그룹에 추가하세요";
     AddDataToGroupTitle: "Please select a group to add data to" | "데이터를 추가할 그룹을 선택하세요";
-    AddDataToGroupDescription: "Econox is a multivariate time series analysis tool.  Create data groups and understand the relationships among various time series.  Grasp the past and predict the future!" | "에코녹스는 다변량 시계열 분석 도구입니다. 데이터 그룹을 만들고  여러 시계열 간의 관계를 파악하세요. 과거를 이해하고 미래를 예측하세요!";
+    AddDataToGroupDescription: "Econox is a multivariate time series analysis tool.  Create data groups and understand the relationships among various time series.  Grasp the past and predict the future!" | "이코녹스는 다변량 시계열 분석 도구입니다. 데이터 그룹을 만들고  여러 시계열 간의 관계를 파악하세요. 과거를 이해하고 미래를 예측하세요!";
     FindGroup: "Find Group" | "그룹 찾기";
     CreateGroup: "Create Group" | "그룹 만들기";
     DownloadComplete: "Your file download has completed! Please check the Downloads tab in your browser!" | "파일 다운로드가 완료되었습니다! 브라우저의 다운로드 탭을 확인해주세요!";

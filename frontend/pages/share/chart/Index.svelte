@@ -154,6 +154,8 @@
 
   main {
     position: relative;
+    padding-bottom: 1rem;
+    border-bottom: thin solid rgba(255, 255, 255, 0.35);
   }
   .toggle {
     position: absolute;

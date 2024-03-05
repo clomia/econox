@@ -5,7 +5,7 @@
 </script>
 
 <section>
-  <button on:click={() => navigate("/")}>{$Text.Econox}</button>
+  <button on:click={() => navigate("/")}>Econox</button>
   <button on:click={() => navigate("/console")}>{$Text.Console}</button>
   <button>{$Text.FeatureHub}</button>
   {#if $UserInfo.id}

@@ -142,6 +142,8 @@
     color: var(--white);
     padding: 1rem;
     position: relative;
+    border-bottom: thin solid rgba(255, 255, 255, 0.35);
+    margin-bottom: 1rem;
   }
   .note__chart-name {
     text-align: center;
@@ -205,9 +207,10 @@
 
   .fullscreen-btn {
     position: absolute;
-    top: 1rem;
-    right: 0.2rem;
+    bottom: -3rem;
+    right: 0.5rem;
     opacity: 0.5;
+    z-index: 10;
   }
   .fullscreen-btn:hover {
     cursor: pointer;

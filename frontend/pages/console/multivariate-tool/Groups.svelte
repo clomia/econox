@@ -12,6 +12,7 @@
   import EditIcon from "../../../assets/icon/EditIcon.svelte";
   import Check from "../../../assets/icon/Check.svelte";
   import CancelIcon from "../../../assets/icon/CancelIcon.svelte";
+  import WifiIcon from "../../../assets/icon/WifiIcon.svelte";
   import { attrQuerySort, strip, swal } from "../../../modules/functions";
   import type { FeatureGroupType } from "../../../modules/state";
 
@@ -125,7 +126,14 @@
             />
           {:else}
             <div class="list__group__main__name">
-              {group.name}
+              <div style="display: flex; align-items: center;">
+                {group.name}
+                {#if group.public && group.features.length > 0}
+                  <div style="opacity: 0.3; margin-left: 0.5rem">
+                    <WifiIcon size="1rem" />
+                  </div>
+                {/if}
+              </div>
               <div class="list__group__main__name__feature-count">
                 {group.features.length}
               </div>

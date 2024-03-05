@@ -2,12 +2,14 @@
   import SpinLoader from "../../../../assets/animation/SpinLoader.svelte";
   import FullScreenIcon from "../../../../assets/icon/FullScreenIcon.svelte";
   import LinkIcon from "../../../../assets/icon/LinkIcon.svelte";
+  import WifiIcon from "../../../../assets/icon/WifiIcon.svelte";
   import {
     Text,
     FeatureGroupSelected,
     FgStoreState,
     FgChartFullScreen,
   } from "../../../../modules/state";
+  import Share from "../Share.svelte";
 
   $: group = $FeatureGroupSelected; // shortcut
 
@@ -26,14 +28,25 @@
   $: if (group && $FgStoreState[group.id]) {
     ready = getReady();
   }
+
+  let shareWidget = false;
 </script>
+
+{#if shareWidget}
+  <Share on:close={() => (shareWidget = false)} />
+{/if}
 
 <main>
   <div class="layout-div"></div>
   {#if ready}
-    <button class="share">
-      <LinkIcon size="1rem" />
-      <div class="share__text">{$Text.ShareDataGroup}</div>
+    <button class="share" on:click={() => (shareWidget = true)}>
+      {#if group.public}
+        <WifiIcon size="1rem" />
+        <div class="share__text">{$Text.OnPublicTitle}</div>
+      {:else}
+        <LinkIcon size="1rem" />
+        <div class="share__text">{$Text.ShareDataGroup}</div>
+      {/if}
     </button>
   {:else if group.confirm}
     <div class="updating">
@@ -78,7 +91,7 @@
   }
   .share__text {
     color: white;
-    margin-left: 0.5rem;
+    margin-left: 0.4rem;
   }
   .layout-div {
     width: 26px;

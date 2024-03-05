@@ -24,16 +24,17 @@
 
 <style>
   main {
-    width: 85vw;
-    min-width: 44rem;
+    width: 44rem;
     color: var(--white);
     margin-top: 2rem;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
     padding-bottom: 1rem;
     border-top: thin solid rgba(255, 255, 255, 0.2);
     border-bottom: thin solid rgba(255, 255, 255, 0.2);
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-height: 29rem;
   }
   .fe {
     display: flex;
@@ -51,11 +52,14 @@
     height: 4rem;
     border-radius: 0.15rem;
     margin-right: 0.5rem;
+    border: thin solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 0.7rem 0 rgba(0, 0, 0, 0.6);
   }
   .fe__info__ele,
   .fe__info__fac {
     display: flex;
     align-items: center;
+    max-width: 37.5rem;
   }
   .fe__info__ele {
     margin-bottom: 0.5rem;

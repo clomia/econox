@@ -328,7 +328,8 @@ async def get_public_feature_group_data(
     """
     - 퍼블릭 피쳐 그룹 데이터 제공
     """
-    resp = await db.SQL(
+    # ========== DB 데이터 추출 ==========
+    dbdata = await db.SQL(
         """
     SELECT 
         u.name as user_name, 
@@ -354,29 +355,62 @@ async def get_public_feature_group_data(
         params={"group_id": group_id},
         fetch="all",
     ).exec()
-    if not resp:  # 피쳐 그룹이 비어있거나 존재하지 않음
+    if not dbdata:  # 피쳐 그룹이 비어있거나 존재하지 않음
         raise HTTPException(status_code=404)
     db_user = {
-        "name": resp[0]["user_name"],
-        "billing": resp[0]["user_billing_status"],
+        "name": dbdata[0]["user_name"],
+        "billing": dbdata[0]["user_billing_status"],
     }
     db_fgroup = {
-        "name": resp[0]["feature_group_name"],
-        "description": resp[0]["feature_group_description"],
-        "chart_type": resp[0]["feature_group_chart_type"],
-        "public": resp[0]["feature_group_public"],
+        "name": dbdata[0]["feature_group_name"],
+        "description": dbdata[0]["feature_group_description"],
+        "chart_type": dbdata[0]["feature_group_chart_type"],
+        "public": dbdata[0]["feature_group_public"],
     }
     if db_user["billing"] == "require" or not db_fgroup["public"]:
-        raise HTTPException(status_code=423)  # Locked
-    features = [
+        raise HTTPException(status_code=423)  # 피쳐 그룹을 공개할 수 없음
+    # ================================
+
+    # ========== 데이터 정합 ==========
+    features = [  # DB 레코드로 Feature 객체 생성
         Feature(
             record["element_section"],
             record["element_code"],
             record["factor_section"],
             record["factor_code"],
         )
-        for record in resp
+        for record in dbdata
     ]
+    feature_names = await asyncio.gather(
+        *[  # Feature 객체를 설명하는 자연어 텍스트 생성
+            get_name(
+                lang,
+                fe.element_section,
+                fe.element_code,
+                fe.factor_section,
+                fe.factor_code,
+            )
+            for fe in features
+        ]
+    )
+    feature_list = [
+        {  # DB 레코드와 자연어 텍스트를 합쳐서 피쳐 리스트 생성
+            "element": {"code": record["element_code"], "name": name["element"]},
+            "factor": {"section": name["factor_section"], "name": name["factor"]},
+            "color": record["feature_color"],
+            "added": datetime2utcstr(record["feature_added"]),
+        }
+        for record, name in zip(dbdata, feature_names)
+    ]
+    feature_list.sort(key=lambda f: utcstr2datetime(f["added"]), reverse=True)
+    colormap = {
+        f"{fe.element_section}-{fe.element_code}_"
+        f"{fe.factor_section}-{fe.factor_code}": record["feature_color"]
+        for record, fe in zip(dbdata, features)
+    }
+    # ================================
+
+    # ========== 차트 데이터 생성 ==========
     fgroup = await FeatureGroup(*features).init()
     dataset = fgroup.to_dataset()
     match db_fgroup["chart_type"]:
@@ -429,32 +463,14 @@ async def get_public_feature_group_data(
                     }
                 )
             data.sort(key=lambda v: v["value"], reverse=True)
-    feature_names = await asyncio.gather(
-        *[  # 언어에 맞는 자연어 텍스트 생성
-            get_name(
-                lang,
-                fe.element_section,
-                fe.element_code,
-                fe.factor_section,
-                fe.factor_code,
-            )
-            for fe in features
-        ]
-    )
-    feature_list = [
-        {  # DB 레코드와 자연어 텍스트를 합쳐서 피쳐 리스트 생성
-            "element": {"code": record["element_code"], "name": name["element"]},
-            "factor": {"section": name["factor_section"], "name": name["factor"]},
-            "color": record["feature_color"],
-            "added": datetime2utcstr(record["feature_added"]),
-        }
-        for record, name in zip(resp, feature_names)
-    ]
-    feature_list.sort(key=lambda f: utcstr2datetime(f["added"]), reverse=True)
+    # ================================
+
+    # ========== 응답 본문 구성 ==========
     del db_fgroup["public"]  # 응답 데이터에 필요 없는 키라 제거
     return {
         "user": db_user["name"],
         "feature_group": db_fgroup,
         "features": feature_list,
+        "colormap": colormap,
         "data": data,
     }

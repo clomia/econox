@@ -30,11 +30,9 @@
     padding-bottom: 1rem;
     border-top: thin solid rgba(255, 255, 255, 0.2);
     border-bottom: thin solid rgba(255, 255, 255, 0.2);
-    overflow: auto;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    max-height: 29rem;
   }
   .fe {
     display: flex;

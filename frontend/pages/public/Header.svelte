@@ -37,5 +37,7 @@
     margin-top: 0.5rem;
     padding-top: 0.5rem;
     border-top: thin solid rgba(255, 255, 255, 0.2);
+    padding-right: 1rem;
+    padding-left: 1rem;
   }
 </style>

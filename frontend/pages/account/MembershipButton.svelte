@@ -296,7 +296,6 @@
     background-color: rgba(0, 0, 0, 0.4);
   }
   .membership-options main {
-    z-index: 12;
     width: 30rem;
     height: 31rem;
     display: flex;
@@ -307,6 +306,7 @@
     background: var(--widget-background);
     border-radius: 0.3rem;
     border: none;
+    z-index: 20;
   }
   .membership-options__title {
     color: var(--white);

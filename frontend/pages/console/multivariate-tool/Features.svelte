@@ -362,7 +362,7 @@
   }
   .li__colorpicker {
     position: absolute;
-    z-index: 11;
+    z-index: 10;
     left: -0.2rem;
   }
   .li__colorbox,

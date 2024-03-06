@@ -74,7 +74,7 @@
     right: 2.65rem;
     top: 0.3rem;
     opacity: 0.4;
-    z-index: 11;
+    z-index: 1;
   }
   .full-screen:hover {
     opacity: 0.8;
@@ -84,7 +84,7 @@
     position: absolute;
     right: 2.5rem;
     bottom: 0.5rem;
-    z-index: 11;
+    z-index: 1;
     fill: rgba(255, 255, 255, 0.4);
   }
   .download:hover {

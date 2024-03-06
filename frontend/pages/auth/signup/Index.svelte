@@ -32,7 +32,7 @@
 <style>
   .component {
     position: relative;
-    z-index: 2;
+    z-index: 12;
   }
   .membrane {
     width: 100vw;
@@ -40,7 +40,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1;
+    z-index: 11;
     opacity: 0;
   }
 </style>

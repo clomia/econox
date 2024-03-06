@@ -43,6 +43,6 @@
     justify-content: center;
     padding-bottom: 25vh;
     background: var(--background);
-    z-index: 1;
+    z-index: 11;
   }
 </style>

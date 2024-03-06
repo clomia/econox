@@ -39,6 +39,7 @@
     position: fixed;
     bottom: 2rem;
     left: 2rem;
+    z-index: 10;
   }
   section button {
     display: flex;

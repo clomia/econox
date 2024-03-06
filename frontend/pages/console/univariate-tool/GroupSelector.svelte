@@ -148,7 +148,7 @@
   .membrane,
   .loader {
     position: fixed;
-    z-index: 9;
+    z-index: 11;
     top: 0;
     left: 0;
     width: 100vw;
@@ -159,7 +159,7 @@
     background-color: rgba(0, 0, 0, 0.4);
   }
   .loader {
-    z-index: 10;
+    z-index: 12;
   }
   main {
     width: 40rem;

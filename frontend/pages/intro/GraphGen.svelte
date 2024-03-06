@@ -17,7 +17,7 @@
   const seriesOption = {
     type: "graph",
     layout: "force",
-    center: ["40%", "50%"],
+    center: ["50%", "50%"],
     force: {
       repulsion: 3500,
       gravity: 0.5,

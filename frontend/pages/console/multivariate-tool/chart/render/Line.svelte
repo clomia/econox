@@ -148,7 +148,7 @@
     position: absolute;
     left: 2.5rem;
     top: -1rem;
-    z-index: 1;
+    z-index: 11;
   }
   .toggle-text {
     position: absolute;
@@ -157,7 +157,7 @@
     color: white;
     opacity: 0.4;
     font-size: 0.9rem;
-    z-index: 1;
+    z-index: 11;
     text-decoration: none;
   }
   .toggle-text:hover {

@@ -281,7 +281,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 2;
+    z-index: 12;
   }
   .membership-options > main {
     position: relative;
@@ -292,11 +292,11 @@
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1;
+    z-index: 11;
     background-color: rgba(0, 0, 0, 0.4);
   }
   .membership-options main {
-    z-index: 2;
+    z-index: 12;
     width: 30rem;
     height: 31rem;
     display: flex;

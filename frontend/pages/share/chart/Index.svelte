@@ -163,7 +163,7 @@
     position: absolute;
     left: 3rem;
     top: 1.2rem;
-    z-index: 1;
+    z-index: 11;
   }
   .toggle-text {
     position: absolute;
@@ -172,7 +172,7 @@
     color: white;
     opacity: 0.4;
     font-size: 0.9rem;
-    z-index: 1;
+    z-index: 11;
     text-decoration: none;
   }
   .toggle-text:hover,
@@ -184,7 +184,7 @@
     position: absolute;
     left: 8rem;
     top: 3.1rem;
-    z-index: 1;
+    z-index: 11;
   }
   .full-screen__toggle-text {
     position: absolute;
@@ -193,7 +193,7 @@
     color: white;
     opacity: 0.4;
     font-size: 0.9rem;
-    z-index: 1;
+    z-index: 11;
     text-decoration: none;
   }
 
@@ -210,7 +210,7 @@
     bottom: -3rem;
     right: 0.5rem;
     opacity: 0.5;
-    z-index: 10;
+    z-index: 12;
   }
   .fullscreen-btn:hover {
     cursor: pointer;

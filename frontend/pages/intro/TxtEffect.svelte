@@ -1,0 +1,34 @@
+<script lang="ts">
+  import SvelteTypedJs from "svelte-typed-js";
+  import TerminalArrow from "../../assets/icon/TerminalArrow.svelte";
+
+  export let txtArr: string[];
+  export let color: string;
+  export let size: string = "1rem";
+</script>
+
+<section style="font-size: {size}; color: {color};">
+  <TerminalArrow size="1.3rem" {color} />
+  <SvelteTypedJs
+    strings={txtArr}
+    loop="true"
+    typeSpeed={30}
+    backSpeed={30}
+    smartBackspace={true}
+    backDelay={1000}
+    showCursor={true}
+    cursorChar="_"
+  >
+    <span class="typing" />
+  </SvelteTypedJs>
+</section>
+
+<style>
+  section {
+    display: flex;
+    align-items: center;
+  }
+  span {
+    margin-left: 0.9rem;
+  }
+</style>

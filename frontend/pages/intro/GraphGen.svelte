@@ -14,6 +14,15 @@
     return `rgba(${r},${g},${b}, 1)`;
   };
 
+  const removeRandomElements = (arr: any[], num: number) => {
+    let _arr = [...arr];
+    for (let i = 0; i < num; i++) {
+      let indexToRemove = Math.floor(Math.random() * _arr.length);
+      _arr.splice(indexToRemove, 1);
+    }
+    return _arr;
+  };
+
   const seriesOption = {
     type: "graph",
     layout: "force",
@@ -25,7 +34,7 @@
       friction: 0.2,
     },
     edgeSymbol: ["none", "arrow"],
-    lineStyle: { opacity: 1 },
+    lineStyle: { opacity: 1, width: 0.5 },
     emphasis: {
       label: { show: false },
       scale: false,
@@ -83,11 +92,28 @@
     const chart = echarts.init(chartContainer);
     window.onresize = chart.resize;
 
-    const node = ["0"];
+    let node = ["0"];
     const colormap = { "0": randomColor() };
     const causality = [];
+    const LIMIT = 45; // 최대 노드 갯수
+    const REPEAT = 5; // 최대 노드 갯수 하에서 제거, 생성을 반복
+    let removed: number | null = null;
+    setInterval(() => {
+      if (node.length > LIMIT) {
+        node = removeRandomElements(node, 1);
+        removed = 1;
+        render(chart, node, causality, colormap);
+        return;
+      } else if (typeof removed === "number") {
+        node = removeRandomElements(node, 1);
+        removed += 1;
+        if (removed >= REPEAT) {
+          removed = null;
+        }
+        render(chart, node, causality, colormap);
+        return;
+      }
 
-    const generator = setInterval(() => {
       const remain = [...node];
       const newNode = (parseInt(node[node.length - 1]) + 1).toString();
       node.push(newNode);
@@ -104,13 +130,7 @@
             : [target, newNode, causalityValue]
         );
       }
-
-      if (node.length > 40) {
-        clearInterval(generator);
-        render(chart, node, causality, colormap, true);
-      } else {
-        render(chart, node, causality, colormap);
-      }
+      render(chart, node, causality, colormap);
     }, 500);
   };
   onMount(init);

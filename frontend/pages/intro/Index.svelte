@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import GraphGen from "./GraphGen.svelte";
+  import LinesGen from "./LinesGen.svelte";
   import TxtEffect from "./TxtEffect.svelte";
   import ReflectiveButton from "../../components/ReflectiveButton.svelte";
   import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
@@ -65,6 +66,9 @@
   </div>
   <GraphGen width="100%" height="100%" />
 </section>
+<section class="page2">
+  <LinesGen />
+</section>
 
 <style>
   :root {
@@ -83,6 +87,11 @@
       rgba(32, 34, 36) 80%,
       rgba(0, 0, 0, 0) 100%
     );
+    height: 100vh;
+    width: var(--max-vw);
+  }
+  .page2 {
+    position: relative;
     height: 100vh;
     width: var(--max-vw);
   }

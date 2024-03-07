@@ -1,9 +1,5 @@
 <script lang="ts">
-  import {
-    FeatureGroups,
-    FeatureGroupSelected,
-  } from "../../../../modules/state";
-  import { fgDataStateTracker, fgDataStateSynchronizer } from "../functions";
+  import { FeatureGroupSelected } from "../../../../modules/state";
   import Header from "./Header.svelte";
   import Menu from "./Menu.svelte";
   import Note from "./Note.svelte";
@@ -18,14 +14,6 @@
     granger: GrangerChart,
     coint: CointChart,
   };
-
-  let beforeGroups = [...$FeatureGroups];
-  $: if ($FeatureGroups) {
-    fgDataStateTracker(beforeGroups, $FeatureGroups);
-    beforeGroups = [...$FeatureGroups];
-  }
-
-  $: if ($FeatureGroupSelected) fgDataStateSynchronizer($FeatureGroupSelected);
 </script>
 
 <main>

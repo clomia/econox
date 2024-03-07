@@ -4,6 +4,7 @@
   import PieChartIcon from "../../../../assets/icon/PieChartIcon.svelte";
   import GrangerChartIcon from "../../../../assets/icon/GrangerChartIcon.svelte";
   import CointChartIcon from "../../../../assets/icon/CointChartIcon.svelte";
+  import { chartSelectedHandler } from "../functions";
   import {
     FeatureGroups,
     FeatureGroupSelected,
@@ -12,7 +13,7 @@
 
   $: group = $FeatureGroupSelected; // shortcut
 
-  const changeChartType = (chartType: string) => {
+  const changeChartType = async (chartType: string) => {
     const _group = { ...group };
     if (_group.chart_type === chartType) {
       return; // 변경사항이 없으면 패스
@@ -21,6 +22,7 @@
     _group.chart_type = chartType;
     $FeatureGroups[idx] = _group;
     $FeatureGroupSelected = _group;
+    await chartSelectedHandler(_group);
   };
 </script>
 

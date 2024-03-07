@@ -13,7 +13,8 @@
   import Check from "../../../assets/icon/Check.svelte";
   import CancelIcon from "../../../assets/icon/CancelIcon.svelte";
   import WifiIcon from "../../../assets/icon/WifiIcon.svelte";
-  import { attrQuerySort, strip, swal } from "../../../modules/functions";
+  import { attrQuerySort, strip } from "../../../modules/functions";
+  import { chartSelectedHandler } from "./functions";
   import type { FeatureGroupType } from "../../../modules/state";
 
   let searchQuery = "";
@@ -24,12 +25,8 @@
   let groupEditingInput: HTMLInputElement | null = null;
 
   const selectGroup = async (group: FeatureGroupType) => {
-    if ($FeatureGroups.filter((g) => !g.confirm).length) {
-      // 모든 그룹이 confirm되지 않은 경우 변경할 수 없음
-      await swal($Text.ReflectingToDeleteAlert);
-    } else {
-      $FeatureGroupSelected = group;
-    }
+    $FeatureGroupSelected = group;
+    await chartSelectedHandler(group);
   };
   const deleteGroup = async (group: FeatureGroupType) => {
     $FeatureGroupSelected = null;

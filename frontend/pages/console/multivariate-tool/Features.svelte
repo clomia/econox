@@ -6,13 +6,13 @@
     FeatureGroups,
     FeatureGroupSelected,
     CountryCodeMap,
-    FgStoreState,
   } from "../../../modules/state";
+  import CircleLoader from "../../../assets/animation/CircleLoader.svelte";
   import EditIcon from "../../../assets/icon/EditIcon.svelte";
   import MinusIcon from "../../../assets/icon/MinusIcon.svelte";
   import DownloadIcon from "../../../assets/icon/DownloadIcon.svelte";
   import Download from "../univariate-tool/chart/Download.svelte";
-  import type { FeatureType, StoreStateType } from "../../../modules/state";
+  import type { FeatureType } from "../../../modules/state";
 
   interface color {
     r: number;
@@ -150,7 +150,11 @@
     scrollToTargetElement(main, colorPickerElement);
   }
 
+  let isLoading = false;
   const del = async (feature: FeatureType) => {
+    isLoading = true;
+    document.body.style.overflow = "hidden";
+
     // 복사
     let updated = { ...$FeatureGroupSelected };
     let updatedGroups = [...$FeatureGroups];
@@ -159,17 +163,6 @@
     let targetIndex = updatedGroups.findIndex(
       (group) => group.id === targetGroupId
     );
-
-    // 변경사항 반영
-    updated.features = updated.features.filter((f) => f !== feature);
-    updated.confirm = false; // 낙관적 업데이트일 뿐, 서버에는 아직 반영 안됨
-    updatedGroups[targetIndex] = updated;
-
-    // 변경사항 적용
-    $FeatureGroupSelected = updated;
-    $FeatureGroups = updatedGroups;
-
-    // 서버에 반영 요청
     await api.member.delete("/feature/group/feature", {
       data: {
         group_id: targetGroupId,
@@ -183,37 +176,16 @@
         },
       },
     });
-
-    // 서버에 반영이 완료되었으니 confirm을 true로 업데이트
-    targetIndex = $FeatureGroups.findIndex(
-      (group) => group.id === targetGroupId
-    );
-
-    if (targetIndex !== -1) {
-      // 아직 해당 그룹이 존재할때만!
-      const groups = [...$FeatureGroups];
-
-      // 모두 before로 업데이트해서, 이후 fgDataStateTracker가 API를 재호출 하도록 하기
-      const stateInitObj: StoreStateType = {
-        FgTsOrigin: "before",
-        FgTsScaled: "before",
-        FgTsRatio: "before",
-        FgGranger: "before",
-        FgCoint: "before",
-      };
-      $FgStoreState[groups[targetIndex].id] = stateInitObj;
-
-      // confirm 상태 변경에 따른 fgDataStateTracker 트리거링 -> before니까 API 재호출!
-      groups[targetIndex].confirm = true;
-      $FeatureGroups = groups;
-      const selected = { ...$FeatureGroupSelected };
-      if (selected.id === targetGroupId) {
-        // 해당 그룹이 선택된 그룹인 경우
-        selected.confirm = true;
-        $FeatureGroupSelected = selected;
-      }
-    }
+    // 변경사항 반영
+    updated.features = updated.features.filter((f) => f !== feature);
+    updatedGroups[targetIndex] = updated;
+    // 변경사항 적용
+    $FeatureGroupSelected = updated;
+    $FeatureGroups = updatedGroups;
+    isLoading = false;
+    document.body.style.overflow = "";
   };
+
   let featureListHeight = 3;
   $: {
     // 계산 시작
@@ -249,6 +221,10 @@
     downloadWidget = true;
   };
 </script>
+
+{#if isLoading}
+  <div class="loader"><CircleLoader /></div>
+{/if}
 
 <main bind:this={main} style="height: {featureListHeight}rem;">
   {#each $FeatureGroupSelected.features as feature}
@@ -342,6 +318,18 @@
 {/if}
 
 <style>
+  .loader {
+    position: fixed;
+    z-index: 11;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
   main {
     margin: 1rem;
     margin-right: 0.5rem;

@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { loadGroups } from "./functions";
+  import { loadGroups, initFgDataState } from "./functions";
   import {
     Text,
     FeatureGroupSelected,
     FeatureGroups,
-    FgStoreState,
+    FgDataState,
   } from "../../../modules/state";
   import Groups from "./Groups.svelte";
   import Note from "./Note.svelte";
@@ -12,11 +12,10 @@
   import Chart from "./chart/Index.svelte";
   import BouncingCubeLoader from "../../../assets/animation/BouncingCubeLoader.svelte";
 
-  const loadGroupsPromise = loadGroups();
-
-  $: if ($FgStoreState) {
-    console.log($FgStoreState);
-  }
+  const loadGroupsPromise = (async () => {
+    await loadGroups();
+    initFgDataState(); // 그룹이 먼저 로드 되어야 함
+  })();
 </script>
 
 <main>

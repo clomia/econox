@@ -2,7 +2,6 @@ import { get } from "svelte/store";
 import { api } from "../../../modules/request";
 import {
   Lang,
-  FgStoreState,
   FeatureGroups,
   FeatureGroupsLoaded,
   FeatureGroupSelected,
@@ -12,14 +11,13 @@ import {
   FgTsScaled,
   FgGranger,
   FgCoint,
+  FgDataState,
 } from "../../../modules/state";
 import type {
   FeatureGroupType,
   TsType,
   FgTsType,
   GraphType,
-  StoreStateType,
-  FgStoreStateType,
 } from "../../../modules/state";
 import type { Writable } from "svelte/store";
 
@@ -34,10 +32,7 @@ export const loadGroups = async (must = false) => {
   const resp = await api.member.get("/feature/groups", {
     params: { lang: get(Lang) },
   });
-  const data: FeatureGroupType[] = resp.data.map((group: any) => {
-    group.confirm = true;
-    return group;
-  });
+  const data: FeatureGroupType[] = resp.data;
   FeatureGroups.set(data);
   FeatureGroupsLoaded.set(true);
 
@@ -180,143 +175,64 @@ class DataAPIProxy {
   }
 }
 
+const initDataState = {
+  TimeSeries: "before",
+  Grangercausality: "before",
+  Cointegration: "before",
+};
+export const chartDataMap = {
+  line: "TimeSeries",
+  ratio: "TimeSeries",
+  granger: "Grangercausality",
+  coint: "Cointegration",
+};
 /**
- * 두 FgStoreStateType 객체가 같은지 비교합니다.
- * fgDataStateTracker가 불필요한 반응성 트리거를 막기 위해 사용합니다.
+ * FgDataState의 초기 상태를 설정함
+ * 다변량 툴 로드 시 실행되어야 하는 함수
  */
-const fgStoreStateIsSame = (
-  obj1: FgStoreStateType,
-  obj2: FgStoreStateType
-): boolean => {
-  // 두 객체의 키 집합을 확인하여 길이가 다르면 바로 false 반환
-  const keys1 = Object.keys(obj1);
-  const keys2 = Object.keys(obj2);
-  if (keys1.length !== keys2.length) return true;
-
-  for (const key of keys1) {
-    if (!obj2.hasOwnProperty(key)) {
-      return true;
-    }
-
-    const state1 = obj1[key];
-    const state2 = obj2[key];
-    const subKeys1 = Object.keys(state1);
-    const subKeys2 = Object.keys(state2);
-
-    // 하위 객체의 키 집합 길이 비교
-    if (subKeys1.length !== subKeys2.length) return true;
-
-    for (const subKey of subKeys1) {
-      if (state1[subKey] !== state2[subKey]) {
-        return true;
-      }
-    }
+export const initFgDataState = () => {
+  if (Object.keys(get(FgDataState)).length !== 0) {
+    // FgDataState 객체가 텅 비어있지 않으면 실행 X
+    return;
   }
+  const state = {};
+  get(FeatureGroups).forEach((group) => {
+    state[group.id] = initDataState;
+  });
+  FgDataState.set(state);
+};
 
-  // 모든 조건을 통과했다면 두 객체는 동일함
-  return false;
+const dataStateUpdate = (groupId: number, dataType: string, state: string) => {
+  FgDataState.update((st) => {
+    return {
+      ...st,
+      [groupId]: { ...st[groupId], [dataType]: state },
+    };
+  });
 };
 
 /**
- * FeatureGroups 상태의 변경사항을 추적하기 위한 함수입니다.
- * 변경전, 변경후 객체를 받아서 FgStoreState 상태를 업데이트합니다.
+ * 차트가 선택, 변경될 때 트리거 되야 하는 함수
+ * 차트 타입이 변경되거나 차트가 표시하는 데이터 그룹이 변경될 때 트리거 되야 함
  */
-export const fgDataStateTracker = (
-  before: FeatureGroupType[],
-  after: FeatureGroupType[]
-) => {
-  const state = JSON.parse(JSON.stringify(get(FgStoreState)));
-
-  // 1. 그룹 자체가 배열에 추가되거나 삭제된 부분을 상태에 반영합니다.
-  const stateInitObj: StoreStateType = {
-    FgTsOrigin: "before",
-    FgTsScaled: "before",
-    FgTsRatio: "before",
-    FgGranger: "before",
-    FgCoint: "before",
-  };
-  const managedGroups = Object.keys(state);
-  const groups = after.map((group) => group.id.toString());
-  // groups에는 있지만 managedGroups에는 없는 요소들
-  const added = groups.filter((item) => !managedGroups.includes(item));
-  // 추가된 그룹을 상태 관리에 추가
-  added.forEach((groupId) => (state[groupId] = stateInitObj));
-  // managedGroups에는 있지만 groups에는 없는 요소들
-  const removed = managedGroups.filter((item) => !groups.includes(item));
-  // 삭제된 그룹을 상태 관리에서 제거
-  removed.forEach((groupId) => {
-    delete state[groupId];
-  });
-
-  // 2. 그룹 내부의 features가 추가되거나 삭제된 부분을 상태에 반영합니다.
-
-  // Map을 사용하여 before와 after 배열의 id를 키로 하는 객체로 변환합니다.
-  const beforeMap = new Map(
-    before.map((item) => [item.id, item.features.length])
-  );
-  const afterMap = new Map(
-    after.map((item) => [item.id, item.features.length])
-  );
-
-  const changedFeatureGroupIds: number[] = [];
-  // features 배열 길이가 변경된 그룹 ID로 구성된 집합(set) 생성
-  before.forEach(({ id }) => {
-    if (beforeMap.get(id) !== afterMap.get(id)) {
-      changedFeatureGroupIds.push(id);
-    }
-  });
-
-  for (let i = 0; i < changedFeatureGroupIds.length; i++) {
-    const groupId = changedFeatureGroupIds[i];
-    // 데이터가 바뀐 그룹에 대해서
-    for (const key in state[groupId]) {
-      // 모든 데이터 스토어를 "업데이트 반영 전" 상태로 바꾼다.
-      state[groupId][key] = "before";
-    }
+export const chartSelectedHandler = async (nowSelected: FeatureGroupType) => {
+  const state = get(FgDataState);
+  const targetData = chartDataMap[nowSelected.chart_type];
+  const targetState = state[nowSelected.id][targetData];
+  if (targetState !== "before") {
+    return;
   }
-  if (fgStoreStateIsSame(state, get(FgStoreState))) {
-    // 반영된 내용이 기존 객체와 다른 경우 스토어를 업데이트합니다.
-    FgStoreState.set(state);
-  }
-};
 
-// fgDataStateSynchronizer와 fgDataStateTracker는 chart/Index.svelte에 의해 긴밀하게 엮여있습니다.
-// 따라서 두 로직을 함께 읽어야 동작을 파악할 수 있습니다. 두 함수는 상호 의존적입니다.
+  // during 상태는 중복 실행 방지 & 로딩 상태로 사용됨
+  dataStateUpdate(nowSelected.id, targetData, "during");
 
-/**
- * Fg 데이터 스토어에서 현재 필요한 부분만 업데이트합니다.
- * 현재의 groupSelected를 매개변수로 받습니다.
- */
-export const fgDataStateSynchronizer = async (group: FeatureGroupType) => {
-  const state = JSON.parse(JSON.stringify(get(FgStoreState)));
-  const api = new DataAPIProxy(group.id);
+  const request = new DataAPIProxy(nowSelected.id);
 
-  let isUpdate: string;
-  switch (group.chart_type) {
-    case "line":
-    case "ratio":
-      isUpdate = state[group.id].FgTsOrigin;
-      if (isUpdate !== "before") {
-        // 데이터 업데이트 상태가 before 이어야만 통과 가능
-        // 만약 confirm을 하는 업데이트라면 before가 아니더라도 통과 가능
-        return;
-      }
-      // 상태를 during으로 업데이트
-      FgStoreState.update((currentState) => {
-        const updatedState = { ...currentState };
-        updatedState[group.id] = {
-          ...updatedState[group.id],
-          FgTsOrigin: "during",
-          FgTsRatio: "during",
-          FgTsScaled: "during",
-        };
-        return updatedState;
-      });
-      if (!group.confirm) {
-        // confirm되지 않은 경우 여기에서 스탑
-        return;
-      }
-      const ts = await api.getTimeSeries();
+  // targetData에 맞게 데이터 가져와서 스토어 업데이트
+  let data: any;
+  switch (targetData) {
+    case "TimeSeries":
+      data = await request.getTimeSeries();
       [
         [FgTsOrigin, "original"],
         [FgTsScaled, "scaled"],
@@ -324,87 +240,43 @@ export const fgDataStateSynchronizer = async (group: FeatureGroupType) => {
       ].forEach(([store, name]) => {
         let _store = store as Writable<FgTsType>;
         let _name = name as string;
-        _store.update((currentState) => {
-          const newState = { ...currentState };
-          newState[group.id] = ts[_name];
-          return newState;
+        _store.update((current) => {
+          const _new = { ...current };
+          _new[nowSelected.id] = data[_name];
+          return _new;
         });
       });
-
-      // 상태를 after로 업데이트
-      FgStoreState.update((currentState) => {
-        const updatedState = { ...currentState };
-        updatedState[group.id] = {
-          ...updatedState[group.id],
-          FgTsOrigin: "after",
-          FgTsRatio: "after",
-          FgTsScaled: "after",
-        };
-        return updatedState;
-      });
       break;
-    case "granger":
-      isUpdate = state[group.id].FgGranger;
-      if (isUpdate !== "before") {
-        return;
-      }
-      FgStoreState.update((currentState) => {
-        const updatedState = { ...currentState };
-        updatedState[group.id] = {
-          ...updatedState[group.id],
-          FgGranger: "during", // 상태를 during으로 업데이트
-        };
-        return updatedState;
-      });
-      if (!group.confirm) {
-        return;
-      }
-      const granger = await api.getGrangercausality(); // API 호출
+    case "Grangercausality":
+      data = await request.getGrangercausality();
       FgGranger.update((currentState) => {
         const newState = { ...currentState };
-        newState[group.id] = granger;
+        newState[nowSelected.id] = data;
         return newState;
       });
-      FgStoreState.update((currentState) => {
-        const updatedState = { ...currentState };
-        updatedState[group.id] = {
-          ...updatedState[group.id],
-          FgGranger: "after", // 상태를 after로 업데이트
-        };
-        return updatedState;
-      });
       break;
-    case "coint":
-      isUpdate = state[group.id].FgCoint;
-      if (isUpdate !== "before") {
-        return;
-      }
-      FgStoreState.update((currentState) => {
-        const updatedState = { ...currentState };
-        updatedState[group.id] = {
-          ...updatedState[group.id],
-          FgCoint: "during", // 상태를 during으로 업데이트
-        };
-        return updatedState;
-      });
-      if (!group.confirm) {
-        return;
-      }
-      const coint = await api.getCointegration(); // API 호출
+    case "Cointegration":
+      data = await request.getCointegration();
       FgCoint.update((currentState) => {
         const newState = { ...currentState };
-        newState[group.id] = coint;
+        newState[nowSelected.id] = data;
         return newState;
       });
-      FgStoreState.update((currentState) => {
-        const updatedState = { ...currentState };
-        updatedState[group.id] = {
-          ...updatedState[group.id],
-          FgCoint: "after", // 상태를 after로 업데이트
-        };
-        return updatedState;
-      });
       break;
+  }
+  dataStateUpdate(nowSelected.id, targetData, "after");
+};
+
+/**
+ * 피쳐 그룹에 피쳐가 추가, 삭제될 때 트리거 되야 하는 함수
+ */
+export const featureAddDeleteHandler = (groupId: number) => {
+  FgDataState.update((state) => {
+    return { ...state, [groupId]: initDataState };
+  });
+  const nowSelected = get(FeatureGroupSelected);
+  if (groupId === nowSelected?.id) {
+    chartSelectedHandler(nowSelected);
   }
 };
 

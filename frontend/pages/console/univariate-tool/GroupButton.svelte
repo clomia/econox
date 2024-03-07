@@ -48,14 +48,7 @@
     selector = false;
   };
   const selectorOn = async () => {
-    if ($FeatureGroups.filter((g) => !g.confirm).length) {
-      // 모든 그룹이 confirm되지 않은 경우 변경할 수 없음
-      await swal(
-        "삭제 처리중인 데이터 그룹이 있습니다. 잠시 후 다시 시도해주세요"
-      );
-    } else {
-      selector = true;
-    }
+    selector = true;
   };
 </script>
 

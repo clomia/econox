@@ -6,26 +6,19 @@
   import {
     Text,
     FeatureGroupSelected,
-    FgStoreState,
+    FgDataState,
     FgChartFullScreen,
   } from "../../../../modules/state";
+  import { chartDataMap } from "../functions";
   import Share from "../Share.svelte";
 
   $: group = $FeatureGroupSelected; // shortcut
 
   let ready: boolean = false;
   const getReady = () => {
-    switch (group.chart_type) {
-      case "line":
-      case "ratio":
-        return $FgStoreState[group.id].FgTsOrigin === "after";
-      case "granger":
-        return $FgStoreState[group.id].FgGranger === "after";
-      case "coint":
-        return $FgStoreState[group.id].FgCoint === "after";
-    }
+    return $FgDataState[group.id][chartDataMap[group.chart_type]] === "after";
   };
-  $: if (group && $FgStoreState[group.id]) {
+  $: if (group && $FgDataState) {
     ready = getReady();
   }
 
@@ -48,22 +41,14 @@
         <div class="share__text">{$Text.ShareDataGroup}</div>
       {/if}
     </button>
-  {:else if group.confirm}
-    <div class="updating">
-      <SpinLoader size={0.4} />
-      <div class="updating__text">{$Text.Loading}</div>
-    </div>
-  {:else}
-    <div class="updating">
-      <SpinLoader size={0.4} />
-      <div class="updating__text">{$Text.ReflectingToDelete}</div>
-    </div>
-  {/if}
-  {#if ready}
     <button on:click={() => ($FgChartFullScreen = true)} class="fullscreen">
       <FullScreenIcon />
     </button>
   {:else}
+    <div class="updating">
+      <SpinLoader size={0.4} />
+      <div class="updating__text">{$Text.Loading}</div>
+    </div>
     <div class="layout-div"></div>
   {/if}
 </main>

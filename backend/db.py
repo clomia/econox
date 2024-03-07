@@ -106,7 +106,7 @@ async def exec(
             raise e
         log.info(
             "[DB] 암호 변경 감지. Secrets Manager로부터 암호를 업데이트합니다.\n"
-            f"현재까지 {_retry}번 재시도되었습니다. DB 암호 업데이트는 적용까지 약 1분 소요됩니다."
+            f"현재까지 {_retry}번 재시도되었습니다. DB 암호 업데이트는 적용까지 최대 1분 소요될 수 있습니다."
         )
         secret_manager = boto3.client("secretsmanager")
         try:

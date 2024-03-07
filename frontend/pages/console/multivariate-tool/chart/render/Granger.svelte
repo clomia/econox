@@ -7,7 +7,7 @@
   import {
     FeatureGroupSelected,
     FgGranger,
-    FgStoreState,
+    FgDataState,
     FgChartFullScreen,
   } from "../../../../../modules/state";
 
@@ -26,7 +26,7 @@
   });
 
   $: group = $FeatureGroupSelected; // shortcut
-  $: ready = $FgStoreState[group.id].FgGranger === "after";
+  $: ready = $FgDataState[group.id].Grangercausality === "after";
 
   $: if (group && ready) {
     chartOption = generateOption($FgGranger[group.id], group.id);

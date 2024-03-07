@@ -9,7 +9,7 @@
     FeatureGroupSelected,
     FgTsOrigin,
     FgTsScaled,
-    FgStoreState,
+    FgDataState,
     FgChartFullScreen,
   } from "../../../../../modules/state";
   import { wikiUrl } from "../../../../../modules/wiki";
@@ -30,7 +30,7 @@
   }); // 메모리 누수 방지
 
   $: group = $FeatureGroupSelected; // shortcut
-  $: ready = $FgStoreState[group.id].FgTsOrigin === "after";
+  $: ready = $FgDataState[group.id].TimeSeries === "after";
   $: columns = $FgTsOrigin[group.id] ? $FgTsOrigin[group.id][0] : [];
 
   $: if (group && ready && scaled === true) {

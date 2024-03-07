@@ -7,7 +7,7 @@
   import {
     FeatureGroupSelected,
     FgCoint,
-    FgStoreState,
+    FgDataState,
     FgChartFullScreen,
   } from "../../../../../modules/state";
 
@@ -26,7 +26,7 @@
   });
 
   $: group = $FeatureGroupSelected; // shortcut
-  $: ready = $FgStoreState[group.id].FgCoint === "after";
+  $: ready = $FgDataState[group.id].Cointegration === "after";
 
   $: if (group && ready) {
     chartOption = generateOption($FgCoint[group.id], group.id);

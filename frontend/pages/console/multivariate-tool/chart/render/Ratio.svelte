@@ -7,7 +7,7 @@
   import {
     FeatureGroupSelected,
     FgTsRatio,
-    FgStoreState,
+    FgDataState,
     FgChartFullScreen,
   } from "../../../../../modules/state";
   import { isSameArray } from "../../../../../modules/functions";
@@ -27,7 +27,7 @@
   });
 
   $: group = $FeatureGroupSelected; // shortcut
-  $: ready = $FgStoreState[group.id].FgTsRatio === "after";
+  $: ready = $FgDataState[group.id].TimeSeries === "after";
   $: columns = $FgTsRatio[group.id] ? $FgTsRatio[group.id][0] : [];
 
   $: if (group && ready) {

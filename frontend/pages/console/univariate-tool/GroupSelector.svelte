@@ -9,7 +9,11 @@
   import { api } from "../../../modules/request";
   import { FeatureGroups, Text } from "../../../modules/state";
   import { attrQuerySort, strip } from "../../../modules/functions";
-  import { loadGroups, selectGroup } from "../multivariate-tool/functions";
+  import {
+    loadGroups,
+    selectGroup,
+    featureAddDeleteHandler,
+  } from "../multivariate-tool/functions";
   import { isSame, swal, format } from "../../../modules/functions";
   import type { FeatureGroupType } from "../../../modules/state";
   export let targetFeature: {
@@ -72,6 +76,7 @@
     }); // 서버에 반영
     await loadGroups(true); // 상태 업데이트
     selectGroup(group.id);
+    featureAddDeleteHandler(group.id);
     isLoading = false;
     close();
     await swal(format($Text.f_DataAddedToGroup, { groupName: group.name }));

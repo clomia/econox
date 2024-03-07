@@ -115,20 +115,18 @@ export interface FeatureGroupType {
   chart_type: string;
   public: boolean;
   features: FeatureType[];
-  confirm?: boolean;
 }
 
 // Echarts TimeSeries Dataset
 export type TsType = [string, ...string[]] | [string, ...number[]];
 // key: '{elementSection}-{elementCode}_{factorSectionCode}-{factorCode}'
 export type ColorMapType = { [key: string]: string };
-// key: Store Name
-export type StoreStateType = {
-  FgTsOrigin: "before" | "during" | "after";
-  FgTsScaled: "before" | "during" | "after";
-  FgTsRatio: "before" | "during" | "after";
-  FgGranger: "before" | "during" | "after";
-  FgCoint: "before" | "during" | "after";
+
+// key: multivariate-tool의 DataAPIProxy API
+export type DataStateType = {
+  TimeSeries: "before" | "during" | "after";
+  Grangercausality: "before" | "during" | "after";
+  Cointegration: "before" | "during" | "after";
 };
 
 // --- key: GroupId ---
@@ -152,8 +150,8 @@ export interface FgGraphType {
 export interface FgColorMapType {
   [key: string]: ColorMapType;
 }
-export interface FgStoreStateType {
-  [key: string]: StoreStateType;
+export interface FgDataStateType {
+  [key: string]: DataStateType;
 }
 
 // ============= 전역적으로 사용되는 상태들 =============
@@ -251,8 +249,8 @@ export const FgTsScaled = writable<FgTsType>({});
 export const FgTsRatio = writable<FgTsType>({});
 export const FgGranger = writable<FgGraphType>({});
 export const FgCoint = writable<FgGraphType>({});
-// 위의 데이터 스토어 상태 기록자
-export const FgStoreState = writable<FgStoreStateType>({});
+// 데이터 업데이트 상태 기록자
+export const FgDataState = writable<FgDataStateType>({});
 
 // 해당 피쳐 그룹에 대한 기본 차트 타입
 export const FgDefaultChartType = writable<{ [key: string]: string }>({});

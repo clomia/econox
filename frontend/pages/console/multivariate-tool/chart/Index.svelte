@@ -28,8 +28,10 @@
 
   $: if ($FeatureGroupSelected) fgDataStateSynchronizer($FeatureGroupSelected);
 
-  $: if ($FeatureGroupSelected && $FgTsOrigin) {
+  $: if ($FeatureGroupSelected) {
     console.log($FeatureGroupSelected);
+  }
+  $: if ($FgTsOrigin) {
     console.log($FgTsOrigin);
   }
 </script>

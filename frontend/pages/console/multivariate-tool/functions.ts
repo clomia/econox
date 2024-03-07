@@ -225,7 +225,7 @@ export const fgDataStateTracker = (
   before: FeatureGroupType[],
   after: FeatureGroupType[]
 ) => {
-  const state = get(FgStoreState);
+  const state = JSON.parse(JSON.stringify(get(FgStoreState)));
 
   // 1. 그룹 자체가 배열에 추가되거나 삭제된 부분을 상태에 반영합니다.
   const stateInitObj: StoreStateType = {
@@ -258,21 +258,20 @@ export const fgDataStateTracker = (
     after.map((item) => [item.id, item.features.length])
   );
 
-  const changedFeatureGroupIds = new Set<number>();
+  const changedFeatureGroupIds: number[] = [];
   // features 배열 길이가 변경된 그룹 ID로 구성된 집합(set) 생성
   before.forEach(({ id }) => {
     if (beforeMap.get(id) !== afterMap.get(id)) {
-      changedFeatureGroupIds.add(id);
+      changedFeatureGroupIds.push(id);
     }
   });
 
-  for (const groupId of changedFeatureGroupIds) {
+  for (let i = 0; i < changedFeatureGroupIds.length; i++) {
+    const groupId = changedFeatureGroupIds[i];
     // 데이터가 바뀐 그룹에 대해서
     for (const key in state[groupId]) {
       // 모든 데이터 스토어를 "업데이트 반영 전" 상태로 바꾼다.
-      if (state[groupId].hasOwnProperty(key)) {
-        state[groupId][key] = "before";
-      }
+      state[groupId][key] = "before";
     }
   }
   if (fgStoreStateIsSame(state, get(FgStoreState))) {
@@ -289,7 +288,7 @@ export const fgDataStateTracker = (
  * 현재의 groupSelected를 매개변수로 받습니다.
  */
 export const fgDataStateSynchronizer = async (group: FeatureGroupType) => {
-  const state = { ...get(FgStoreState) };
+  const state = JSON.parse(JSON.stringify(get(FgStoreState)));
   const api = new DataAPIProxy(group.id);
 
   let isUpdate: string;

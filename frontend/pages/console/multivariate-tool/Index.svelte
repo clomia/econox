@@ -4,6 +4,7 @@
     Text,
     FeatureGroupSelected,
     FeatureGroups,
+    FgStoreState,
   } from "../../../modules/state";
   import Groups from "./Groups.svelte";
   import Note from "./Note.svelte";
@@ -12,6 +13,10 @@
   import BouncingCubeLoader from "../../../assets/animation/BouncingCubeLoader.svelte";
 
   const loadGroupsPromise = loadGroups();
+
+  $: if ($FgStoreState) {
+    console.log($FgStoreState);
+  }
 </script>
 
 <main>

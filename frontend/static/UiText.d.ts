@@ -146,8 +146,6 @@ export interface UiText {
     CreateGroup: "Create Group" | "그룹 만들기";
     DownloadComplete: "Your file download has completed! Please check the Downloads tab in your browser!" | "파일 다운로드가 완료되었습니다! 브라우저의 다운로드 탭을 확인해주세요!";
     ShareDataGroup: "Share this Data Group Publicly" | "이 데이터 그룹을 외부로 공유하기";
-    ReflectingToDelete: "Processing deletion..." | "삭제 처리중...";
-    ReflectingToDeleteAlert: "Cannot be performed while deletion is in progress" | "삭제 처리중에는 수행할 수 없습니다";
     FgLineChart_Name: "Line Chart" | "선 차트";
     FgLineChart_Description: "Visualize all time series in a data group as an intuitive line chart." | "데이터 그룹의 모든 시계열을 직관적인 선 차트로 시각화합니다.";
     FgRatioChart_Name: "Ratio Chart" | "비율 차트";

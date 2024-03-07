@@ -460,12 +460,6 @@ DownloadComplete:
 ShareDataGroup:
   en: "Share this Data Group Publicly"
   ko: "이 데이터 그룹을 외부로 공유하기"
-ReflectingToDelete:
-  en: "Processing deletion..."
-  ko: "삭제 처리중..."
-ReflectingToDeleteAlert:
-  en: "Cannot be performed while deletion is in progress"
-  ko: "삭제 처리중에는 수행할 수 없습니다"
 FgLineChart_Name:
   en: "Line Chart"
   ko: "선 차트"

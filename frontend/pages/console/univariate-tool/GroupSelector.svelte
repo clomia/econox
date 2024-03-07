@@ -204,6 +204,7 @@
   .list {
     height: 18rem;
     overflow: auto;
+    padding-bottom: 0.8rem;
   }
   .list__add,
   .list__exist {

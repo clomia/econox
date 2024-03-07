@@ -7,6 +7,7 @@
     FeatureGroupSelected,
     CountryCodeMap,
   } from "../../../modules/state";
+  import { featureAddDeleteHandler } from "./functions";
   import CircleLoader from "../../../assets/animation/CircleLoader.svelte";
   import EditIcon from "../../../assets/icon/EditIcon.svelte";
   import MinusIcon from "../../../assets/icon/MinusIcon.svelte";
@@ -184,6 +185,7 @@
     $FeatureGroups = updatedGroups;
     isLoading = false;
     document.body.style.overflow = "";
+    featureAddDeleteHandler(targetGroupId);
   };
 
   let featureListHeight = 3;
@@ -195,7 +197,7 @@
     } else if ($FeatureGroupSelected.features.length <= 2) {
       value = 11;
     } else {
-      value = $FeatureGroupSelected.features.length * 5.3;
+      value = $FeatureGroupSelected.features.length * 5.4;
     }
     // 계산 종료
     // 할당 (27가 최대치임, 딱 5개 들어감)

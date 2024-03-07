@@ -104,11 +104,12 @@ export const generateOption = (datasetSource: any, groupId: number) => {
     series: datasetSource[0].slice(1).map((feature: string) => {
       return {
         name: feature,
+        large: true,
         type: "line",
         symbol: "none",
         emphasis: { disabled: true },
         connectNulls: true,
-        lineStyle: { color: colorMap[feature], opacity: 1, width: 2 },
+        lineStyle: { color: colorMap[feature], opacity: 1, width: 1.2 },
         encode: {
           x: "t",
           y: feature,

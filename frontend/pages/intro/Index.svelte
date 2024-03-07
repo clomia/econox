@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import GraphGen from "./GraphGen.svelte";
-  import LinesGen from "./LinesGen.svelte";
+  import LinesGen from "./line-gen/Index.svelte";
   import TxtEffect from "./TxtEffect.svelte";
   import ReflectiveButton from "../../components/ReflectiveButton.svelte";
   import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
@@ -67,7 +67,10 @@
   <GraphGen width="100%" height="100%" />
 </section>
 <section class="page2">
-  <LinesGen />
+  <div class="page2-grdnt" />
+  <div class="multiline-chart">
+    <LinesGen width="100%" height="100%" />
+  </div>
 </section>
 
 <style>
@@ -85,7 +88,7 @@
       rgba(32, 34, 36) 20%,
       rgba(22, 24, 26) 50%,
       rgba(32, 34, 36) 80%,
-      rgba(0, 0, 0, 0) 100%
+      rgb(32, 34, 37) 100%
     );
     height: 100vh;
     width: var(--max-vw);
@@ -94,6 +97,14 @@
     position: relative;
     height: 100vh;
     width: var(--max-vw);
+    background: linear-gradient(
+      to bottom,
+      rgb(32, 34, 37) 0%,
+      rgba(22, 24, 26) 30%,
+      rgb(18, 19, 20) 50%,
+      rgba(22, 24, 26) 80%,
+      rgba(0, 0, 0, 0) 100%
+    );
   }
   .intro-main {
     position: absolute;
@@ -112,8 +123,7 @@
       black 0%,
       rgb(31, 48, 54, 1) 0%,
       rgba(0, 0, 0, 0) 5%,
-      rgba(0, 0, 0, 0) 95%,
-      rgb(31, 48, 54, 1) 100%
+      rgba(0, 0, 0, 0) 100%
     );
   }
   .intro-main__subtitle {
@@ -167,6 +177,25 @@
       to bottom,
       rgba(0, 0, 0, 0) 0%,
       rgba(255, 255, 255, 0.03) 100%
+    );
+  }
+  .multiline-chart {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 80%;
+    height: 50%;
+  }
+  .page2-grdnt {
+    position: absolute;
+    top: -10%;
+    right: 10%;
+    width: 40rem;
+    height: 40rem;
+    background: radial-gradient(
+      rgba(255, 100, 100, 0.08) 0%,
+      rgba(0, 0, 0, 0) 80%,
+      rgba(0, 0, 0, 0) 100%
     );
   }
 </style>

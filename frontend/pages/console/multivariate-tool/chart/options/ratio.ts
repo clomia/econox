@@ -85,6 +85,7 @@ export const generateOption = (datasetSource: any, groupId: number) => {
     series: datasetSource[0].slice(1).map((feature: string) => {
       return {
         name: feature,
+        large: true,
         type: "line",
         symbol: "none",
         emphasis: { disabled: true }, // emphasis 기능은 불안정하다.

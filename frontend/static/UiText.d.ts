@@ -12,6 +12,7 @@ export interface UiText {
     Email: "Email" | "이메일";
     Password: "Password" | "비밀번호";
     RetypePassword: "Retype password" | "비밀번호 확인";
+    ComingSoon: "Coming soon" | "준비 중입니다";
     LoginInfoIncorrect: "Email or password is incorrect" | "이메일 또는 비밀번호가 올바르지 않습니다";
     UnexpectedError: "An unexpected error has occurred" | "예기치 못한 오류가 발생했습니다";
     LoginRequired: "Access Denied. Please Log In to Continue" | "로그인 후 이용할 수 있습니다";

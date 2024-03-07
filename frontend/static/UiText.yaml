@@ -29,6 +29,9 @@ Password:
 RetypePassword:
   en: "Retype password"
   ko: "비밀번호 확인"
+ComingSoon:
+  en: "Coming soon"
+  ko: "준비 중입니다"
 LoginInfoIncorrect:
   en: "Email or password is incorrect"
   ko: "이메일 또는 비밀번호가 올바르지 않습니다"

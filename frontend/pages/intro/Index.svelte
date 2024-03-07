@@ -26,7 +26,7 @@
     const color = "rgb(31, 48, 54)";
     document.documentElement.style.background = color;
     document.body.style.background = color;
-    introMain.scrollIntoView({ behavior: "smooth", block: "end" });
+    introMain.scrollIntoView({ behavior: "instant", block: "end" });
     window.addEventListener("scroll", scrollHandler);
   });
   onDestroy(() => {

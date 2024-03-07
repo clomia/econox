@@ -357,12 +357,16 @@ export const hasGap = (inputString: string): boolean => {
 /**
  * OK 버튼이 나오는 Swal 띄우기
  */
-export const swal = async (message: string, width = "33rem") => {
+export const swal = async (
+  message: string,
+  width = "33rem",
+  icon: any = "info"
+) => {
   const text = get(Text);
   await Swal.fire({
     ...defaultSwalStyle,
     width,
-    icon: "info",
+    icon,
     showDenyButton: false,
     title: message,
     confirmButtonText: text.Ok,

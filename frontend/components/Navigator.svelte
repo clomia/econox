@@ -1,13 +1,26 @@
 <script lang="ts">
   import { navigate } from "svelte-routing";
+  import { swal } from "../modules/functions";
   import { UserInfo, Text } from "../modules/state";
   import Profile from "../assets/icon/Profile.svelte";
+
+  const navConsole = async () => {
+    if ($UserInfo.id) {
+      navigate("/console");
+    } else {
+      await swal($Text.LoginRequired, "25rem");
+      navigate("/auth");
+    }
+  };
+  const navFeatureHub = async () => {
+    await swal($Text.ComingSoon, "25rem");
+  };
 </script>
 
 <section>
   <button on:click={() => navigate("/")}>Econox</button>
-  <button on:click={() => navigate("/console")}>{$Text.Console}</button>
-  <button>{$Text.FeatureHub}</button>
+  <button on:click={navConsole}>{$Text.Console}</button>
+  <button on:click={navFeatureHub}>{$Text.FeatureHub}</button>
   {#if $UserInfo.id}
     <button on:click={() => navigate("/account")}>
       <div class="profile-icon"><Profile /></div>

@@ -2,7 +2,7 @@
   import {
     FeatureGroups,
     FeatureGroupSelected,
-    FgTsOrigin,
+    FgStoreState,
   } from "../../../../modules/state";
   import { fgDataStateTracker, fgDataStateSynchronizer } from "../functions";
   import Header from "./Header.svelte";
@@ -28,11 +28,8 @@
 
   $: if ($FeatureGroupSelected) fgDataStateSynchronizer($FeatureGroupSelected);
 
-  $: if ($FeatureGroupSelected) {
-    console.log($FeatureGroupSelected);
-  }
-  $: if ($FgTsOrigin) {
-    console.log($FgTsOrigin);
+  $: if ($FgStoreState) {
+    console.log($FgStoreState);
   }
 </script>
 

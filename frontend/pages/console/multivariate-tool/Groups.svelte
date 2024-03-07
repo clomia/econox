@@ -29,7 +29,9 @@
     await chartSelectedHandler(group);
   };
   const deleteGroup = async (group: FeatureGroupType) => {
-    $FeatureGroupSelected = null;
+    if (group.id === $FeatureGroupSelected.id) {
+      $FeatureGroupSelected = null;
+    }
     $FeatureGroups = $FeatureGroups.filter((g) => g.id !== group.id);
     await api.member.delete("feature/group", {
       params: { group_id: group.id },

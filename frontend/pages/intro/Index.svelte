@@ -11,20 +11,29 @@
   let page2: HTMLElement;
 
   let toggleOn = true;
+  let page2DescOn = false;
   const scrollHandler = () => {
     // 현재 스크롤상 화면이 introMain보다 위에 있을때만 토글 버튼이 활성화되도록 한다.
     // 한번 비활성화되면 다시 활성화되지 않아야 한다.
     const eleRect = introMain.getBoundingClientRect();
     const eleTop = eleRect.top + window.scrollY;
-    const eleScrollY = eleTop + eleRect.height - window.innerHeight;
-    if (window.scrollY > eleScrollY + 5) {
+    const eleBottom = eleRect.bottom + window.scrollY;
+    const eleScrollYRefTop = eleTop + eleRect.height - window.innerHeight;
+    const eleScrollYRefBottom = eleBottom + eleRect.height - window.innerHeight;
+    if (window.scrollY > eleScrollYRefTop + 5) {
       // 5는 그냥 버퍼임
       toggleOn = false;
+    }
+    if (window.scrollY > eleScrollYRefBottom - 65) {
+      page2DescOn = true;
+    } else {
+      page2DescOn = false;
     }
   };
   const scrollPage2 = () => {
     page2.scrollIntoView({ behavior: "smooth", block: "end" });
   };
+  $: console.log(page2DescOn);
 
   onMount(() => {
     // 단색으로 해야 세밀한 조작에 유리함
@@ -58,7 +67,7 @@
           color="rgb(230, 230, 230)"
         />
       </div>
-      <div class="intro-main__bottom-text__desc" style="margin-top: 2rem;">
+      <div class="intro-main__bottom-text__desc">
         이코녹스는 전 세계 기업의 방대한 시계열 데이터를 제공합니다
       </div>
     </div>
@@ -71,6 +80,9 @@
   <GraphGen width="100%" height="100%" />
 </section>
 <section class="page2" bind:this={page2}>
+  <div class="page2__desc" class:page2__desc_on={page2DescOn}>
+    이코녹스는 전 세계 기업의 방대한 시계열 데이터를 제공합니다
+  </div>
   <div class="page2__top-gradient" />
   <div class="multiline-chart">
     <LinesGen width="100%" height="60%" />
@@ -235,5 +247,21 @@
       rgba(0, 0, 0, 0) 70%,
       rgba(0, 0, 0, 0) 100%
     );
+  }
+  .page2__desc {
+    position: absolute;
+    top: 2rem;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 20;
+    color: var(--text-color);
+    font-size: 1.3rem;
+    opacity: 0;
+    transition: opacity 1s ease-in;
+  }
+  .page2__desc_on {
+    opacity: 1;
   }
 </style>

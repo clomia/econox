@@ -8,6 +8,7 @@
   import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
 
   let introMain: HTMLElement;
+  let page2: HTMLElement;
 
   let toggleOn = true;
   const scrollHandler = () => {
@@ -20,6 +21,9 @@
       // 5는 그냥 버퍼임
       toggleOn = false;
     }
+  };
+  const scrollPage2 = () => {
+    page2.scrollIntoView({ behavior: "smooth", block: "end" });
   };
 
   onMount(() => {
@@ -59,14 +63,15 @@
       </div>
     </div>
     {#if toggleOn}
-      <button class="intro-main__bottom-btn">
+      <button class="intro-main__bottom-btn" on:click={scrollPage2}>
         <ToggleArrow />
       </button>
     {/if}
   </div>
   <GraphGen width="100%" height="100%" />
 </section>
-<section class="page2">
+<section class="page2" bind:this={page2}>
+  <div class="page2__top-gradient" />
   <div class="multiline-chart">
     <LinesGen width="100%" height="60%" />
   </div>
@@ -94,8 +99,7 @@
       rgba(0, 0, 0, 0) 0%,
       rgba(32, 34, 36) 20%,
       rgba(22, 24, 26) 50%,
-      rgba(32, 34, 36) 80%,
-      rgb(32, 34, 37) 100%
+      rgb(10, 10, 11) 100%
     );
     height: 100vh;
     width: var(--max-vw);
@@ -106,12 +110,23 @@
     width: var(--max-vw);
     background: linear-gradient(
       to bottom,
-      rgb(32, 34, 37) 0%,
-      rgba(22, 24, 26) 30%,
-      rgba(22, 24, 26) 70%,
+      rgb(10, 10, 11) 0%,
+      rgba(10, 10, 11) 70%,
       rgba(0, 0, 0, 0) 100%
     );
-    /* rgb(18, 19, 20) 50%, */
+  }
+  .page2__top-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    height: 10%;
+    width: 100%;
+    background: linear-gradient(
+      to bottom,
+      rgb(10, 10, 11) 0%,
+      rgba(0, 0, 0, 0) 100%
+    );
   }
   .intro-main {
     position: absolute;
@@ -128,10 +143,10 @@
     background: linear-gradient(
       to bottom,
       black 0%,
-      rgb(31, 48, 54, 1) 0%,
+      rgb(31, 48, 54) 0%,
       rgba(0, 0, 0, 0) 10%,
       rgba(0, 0, 0, 0) 90%,
-      rgba(32, 34, 37, 1) 100%
+      rgb(10, 10, 11) 100%
     );
   }
   .intro-main__subtitle {
@@ -197,7 +212,6 @@
     align-items: center;
     justify-content: center;
     opacity: 0.4;
-    z-index: 1;
   }
   .earth-main,
   .earth-behind {
@@ -212,9 +226,6 @@
   }
   .earth-main {
     z-index: 10;
-  }
-  .earth-behind {
-    z-index: 2;
   }
   .earth-behind__gradient {
     width: 100vmax;

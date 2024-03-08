@@ -2,6 +2,7 @@
   import { onMount, onDestroy } from "svelte";
   import GraphGen from "./GraphGen.svelte";
   import LinesGen from "./line-gen/Index.svelte";
+  import Earth from "./Earth.svelte";
   import TxtEffect from "./TxtEffect.svelte";
   import ReflectiveButton from "../../components/ReflectiveButton.svelte";
   import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
@@ -11,14 +12,13 @@
   let toggleOn = true;
   const scrollHandler = () => {
     // 현재 스크롤상 화면이 introMain보다 위에 있을때만 토글 버튼이 활성화되도록 한다.
+    // 한번 비활성화되면 다시 활성화되지 않아야 한다.
     const eleRect = introMain.getBoundingClientRect();
     const eleTop = eleRect.top + window.scrollY;
     const eleScrollY = eleTop + eleRect.height - window.innerHeight;
     if (window.scrollY > eleScrollY + 5) {
       // 5는 그냥 버퍼임
       toggleOn = false;
-    } else {
-      toggleOn = true;
     }
   };
 
@@ -67,9 +67,16 @@
   <GraphGen width="100%" height="100%" />
 </section>
 <section class="page2">
-  <div class="page2-grdnt" />
   <div class="multiline-chart">
-    <LinesGen width="100%" height="100%" />
+    <LinesGen width="100%" height="60%" />
+  </div>
+  <div class="earth">
+    <div class="earth-main">
+      <Earth width="30vw" height="30vw" distance={150} />
+    </div>
+    <div class="earth-behind">
+      <div class="earth-behind__gradient"></div>
+    </div>
   </div>
 </section>
 
@@ -101,10 +108,10 @@
       to bottom,
       rgb(32, 34, 37) 0%,
       rgba(22, 24, 26) 30%,
-      rgb(18, 19, 20) 50%,
-      rgba(22, 24, 26) 80%,
+      rgba(22, 24, 26) 70%,
       rgba(0, 0, 0, 0) 100%
     );
+    /* rgb(18, 19, 20) 50%, */
   }
   .intro-main {
     position: absolute;
@@ -122,8 +129,9 @@
       to bottom,
       black 0%,
       rgb(31, 48, 54, 1) 0%,
-      rgba(0, 0, 0, 0) 5%,
-      rgba(0, 0, 0, 0) 100%
+      rgba(0, 0, 0, 0) 10%,
+      rgba(0, 0, 0, 0) 90%,
+      rgba(32, 34, 37, 1) 100%
     );
   }
   .intro-main__subtitle {
@@ -182,19 +190,38 @@
   .multiline-chart {
     position: absolute;
     top: 0;
-    right: 0;
-    width: 80%;
-    height: 50%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.4;
+    z-index: 1;
   }
-  .page2-grdnt {
+  .earth-main,
+  .earth-behind {
     position: absolute;
-    top: -10%;
-    right: 10%;
-    width: 40rem;
-    height: 40rem;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .earth-main {
+    z-index: 10;
+  }
+  .earth-behind {
+    z-index: 2;
+  }
+  .earth-behind__gradient {
+    width: 100vmax;
+    height: 100vmax;
     background: radial-gradient(
-      rgba(255, 100, 100, 0.08) 0%,
-      rgba(0, 0, 0, 0) 80%,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 0) 70%,
       rgba(0, 0, 0, 0) 100%
     );
   }

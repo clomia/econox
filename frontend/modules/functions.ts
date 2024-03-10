@@ -385,3 +385,14 @@ export const isSameArray = (array1: any[], array2: any[]) => {
   // 길이가 같을 경우, 모든 요소가 동일한지 검사
   return array1.every((element, index) => element === array2[index]);
 };
+
+export const isInViewport = (element: HTMLElement) => {
+  const rect = element.getBoundingClientRect();
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <=
+      (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+};

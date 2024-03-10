@@ -8,6 +8,7 @@ export IS_LOCAL="true"
 redis-server &
 
 # Svelte 코드 빌드 & 번들링
+npm install
 npm run build
 
 # 종료 처리기 함수

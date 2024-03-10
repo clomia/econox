@@ -6,9 +6,11 @@
   import TxtEffect from "./TxtEffect.svelte";
   import ReflectiveButton from "../../components/ReflectiveButton.svelte";
   import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
+  import { isInViewport } from "../../modules/functions";
 
   let introMain: HTMLElement;
   let page2: HTMLElement;
+  let page1desc: HTMLElement;
 
   let toggleOn = true;
   let page2DescOn = false;
@@ -17,18 +19,12 @@
     // 한번 비활성화되면 다시 활성화되지 않아야 한다.
     const eleRect = introMain.getBoundingClientRect();
     const eleTop = eleRect.top + window.scrollY;
-    const eleBottom = eleRect.bottom + window.scrollY;
     const eleScrollYRefTop = eleTop + eleRect.height - window.innerHeight;
-    const eleScrollYRefBottom = eleBottom + eleRect.height - window.innerHeight;
     if (window.scrollY > eleScrollYRefTop + 5) {
       // 5는 그냥 버퍼임
       toggleOn = false;
     }
-    if (window.scrollY > eleScrollYRefBottom - 65) {
-      page2DescOn = true;
-    } else {
-      page2DescOn = false;
-    }
+    page2DescOn = !isInViewport(page1desc);
   };
   const scrollPage2 = () => {
     page2.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -67,7 +63,11 @@
           color="rgb(230, 230, 230)"
         />
       </div>
-      <div class="intro-main__bottom-text__desc">
+      <div
+        class="intro-main__bottom-text__desc"
+        class:page2__desc_off={page2DescOn}
+        bind:this={page1desc}
+      >
         이코녹스는 전 세계 기업의 방대한 시계열 데이터를 제공합니다
       </div>
     </div>
@@ -192,6 +192,12 @@
     margin-top: 2rem;
     color: var(--text-color);
     font-size: 1.3rem;
+    opacity: 1;
+    transition: opacity 1s ease-in;
+  }
+  .page2__desc_off {
+    opacity: 0;
+    transition: none;
   }
   .intro-main__bottom-btn {
     position: absolute;
@@ -259,9 +265,10 @@
     color: var(--text-color);
     font-size: 1.3rem;
     opacity: 0;
-    transition: opacity 1s ease-in;
+    transition: none;
   }
   .page2__desc_on {
     opacity: 1;
+    transition: opacity 1s ease-in;
   }
 </style>

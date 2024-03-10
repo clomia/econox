@@ -95,7 +95,7 @@
     let node = ["0"];
     const colormap = { "0": randomColor() };
     const causality = [];
-    const LIMIT = 45; // 최대 노드 갯수
+    const LIMIT = 50; // 최대 노드 갯수
     const REPEAT = 5; // 최대 노드 갯수 하에서 제거, 생성을 반복
     let removed: number | null = null;
     setInterval(() => {

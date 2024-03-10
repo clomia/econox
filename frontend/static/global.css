@@ -7,7 +7,6 @@
   --widget-background: linear-gradient(to top, #2e2f32, rgb(32, 49, 55));
 }
 
-html,
 body {
   display: flex;
   flex-direction: column;

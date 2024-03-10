@@ -36,12 +36,14 @@
     const color = "rgb(31, 48, 54)";
     document.documentElement.style.background = color;
     document.body.style.background = color;
+    document.body.style.paddingBottom = "0";
     introMain.scrollIntoView({ behavior: "instant", block: "end" });
     window.addEventListener("scroll", scrollHandler);
   });
   onDestroy(() => {
     document.documentElement.style.background = "";
     document.body.style.background = "";
+    document.body.style.paddingBottom = "";
   });
   const introBottomText = ["주가", "매출", "부채", "직원 수"];
 </script>
@@ -79,23 +81,26 @@
   </div>
   <GraphGen width="100%" height="100%" />
 </section>
+
 <section class="page2" bind:this={page2}>
   <div class="page2__desc" class:page2__desc_on={page2DescOn}>
     이코녹스는 전 세계 기업의 방대한 시계열 데이터를 제공합니다
   </div>
-  <div class="page2__top-gradient" />
   <div class="multiline-chart">
     <LinesGen width="100%" height="60%" />
   </div>
   <div class="earth">
+    <div class="earch-front" />
     <div class="earth-main">
       <Earth width="30vw" height="30vw" distance={150} />
     </div>
     <div class="earth-behind">
-      <div class="earth-behind__gradient"></div>
+      <div class="earth-behind__gradient" />
     </div>
   </div>
 </section>
+
+<section class="page3">안녕하세요</section>
 
 <style>
   :root {
@@ -120,25 +125,15 @@
     position: relative;
     height: 100vh;
     width: var(--max-vw);
-    background: linear-gradient(
-      to bottom,
-      rgb(10, 10, 11) 0%,
-      rgba(10, 10, 11) 70%,
-      rgba(0, 0, 0, 0) 100%
-    );
+    background-color: rgb(10, 10, 11);
   }
-  .page2__top-gradient {
+  .page3 {
     position: absolute;
-    top: 0;
     left: 0;
-    z-index: 1;
-    height: 10%;
+    bottom: 0;
     width: 100%;
-    background: linear-gradient(
-      to bottom,
-      rgb(10, 10, 11) 0%,
-      rgba(0, 0, 0, 0) 100%
-    );
+    height: 2rem;
+    background-color: red;
   }
   .intro-main {
     position: absolute;
@@ -232,7 +227,8 @@
     opacity: 0.4;
   }
   .earth-main,
-  .earth-behind {
+  .earth-behind,
+  .earch-front {
     position: absolute;
     top: 0;
     left: 0;
@@ -245,12 +241,18 @@
   .earth-main {
     z-index: 10;
   }
+  .earth-behind {
+    z-index: 9;
+  }
+  .earch-front {
+    z-index: 11;
+  }
   .earth-behind__gradient {
     width: 100vmax;
     height: 100vmax;
     background: radial-gradient(
       rgba(0, 0, 0, 1) 0%,
-      rgba(0, 0, 0, 0) 70%,
+      rgba(0, 0, 0, 0) 40%,
       rgba(0, 0, 0, 0) 100%
     );
   }

@@ -263,7 +263,7 @@
     justify-content: center;
     z-index: 20;
     color: var(--text-color);
-    font-size: 1.3rem;
+    font-size: 1.6rem;
     opacity: 0;
     transition: none;
   }

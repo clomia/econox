@@ -38,7 +38,7 @@
 
   const init = () => {
     const chart = echarts.init(chartContainer);
-    window.onresize = chart.resize;
+    window.addEventListener("resize", () => chart.resize());
     chart.setOption(option);
   };
 

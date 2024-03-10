@@ -90,7 +90,7 @@
 
   const init = () => {
     const chart = echarts.init(chartContainer);
-    window.onresize = chart.resize;
+    window.addEventListener("resize", () => chart.resize());
 
     let node = ["0"];
     const colormap = { "0": randomColor() };

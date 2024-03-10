@@ -26,6 +26,7 @@
       yAxis: { show: false },
       series: seriesSource.map((feature: string) => {
         return {
+          large: true,
           animation: false,
           silent: true,
           emphasis: { disabled: true },
@@ -63,7 +64,7 @@
 
   const init = () => {
     const chart = echarts.init(chartContainer);
-    window.onresize = chart.resize;
+    window.addEventListener("resize", () => chart.resize());
 
     const header = data.shift();
     const windowSize = Math.floor(data.length / 2); // header제외

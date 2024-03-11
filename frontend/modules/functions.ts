@@ -2,7 +2,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { get } from "svelte/store";
 import { api } from "./request";
-import { Text, UserInfo, Lang, CountryCodeMap } from "./state";
+import { Text, UserInfo, Lang, CountryCodeMap, FirstURL } from "./state";
 import { loadUiText } from "./uiText";
 import { settingObjectStore } from "./_storage";
 
@@ -45,6 +45,7 @@ export const init = async () => {
     currentUrl.hostname = "www." + hostname;
     window.location.href = currentUrl.toString(); // 리디렉션
   }
+  FirstURL.set(currentUrl);
 
   // ========== UI 텍스트와 유저 데이터를 불러옵니다. ==========
   const [uiText, countryCodeMap, cognitoToken, cognitoRefreshToken] =

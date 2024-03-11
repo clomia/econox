@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { Text, Lang } from "../../modules/state";
+  import { Text, Lang, FirstURL } from "../../modules/state";
   import GraphGen from "./GraphGen.svelte";
   import LinesGen from "./line-gen/Index.svelte";
   import Earth from "./Earth.svelte";
@@ -42,6 +42,9 @@
   };
 
   onMount(() => {
+    // 리소스 정리 문제로 인해 여러번 마운트될 수 없음
+    console.log($FirstURL.pathname);
+    if ($FirstURL.pathname !== "/") location.reload();
     // 단색으로 해야 세밀한 조작에 유리함
     const color = "rgb(31, 48, 54)";
     document.documentElement.style.background = color;

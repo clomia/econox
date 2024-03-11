@@ -415,7 +415,7 @@
     width: 100%;
     height: 1px;
     background-color: rgb(157, 157, 157);
-    z-index: 12;
+    z-index: 10;
     opacity: 0.4;
   }
   .footer {

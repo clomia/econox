@@ -17,6 +17,8 @@
     } else if (location.hash === "#signup") {
       $Toggle.login = false;
       $Toggle.signup = true;
+    } else {
+      location.hash = "#login";
     }
   });
 </script>

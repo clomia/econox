@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { Text, Lang, FirstURL } from "../../modules/state";
+  import { Text, Lang, IntroMounted } from "../../modules/state";
   import GraphGen from "./GraphGen.svelte";
   import LinesGen from "./line-gen/Index.svelte";
   import Earth from "./Earth.svelte";
@@ -15,6 +15,7 @@
   let page1desc: HTMLElement;
   let page2TextTop: HTMLElement;
   let page2TextBottom: HTMLElement;
+  let page2DescHeight: number = 0;
 
   let toggleOn = true;
   let page2DescOn = false;
@@ -43,8 +44,8 @@
 
   onMount(() => {
     // 리소스 정리 문제로 인해 여러번 마운트될 수 없음
-    console.log($FirstURL.pathname);
-    if ($FirstURL.pathname !== "/") location.reload();
+    if ($IntroMounted) location.reload();
+    $IntroMounted = true;
     // 단색으로 해야 세밀한 조작에 유리함
     const color = "rgb(31, 48, 54)";
     document.documentElement.style.background = color;
@@ -58,6 +59,8 @@
     document.body.style.background = "";
     document.body.style.paddingBottom = "";
   });
+
+  $: page2TextTopPx = page2DescHeight + 40;
 </script>
 
 <section class="page1">
@@ -76,7 +79,7 @@
       <div class="intro-main__bottom-text__main">
         <TxtEffect
           txtArr={introBottomText[$Lang]}
-          size="1.5rem"
+          size="1.6rem"
           color="rgb(230, 230, 230)"
         />
       </div>
@@ -98,13 +101,19 @@
 </section>
 
 <section class="page2" bind:this={page2}>
-  <div class="page2__desc" class:page2__desc_on={page2DescOn}>
+  <div
+    class="page2__desc"
+    bind:clientHeight={page2DescHeight}
+    class:page2__desc_on={page2DescOn}
+  >
     {$Text.IntroPage2Desc}
   </div>
   <div
     class="page2__text-top"
     bind:this={page2TextTop}
+    style="top: {page2DescOn ? page2TextTopPx : 0}px;"
     class:page2-text-on={page2TextTopOn}
+    class:page2__text-top-up={!page2DescOn}
   >
     <p>{$Text.IntroPage2TopP1}</p>
     <p>{$Text.IntroPage2TopP2}</p>
@@ -117,6 +126,7 @@
     <p>{$Text.IntroPage2BottomP1}</p>
     <p>{$Text.IntroPage2BottomP2}</p>
   </div>
+  <div class="multiline-chart-front" />
   <div class="multiline-chart">
     <LinesGen width="100%" height="60%" />
   </div>
@@ -208,13 +218,16 @@
     );
   }
   .intro-main__subtitle {
-    font-size: 2rem;
+    font-size: max(2rem, 2.5vw);
     color: white;
+    text-align: center;
   }
   .intro-main__title {
     margin-top: 0.5rem;
-    font-size: 2.5rem;
+    font-size: max(2.5rem, 3.5vw);
     color: white;
+    text-align: center;
+    padding: 0 2rem;
   }
   .intro-main__start-btn {
     margin-top: 4rem;
@@ -233,13 +246,15 @@
   .intro-main__bottom-text__desc {
     display: flex;
     justify-content: center;
+    text-align: center;
+    padding: 0 2rem;
   }
   .intro-main__bottom-text__desc {
     display: flex;
     justify-content: center;
     margin-top: 2rem;
     color: var(--text-color);
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     opacity: 1;
     transition: opacity 500ms ease-in;
   }
@@ -261,7 +276,7 @@
   }
   .intro-main__bottom-btn:hover {
     cursor: pointer;
-    opacity: 1;
+    opacity: 0.7;
     background: linear-gradient(
       to bottom,
       rgba(0, 0, 0, 0) 0%,
@@ -278,6 +293,21 @@
     align-items: center;
     justify-content: center;
     opacity: 0.4;
+  }
+  .multiline-chart-front {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: linear-gradient(
+      to right,
+      rgb(10, 10, 11) 15%,
+      rgba(0, 0, 0, 0) 20%,
+      rgba(0, 0, 0, 0) 80%,
+      rgb(10, 10, 11) 85%
+    );
   }
   .earth-main,
   .earth-behind,
@@ -319,9 +349,11 @@
     justify-content: center;
     z-index: 10;
     color: var(--text-color);
-    font-size: 1.3rem;
+    font-size: max(1.5rem, 1.5vw);
     opacity: 0;
     transition: none;
+    text-align: center;
+    padding: 0 2rem;
   }
   .page2__desc_on {
     opacity: 1;
@@ -339,16 +371,26 @@
     color: var(--text-color);
     font-size: 1.1rem;
     opacity: 0;
-    transition: opacity 200ms ease-in;
+    transition:
+      opacity 200ms ease-in,
+      top 100ms ease-in-out;
+    text-align: center;
+    padding: 0 2rem;
   }
   .page2-text-on {
     opacity: 1;
   }
   .page2__text-top {
-    top: 5rem;
+    opacity: 0.8;
+  }
+  .page2__text-top-up {
+    top: 0rem;
+    font-size: 1.4rem;
+    opacity: 1;
   }
   .page2__text-bottom {
     bottom: 2rem;
+    font-size: 1.4rem;
   }
   .page2__bottom {
     position: absolute;
@@ -362,6 +404,7 @@
   }
   .footer {
     padding: 2rem 1rem;
+    padding-bottom: 5.5rem;
   }
   .footer__r1 {
     font-size: 1.1rem;

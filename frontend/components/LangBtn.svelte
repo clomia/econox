@@ -3,7 +3,7 @@
   import { currentLang, supportedLangs, changeLang } from "../modules/uiText";
   import LanguageIcon from "../assets/icon/LanguageIcon.svelte";
 
-  export let url: any;
+  export let url: string;
 
   let toggle = false;
   const apply = async (event: Event) => {
@@ -84,9 +84,9 @@
     background-color: rgb(54, 63, 80);
   }
   .for-intro-page {
-    background-color: rgba(255, 255, 255, 0);
+    background-color: rgb(10, 10, 11);
   }
   .for-intro-page:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgb(24, 24, 26);
   }
 </style>

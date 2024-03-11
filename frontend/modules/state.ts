@@ -256,4 +256,4 @@ export const FgDataState = writable<FgDataStateType>({});
 export const FgDefaultChartType = writable<{ [key: string]: string }>({});
 export const FgChartFullScreen = writable(false);
 
-export const FirstURL = writable<URL>();
+export const IntroMounted = writable(false);

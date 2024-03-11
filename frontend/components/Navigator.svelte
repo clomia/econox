@@ -4,6 +4,13 @@
   import { UserInfo, Text } from "../modules/state";
   import Profile from "../assets/icon/Profile.svelte";
 
+  export let url: string;
+  $: isIntroPage = url === "/";
+  let hide = isIntroPage && window.innerWidth < 740;
+  window.addEventListener("resize", () => {
+    hide = isIntroPage && window.innerWidth < 740;
+  });
+
   const navConsole = async () => {
     if ($UserInfo.id) {
       navigate("/console");
@@ -17,7 +24,7 @@
   };
 </script>
 
-<section>
+<section style={hide ? "display: none;" : ""}>
   <button on:click={() => navigate("/")}>Econox</button>
   <button on:click={navConsole}>{$Text.Console}</button>
   <button on:click={navFeatureHub}>{$Text.FeatureHub}</button>

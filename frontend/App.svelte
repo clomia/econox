@@ -18,7 +18,7 @@
     {#each routes as route}
       <Route path={route.path} let:params>
         <header>
-          <Navigator />
+          <Navigator url={route.path} />
         </header>
         <main>
           <svelte:component this={route.page} {params} />

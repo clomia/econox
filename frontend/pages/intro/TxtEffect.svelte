@@ -27,8 +27,13 @@
   section {
     display: flex;
     align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0 2rem;
+    overflow-x: hidden;
   }
   span {
     margin-left: 0.9rem;
+    white-space: nowrap;
   }
 </style>

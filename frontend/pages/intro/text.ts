@@ -42,3 +42,18 @@ export const introBottomText = {
     "기업의 부동자산과 유동자산",
   ],
 };
+
+export const footerText = {
+  en: [
+    "Business Reg. No. 312-23-12342 | E-Commerce Reg. 2312-SeoulGangnam-01142",
+    "CEO: Won JeongHoo | Phone: 010-7528-7237 | Email: clomia@econox.io",
+    "Business Address: 13, Jeongui-ro 7-gil, Songpa-gu, Seoul, Republic of Korea A 1803",
+    "Terms of Use / Privacy Policy",
+  ],
+  ko: [
+    "사업자등록번호: 312-23-12342 | 통신판매신고: 제2312-서울강남-01142호",
+    "대표: 원정후 | 전화번호: 010-7528-7237 | 이메일: clomia@econox.io",
+    "소재지: 서울특별시 송파구 정의로 7길 힐스테이트에코송파 A동 1803호",
+    "이용약관 / 개인정보처리방침",
+  ],
+};

@@ -3,6 +3,8 @@
   import { currentLang, supportedLangs, changeLang } from "../modules/uiText";
   import LanguageIcon from "../assets/icon/LanguageIcon.svelte";
 
+  export let url: any;
+
   let toggle = false;
   const apply = async (event: Event) => {
     await changeLang((event.target as HTMLSelectElement).value);
@@ -16,13 +18,24 @@
       if (lang) break;
     } // App.svelte에서 언어 불러오는 시간 간극을 풀링으로 처리
   });
+
+  $: isIntroPage = url === "/";
 </script>
 
 {#await supportedLangs() then langs}
   <section>
-    <button on:click={() => (toggle = !toggle)}> <LanguageIcon /> </button>
+    <button
+      on:click={() => (toggle = !toggle)}
+      class:for-intro-page={isIntroPage}
+    >
+      <LanguageIcon />
+    </button>
     {#if toggle}
-      <select bind:value={lang} on:change={apply}>
+      <select
+        bind:value={lang}
+        on:change={apply}
+        class:for-intro-page={isIntroPage}
+      >
         {#each Object.entries(langs) as [code, name]}
           <option value={code}>{name}</option>
         {/each}
@@ -69,5 +82,11 @@
   select:hover {
     cursor: pointer;
     background-color: rgb(54, 63, 80);
+  }
+  .for-intro-page {
+    background-color: rgba(255, 255, 255, 0);
+  }
+  .for-intro-page:hover {
+    background-color: rgba(255, 255, 255, 0.1);
   }
 </style>

@@ -14,23 +14,21 @@
     <div><CircleLoader /></div>
   </div>
 {:then}
-  <header>
-    <Navigator />
-  </header>
-
-  <main>
-    <Router>
-      {#each routes as route}
-        <Route path={route.path} let:params>
+  <Router>
+    {#each routes as route}
+      <Route path={route.path} let:params>
+        <header>
+          <Navigator />
+        </header>
+        <main>
           <svelte:component this={route.page} {params} />
-        </Route>
-      {/each}
-    </Router>
-  </main>
-
-  <aside>
-    <LangBtn />
-  </aside>
+        </main>
+        <aside>
+          <LangBtn url={route.path} />
+        </aside>
+      </Route>
+    {/each}
+  </Router>
 {/await}
 
 <style>

@@ -8,7 +8,7 @@
   import ReflectiveButton from "../../components/ReflectiveButton.svelte";
   import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
   import { isInViewport } from "../../modules/functions";
-  import { introBottomText } from "./text";
+  import { introBottomText, footerText } from "./text";
 
   let introMain: HTMLElement;
   let page2: HTMLElement;
@@ -21,6 +21,9 @@
   let page2TextTopOn = false;
   let page2TextBottomOn = false;
   const scrollHandler = () => {
+    if (!introMain) {
+      return;
+    }
     // 현재 스크롤상 화면이 introMain보다 위에 있을때만 토글 버튼이 활성화되도록 한다.
     // 한번 비활성화되면 다시 활성화되지 않아야 한다.
     const eleRect = introMain.getBoundingClientRect();
@@ -137,17 +140,11 @@
       />
       Copyright © Econox. All Rights Reserved
     </div>
-    <div class="footer__r2">
-      사업자등록번호: 312-23-12342 | 통신판매신고: 제2312-서울강남-01142호
-    </div>
-    <div class="footer__r3">
-      대표: 원정후 | 전화번호: 010-7528-7237 | 이메일: clomia@econox.io
-    </div>
-    <div class="footer__r4">
-      소재지: 서울특별시 송파구 정의로 7길 힐스테이트에코송파 A동 1803호
-    </div>
+    <div class="footer__r2">{footerText[$Lang][0]}</div>
+    <div class="footer__r3">{footerText[$Lang][1]}</div>
+    <div class="footer__r4">{footerText[$Lang][2]}</div>
     <div class="footer__r5">
-      <a href="https://www.econox.wiki">이용약관 / 개인정보처리방침</a>
+      <a href="https://www.econox.wiki">{footerText[$Lang][3]}</a>
     </div>
   </div>
 </section>

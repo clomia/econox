@@ -57,7 +57,7 @@
 <section class="page1">
   <div class="intro-main" bind:this={introMain}>
     <div class="intro-main__subtitle">다변량</div>
-    <div class="intro-main__title">시계열 비교 분석</div>
+    <div class="intro-main__title">시계열 비교 분석 어플리케이션</div>
 
     <button class="intro-main__start-btn">
       <ReflectiveButton text="무료로 시작하기" color="rgb(230, 230, 230)" />
@@ -76,7 +76,7 @@
         class:page2__desc_off={page2DescOn}
         bind:this={page1desc}
       >
-        전 세계 수많은 기업 데이터를 시계열로 제공합니다
+        전 세계 금융시장과 기업 데이터를 시계열로 제공합니다
       </div>
     </div>
     {#if toggleOn}
@@ -90,7 +90,7 @@
 
 <section class="page2" bind:this={page2}>
   <div class="page2__desc" class:page2__desc_on={page2DescOn}>
-    전 세계 수많은 기업 데이터를 시계열로 제공합니다
+    전 세계 금융시장과 기업 데이터를 시계열로 제공합니다
   </div>
   <div
     class="page2__text-top"
@@ -208,11 +208,11 @@
     );
   }
   .intro-main__subtitle {
-    font-size: 2.25rem;
+    font-size: 2.3rem;
   }
   .intro-main__title {
     margin-top: 0.5rem;
-    font-size: 3.5rem;
+    font-size: 3rem;
   }
   .intro-main__start-btn {
     margin-top: 4rem;

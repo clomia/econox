@@ -51,6 +51,7 @@
     document.documentElement.style.background = color;
     document.body.style.background = color;
     document.body.style.paddingBottom = "0";
+    document.body.style.overflowX = "clip";
     introMain.scrollIntoView({ behavior: "instant", block: "end" });
     window.addEventListener("scroll", scrollHandler);
   });
@@ -58,6 +59,7 @@
     document.documentElement.style.background = "";
     document.body.style.background = "";
     document.body.style.paddingBottom = "";
+    document.body.style.overflowX = "";
   });
 
   $: page2TextTopPx = page2DescHeight + 40;

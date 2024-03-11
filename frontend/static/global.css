@@ -19,7 +19,6 @@ body {
   line-height: 1.5;
   background: var(--background);
   position: relative;
-  overflow-x: clip;
 }
 
 .swal2-title {

@@ -107,9 +107,9 @@
         </div>
         {#await loginPromise then}
           {#if animationEnd}
-            <button bind:this={sucessBtn} on:click={sucessRedirect}
-              >{$Text.Login}</button
-            >
+            <button bind:this={sucessBtn} on:click={sucessRedirect}>
+              {$Text.Login}
+            </button>
           {/if}
         {/await}
       </section>
@@ -207,6 +207,7 @@
     border: thin solid var(--border-white);
     border-radius: 1rem;
     color: var(--white);
+    z-index: 12;
   }
   button:hover {
     cursor: pointer;

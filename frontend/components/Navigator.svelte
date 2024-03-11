@@ -6,9 +6,9 @@
 
   export let url: string;
   $: isIntroPage = url === "/";
-  let hide = isIntroPage && window.innerWidth < 740;
+  let hide = isIntroPage && window.innerWidth < 770;
   window.addEventListener("resize", () => {
-    hide = isIntroPage && window.innerWidth < 740;
+    hide = isIntroPage && window.innerWidth < 770;
   });
 
   const navConsole = async () => {
@@ -56,7 +56,7 @@
   section {
     display: flex;
     justify-content: center;
-    padding: 3rem 0;
+    padding: 3rem 2rem;
     white-space: nowrap;
   }
 

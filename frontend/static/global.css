@@ -4,7 +4,7 @@
   --white: rgba(255, 255, 255, 0.75);
   --border-white: rgba(255, 255, 255, 0.5);
   --background: linear-gradient(to top, #1f282c, #1f3036, #1f282c);
-  --widget-background: linear-gradient(to top, #2e2f32, rgb(32, 49, 55));
+  --widget-background: linear-gradient(to top, #2e2f32, #203137);
 }
 
 body {
@@ -12,6 +12,8 @@ body {
   flex-direction: column;
   align-items: center;
   width: 100%;
+  /* min-width: 50rem; 제거 시 알 수 없는 가로축 스크롤 오류가 발생, 원인 파악 못함 */
+  min-width: 50rem;
   min-height: 100vh;
   padding-bottom: 3rem;
   font-family: Arial, Helvetica, sans-serif;

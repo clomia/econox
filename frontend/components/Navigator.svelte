@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { navigate } from "svelte-routing";
   import { swal } from "../modules/functions";
   import { UserInfo, Text } from "../modules/state";
@@ -6,7 +7,10 @@
 
   export let url: string;
   $: isIntroPage = url === "/";
-  let hide = isIntroPage && window.innerWidth < 770;
+  let hide = false;
+  onMount(() => {
+    hide = isIntroPage && window.innerWidth < 770;
+  });
   window.addEventListener("resize", () => {
     hide = isIntroPage && window.innerWidth < 770;
   });

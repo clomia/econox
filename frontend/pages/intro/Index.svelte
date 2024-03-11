@@ -48,18 +48,18 @@
     $IntroMounted = true;
     // 단색으로 해야 세밀한 조작에 유리함
     const color = "rgb(31, 48, 54)";
-    document.documentElement.style.background = color;
     document.body.style.background = color;
     document.body.style.paddingBottom = "0";
     document.body.style.overflowX = "clip";
+    document.body.style.minWidth = "100%";
     introMain.scrollIntoView({ behavior: "instant", block: "end" });
     window.addEventListener("scroll", scrollHandler);
   });
   onDestroy(() => {
-    document.documentElement.style.background = "";
     document.body.style.background = "";
     document.body.style.paddingBottom = "";
     document.body.style.overflowX = "";
+    document.body.style.minWidth = "";
   });
 
   $: page2TextTopPx = page2DescHeight + 40;

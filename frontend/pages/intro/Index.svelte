@@ -98,9 +98,34 @@
       <div class="earth-behind__gradient" />
     </div>
   </div>
+  <div class="page2__bottom" />
 </section>
 
-<section class="page3">안녕하세요</section>
+<section class="page3">
+  <div class="footer">
+    <div class="footer__r1">
+      <img
+        src="/static/img/favicon.png"
+        alt="logo icon"
+        height="30px"
+        style="margin-right: 1rem;"
+      />
+      Copyright © Econox. All Rights Reserved
+    </div>
+    <div class="footer__r2">
+      사업자등록번호: 312-23-12342 | 통신판매신고: 제2312-서울강남-01142호
+    </div>
+    <div class="footer__r3">
+      대표: 원정후 | 전화번호: 010-7528-7237 | 이메일: clomia@econox.io
+    </div>
+    <div class="footer__r4">
+      소재지: 서울특별시 송파구 정의로 7길 힐스테이트에코송파 A동 1803호
+    </div>
+    <div class="footer__r5">
+      <a href="https://www.econox.wiki">이용약관 / 개인정보처리방침</a>
+    </div>
+  </div>
+</section>
 
 <style>
   :root {
@@ -128,12 +153,13 @@
     background-color: rgb(10, 10, 11);
   }
   .page3 {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 2rem;
-    background-color: red;
+    position: relative;
+    width: var(--max-vw);
+    background-color: rgb(10, 10, 11);
+    z-index: 11;
+    display: flex;
+    justify-content: center;
+    color: rgb(201, 201, 201);
   }
   .intro-main {
     position: absolute;
@@ -237,15 +263,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
   }
   .earth-main {
-    z-index: 10;
+    z-index: 8;
   }
   .earth-behind {
-    z-index: 9;
+    z-index: 7;
   }
   .earch-front {
-    z-index: 11;
+    z-index: 9;
   }
   .earth-behind__gradient {
     width: 100vmax;
@@ -263,7 +290,7 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    z-index: 20;
+    z-index: 10;
     color: var(--text-color);
     font-size: 1.6rem;
     opacity: 0;
@@ -272,5 +299,36 @@
   .page2__desc_on {
     opacity: 1;
     transition: opacity 1s ease-in;
+  }
+  .page2__bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: rgb(157, 157, 157);
+    z-index: 12;
+    opacity: 0.6;
+  }
+  .footer {
+    padding: 2rem 1rem;
+  }
+  .footer__r1 {
+    font-size: 1.2rem;
+    padding-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    color: var(--text-color);
+  }
+  .footer__r5 {
+    margin-top: 0.5rem;
+  }
+  .footer__r5 a {
+    color: rgb(217, 217, 234);
+    text-decoration: none;
+  }
+  .footer__r5 a:hover {
+    cursor: pointer;
+    text-decoration: underline;
   }
 </style>

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
+  import { fly } from "svelte/transition";
   import GraphGen from "./GraphGen.svelte";
   import LinesGen from "./line-gen/Index.svelte";
   import Earth from "./Earth.svelte";
@@ -11,9 +12,13 @@
   let introMain: HTMLElement;
   let page2: HTMLElement;
   let page1desc: HTMLElement;
+  let page2TextTop: HTMLElement;
+  let page2TextBottom: HTMLElement;
 
   let toggleOn = true;
   let page2DescOn = false;
+  let page2TextTopOn = false;
+  let page2TextBottomOn = false;
   const scrollHandler = () => {
     // 현재 스크롤상 화면이 introMain보다 위에 있을때만 토글 버튼이 활성화되도록 한다.
     // 한번 비활성화되면 다시 활성화되지 않아야 한다.
@@ -25,11 +30,12 @@
       toggleOn = false;
     }
     page2DescOn = !isInViewport(page1desc);
+    page2TextTopOn = isInViewport(page2TextTop);
+    page2TextBottomOn = isInViewport(page2TextBottom);
   };
   const scrollPage2 = () => {
     page2.scrollIntoView({ behavior: "smooth", block: "end" });
   };
-  $: console.log(page2DescOn);
 
   onMount(() => {
     // 단색으로 해야 세밀한 조작에 유리함
@@ -70,7 +76,7 @@
         class:page2__desc_off={page2DescOn}
         bind:this={page1desc}
       >
-        이코녹스는 전 세계 기업의 방대한 시계열 데이터를 제공합니다
+        전 세계 수많은 기업 데이터를 시계열로 제공합니다
       </div>
     </div>
     {#if toggleOn}
@@ -84,7 +90,26 @@
 
 <section class="page2" bind:this={page2}>
   <div class="page2__desc" class:page2__desc_on={page2DescOn}>
-    이코녹스는 전 세계 기업의 방대한 시계열 데이터를 제공합니다
+    전 세계 수많은 기업 데이터를 시계열로 제공합니다
+  </div>
+  <div
+    class="page2__text-top"
+    bind:this={page2TextTop}
+    class:page2-text-on={page2TextTopOn}
+  >
+    <p>모든 일에는 원인과 결과가 있습니다</p>
+    <p>여러 시계열을 한눈에 비교하고 원인과 결과를 파악하세요</p>
+  </div>
+  <div
+    class="page2__text-bottom"
+    bind:this={page2TextBottom}
+    class:page2-text-on={page2TextBottomOn}
+  >
+    <p>전문가를 위해 모든 시계열 데이터는 파일 다운로드를 지원합니다!</p>
+    <p>
+      엑셀 프로그램과 호환되며 데이터 분석과 인공지능 학습까지 폭 넓게 사용할 수
+      있습니다
+    </p>
   </div>
   <div class="multiline-chart">
     <LinesGen width="100%" height="60%" />
@@ -156,7 +181,7 @@
     position: relative;
     width: var(--max-vw);
     background-color: rgb(10, 10, 11);
-    z-index: 11;
+    z-index: 10;
     display: flex;
     justify-content: center;
     color: rgb(201, 201, 201);
@@ -214,7 +239,7 @@
     color: var(--text-color);
     font-size: 1.3rem;
     opacity: 1;
-    transition: opacity 1s ease-in;
+    transition: opacity 500ms ease-in;
   }
   .page2__desc_off {
     opacity: 0;
@@ -292,13 +317,36 @@
     justify-content: center;
     z-index: 10;
     color: var(--text-color);
-    font-size: 1.6rem;
+    font-size: 1.3rem;
     opacity: 0;
     transition: none;
   }
   .page2__desc_on {
     opacity: 1;
-    transition: opacity 1s ease-in;
+    transition: opacity 500ms ease-in;
+  }
+  .page2__text-top,
+  .page2__text-bottom {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    opacity: 0;
+    transition: opacity 200ms ease-in;
+  }
+  .page2-text-on {
+    opacity: 1;
+  }
+  .page2__text-top {
+    top: 5rem;
+  }
+  .page2__text-bottom {
+    bottom: 2rem;
   }
   .page2__bottom {
     position: absolute;
@@ -308,18 +356,24 @@
     height: 1px;
     background-color: rgb(157, 157, 157);
     z-index: 12;
-    opacity: 0.6;
+    opacity: 0.4;
   }
   .footer {
     padding: 2rem 1rem;
   }
   .footer__r1 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     padding-bottom: 1rem;
     display: flex;
     align-items: center;
     color: var(--text-color);
   }
+  .footer__r2,
+  .footer__r3,
+  .footer__r4 {
+    font-size: 14px;
+  }
+
   .footer__r5 {
     margin-top: 0.5rem;
   }

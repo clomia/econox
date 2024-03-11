@@ -14,6 +14,8 @@
   import { attrQuerySort } from "../../../modules/functions";
   import type { FactorType } from "../../../modules/state";
 
+  let listEle: HTMLElement;
+
   const select = async (fac: FactorType) => {
     $UnivariateFactorSelected = fac;
     if (
@@ -44,6 +46,7 @@
 
   $: if (query) {
     view = attrQuerySort(factors, query, attr);
+    listEle.scrollTop = 0;
   } else {
     view = factors;
   }
@@ -72,7 +75,7 @@
       <input class="search__input" type="text" on:input={searchEventHandler} />
     </div>
   {/if}
-  <div class="list">
+  <div class="list" bind:this={listEle}>
     {#each view as fac}
       <button
         class="list__fac"

@@ -42,22 +42,19 @@
       "note": "This factor measures the total number of shares of the stock traded during the day, indicating the liquidity and trading activity of the stock."
     }
   },
-  "HistoricalDividends": {
+  "NumberOfEmployees": {
     "setting": {
-      "name": "Historical Dividends",
-      "note": "This section provides a comprehensive list of historical dividend payments for publicly traded companies, including key details like dividend payment dates, ex-dividend dates, and dividend amounts per share. It serves as an essential tool for analyzing dividend payment trends and company financial performance.",
-      "metaclass": "HistoricalPriceFullMeta",
-      "api": "api/v3/historical-price-full/stock_dividend"
+      "name": "Historical Number of Employees Data",
+      "note": "This section provides historical data about the number of employees in a company, enabling the analysis of workforce trends and company growth. It helps in assessing how the workforce size has evolved over time, indicating operational and strategic changes.",
+      "metaclass": "ClientMeta",
+      "api": "api/v4/historical/employee_count",
+      "t_key": "periodOfReport",
+      "symbol_in_query": true
     },
-    "adj_dividend": {
-      "factor": "adjDividend",
-      "name": "Adjusted Dividend",
-      "note": "This factor represents the adjusted dividend amount, accounting for any changes in the stock such as stock splits, rights offerings, or other corporate actions, to provide a consistent and comparable view of the dividend payouts over time."
-    },
-    "dividend": {
-      "factor": "dividend",
-      "name": "Dividend",
-      "note": "This factor indicates the actual dividend amount paid per share for a specific period, offering a direct measure of the return distributed to shareholders from the company's earnings."
+    "employee_count": {
+      "factor": "employeeCount",
+      "name": "Employee Count",
+      "note": "This factor represents the total number of employees within a company at a given point in time, providing insights into the company's size, operational scale, and human resources capacity."
     }
   },
   "EarningsCalendar": {
@@ -86,47 +83,6 @@
       "factor": "revenueEstimated",
       "name": "Revenue Estimated",
       "note": "This factor represents the estimated revenue anticipated before the actual earnings report. These estimates, often derived from market analysis and forecasts, provide insights into expected company performance and market expectations."
-    }
-  },
-  "CompanyEnterpriseValue": {
-    "setting": {
-      "name": "Company Enterprise Value Data",
-      "note": "This section includes data on a company's enterprise value, representing its total worth incorporating equity, debt, and subtracting liquid assets. It's a crucial metric for assessing the overall value of the company and comparing it with industry peers.",
-      "metaclass": "ClientMeta",
-      "api": "api/v3/enterprise-values",
-      "params": {
-        "period": "quarter"
-      }
-    },
-    "stock_price": {
-      "factor": "stockPrice",
-      "name": "Stock Price",
-      "note": "This factor represents the current market price of the company's stock, reflecting the public valuation of each share."
-    },
-    "number_of_shares": {
-      "factor": "numberOfShares",
-      "name": "Number of Shares",
-      "note": "This factor indicates the total number of shares outstanding for the company, representing the quantity of stock available in the market."
-    },
-    "market_capitalization": {
-      "factor": "marketCapitalization",
-      "name": "Market Capitalization",
-      "note": "This factor measures the total market value of the company's outstanding shares, representing the aggregate valuation of the company by the stock market."
-    },
-    "minus_cash_and_cash_equivalents": {
-      "factor": "minusCashAndCashEquivalents",
-      "name": "Minus Cash and Cash Equivalents",
-      "note": "This factor subtracts the company's liquid assets, such as cash and cash equivalents, from its overall valuation, refining the assessment of its enterprise value."
-    },
-    "add_total_debt": {
-      "factor": "addTotalDebt",
-      "name": "Add Total Debt",
-      "note": "This factor adds the company's total debt to its market capitalization, accounting for financial liabilities in the calculation of enterprise value."
-    },
-    "enterprise_value": {
-      "factor": "enterpriseValue",
-      "name": "Enterprise Value",
-      "note": "This factor represents the total value of the company, incorporating its equity, debt, and subtracting liquid assets, offering a comprehensive metric for its overall worth."
     }
   },
   "CompanyKeyMetrics": {
@@ -524,21 +480,6 @@
       "factor": "estimatedEpsLow",
       "name": "Estimated EPS Low",
       "note": "This factor represents the lowest estimate of Earnings Per Share, reflecting a conservative view of the company's potential earnings per share."
-    }
-  },
-  "NumberOfEmployees": {
-    "setting": {
-      "name": "Historical Number of Employees Data",
-      "note": "This section provides historical data about the number of employees in a company, enabling the analysis of workforce trends and company growth. It helps in assessing how the workforce size has evolved over time, indicating operational and strategic changes.",
-      "metaclass": "ClientMeta",
-      "api": "api/v4/historical/employee_count",
-      "t_key": "periodOfReport",
-      "symbol_in_query": true
-    },
-    "employee_count": {
-      "factor": "employeeCount",
-      "name": "Employee Count",
-      "note": "This factor represents the total number of employees within a company at a given point in time, providing insights into the company's size, operational scale, and human resources capacity."
     }
   },
   "CompanyRating": {
@@ -2834,6 +2775,65 @@
       "factor": "operatingCashFlowPercentage",
       "name": "Operating Cash Flow Percentage",
       "note": "This factor indicates the percentage of the company's operating cash flow relative to its revenue, offering insights into the efficiency of its core business operations and cash management."
+    }
+  },
+  "HistoricalDividends": {
+    "setting": {
+      "name": "Historical Dividends",
+      "note": "This section provides a comprehensive list of historical dividend payments for publicly traded companies, including key details like dividend payment dates, ex-dividend dates, and dividend amounts per share. It serves as an essential tool for analyzing dividend payment trends and company financial performance.",
+      "metaclass": "HistoricalPriceFullMeta",
+      "api": "api/v3/historical-price-full/stock_dividend"
+    },
+    "adj_dividend": {
+      "factor": "adjDividend",
+      "name": "Adjusted Dividend",
+      "note": "This factor represents the adjusted dividend amount, accounting for any changes in the stock such as stock splits, rights offerings, or other corporate actions, to provide a consistent and comparable view of the dividend payouts over time."
+    },
+    "dividend": {
+      "factor": "dividend",
+      "name": "Dividend",
+      "note": "This factor indicates the actual dividend amount paid per share for a specific period, offering a direct measure of the return distributed to shareholders from the company's earnings."
+    }
+  },
+  "CompanyEnterpriseValue": {
+    "setting": {
+      "name": "Company Enterprise Value Data",
+      "note": "This section includes data on a company's enterprise value, representing its total worth incorporating equity, debt, and subtracting liquid assets. It's a crucial metric for assessing the overall value of the company and comparing it with industry peers.",
+      "metaclass": "ClientMeta",
+      "api": "api/v3/enterprise-values",
+      "params": {
+        "period": "quarter"
+      }
+    },
+    "stock_price": {
+      "factor": "stockPrice",
+      "name": "Stock Price",
+      "note": "This factor represents the current market price of the company's stock, reflecting the public valuation of each share."
+    },
+    "number_of_shares": {
+      "factor": "numberOfShares",
+      "name": "Number of Shares",
+      "note": "This factor indicates the total number of shares outstanding for the company, representing the quantity of stock available in the market."
+    },
+    "market_capitalization": {
+      "factor": "marketCapitalization",
+      "name": "Market Capitalization",
+      "note": "This factor measures the total market value of the company's outstanding shares, representing the aggregate valuation of the company by the stock market."
+    },
+    "minus_cash_and_cash_equivalents": {
+      "factor": "minusCashAndCashEquivalents",
+      "name": "Minus Cash and Cash Equivalents",
+      "note": "This factor subtracts the company's liquid assets, such as cash and cash equivalents, from its overall valuation, refining the assessment of its enterprise value."
+    },
+    "add_total_debt": {
+      "factor": "addTotalDebt",
+      "name": "Add Total Debt",
+      "note": "This factor adds the company's total debt to its market capitalization, accounting for financial liabilities in the calculation of enterprise value."
+    },
+    "enterprise_value": {
+      "factor": "enterpriseValue",
+      "name": "Enterprise Value",
+      "note": "This factor represents the total value of the company, incorporating its equity, debt, and subtracting liquid assets, offering a comprehensive metric for its overall worth."
     }
   },
   "CotReport": {

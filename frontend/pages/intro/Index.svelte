@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { fly } from "svelte/transition";
+  import { Text, Lang } from "../../modules/state";
   import GraphGen from "./GraphGen.svelte";
   import LinesGen from "./line-gen/Index.svelte";
   import Earth from "./Earth.svelte";
@@ -8,6 +8,7 @@
   import ReflectiveButton from "../../components/ReflectiveButton.svelte";
   import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
   import { isInViewport } from "../../modules/functions";
+  import { introBottomText } from "./text";
 
   let introMain: HTMLElement;
   let page2: HTMLElement;
@@ -51,23 +52,25 @@
     document.body.style.background = "";
     document.body.style.paddingBottom = "";
   });
-  const introBottomText = ["주가", "매출", "부채", "직원 수"];
 </script>
 
 <section class="page1">
   <div class="intro-main" bind:this={introMain}>
-    <div class="intro-main__subtitle">다변량</div>
-    <div class="intro-main__title">시계열 비교 분석 어플리케이션</div>
+    <div class="intro-main__subtitle">{$Text.Multivariate}</div>
+    <div class="intro-main__title">{$Text.IntroTitle}</div>
 
     <button class="intro-main__start-btn">
-      <ReflectiveButton text="무료로 시작하기" color="rgb(230, 230, 230)" />
+      <ReflectiveButton
+        text={$Text.IntroStartButton}
+        color="rgb(230, 230, 230)"
+      />
     </button>
 
     <div class="intro-main__bottom-text">
       <div class="intro-main__bottom-text__main">
         <TxtEffect
-          txtArr={introBottomText}
-          size="2rem"
+          txtArr={introBottomText[$Lang]}
+          size="1.5rem"
           color="rgb(230, 230, 230)"
         />
       </div>
@@ -76,7 +79,7 @@
         class:page2__desc_off={page2DescOn}
         bind:this={page1desc}
       >
-        전 세계 금융시장과 기업 데이터를 시계열로 제공합니다
+        {$Text.IntroPage1Desc}
       </div>
     </div>
     {#if toggleOn}
@@ -90,26 +93,23 @@
 
 <section class="page2" bind:this={page2}>
   <div class="page2__desc" class:page2__desc_on={page2DescOn}>
-    전 세계 금융시장과 기업 데이터를 시계열로 제공합니다
+    {$Text.IntroPage2Desc}
   </div>
   <div
     class="page2__text-top"
     bind:this={page2TextTop}
     class:page2-text-on={page2TextTopOn}
   >
-    <p>모든 일에는 원인과 결과가 있습니다</p>
-    <p>여러 시계열을 한눈에 비교하고 원인과 결과를 파악하세요</p>
+    <p>{$Text.IntroPage2TopP1}</p>
+    <p>{$Text.IntroPage2TopP2}</p>
   </div>
   <div
     class="page2__text-bottom"
     bind:this={page2TextBottom}
     class:page2-text-on={page2TextBottomOn}
   >
-    <p>전문가를 위해 모든 시계열 데이터는 파일 다운로드를 지원합니다!</p>
-    <p>
-      엑셀 프로그램과 호환되며 데이터 분석과 인공지능 학습까지 폭 넓게 사용할 수
-      있습니다
-    </p>
+    <p>{$Text.IntroPage2BottomP1}</p>
+    <p>{$Text.IntroPage2BottomP2}</p>
   </div>
   <div class="multiline-chart">
     <LinesGen width="100%" height="60%" />
@@ -208,11 +208,13 @@
     );
   }
   .intro-main__subtitle {
-    font-size: 2.3rem;
+    font-size: 2rem;
+    color: white;
   }
   .intro-main__title {
     margin-top: 0.5rem;
-    font-size: 3rem;
+    font-size: 2.5rem;
+    color: white;
   }
   .intro-main__start-btn {
     margin-top: 4rem;

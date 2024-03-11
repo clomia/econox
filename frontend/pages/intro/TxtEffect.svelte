@@ -13,9 +13,9 @@
     strings={txtArr}
     loop="true"
     typeSpeed={30}
-    backSpeed={30}
+    backSpeed={20}
     smartBackspace={true}
-    backDelay={1000}
+    backDelay={900}
     showCursor={true}
     cursorChar="_"
   >

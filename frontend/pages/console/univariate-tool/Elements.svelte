@@ -15,6 +15,8 @@
   } from "../../../modules/state";
   import type { ElementType } from "../../../modules/state";
 
+  let listEle: HTMLElement;
+
   const select = async (ele: ElementType) => {
     $UnivariateElementSelected = ele;
     $UnivariateFactorSelected = null;
@@ -39,6 +41,7 @@
 
   $: if (query) {
     view = attrQuerySort($UnivariateElements, query, attr);
+    listEle.scrollTop = 0;
   } else {
     view = $UnivariateElements;
   }
@@ -67,7 +70,7 @@
       <input class="search__input" type="text" on:input={searchEventHandler} />
     </div>
   {/if}
-  <div class="list">
+  <div class="list" bind:this={listEle}>
     {#each view as ele}
       {@const key = `${ele.section}-${ele.code}`}
       {@const progress = $Progress[key]}

@@ -518,6 +518,33 @@ Copied:
 PublishGuide:
   en: "Only the default charts of the data group will be made public."
   ko: "데이터 그룹의 기본 차트만 공개됩니다."
+Multivariate:
+  en: "Multivariate"
+  ko: "다변량"
+IntroTitle:
+  en: "Time Series Comparative Analysis Application"
+  ko: "시계열 비교 분석 어플리케이션"
+IntroStartButton:
+  en: "Start for Free"
+  ko: "무료로 시작하기"
+IntroPage1Desc:
+  en: "We Provide Time Series Data on Global Financial Markets and Corporate Information"
+  ko: "전 세계 금융 시장과 기업 데이터를 시계열로 제공합니다"
+IntroPage2Desc:
+  en: "We Provide Time Series Data on Global Financial Markets and Corporate Information"
+  ko: "전 세계 금융 시장과 기업 데이터를 시계열로 제공합니다"
+IntroPage2TopP1:
+  en: "Everything has a cause and an effect"
+  ko: "모든 일에는 원인과 결과가 있습니다"
+IntroPage2TopP2:
+  en: "Compare Various Time Series at a Glance and Identify Causes and Effects"
+  ko: "다양한 시계열을 한눈에 비교하고 원인과 결과를 파악하세요"
+IntroPage2BottomP1:
+  en: "All time series data can be downloaded as files"
+  ko: "모든 시계열 데이터는 파일로 다운로드 할 수 있습니다"
+IntroPage2BottomP2:
+  en: "Available in xlsx and csv formats, they can be widely used for spreadsheets, data analysis, and AI training"
+  ko: "xlsx과 csv형식으로 제공되며 엑셀과 데이터 분석, 인공지능 학습까지 폭 넓게 사용될 수 있습니다"
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

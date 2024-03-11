@@ -162,6 +162,15 @@ export interface UiText {
     Unpublish: "Unpublish" | "게시 취소";
     Copied: "Copied to clipboard" | "클립보드에 복사됨";
     PublishGuide: "Only the default charts of the data group will be made public." | "데이터 그룹의 기본 차트만 공개됩니다.";
+    Multivariate: "Multivariate" | "다변량";
+    IntroTitle: "Time Series Comparative Analysis Application" | "시계열 비교 분석 어플리케이션";
+    IntroStartButton: "Start for Free" | "무료로 시작하기";
+    IntroPage1Desc: "We Provide Time Series Data on Global Financial Markets and Corporate Information" | "전 세계 금융 시장과 기업 데이터를 시계열로 제공합니다";
+    IntroPage2Desc: "We Provide Time Series Data on Global Financial Markets and Corporate Information" | "전 세계 금융 시장과 기업 데이터를 시계열로 제공합니다";
+    IntroPage2TopP1: "Everything has a cause and an effect" | "모든 일에는 원인과 결과가 있습니다";
+    IntroPage2TopP2: "Compare Various Time Series at a Glance and Identify Causes and Effects" | "다양한 시계열을 한눈에 비교하고 원인과 결과를 파악하세요";
+    IntroPage2BottomP1: "All time series data can be downloaded as files" | "모든 시계열 데이터는 파일로 다운로드 할 수 있습니다";
+    IntroPage2BottomP2: "Available in xlsx and csv formats, they can be widely used for spreadsheets, data analysis, and AI training" | "xlsx과 csv형식으로 제공되며 엑셀과 데이터 분석, 인공지능 학습까지 폭 넓게 사용될 수 있습니다";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

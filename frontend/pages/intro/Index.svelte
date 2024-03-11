@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { Text, Lang, IntroMounted } from "../../modules/state";
+  import { Text, Lang, IntroMounted, UserInfo } from "../../modules/state";
   import GraphGen from "./GraphGen.svelte";
   import LinesGen from "./line-gen/Index.svelte";
   import Earth from "./Earth.svelte";
@@ -63,6 +63,14 @@
   });
 
   $: page2TextTopPx = page2DescHeight + 40;
+
+  const startButtonHandler = () => {
+    if ($UserInfo.id) {
+      window.location.replace(window.location.origin + "/console");
+    } else {
+      window.location.replace(window.location.origin + "/auth#signup");
+    }
+  };
 </script>
 
 <section class="page1">
@@ -70,7 +78,7 @@
     <div class="intro-main__subtitle">{$Text.Multivariate}</div>
     <div class="intro-main__title">{$Text.IntroTitle}</div>
 
-    <button class="intro-main__start-btn">
+    <button class="intro-main__start-btn" on:click={startButtonHandler}>
       <ReflectiveButton
         text={$Text.IntroStartButton}
         color="rgb(230, 230, 230)"
@@ -159,7 +167,13 @@
     <div class="footer__r3">{footerText[$Lang][1]}</div>
     <div class="footer__r4">{footerText[$Lang][2]}</div>
     <div class="footer__r5">
-      <a href="https://www.econox.wiki">{footerText[$Lang][3]}</a>
+      <a
+        href="https://www.econox.wiki"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {footerText[$Lang][3]}
+      </a>
     </div>
   </div>
 </section>

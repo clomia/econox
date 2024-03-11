@@ -10,6 +10,7 @@
 
   const select = (key: string) => {
     $Toggle = { login: key === "login", signup: key === "signup" };
+    location.hash = "#" + key;
   };
 
   $: styles = {

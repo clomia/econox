@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { verify } from "../../modules/functions";
   import { auth } from "../../modules/state";
   import Login from "./Login.svelte";
@@ -7,6 +8,17 @@
 
   verify({ conds: { login: false }, failRedirect: "/account" });
   const Toggle = auth.Toggle;
+
+  onMount(() => {
+    // URL에 #로 기본 상태를 지정해줄수도 있다
+    if (location.hash === "#login") {
+      $Toggle.login = true;
+      $Toggle.signup = false;
+    } else if (location.hash === "#signup") {
+      $Toggle.login = false;
+      $Toggle.signup = true;
+    }
+  });
 </script>
 
 <div class="ground">

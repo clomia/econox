@@ -32,12 +32,12 @@ export interface UiText {
     SelectMembershipSubtitle: "New members receive their chosen membership free for the first three days with no charge!" | "첫 회원가입 고객을 대상으로 선택한 맴버십이 첫 3일간 결제 없이 무료로 제공됩니다!";
     ChangeMembership: "Change Membership" | "맴버십 변경";
     BasicPlan: "Basic" | "일반";
-    BasicPlanDollerPrice: "$9.99/month" | "$9.99/월";
-    BasicPlanWonPrice: "₩11,900/month" | "11,900원/월";
+    BasicPlanDollerPrice: "$16.99/month" | "$16.99/월";
+    BasicPlanWonPrice: "₩16,900/month" | "16,900원/월";
     BasicPlanDescription: "Discover causal relationships by comparing time series of global financial markets and corporate data.  Gain insights necessary for investment by grasping macroeconomics at a glance." | "전세계 금융시장, 기업데이터 시계열을 비교해서 선후관계를 발견하세요.  거시경제를 한눈에 파악하고 투자에 필요한 통찰을 얻을 수 있습니다.";
     ProfessionalPlan: "Professional" | "전문가";
-    ProfessionalPlanDollerPrice: "$12.99/month" | "$12.99/월";
-    ProfessionalPlanWonPrice: "₩15,900/month" | "15,900원/월";
+    ProfessionalPlanDollerPrice: "$19.99/month" | "$19.99/월";
+    ProfessionalPlanWonPrice: "₩19,900/month" | "19,900원/월";
     ProfessionalPlanDescription: "Download all data without any limits!" | "모든 데이터를 무제한으로 다운로드 할 수 있습니다!";
     PhoneConfirmReason: "Phone verification is required to determine if you are eligible for the new member benefits" | "최초 회원가입 혜택 대상자 여부를 확인하기 위해 전화번호 인증이 필요합니다";
     EnterPhoneNumber: "Enter Phone Number" | "전화번호 입력";

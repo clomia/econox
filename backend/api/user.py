@@ -29,6 +29,7 @@ from backend.calc import (
     calc_next_billing_date,
     calc_next_billing_date_adjust_membership_change,
 )
+from backend.seed import seed_sample_data
 
 
 router = APIRouter("user")
@@ -204,6 +205,7 @@ async def signup(item: SignupInfo):
             await db.exec(insert_user, insert_signup_history)
     except psycopg.errors.UniqueViolation:  # email colume is unique
         raise HTTPException(status_code=409, detail="Email is already in used")
+    await seed_sample_data(user_id)
     return {"first_signup_benefit": not signup_history}  # 첫 회원가입 혜택 여부
 
 

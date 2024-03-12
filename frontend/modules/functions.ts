@@ -32,6 +32,10 @@ export const defaultToastStyle = {
   background: "var(--widget-background)",
 };
 
+export const navigate = (path: string) => {
+  window.location.replace(window.location.origin + path);
+};
+
 /**
  * 페이지가 처음 로드될 때 한번 작동되는 함수입니다.
  * 이 함수가 완료된 후, 컴포넌트가 실행됩니다.
@@ -75,7 +79,7 @@ export const logout = async () => {
     settingObjectStore.delete("cognitoToken"),
     settingObjectStore.delete("cognitoRefreshToken"),
   ]);
-  return window.location.replace(window.location.origin + "/auth");
+  return navigate("/auth");
 };
 
 /**
@@ -91,7 +95,7 @@ export const login = async (
     settingObjectStore.put("cognitoRefreshToken", cognitoRefreshToken),
   ]);
   if (reload) {
-    window.location.replace(window.location.origin + "/console"); // 콘솔로 리로딩
+    return navigate("/console");
   }
 };
 
@@ -166,7 +170,7 @@ export const verify = async (
         confirmButtonText: text.Ok,
       });
       domCover();
-      window.location.replace(window.location.origin + "/auth");
+      navigate("/auth");
       return;
     } else if (billingOk && !isBillingOk) {
       // 로그인 되어있고, 유료 회원용 페이지에 접속했으나 결제 상태가 올바르지 않은 경우
@@ -180,7 +184,7 @@ export const verify = async (
       });
     }
     domCover();
-    window.location.replace(window.location.origin + failRedirect);
+    navigate(failRedirect);
   }
 };
 

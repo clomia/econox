@@ -64,9 +64,9 @@
   {#if $UnivariateElements.length}
     <div class="search">
       <Magnifier />
-      <button class="search__attr-btn" on:click={searchAttrChange}
-        >{attrBtnText}</button
-      >
+      <button class="search__attr-btn" on:click={searchAttrChange}>
+        {attrBtnText}
+      </button>
       <input class="search__input" type="text" on:input={searchEventHandler} />
     </div>
   {/if}

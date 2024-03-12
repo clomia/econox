@@ -2,7 +2,12 @@
   import { onMount } from "svelte";
   import Swal from "sweetalert2";
   import { api } from "../../../modules/request";
-  import { login, format, defaultToastStyle } from "../../../modules/functions";
+  import {
+    login,
+    format,
+    defaultToastStyle,
+    navigate,
+  } from "../../../modules/functions";
   import { Text, auth } from "../../../modules/state";
   import TextLoader from "../../../assets/animation/TextLoader.svelte";
   import Wellcome from "../../../assets/animation/Wellcome.svelte";
@@ -19,8 +24,7 @@
   let animationEnd = false;
   let sucessBtn: HTMLButtonElement;
 
-  const sucessRedirect = () =>
-    window.location.replace(window.location.origin + "/console");
+  const sucessRedirect = () => navigate("/console");
   onMount(async () => {
     response = api.public.post("/user", {
       email: $InputResult.email,
@@ -76,9 +80,7 @@
     return statusMessages(error.response?.status);
   };
 
-  const cancelProcess = async () => {
-    window.location.replace(window.location.origin);
-  };
+  const cancelProcess = async () => navigate("/");
 
   const focusOnExitBtnAlert = async (event: Event) => {
     if (animationEnd && event.target !== sucessBtn) {

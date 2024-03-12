@@ -1,10 +1,6 @@
 <script lang="ts">
   import { api } from "../../../modules/request";
-  import {
-    Text,
-    FeatureGroups,
-    FeatureGroupSelected,
-  } from "../../../modules/state";
+  import { FeatureGroups, FeatureGroupSelected } from "../../../modules/state";
   import ClosedFolder from "../../../assets/icon/ClosedFolder.svelte";
   import Folder from "../../../assets/icon/Folder.svelte";
   import Magnifier from "../../../assets/icon/Magnifier.svelte";
@@ -17,8 +13,11 @@
   import { chartSelectedHandler } from "./functions";
   import type { FeatureGroupType } from "../../../modules/state";
 
+  let listEle: HTMLElement;
+
   let searchQuery = "";
   $: groups = attrQuerySort($FeatureGroups, searchQuery, "name");
+  $: if (searchQuery) listEle.scrollTop = 0;
 
   let groupHovered: FeatureGroupType | null = null;
   let groupEditingTarget: FeatureGroupType | null = null;
@@ -94,7 +93,7 @@
     <Magnifier />
     <input class="search__input" type="text" bind:value={searchQuery} />
   </div>
-  <div class="list">
+  <div class="list" bind:this={listEle}>
     {#each groups as group}
       {@const selected = $FeatureGroupSelected === group}
       {@const hovered = groupHovered === group}

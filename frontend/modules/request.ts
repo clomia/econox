@@ -5,7 +5,7 @@ import { get } from "svelte/store";
 
 import { Text } from "./state";
 import { settingObjectStore } from "./_storage";
-import { logout, defaultSwalStyle } from "./functions";
+import { logout, defaultSwalStyle, navigate } from "./functions";
 
 import type { JwtPayload } from "jsonwebtoken";
 import type { AxiosError, InternalAxiosRequestConfig } from "axios";
@@ -120,7 +120,7 @@ const serverOverloadHandler = async (error: AxiosError) => {
           title: text.ServerOverload,
           confirmButtonText: text.Ok,
         });
-        return window.location.replace(window.location.origin + "/account");
+        return navigate("/account");
       }
     }
   }
@@ -152,7 +152,7 @@ const permissionFailureHandler = async (error: AxiosError) => {
         title: text.DeactivatedAccountBillingRequire,
         confirmButtonText: text.Ok,
       });
-      return window.location.replace(window.location.origin + "/account");
+      return navigate("/account");
     case 403:
       return await Swal.fire({
         ...defaultSwalStyle,
@@ -161,8 +161,7 @@ const permissionFailureHandler = async (error: AxiosError) => {
         title: text.ProfessionalMembershipRequire,
         confirmButtonText: text.ProfessionalMembershipRequire_ConfirmText,
         denyButtonText: text.Ok,
-        preConfirm: async () =>
-          window.location.replace(window.location.origin + "/account"),
+        preConfirm: async () => navigate("/account"),
       });
     default:
       throw error;

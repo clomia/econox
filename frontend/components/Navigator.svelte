@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { navigate } from "svelte-routing";
   import { swal } from "../modules/functions";
   import { UserInfo, Text } from "../modules/state";
+  import { navigate } from "../modules/functions";
   import Profile from "../assets/icon/Profile.svelte";
 
   export let url: string;
@@ -15,7 +15,12 @@
     hide = isIntroPage && window.innerWidth < 770;
   });
 
+  const nav = (path: string) => {
+    if (location.pathname !== path) navigate(path);
+  };
+
   const navConsole = async () => {
+    if (location.pathname === "/console") return;
     if ($UserInfo.id) {
       navigate("/console");
     } else {
@@ -26,19 +31,22 @@
   const navFeatureHub = async () => {
     await swal($Text.ComingSoon, "25rem");
   };
+  const navAccount = async () => nav("/account");
+  const navAuth = async () => nav("/auth");
+  const navIntro = async () => nav("/");
 </script>
 
 <section style={hide ? "display: none;" : ""}>
-  <button on:click={() => navigate("/")}>Econox</button>
+  <button on:click={navIntro}>Econox</button>
   <button on:click={navConsole}>{$Text.Console}</button>
   <button on:click={navFeatureHub}>{$Text.FeatureHub}</button>
   {#if $UserInfo.id}
-    <button on:click={() => navigate("/account")}>
+    <button on:click={navAccount}>
       <div class="profile-icon"><Profile /></div>
       <div class="username">{$UserInfo.name}</div>
     </button>
   {:else}
-    <button on:click={() => navigate("/auth")}>{$Text.SignInOut}</button>
+    <button on:click={navAuth}>{$Text.SignInOut}</button>
   {/if}
 </section>
 

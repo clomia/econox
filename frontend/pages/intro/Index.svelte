@@ -7,7 +7,7 @@
   import TxtEffect from "./TxtEffect.svelte";
   import ReflectiveButton from "../../components/ReflectiveButton.svelte";
   import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
-  import { isInViewport } from "../../modules/functions";
+  import { isInViewport, navigate } from "../../modules/functions";
   import { introBottomText, footerText } from "./text";
 
   let introMain: HTMLElement;
@@ -66,9 +66,9 @@
 
   const startButtonHandler = () => {
     if ($UserInfo.id) {
-      window.location.replace(window.location.origin + "/console");
+      navigate("/console");
     } else {
-      window.location.replace(window.location.origin + "/auth#signup");
+      navigate("/auth#signup");
     }
   };
 </script>

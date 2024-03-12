@@ -171,6 +171,8 @@ export interface UiText {
     IntroPage2TopP2: "Compare Various Time Series at a Glance and Identify Causes and Effects." | "다양한 시계열을 한눈에 비교하고 원인과 결과를 파악하세요.";
     IntroPage2BottomP1: "All time series data can be downloaded in XLSX and CSV file formats." | "모든 시계열 데이터는 xlsx와 csv파일로 내려받을 수 있습니다.";
     IntroPage2BottomP2: "Feel free to use them for everything from spreadsheets and data analysis to AI training as you see fit." | "엑셀과 데이터 분석부터 인공지능 학습까지 원하는 용도로 마음껏 사용하세요.";
+    GoToHome: "Go to Home" | "홈으로 이동";
+    GoToConsole: "Go to Console" | "콘솔로 이동";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

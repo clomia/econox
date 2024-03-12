@@ -100,14 +100,14 @@ class CacheTTL:
 # ==================== SETTINGS ====================
 MEMBERSHIP = {
     "basic": {
-        "KRW": 11900,
-        "USD": 9.99,
-        "paypal_plan": "P-32P35738U4826650TMT72TNA",
+        "KRW": 16_900,
+        "USD": 16.99,
+        "paypal_plan": "P-4KY94318CU229523AMXX5ZYY",
     },
     "professional": {
-        "KRW": 15900,
-        "USD": 12.99,
-        "paypal_plan": "P-8U118819R1222424SMT72UDI",
+        "KRW": 19_900,
+        "USD": 19.99,
+        "paypal_plan": "P-8KN98846J99323353MXX52XY",
     },
 }
 # ==================== SECRETS ====================

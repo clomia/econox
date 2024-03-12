@@ -90,11 +90,11 @@ BasicPlan:
   en: "Basic"
   ko: "일반"
 BasicPlanDollerPrice:
-  en: "$9.99/month"
-  ko: "$9.99/월"
+  en: "$16.99/month"
+  ko: "$16.99/월"
 BasicPlanWonPrice:
-  en: "₩11,900/month"
-  ko: "11,900원/월"
+  en: "₩16,900/month"
+  ko: "16,900원/월"
 BasicPlanDescription:
   en: >
     Discover causal relationships by comparing time series of global financial markets and corporate data. 
@@ -106,11 +106,11 @@ ProfessionalPlan:
   en: "Professional"
   ko: "전문가"
 ProfessionalPlanDollerPrice:
-  en: "$12.99/month"
-  ko: "$12.99/월"
+  en: "$19.99/month"
+  ko: "$19.99/월"
 ProfessionalPlanWonPrice:
-  en: "₩15,900/month"
-  ko: "15,900원/월"
+  en: "₩19,900/month"
+  ko: "19,900원/월"
 ProfessionalPlanDescription:
   en: "Download all data without any limits!"
   ko: "모든 데이터를 무제한으로 다운로드 할 수 있습니다!"

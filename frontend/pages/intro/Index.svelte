@@ -22,6 +22,8 @@
   let page2DescOn = false;
   let page2TextTopOn = false;
   let page2TextBottomOn = false;
+  let page3On = false;
+
   const scrollHandler = () => {
     if (!introMain) {
       return;
@@ -198,7 +200,6 @@
   }
   .page3 {
     position: relative;
-    height: 100vh;
     width: var(--max-vw);
     background-color: rgb(10, 10, 11);
   }
@@ -340,6 +341,11 @@
   .earth-main {
     z-index: 8;
   }
+  @media (max-aspect-ratio: 9/7) {
+    .earth-main {
+      padding-bottom: 5rem;
+    }
+  }
   .earth-behind {
     z-index: 7;
   }
@@ -411,7 +417,7 @@
     padding-bottom: 1rem;
     display: flex;
     align-items: center;
-    color: var(--text-color);
+    color: rgba(255, 255, 255, 0.84);
   }
   .footer__r2,
   .footer__r3,

@@ -22,7 +22,6 @@
   let page2DescOn = false;
   let page2TextTopOn = false;
   let page2TextBottomOn = false;
-  let page3On = false;
 
   const scrollHandler = () => {
     if (!introMain) {
@@ -42,7 +41,7 @@
     page2TextBottomOn = isInViewport(page2TextBottom);
   };
   const scrollPage2 = () => {
-    page2.scrollIntoView({ behavior: "smooth", block: "end" });
+    page2.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   onMount(() => {

@@ -87,6 +87,6 @@
     background-color: rgb(10, 10, 11);
   }
   .for-intro-page:hover {
-    background-color: rgb(24, 24, 26);
+    background-color: rgb(45, 45, 50);
   }
 </style>

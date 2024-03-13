@@ -5,6 +5,7 @@
   import LinesGen from "./line-gen/Index.svelte";
   import Earth from "./Earth.svelte";
   import TxtEffect from "./TxtEffect.svelte";
+  import Info from "./Info.svelte";
   import ReflectiveButton from "../../components/ReflectiveButton.svelte";
   import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
   import { isInViewport, navigate } from "../../modules/functions";
@@ -128,14 +129,6 @@
     <p>{$Text.IntroPage2TopP1}</p>
     <p>{$Text.IntroPage2TopP2}</p>
   </div>
-  <div
-    class="page2__text-bottom"
-    bind:this={page2TextBottom}
-    class:page2-text-on={page2TextBottomOn}
-  >
-    <p>{$Text.IntroPage2BottomP1}</p>
-    <p>{$Text.IntroPage2BottomP2}</p>
-  </div>
   <div class="multiline-chart-front" />
   <div class="multiline-chart">
     <LinesGen width="100%" height="60%" />
@@ -149,10 +142,10 @@
       <div class="earth-behind__gradient" />
     </div>
   </div>
-  <div class="page2__bottom" />
 </section>
+<section class="page3"><Info /></section>
 
-<section class="page3">
+<section class="page4">
   <div class="footer">
     <div class="footer__r1">
       <img
@@ -199,11 +192,17 @@
   }
   .page2 {
     position: relative;
-    height: 100vh;
+    height: 80vh;
     width: var(--max-vw);
     background-color: rgb(10, 10, 11);
   }
   .page3 {
+    position: relative;
+    height: 100vh;
+    width: var(--max-vw);
+    background-color: rgb(10, 10, 11);
+  }
+  .page4 {
     position: relative;
     width: var(--max-vw);
     background-color: rgb(10, 10, 11);
@@ -306,7 +305,7 @@
     width: 100%;
     height: 100%;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
     opacity: 0.4;
   }
@@ -334,7 +333,7 @@
     width: 100%;
     height: 100%;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
     overflow: hidden;
   }
@@ -375,8 +374,7 @@
     opacity: 1;
     transition: opacity 500ms ease-in;
   }
-  .page2__text-top,
-  .page2__text-bottom {
+  .page2__text-top {
     position: absolute;
     left: 0;
     width: 100%;
@@ -403,20 +401,6 @@
     top: 0rem;
     font-size: 1.4rem;
     opacity: 1;
-  }
-  .page2__text-bottom {
-    bottom: 2rem;
-    font-size: 1.4rem;
-  }
-  .page2__bottom {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background-color: rgb(157, 157, 157);
-    z-index: 10;
-    opacity: 0.4;
   }
   .footer {
     padding: 2rem 1rem;

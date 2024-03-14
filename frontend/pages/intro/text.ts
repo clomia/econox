@@ -86,8 +86,8 @@ export const infoText = {
     },
   ],
   benefit: {
-    ko: "첫 회원가입 시 결제정보 등록 없이 원하는 맴버십을 3일간 무료로 제공합니다",
-    en: "First-time members can enjoy a free 3-day trial of any membership, no payment info required",
+    ko: "첫 회원가입 시 결제정보 등록 없이 모든 맴버십을 3일간 무료로 제공합니다",
+    en: "First-time sign-ups get 3 days of any membership free, no payment info required.",
   },
   cost: {
     title: { ko: "비용", en: "Price" },

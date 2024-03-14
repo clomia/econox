@@ -13,4 +13,7 @@ export const baseUrl = () => `${wikiHost}/${get(Lang)}`;
 export const wikiUrl = {
   scaling: () => baseUrl() + "/scaling",
   termsOfUse: () => baseUrl() + "/terms-of-use",
+  refund: () =>
+    baseUrl() + "/terms-of-use#12117e59-484f-4f37-900e-c8264538bc30",
+  privacyPolicy: () => baseUrl() + "/privacy-policy",
 };

@@ -165,6 +165,14 @@
       <a href={wikiUrl.termsOfUse()} target="_blank" rel="noopener noreferrer">
         {footerText[$Lang][3]}
       </a>
+      /
+      <a
+        href={wikiUrl.privacyPolicy()}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {footerText[$Lang][4]}
+      </a>
     </div>
   </div>
 </section>

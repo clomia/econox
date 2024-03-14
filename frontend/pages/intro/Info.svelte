@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Lang } from "../../modules/state";
+  import { wikiUrl } from "../../modules/wiki";
   import { infoText } from "./text";
   import TiltedCheck from "../../assets/icon/TiltedCheck.svelte";
   import LinkIcon from "../../assets/icon/LinkIcon.svelte";
@@ -29,11 +30,7 @@
     <div class="cost__ref">
       <div class="cost__ref__refund">
         <LinkIcon size="0.8rem" />
-        <a
-          href="https://www.econox.wiki"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href={wikiUrl.refund()} target="_blank" rel="noopener noreferrer">
           {infoText.cost.refund[$Lang]}
         </a>
       </div>

@@ -1,6 +1,5 @@
 """ 외부 리소스 (클라우드 서비스, 데이터 API 등)에 대한 비동기 통신 클라이언트 객체들 """
 
-import re
 import json
 import time
 import random

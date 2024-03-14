@@ -47,7 +47,6 @@
 <style>
   section {
     display: flex;
-    width: 17rem;
     height: 3rem;
     position: fixed;
     bottom: 2rem;

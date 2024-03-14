@@ -1,5 +1,8 @@
 <script lang="ts">
   import TiltedCheck from "../../assets/icon/TiltedCheck.svelte";
+  import LinkIcon from "../../assets/icon/LinkIcon.svelte";
+  import RightArrowIcon from "../../assets/icon/RightArrowIcon.svelte";
+  import HrefButton from "../../components/HrefButton.svelte";
 </script>
 
 <main>
@@ -30,7 +33,7 @@
     </span>
   </section>
   <section class="benefits">
-    첫 회원가입 시 결제정보 등록 없이 3일간 모든 기능을 제공합니다
+    첫 회원가입 시 결제정보 등록 없이 원하는 맴버십을 3일간 무료로 제공합니다
   </section>
   <section class="cost">
     <div class="cost__title">비용</div>
@@ -41,6 +44,21 @@
       <div class="cost-type">전문가 맴버십</div>
       <div>월 19,900원</div>
       <div>무제한 데이터 다운로드를 포함한 모든 기능</div>
+    </div>
+    <div class="cost__ref">
+      <div class="cost__ref__refund">
+        <LinkIcon size="0.8rem" />
+        <a
+          href="https://www.econox.wiki"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          환불 정책
+        </a>
+      </div>
+    </div>
+    <div class="cost__func-ref">
+      <HrefButton href="https://www.econox.wiki" content="기능 상세 소개" />
     </div>
   </section>
   <section class="extra">
@@ -110,6 +128,33 @@
   }
   .cost-grid div {
     padding-right: 0.5rem;
+  }
+  .cost__ref {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    opacity: 0.7;
+    margin-top: 0.5rem;
+  }
+  .cost__ref div {
+    display: flex;
+    align-items: center;
+  }
+  .cost__ref div a {
+    color: white;
+    text-decoration: none;
+    margin-left: 0.3rem;
+  }
+  .cost__ref div a:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  .cost__func-ref {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    padding-right: 7.5rem;
   }
   .extra {
     margin-top: 2rem;

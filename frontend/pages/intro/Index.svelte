@@ -333,16 +333,16 @@
     width: 100%;
     height: 100%;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: center;
     overflow: hidden;
   }
   .earth-main {
     z-index: 8;
   }
-  @media (max-aspect-ratio: 9/7) {
+  @media (min-aspect-ratio: 9/7) {
     .earth-main {
-      padding-bottom: 5rem;
+      padding-top: 5rem;
     }
   }
   .earth-behind {
@@ -350,6 +350,14 @@
   }
   .earch-front {
     z-index: 9;
+    background: linear-gradient(
+      to bottom,
+      rgb(10, 10, 11, 1) 0,
+      rgb(10, 10, 11, 0.6) 8rem,
+      rgba(0, 0, 0, 0) 15rem,
+      rgba(0, 0, 0, 0) 95%,
+      rgb(10, 10, 11, 1) 100%
+    );
   }
   .earth-behind__gradient {
     width: 100vmax;

@@ -1,7 +1,6 @@
 <script lang="ts">
   import TiltedCheck from "../../assets/icon/TiltedCheck.svelte";
   import LinkIcon from "../../assets/icon/LinkIcon.svelte";
-  import RightArrowIcon from "../../assets/icon/RightArrowIcon.svelte";
   import HrefButton from "../../components/HrefButton.svelte";
 </script>
 
@@ -134,7 +133,7 @@
     justify-content: flex-end;
     align-items: center;
     opacity: 0.7;
-    margin-top: 0.5rem;
+    margin-top: 0.7rem;
   }
   .cost__ref div {
     display: flex;

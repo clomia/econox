@@ -186,7 +186,7 @@ export interface UiText {
     f_FactorLoadingInfo: "Collecting factors for {element}..." | "{element}에 대한 펙터를 수집 중입니다...";
     f_ChartLoadingInfo: "Collecting data on {factor} related to {element}..." | "{element}에 대한 {factor} 데이터를 수집 중입니다...";
     f_TheElementDoesNotContainThisFactor: "We attempted to collect data for {factor} related to {element},  but were unable to find any. This outcome has been reflected in our service.  Thank you for contributing to the improvement of our service." | "{element}에 대한 {factor} 데이터 수집을 시도하였으나 데이터를 찾지 못하였습니다.  이 결과를 서비스에 반영하였습니다. 서비스 개선에 기여해주셔서 감사합니다.";
-    f_WillMembershipBilling: "The {membership} Membership fee of {amount} will be charged." | "{membership} 맴버십 비용({amount})이 결제됩니다.";
+    f_WillMembershipBilling: "The {membership} Membership fee of {amount} will be charged. If you want another membership, please cancel and change membership in your account" | "{membership} 맴버십 비용({amount})이 결제됩니다. 다른 맴버십을 원하는 경우 취소 후 계정의 맴버십을 변경하세요.";
     f_DataAddedToGroup: "Data has been added to the group '{groupName}'" | "그룹 '{groupName}'에 데이터가 추가되었습니다";
     f_ShareTitle: "Shared by {name}" | "{name}님이 공유함";
     f_NowDefaultChart: "The current default chart is '{chartName}'." | "현재 기본 차트는 '{chartName}'입니다.";

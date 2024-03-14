@@ -596,8 +596,8 @@ f_TheElementDoesNotContainThisFactor:
     {element}에 대한 {factor} 데이터 수집을 시도하였으나 데이터를 찾지 못하였습니다. 
     이 결과를 서비스에 반영하였습니다. 서비스 개선에 기여해주셔서 감사합니다.
 f_WillMembershipBilling:
-  en: "The {membership} Membership fee of {amount} will be charged."
-  ko: "{membership} 맴버십 비용({amount})이 결제됩니다."
+  en: "The {membership} Membership fee of {amount} will be charged. If you want another membership, please cancel and change membership in your account"
+  ko: "{membership} 맴버십 비용({amount})이 결제됩니다. 다른 맴버십을 원하는 경우 취소 후 계정의 맴버십을 변경하세요."
 f_DataAddedToGroup:
   en: "Data has been added to the group '{groupName}'"
   ko: "그룹 '{groupName}'에 데이터가 추가되었습니다"

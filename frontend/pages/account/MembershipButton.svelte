@@ -41,16 +41,6 @@
    * @returns 결제정보 수정 가능 여부
    */
   const billingChangeAvailableCheck = async (): Promise<boolean> => {
-    if ($UserInfo["billing"]["status"] !== "active") {
-      await Swal.fire({
-        ...SwalStyle,
-        width: "30rem",
-        icon: "info",
-        showDenyButton: false,
-        title: $Text.PaymentMethod_ChangeNotAllow_StatusError,
-      });
-      return false;
-    }
     if (
       $UserInfo["billing"]["currency"] === "USD" &&
       $UserInfo["billing"]["registered"]

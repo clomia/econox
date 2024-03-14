@@ -406,11 +406,6 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.u
         - 구독 생성 시 GET /api/paypal/membership-change-subscription-start-time 를 사용하세요
     - Response: 조정된 다음 청구일시
     """
-    if not user["billing_status"] == "active":
-        raise HTTPException(
-            status_code=409,
-            detail="Account is deactivated. Please activate your account first",
-        )
     if (  # new_membership값이 올바른지 확인
         user["membership"] == item.new_membership
         or item.new_membership not in MEMBERSHIP

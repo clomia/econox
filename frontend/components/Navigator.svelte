@@ -1,8 +1,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { navigate as spaNavigate } from "svelte-routing";
   import { swal } from "../modules/functions";
   import { UserInfo, Text } from "../modules/state";
   import { navigate } from "../modules/functions";
+
   import Profile from "../assets/icon/Profile.svelte";
 
   export let url: string;
@@ -15,14 +17,20 @@
     hide = isIntroPage && window.innerWidth < 770;
   });
 
-  const nav = (path: string) => {
-    if (location.pathname !== path) navigate(path);
+  const nav = (path: string, spa = false) => {
+    if (location.pathname !== path) {
+      if (spa) {
+        return spaNavigate(path);
+      } else {
+        return navigate(path);
+      }
+    }
   };
 
   const navConsole = async () => {
     if (location.pathname === "/console") return;
     if ($UserInfo.id) {
-      navigate("/console");
+      spaNavigate("/console");
     } else {
       await swal($Text.LoginRequired, "25rem");
       navigate("/auth");
@@ -31,7 +39,7 @@
   const navFeatureHub = async () => {
     await swal($Text.ComingSoon, "25rem");
   };
-  const navAccount = async () => nav("/account");
+  const navAccount = async () => nav("/account", true);
   const navAuth = async () => nav("/auth");
   const navIntro = async () => nav("/");
 </script>

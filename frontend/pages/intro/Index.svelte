@@ -9,6 +9,7 @@
   import ReflectiveButton from "../../components/ReflectiveButton.svelte";
   import ToggleArrow from "../../assets/icon/ToggleArrow.svelte";
   import { isInViewport, navigate } from "../../modules/functions";
+  import { wikiUrl } from "../../modules/wiki";
   import { introBottomText, footerText } from "./text";
 
   let introMain: HTMLElement;
@@ -161,11 +162,7 @@
     <div class="footer__r3">{footerText[$Lang][1]}</div>
     <div class="footer__r4">{footerText[$Lang][2]}</div>
     <div class="footer__r5">
-      <a
-        href="https://www.econox.wiki"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <a href={wikiUrl.termsOfUse()} target="_blank" rel="noopener noreferrer">
         {footerText[$Lang][3]}
       </a>
     </div>

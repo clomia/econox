@@ -382,7 +382,7 @@ class PayPalAPI:
     """PayPal에 HTTP 요청을 보냅니다."""
 
     timeout = 30
-    host = "https://api.sandbox.paypal.com"  # * 샌드박스랑 프로덕션 host 주소가 다르다
+    host = "https://api.paypal.com"
     token = base64.b64encode(
         f"{SECRETS['PAYPAL_CLIENT_ID']}:{SECRETS['PAYPAL_SECRET_KEY']}".encode("utf-8")
     ).decode("utf-8")

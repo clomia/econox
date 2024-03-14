@@ -57,3 +57,64 @@ export const footerText = {
     "이용약관 / 개인정보처리방침",
   ],
 };
+
+export const infoText = {
+  tags: [
+    {
+      ko: "주식, ETF, 뮤추얼 펀드, 지수, 원자재, 외환 및 암호 화폐",
+      en: "Stocks, ETFs, Mutual Funds, Indices, Commodities, Forex, and Cryptocurrency",
+    },
+    {
+      ko: "전 세계 46개국 90개 이상의 거래소 접근",
+      en: "Access to over 90 exchanges across 46 countries worldwide",
+    },
+    {
+      ko: "50,000개 이상의 증권 데이터",
+      en: "More than 50,000 securities data",
+    },
+    {
+      ko: "30년 이상의 주식 과거 가격 데이터",
+      en: "Over 30 years of historical stock price data",
+    },
+    {
+      ko: "20년 이상의 과거 원자재 및 외환 데이터",
+      en: "More than 20 years of historical commodities and forex data",
+    },
+    {
+      ko: "국제 신고를 포함한 15년 이상의 재무제표 데이터",
+      en: "Financial statement data for over 15 years, including international filings",
+    },
+  ],
+  benefit: {
+    ko: "첫 회원가입 시 결제정보 등록 없이 원하는 맴버십을 3일간 무료로 제공합니다",
+    en: "First-time members can enjoy a free 3-day trial of any membership, no payment info required",
+  },
+  cost: {
+    title: { ko: "비용", en: "Price" },
+    type1: { ko: "일반 맴버십", en: "Standard Membership" },
+    type1Price: { ko: "월 16,900원", en: "$16.99 per month" },
+    type1Desc: {
+      ko: "데이터 다운로드를 제외한 모든 기능",
+      en: "Access to all features, except data download",
+    },
+    type2: { ko: "전문가 맴버십", en: "Professional Membership" },
+    type2Price: { ko: "월 19,900원", en: "$19.99 per month" },
+    type2Desc: {
+      ko: "무제한 데이터 다운로드를 포함한 모든 기능",
+      en: "Access to all features, including unlimited data download",
+    },
+    refund: { ko: "환불 정책", en: "Refund Policy" },
+  },
+  funcRef: { ko: "기능 살펴보기", en: "Explore Features" },
+  download: {
+    title: { ko: "데이터 다운로드", en: "Data Download" },
+    content1: {
+      ko: "전문가 맴버십을 구독하면 모든 시계열 데이터를 xlsx와 csv파일로 내려받을 수 있습니다.",
+      en: "Subscribing to the Professional Membership allows you to download all time-series data in xlsx and csv files.",
+    },
+    content2: {
+      ko: "엑셀과 데이터 분석부터 인공지능 학습까지 원하는 용도로 마음껏 사용하세요.",
+      en: "Feel free to use the data for a wide range of applications, from Excel and data analysis to training in artificial intelligence.",
+    },
+  },
+};

@@ -16,4 +16,5 @@ export const wikiUrl = {
   refund: () =>
     baseUrl() + "/terms-of-use#12117e59-484f-4f37-900e-c8264538bc30",
   privacyPolicy: () => baseUrl() + "/privacy-policy",
+  tutorial: () => baseUrl() + "/tutorial",
 };

@@ -36,10 +36,7 @@
       </div>
     </div>
     <div class="cost__func-ref">
-      <HrefButton
-        href="https://www.econox.wiki"
-        content={infoText.funcRef[$Lang]}
-      />
+      <HrefButton href={wikiUrl.tutorial()} content={infoText.funcRef[$Lang]} />
     </div>
   </section>
   <section class="extra">

@@ -390,7 +390,8 @@ export const isSameArray = (array1: any[], array2: any[]) => {
   return array1.every((element, index) => element === array2[index]);
 };
 
-export const isInViewport = (element: HTMLElement) => {
+export const isInViewport = (element: HTMLElement | undefined) => {
+  if (!element) return false;
   const rect = element.getBoundingClientRect();
   return (
     rect.top >= 0 &&

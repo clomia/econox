@@ -45,16 +45,16 @@ export const introBottomText = {
 
 export const footerText = {
   en: [
-    "Business Reg. No. 312-23-12342 | E-Commerce Reg. 2024-서울송파-0949",
+    "Business Reg. No. 221-13-94217 | E-Commerce Reg. 2024-서울송파-0949",
     "CEO: Won JeongHoo | Phone: 010-7528-7237 | Email: clomia@econox.io",
     "Business Address: 13, Jeongui-ro 7-gil, Songpa-gu, Seoul, Republic of Korea A 1803",
     "Terms of Use",
     "Privacy Policy",
   ],
   ko: [
-    "사업자등록번호: 312-23-12342 | 통신판매신고: 2024-서울송파-0949",
+    "사업자등록번호: 221-13-94217 | 통신판매신고: 2024-서울송파-0949",
     "대표: 원정후 | 전화번호: 010-7528-7237 | 이메일: clomia@econox.io",
-    "소재지: 서울특별시 송파구 정의로 7길 힐스테이트에코송파 A동 1803호",
+    "소재지: 서울특별시 송파구 정의로 7길 13 힐스테이트에코송파 A동 1803호",
     "이용약관",
     "개인정보 처리방침",
   ],

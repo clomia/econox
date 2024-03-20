@@ -63,11 +63,11 @@ export const footerText = {
 export const infoText = {
   tags: [
     {
-      ko: "주식, ETF, 뮤추얼 펀드, 지수, 원자재, 외환 및 암호 화폐",
+      ko: "주식, ETF, 뮤추얼 펀드, 지수, 원자재, 외환 및 암호 화폐 데이터",
       en: "Stocks, ETFs, Mutual Funds, Indices, Commodities, Forex, and Cryptocurrency",
     },
     {
-      ko: "전 세계 46개국 90개 이상의 거래소 접근",
+      ko: "전 세계 46개국 90개 이상의 거래소 데이터",
       en: "Access to over 90 exchanges across 46 countries worldwide",
     },
     {

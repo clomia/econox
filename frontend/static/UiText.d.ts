@@ -34,7 +34,7 @@ export interface UiText {
     BasicPlan: "Basic" | "일반";
     BasicPlanDollerPrice: "$16.99/month" | "$16.99/월";
     BasicPlanWonPrice: "₩16,900/month" | "16,900원/월";
-    BasicPlanDescription: "Discover causal relationships by comparing time series of global financial markets and corporate data.  Gain insights necessary for investment by grasping macroeconomics at a glance." | "전세계 금융시장, 기업데이터 시계열을 비교해서 선후관계를 발견하세요.  거시경제를 한눈에 파악하고 투자에 필요한 통찰을 얻을 수 있습니다.";
+    BasicPlanDescription: "Discover causal relationships by comparing time series of global financial markets and corporate data.  Gain insights necessary for investment by grasping macroeconomics at a glance." | "전세계 금융시장, 기업데이터 시계열을 비교해서 선후관계를 발견하세요.";
     ProfessionalPlan: "Professional" | "전문가";
     ProfessionalPlanDollerPrice: "$19.99/month" | "$19.99/월";
     ProfessionalPlanWonPrice: "₩19,900/month" | "19,900원/월";

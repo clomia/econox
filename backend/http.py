@@ -337,7 +337,7 @@ class TosspaymentsAPI:
 
 class TosspaymentsBilling:
     def __init__(self, user_id):
-        self.user_id = user_id
+        self.user_id = str(user_id)
 
     async def get_billing_key(
         self,

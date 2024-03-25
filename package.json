@@ -33,6 +33,7 @@
     "typescript": "^5.3.2"
   },
   "dependencies": {
+    "@portone/browser-sdk": "^0.0.5",
     "@tosspayments/payment-widget-sdk": "^0.10.0",
     "@types/jsonwebtoken": "^9.0.2",
     "axios": "^1.4.0",

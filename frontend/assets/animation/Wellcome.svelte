@@ -63,7 +63,7 @@
     </div>
     <div class="name">
       <span class="clomia">clomia</span>
-      <p>WELLCOME</p>
+      <p>WELCOME</p>
       <span class="econox">ECONOX</span>
       <span class="name_circle01" />
       <span class="name_circle02" />

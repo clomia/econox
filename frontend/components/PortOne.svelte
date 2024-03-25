@@ -5,7 +5,7 @@
   onMount(async () => {
     const issueResponse = await PortOne.requestIssueBillingKey({
       storeId: "store-bd7abf6b-fb2c-4f8e-b35c-93189fb5b5e7",
-      channelKey: "channel-key-2e5ffaf1-082b-476b-a8d3-3ef5ccdaa855",
+      channelKey: "channel-key-19dbbf97-9a55-475d-a030-1935accc819e",
       billingKeyMethod: "CARD",
       issueId: "120302130",
       isTestChannel: true,

@@ -1,4 +1,5 @@
 """ /api/auth """
+
 import time
 import secrets
 import threading
@@ -35,7 +36,9 @@ async def login(
             UserPoolId=SECRETS["COGNITO_USER_POOL_ID"],
             Username=email,
         )  # 유저에게 발급된 refresh token 전부 무효화, 한 계정이 여러곳에서 동시에 사용되는걸 막는다.
-    except cognito.exceptions.UserNotFoundException:  # 정상적으로 회원가입이 되었다면 이 에러는 절대 안난다.
+    except (
+        cognito.exceptions.UserNotFoundException
+    ):  # 정상적으로 회원가입이 되었다면 이 에러는 절대 안난다.
         raise HTTPException(status_code=409, detail="Cognito user does not exist")
     # ========== refresh 토큰 무효화 요청이 완료되길 기다린(polling) 다음 유일한 refresh 토큰 생성 ==========
     while True:  # 모든 refresh 토큰이 무효화될때까지 반복됨
@@ -92,6 +95,12 @@ async def create_phone_confirmation(phone: str = Body(..., min_length=1, embed=T
             sns.publish,
             PhoneNumber=phone,
             Message=f"Econox confirmation code: {issued_code}",
+            MessageAttributes={
+                "AWS.MM.SMS.OriginationNumber": {
+                    "DataType": "String",
+                    "StringValue": "+18559185731",  # 미국 SMS 전송에 필요함
+                },
+            },
         )
         assert resp["ResponseMetadata"]["HTTPStatusCode"] == 200
     except sns.exceptions.InvalidParameterException:

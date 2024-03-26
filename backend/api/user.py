@@ -657,11 +657,12 @@ async def activate_billing(item: BillingRestore, user=router.private.user):
                     detail="PortOne billing information is missing",
                 )
             try:
-                payment = await PortOneBilling(user_id=user["id"]).billing(
-                    item.port_one.billing_key,  # 구독료 즉시 결제
+                payment = await PortOneBilling(
+                    name=user["name"], email=user["email"], phone=user["phone"]
+                ).billing(
+                    key=item.port_one.billing_key,  # 구독료 즉시 결제
                     order_name=order_name,
                     amount=amount,
-                    email=user["email"],
                 )
             except httpx.HTTPStatusError:
                 raise HTTPException(

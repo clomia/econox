@@ -4,8 +4,15 @@
   import { paypalWidget } from "../../modules/paypal";
   import { Text, UserInfo } from "../../modules/state";
   import { api } from "../../modules/request";
-  import { defaultSwalStyle, format, logout } from "../../modules/functions";
+  import { getBillingKey } from "../../modules/portOne";
+  import {
+    defaultSwalStyle,
+    format,
+    logout,
+    swal,
+  } from "../../modules/functions";
   import type { AxiosError } from "axios";
+  import { load } from "js-yaml";
 
   let status: string;
   if ($UserInfo["billing"]["status"] === "active") {
@@ -23,11 +30,9 @@
     nextBillingDate.getMonth() === currentDate.getMonth() &&
     nextBillingDate.getFullYear() === currentDate.getFullYear();
 
-  let tosspaymentsWidgetOn = false;
   let loading = false; // 로딩중일 때 스크롤 잠구기
   // 위젯이 떠있거나 로딩중일 때 스크롤 잠구기
-  $: document.body.style.overflow =
-    loading || tosspaymentsWidgetOn ? "hidden" : "";
+  $: document.body.style.overflow = loading ? "hidden" : "";
 
   // tosspayments
   let cardNumber = "";
@@ -93,30 +98,6 @@
     location.reload();
   };
 
-  const billingActivateWithTosspayments = async () => {
-    loading = true;
-    const [expirMonth, expirYear] = expiryDate.replace(/\s/g, "").split("/");
-    try {
-      await api.private.post("/user/billing/activate", {
-        tosspayments: {
-          card_number: cardNumber.replace(/\s/g, ""),
-          expiration_year: expirYear,
-          expiration_month: expirMonth,
-          owner_id: ownerId,
-        },
-      });
-      location.reload();
-    } catch (error: any) {
-      const e = error as AxiosError;
-      if (e.response?.status === 402) {
-        message = $Text.PaymentInfoIncorrect;
-      } else {
-        message = $Text.UnexpectedError;
-      }
-    }
-    loading = false;
-  };
-
   const billingActivate = async () => {
     loading = true;
     try {
@@ -173,7 +154,16 @@
             },
           });
         } else {
-          tosspaymentsWidgetOn = true;
+          loading = true;
+          const billingKey = await getBillingKey($UserInfo.id, $UserInfo.email);
+          try {
+            await api.private.post("/user/billing/activate", {
+              port_one: { billing_key: billingKey },
+            });
+          } catch {
+            await swal($Text.UnexpectedError);
+          }
+          location.reload();
         }
       }
     }
@@ -233,88 +223,6 @@
   <button class="danger" on:click={deleteAccount}>{$Text.DeleteAccount}</button>
 </section>
 
-{#if tosspaymentsWidgetOn}
-  <div class="tosspayments-background">
-    <form on:submit|preventDefault={billingActivateWithTosspayments}>
-      <div class="title">{$Text.PaymentMethod_Enter}</div>
-      <section class="card-number">
-        <label>
-          <span>{$Text.CreditCardNumber}</span>
-          <input
-            type="text"
-            placeholder="••••  ••••  ••••  ••••"
-            bind:value={cardNumber}
-            on:input={cardNumberHandler}
-          />
-        </label>
-      </section>
-      <section class="card-detail">
-        <label class="card-detail__expiry">
-          <span>{$Text.ExpiryDate}</span>
-          <input
-            type="text"
-            bind:value={expiryDate}
-            on:input={expiryDateHandler}
-            placeholder="MM / YY"
-          />
-        </label>
-        <label class="card-detail__type">
-          <span>{$Text.CardType}</span>
-          <button
-            type="button"
-            on:click={() =>
-              (cardType = cardType === "personal" ? "business" : "personal")}
-          >
-            <div
-              class="card-detail__type__toggle"
-              style={cardType === "personal" ? "left:0" : "left:50%"}
-            />
-            <div
-              class="card-detail__type__text"
-              style="{cardType === 'personal' ? 'color: white' : ''};"
-            >
-              {$Text.Card_Personal}
-            </div>
-            <div
-              class="card-detail__type__text"
-              style="{cardType === 'business' ? 'color: white' : ''};"
-            >
-              {$Text.Card_Business}
-            </div>
-          </button>
-        </label>
-      </section>
-      <section class="owner-id">
-        <label>
-          <span
-            >{cardType === "personal"
-              ? $Text.BirthDate
-              : $Text.BusinessNumber}</span
-          >
-          <input
-            type="text"
-            bind:value={ownerId}
-            on:input={ownerIdHandler}
-            placeholder={cardType === "personal" ? "YYMMDD" : "••••••••••"}
-            autocomplete="off"
-          />
-        </label>
-      </section>
-      <div class="message">{message}</div>
-      <div class="form-buttons">
-        <button
-          class="form-buttons__button"
-          type="button"
-          on:click={() => (tosspaymentsWidgetOn = false)}>{$Text.Cancel}</button
-        >
-        <button class="form-buttons__button" type="submit"
-          >{$Text.Submit}</button
-        >
-      </div>
-    </form>
-  </div>
-{/if}
-
 {#if loading}
   <div class="loader">
     <CircleLoader />
@@ -369,172 +277,5 @@
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-
-  /* tosspayments */
-  .tosspayments-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.4);
-  }
-  form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 30rem;
-    color: var(--white);
-    background: var(--widget-background);
-    padding: 2rem;
-    border-radius: 0.3rem;
-  }
-  span {
-    transition: opacity 50ms ease-out;
-  }
-  .title {
-    margin-bottom: 2rem;
-    font-size: 1.2rem;
-  }
-  .message {
-    margin: 1.5rem 0;
-  }
-  .card-number {
-    width: 100%;
-  }
-  .card-number input {
-    width: 100%;
-    height: 2.5rem;
-    border: thin solid var(--border-white);
-    border-radius: 0.3rem;
-    text-align: center;
-    letter-spacing: 0.3rem;
-    color: var(--white);
-    margin-top: 0.4rem;
-  }
-  .card-number span {
-    display: flex;
-    opacity: 0.5;
-    justify-content: center;
-  }
-  .card-number:focus-within span {
-    opacity: 1;
-  }
-  .card-detail {
-    width: 100%;
-    margin-top: 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .card-detail__expiry {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 40%;
-  }
-  .card-detail__expiry span {
-    opacity: 0.5;
-  }
-  .card-detail__expiry:focus-within span {
-    opacity: 1;
-  }
-  .card-detail__expiry input {
-    height: 2.5rem;
-    color: var(--white);
-    border: thin solid var(--border-white);
-    border-radius: 0.3rem;
-    text-align: center;
-    letter-spacing: 0.2rem;
-    margin-top: 0.4rem;
-  }
-  .card-detail__type {
-    width: 55%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .card-detail__type span {
-    opacity: 0.5;
-  }
-  .card-detail__type:hover span {
-    opacity: 1;
-  }
-  .card-detail__type > button:hover {
-    cursor: pointer;
-  }
-  .card-detail__type > button {
-    position: relative;
-    height: 2.5rem;
-    width: 100%;
-    border: thin solid var(--border-white);
-    border-radius: 0.3rem;
-    display: flex;
-    justify-content: space-around;
-    color: rgba(255, 255, 255, 0.5);
-    margin-top: 0.4rem;
-  }
-  .card-detail__type__toggle {
-    position: absolute;
-    top: 0;
-    width: 50%;
-    height: 2.4rem;
-    border: thin solid var(--border-white);
-    border-radius: 0.3rem;
-    transition: left 200ms;
-  }
-  .card-detail__type__text {
-    color: rgba(255, 255, 255, 0.5);
-    height: 100%;
-    display: flex;
-    align-items: center;
-  }
-  .owner-id {
-    width: 100%;
-    margin-top: 2rem;
-  }
-  .owner-id label {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .owner-id input {
-    border: thin solid var(--border-white);
-    border-radius: 0.3rem;
-    width: 100%;
-    height: 2.5rem;
-    text-align: center;
-    color: var(--white);
-    letter-spacing: 0.5rem;
-    margin-top: 0.4rem;
-  }
-  .owner-id span {
-    opacity: 0.5;
-  }
-  .owner-id:focus-within span {
-    opacity: 1;
-  }
-  .form-buttons {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-  }
-  .form-buttons__button {
-    color: var(--white);
-    width: 10rem;
-    height: 2.5rem;
-    border: thin solid var(--border-white);
-    border-radius: 0.3rem;
-  }
-  .form-buttons__button:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-    cursor: pointer;
   }
 </style>

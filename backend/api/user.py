@@ -17,6 +17,7 @@ from backend.data.text.method import strip
 from backend.http import (
     APIRouter,
     PortOneBilling,
+    PortOneAPI,
     PayPalAPI,
     pooling,
     get_paypal_next_billing_date,
@@ -95,7 +96,7 @@ async def signup(item: SignupInfo):
     if not signup_history:  # 회원가입 내역이 없다면 3일 무료사용
         next_billing = now + timedelta(days=3)
     # 회원가입 내역이 있다면 결제정보 필요함
-    elif item.currency == "KRW" and item.port_one:  # 토스페이먼츠 빌링
+    elif item.currency == "KRW" and item.port_one:  # 포트원 빌링
         port_one = PortOneBilling(name=username, email=item.email, phone=item.phone)
         order_name = f"Econox {item.membership.capitalize()} Membership"
         amount = MEMBERSHIP[item.membership][item.currency]
@@ -119,7 +120,8 @@ async def signup(item: SignupInfo):
             order_name=order_name,
             total_amount=amount,
         )
-        billing_method = payment["card"]["number"]
+        resp = await PortOneAPI(f"/billing-keys/{item.port_one.billing_key}").get()
+        billing_method = resp["methods"][0]["card"]["number"]
     elif item.currency == "USD" and item.paypal:  # 페이팔 빌링
         # -- 빌링 성공여부 확인 --
         # DB 데이터 입력은 웹훅 API가 수행합니다.(POST /api/webhook/paypal/payment-sale-complete)
@@ -513,6 +515,8 @@ async def change_payment_method(item: PaymentMethodInfo, user=router.private.use
             detail="Account is deactivated. Please activate your account first",
         )
     if user["currency"] == "KRW" and item.port_one_billing_key:
+        resp = await PortOneAPI(f"/billing-keys/{item.port_one.billing_key}").get()
+        billing_method = resp["methods"][0]["card"]["number"]
         await db.SQL(
             """
             UPDATE users 
@@ -522,7 +526,7 @@ async def change_payment_method(item: PaymentMethodInfo, user=router.private.use
             params={
                 "billing_key": item.port_one_billing_key,
                 "user_id": user["id"],
-                "billing_method": "CARD",
+                "billing_method": billing_method,
             },
         ).exec()
     elif user["currency"] == "USD" and item.paypal_subscription_id:  # 페이팔 빌링
@@ -664,12 +668,16 @@ async def activate_billing(item: BillingRestore, user=router.private.user):
                     detail=f"[PortOne] Your payment information is incorrect. or This card cannot be used for payment.",
                 )
             else:
+                resp = await PortOneAPI(
+                    f"/billing-keys/{item.port_one.billing_key}"
+                ).get()
+                billing_method = resp["methods"][0]["card"]["number"]
                 sql_list.append(
                     db.SQL(
                         "UPDATE users SET port_one_billing_key={new_key}, billing_method={method} WHERE id={id}",
                         params={
                             "new_key": item.port_one.billing_key,
-                            "method": payment["card"]["number"],
+                            "method": billing_method,
                             "id": user["id"],
                         },
                     )

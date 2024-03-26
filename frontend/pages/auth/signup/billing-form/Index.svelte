@@ -2,7 +2,7 @@
   import { onMount, createEventDispatcher } from "svelte";
   import { Text, auth } from "../../../../modules/state";
   import Paypal from "./Paypal.svelte";
-  import Tosspayments from "./Tosspayments.svelte";
+  import PortOne from "./PortOne.svelte";
 
   const InputResult = auth.signup.InputResult;
   const PaymentError = auth.signup.PaymentError;
@@ -21,7 +21,7 @@
 </div>
 
 {#if $Reregistration && $InputResult.currency === "KRW"}
-  <Tosspayments on:complete={() => dispatch("complete")} />
+  <PortOne on:complete={() => dispatch("complete")} />
 {:else if $Reregistration && $InputResult.currency === "USD"}
   <Paypal on:complete={() => dispatch("complete")} />
 {/if}

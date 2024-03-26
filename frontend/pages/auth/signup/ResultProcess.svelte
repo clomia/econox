@@ -31,7 +31,7 @@
       phone: $InputResult.phone,
       membership: $InputResult.membership,
       currency: $InputResult.currency,
-      tosspayments: $InputResult.tosspayments,
+      port_one: $InputResult.portOne,
       paypal: $InputResult.paypal,
     });
     await response;
@@ -73,7 +73,7 @@
     if (error.response?.status === 402) {
       // 결제 실패인 경우 결제정보 입력 단계로 롤백
       $PaymentError = true;
-      $InputResult.tosspayments = null;
+      $InputResult.portOne = null;
       $InputResult.paypal = null;
       $Step = 5;
     }

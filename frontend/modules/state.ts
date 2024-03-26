@@ -33,11 +33,8 @@ export type PayPalType = {
   subscription: string;
 } | null;
 
-export type TossPaymentsType = {
-  card_number: string;
-  expiration_year: string;
-  expiration_month: string;
-  owner_id: string;
+export type PortOneType = {
+  billing_key: string;
 } | null;
 
 export interface InputResultType {
@@ -45,7 +42,7 @@ export interface InputResultType {
   password: string;
   membership: string;
   currency: string;
-  tosspayments: TossPaymentsType;
+  portOne: PortOneType;
   paypal: PayPalType;
   phone: string;
 }
@@ -187,12 +184,13 @@ export const auth = {
     InputPhoneNumber: writable(""),
     PaymentError: writable(false),
     Reregistration: writable(false),
+    UserId: writable(null),
     InputResult: writable<InputResultType>({
       email: "",
       password: "",
       membership: "",
       currency: "",
-      tosspayments: null,
+      portOne: null,
       paypal: null,
       phone: "",
     }),

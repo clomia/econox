@@ -162,7 +162,7 @@
           },
         });
       } else {
-        // -> Toss! or 무료체험
+        // -> PortOne! or 무료체험
         await requestProcess(target, { new_membership: target });
       }
     };

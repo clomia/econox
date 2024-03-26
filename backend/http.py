@@ -332,6 +332,18 @@ class PortOneAPI:
         resp.raise_for_status()
         return resp.json() if resp.content else {}
 
+    async def get(self) -> dict | list:
+        async with httpx.AsyncClient(timeout=self.timeout) as client:
+            resp = await client.get(
+                self.host + self.path,
+                headers={
+                    "Authorization": f"PortOne {self.token}",
+                    "Content-Type": "application/json",
+                },
+            )
+        resp.raise_for_status()
+        return resp.json() if resp.content else {}
+
 
 class PortOneBilling:
 

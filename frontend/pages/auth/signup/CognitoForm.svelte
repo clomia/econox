@@ -54,7 +54,7 @@
       response = api.public.post("/user/cognito", { email, password });
       $InputResult = { ...$InputResult, email, password };
       document.body.style.overflow = "hidden";
-      await response;
+      auth.signup.UserId.set((await response).data["cognito_id"]);
       document.body.style.overflow = "";
       dispatch("complete");
     } catch (error: any) {

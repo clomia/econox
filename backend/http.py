@@ -308,17 +308,15 @@ class FmpAPI:
         return await cls._request(path, **params)
 
 
-class TosspaymentsAPI:
-    """tosspayments에 HTTP 요청을 보냅니다."""
+class PortOneAPI:
+    """PortOne에 HTTP 요청을 보냅니다."""
 
     timeout = 30
-    host = "https://api.tosspayments.com"
-    token = base64.b64encode(
-        (SECRETS["TOSSPAYMENTS_SECRET_KEY"] + ":").encode("utf-8")
-    ).decode("utf-8")
+    host = "https://api.portone.io"
+    token = SECRETS["PORTONE_SECRET_KEY"]
 
     def __init__(self, path):
-        """path: API 경로 (예시: "/v1/billing/authorizations/card")"""
+        """path: API 경로 (예시: f"/payments/{paymentId}/billing-key")"""
         self.path = path
 
     async def post(self, payload: dict) -> dict | list:
@@ -326,7 +324,7 @@ class TosspaymentsAPI:
             resp = await client.post(
                 self.host + self.path,
                 headers={
-                    "Authorization": f"Basic {self.token}",
+                    "Authorization": f"PortOne {self.token}",
                     "Content-Type": "application/json",
                 },
                 json=payload,
@@ -335,46 +333,37 @@ class TosspaymentsAPI:
         return resp.json() if resp.content else {}
 
 
-class TosspaymentsBilling:
-    def __init__(self, user_id):
-        self.user_id = str(user_id)
+class PortOneBilling:
 
-    async def get_billing_key(
-        self,
-        card_number: str,
-        expiration_year: str,
-        expiration_month: str,
-        owner_id: str,
-    ) -> str:
-        billing_info = await TosspaymentsAPI("/v1/billing/authorizations/card").post(
-            {
-                "customerKey": self.user_id,
-                "cardNumber": card_number,
-                "cardExpirationYear": expiration_year,
-                "cardExpirationMonth": expiration_month,
-                "customerIdentityNumber": owner_id,
-            }
-        )
-        return billing_info["billingKey"]
+    def __init__(self, name, email, phone):
+        """
+        - 유저 이름, 이메일, 전화번호를 입력하세요
+        """
+        self.name = name
+        self.email = email
+        self.phone = phone
 
-    async def billing(
-        self, key: str, order_name: str, amount: int, email: str | None = None
-    ) -> dict:
+    async def billing(self, key: str, order_name: str, amount: int):
         """
         - 빌링 키로 대금을 결제합니다
-        - key: tosspayments billingKey
-        - return: POST /v1/billing/{billingKey} 요청에 대한 응답
+        - key: portOne billingKey
+        - return: payment id를 포함하는 API 응답 본문
         """
-        payment_info = await TosspaymentsAPI(f"/v1/billing/{key}").post(
+        payment_id = str(uuid4()).replace("-", "")
+        payment = await PortOneAPI(f"/payments/{payment_id}/billing-key").post(
             {
-                "amount": str(amount),
-                "customerKey": self.user_id,
-                "orderId": str(uuid4()),
+                "billingKey": key,
                 "orderName": order_name,
-                "customerEmail": email,
+                "amount": {"total": amount},
+                "currency": "KRW",
+                "customer": {
+                    "name": {"full": self.name},
+                    "email": self.email,
+                    "phoneNumber": self.phone,
+                },
             }
         )
-        return payment_info
+        return {"id": payment_id} | payment
 
 
 class PayPalAPI:

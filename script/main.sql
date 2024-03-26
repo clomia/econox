@@ -1,4 +1,4 @@
---- Last commit: 2024-02-18 15:55:56 ---
+--- Last commit: 2024-03-26 13:39:26 ---
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ------------------------------------------------
@@ -15,7 +15,7 @@ CREATE TABLE users (
     "base_billing_date" TIMESTAMP, -- 계산된 기준날짜 (결제 시작 혹은 결제일 변경 시 계산 결과가 바로 반영됨)
     "current_billing_date" TIMESTAMP,  -- 최근 청구 날짜 
     "next_billing_date" TIMESTAMP NOT NULL, -- 다음 청구 날짜
-    "tosspayments_billing_key" VARCHAR(255), 
+    "port_one_billing_key" VARCHAR(255), 
     "paypal_subscription_id" VARCHAR(255), 
     "billing_method" VARCHAR(255), 
     "billing_status" VARCHAR(255) DEFAULT 'active',
@@ -38,28 +38,19 @@ CREATE TABLE signup_histories (
 );
 
 ------------------------------------------------
--- Tosspayments 청구 내역
+-- 포트원 청구 내역
 ------------------------------------------------
-CREATE TABLE tosspayments_billings (
+CREATE TABLE port_one_billings (
     "id" SERIAL NOT NULL PRIMARY KEY,
     "user_id" UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    "order_id" UUID NOT NULL, -- 우리가 발급
+    "payment_id" VARCHAR(255) NOT NULL, -- 우리가 발급
     "transaction_time" TIMESTAMP NOT NULL, 
-    "payment_key" VARCHAR(255) NOT NULL, -- Toss가 발급
+    "pg_tx_id" VARCHAR(255) NOT NULL, -- PG사에서 발급
     "order_name" VARCHAR(255) NOT NULL, -- 상품명
     "total_amount" DECIMAL(15, 5) NOT NULL, -- 고객이 결제한 금액
-    "supply_price" DECIMAL(15, 5) NOT NULL,  -- 공급가액
-    "vat" DECIMAL(15, 5) NOT NULL, -- 부가세
-    "card_issuer" VARCHAR(50) NOT NULL, -- 카드 발급사
-    "card_acquirer" VARCHAR(50) NOT NULL, -- 카드 매입사
-    "card_number_masked" VARCHAR(50) NOT NULL, -- 가려진 카드번호
-    "card_approve_number" VARCHAR(50) NOT NULL, -- 카드사 승인 번호
-    "card_type" VARCHAR(50) NOT NULL, -- 신용/체크 타입
-    "card_owner_type" VARCHAR(50) NOT NULL, -- 개인/법인 타입
-    "receipt_url" TEXT NOT NULL, -- 영수증 URL
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 );
-CREATE INDEX idx_tosspayments_billings_user_id ON tosspayments_billings(user_id);
+CREATE INDEX idx_port_one_billings_user_id ON port_one_billings(user_id);
 
 ------------------------------------------------
 -- PayPal 청구 내역

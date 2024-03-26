@@ -16,8 +16,7 @@ from backend.system import SECRETS, MEMBERSHIP, run_async
 from backend.data.text.method import strip
 from backend.http import (
     APIRouter,
-    TosspaymentsAPI,
-    TosspaymentsBilling,
+    PortOneBilling,
     PayPalAPI,
     pooling,
     get_paypal_next_billing_date,
@@ -42,16 +41,13 @@ def payment_method_exists(user: dict) -> bool:
     - user: get_user 함수를 통해 가져온 DB 유저 데이터
     """
     return bool(
-        (user["currency"] == "KRW" and user["tosspayments_billing_key"])
+        (user["currency"] == "KRW" and user["port_one_billing_key"])
         or (user["currency"] == "USD" and user["paypal_subscription_id"])
     )
 
 
-class TosspaymentsBillingInfo(BaseModel):
-    card_number: constr(min_length=1)
-    expiration_year: constr(min_length=1)
-    expiration_month: constr(min_length=1)
-    owner_id: constr(min_length=1)
+class PortOneBillingInfo(BaseModel):
+    billing_key: constr(min_length=1)
 
 
 class PaypalBillingInfo(BaseModel):
@@ -65,7 +61,7 @@ class SignupInfo(BaseModel):
     membership: Literal["basic", "professional"]
     currency: Literal["KRW", "USD"]
     # 첫 회원가입이 아닌 경우 둘 중 하나는 있어야 함
-    tosspayments: TosspaymentsBillingInfo | None = None
+    port_one: PortOneBillingInfo | None = None
     paypal: PaypalBillingInfo | None = None
 
 
@@ -90,6 +86,8 @@ async def signup(item: SignupInfo):
     if cognito_user["UserStatus"] != "CONFIRMED":
         raise HTTPException(status_code=401, detail="Cognito user is not confirmed")
 
+    username = item.email.split("@")[0][:10]
+
     billing_method = None
     now = datetime.now()
     next_billing: datetime = calc_next_billing_date(base=now, current=now)
@@ -97,43 +95,29 @@ async def signup(item: SignupInfo):
     if not signup_history:  # 회원가입 내역이 없다면 3일 무료사용
         next_billing = now + timedelta(days=3)
     # 회원가입 내역이 있다면 결제정보 필요함
-    elif item.currency == "KRW" and item.tosspayments:  # 토스페이먼츠 빌링
-        tosspayments = TosspaymentsBilling(user_id)
+    elif item.currency == "KRW" and item.port_one:  # 토스페이먼츠 빌링
+        port_one = PortOneBilling(name=username, email=item.email, phone=item.phone)
+        order_name = f"Econox {item.membership.capitalize()} Membership"
+        amount = MEMBERSHIP[item.membership][item.currency]
         try:
-            billing_key = await tosspayments.get_billing_key(
-                item.tosspayments.card_number,
-                item.tosspayments.expiration_year,
-                item.tosspayments.expiration_month,
-                item.tosspayments.owner_id,
-            )
-            payment = await tosspayments.billing(
-                billing_key,
-                order_name=f"Econox {item.membership.capitalize()} Membership",
-                amount=MEMBERSHIP[item.membership][item.currency],
-                email=item.email,
+            payment = await port_one.billing(
+                key=item.port_one.billing_key,
+                order_name=order_name,
+                amount=amount,
             )
         except httpx.HTTPStatusError:
             raise HTTPException(
                 status_code=402,
-                detail=f"[Tosspayments] Your payment information is incorrect.",
+                detail=f"[PortOne] Your payment information is incorrect. or This card cannot be used for payment.",
             )
-        insert_tosspayments_billing = db.InsertSQL(
-            "tosspayments_billings",
+        insert_port_one_billing = db.InsertSQL(
+            "port_one_billings",
             user_id=user_id,
-            order_id=payment["orderId"],
-            transaction_time=datetime.fromisoformat(payment["approvedAt"]),
-            payment_key=payment["paymentKey"],
-            order_name=payment["orderName"],
-            total_amount=payment["totalAmount"],
-            supply_price=payment["suppliedAmount"],
-            vat=payment["vat"],
-            card_issuer=payment["card"]["issuerCode"],
-            card_acquirer=payment["card"]["acquirerCode"],
-            card_number_masked=payment["card"]["number"],
-            card_approve_number=payment["card"]["approveNo"],
-            card_type=payment["card"]["cardType"],
-            card_owner_type=payment["card"]["ownerType"],
-            receipt_url=payment["receipt"]["url"],
+            payment_id=payment["id"],
+            transaction_time=datetime.fromisoformat(payment["payment"]["paidAt"]),
+            pg_tx_id=payment["payment"]["pgTxId"],
+            order_name=order_name,
+            total_amount=amount,
         )
         billing_method = payment["card"]["number"]
     elif item.currency == "USD" and item.paypal:  # 페이팔 빌링
@@ -170,13 +154,13 @@ async def signup(item: SignupInfo):
             detail="Correct billing information is required",
         )
 
-    tosspayments_billing_key = billing_key if item.tosspayments else None
+    port_one_billing_key = item.port_one.billing_key if item.port_one else None
     paypal_subscription_id = item.paypal.subscription if item.paypal else None
     insert_user = db.InsertSQL(  # 외래키 제약조건으로 인해 가장 먼저 실행되어야 함
         "users",
         id=user_id,
         email=item.email,
-        name=item.email.split("@")[0][:10],
+        name=username,
         phone=item.phone,
         membership=item.membership,
         currency=item.currency,
@@ -184,7 +168,7 @@ async def signup(item: SignupInfo):
         base_billing_date=now if signup_history else None,
         current_billing_date=now if signup_history else None,
         next_billing_date=next_billing,
-        tosspayments_billing_key=tosspayments_billing_key,
+        port_one_billing_key=port_one_billing_key,
         paypal_subscription_id=paypal_subscription_id,
         billing_method=billing_method,
     )
@@ -195,11 +179,11 @@ async def signup(item: SignupInfo):
         phone=item.phone,
     )
     try:
-        if item.currency == "KRW" and item.tosspayments:
+        if item.currency == "KRW" and item.port_one:
             await db.exec(
                 insert_user,
                 insert_signup_history,
-                insert_tosspayments_billing,
+                insert_port_one_billing,
             )
         else:
             await db.exec(insert_user, insert_signup_history)
@@ -256,7 +240,7 @@ async def get_user_detail(user=router.private.user):
         },
     }
     if user["currency"] == "KRW":
-        query = "SELECT * FROM tosspayments_billings WHERE user_id={user_id} ORDER BY created DESC LIMIT 15"
+        query = "SELECT * FROM port_one_billings WHERE user_id={user_id} ORDER BY created DESC LIMIT 15"
         select_transactions = db.SQL(query, params={"user_id": user["id"]}, fetch="all")
         for transaction in await select_transactions.exec():
             detail["billing"]["transactions"].append(
@@ -264,7 +248,7 @@ async def get_user_detail(user=router.private.user):
                     "time": datetime2utcstr(transaction["transaction_time"]),
                     "name": transaction["order_name"],
                     "amount": transaction["total_amount"],
-                    "method": transaction["card_number_masked"],
+                    "method": "CARD",
                 }
             )
     elif user["currency"] == "USD":
@@ -288,7 +272,7 @@ async def user_delete(user=router.private.user):
     - 회원 탈퇴
     - DB와 Cognito에서 유저 삭제
     - PayPal 사용자인 경우 구독 해지
-        - Tosspayments 사용자는 DB 유저만 지워지면 결제 중지됨
+        - PortOne 사용자는 DB 유저만 지워지면 결제 중지됨
     """
     if user["paypal_subscription_id"]:
         await PayPalAPI(
@@ -418,7 +402,7 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.u
     update_query_trial = """
         UPDATE users SET membership={new_membership} WHERE id={user_id}
     """
-    update_query_tosspayments = """
+    update_query_port_one = """
         UPDATE users 
         SET membership={new_membership}, 
             base_billing_date={base_billing_date},
@@ -461,7 +445,7 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.u
                 },
             ).exec()
         elif user["currency"] == "KRW":
-            # Tosspayments -> 다음 청구 날짜 직접 계산
+            # PortOne -> 다음 청구 날짜 직접 계산
             adjusted_next_billing = calc_next_billing_date_adjust_membership_change(
                 base_billing=user["base_billing_date"],
                 current_billing=user["current_billing_date"],
@@ -471,7 +455,7 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.u
                 currency=user["currency"],
             )
             await db.SQL(
-                update_query_tosspayments,
+                update_query_port_one,
                 params={
                     "new_membership": item.new_membership,
                     "base_billing_date": adjusted_next_billing,
@@ -504,7 +488,7 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.u
                 current=user["current_billing_date"],
             )
             await db.SQL(
-                update_query_tosspayments,
+                update_query_port_one,
                 params={
                     "new_membership": item.new_membership,
                     "base_billing_date": user["origin_billing_date"],
@@ -516,7 +500,7 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.u
 
 
 class PaymentMethodInfo(BaseModel):
-    tosspayments: TosspaymentsBillingInfo | None = None
+    port_one_billing_key: str = None
     paypal_subscription_id: str = None
 
 
@@ -528,36 +512,17 @@ async def change_payment_method(item: PaymentMethodInfo, user=router.private.use
             status_code=409,
             detail="Account is deactivated. Please activate your account first",
         )
-    if user["currency"] == "KRW" and item.tosspayments:
-        tosspayments = TosspaymentsBilling(user_id=user["id"])
-        try:
-            billing_key = await tosspayments.get_billing_key(
-                item.tosspayments.card_number,
-                item.tosspayments.expiration_year,
-                item.tosspayments.expiration_month,
-                item.tosspayments.owner_id,
-            )
-            payment = await tosspayments.billing(
-                billing_key, amount=100, order_name="Payment method confirmation"
-            )  # 100원 결제
-            await TosspaymentsAPI(  # 100원 환불
-                f"/v1/payments/{payment['paymentKey']}/cancel"
-            ).post({"cancelReason": "Confirmed"})
-        except httpx.HTTPStatusError:
-            raise HTTPException(
-                status_code=402,
-                detail=f"[Tosspayments] Your payment information is incorrect.",
-            )
+    if user["currency"] == "KRW" and item.port_one_billing_key:
         await db.SQL(
             """
             UPDATE users 
-            SET tosspayments_billing_key={billing_key},
+            SET port_one_billing_key={billing_key},
                 billing_method={billing_method}
             WHERE id={user_id}""",
             params={
-                "billing_key": billing_key,
+                "billing_key": item.port_one_billing_key,
                 "user_id": user["id"],
-                "billing_method": payment["card"]["number"],
+                "billing_method": "CARD",
             },
         ).exec()
     elif user["currency"] == "USD" and item.paypal_subscription_id:  # 페이팔 빌링
@@ -616,7 +581,7 @@ async def deactivated_billing(user=router.private.user):
 
 
 class BillingRestore(BaseModel):
-    tosspayments: TosspaymentsBillingInfo | None = None
+    port_one: PortOneBillingInfo | None = None
     paypal: PaypalBillingInfo | None = None
 
 
@@ -631,7 +596,7 @@ async def activate_billing(item: BillingRestore, user=router.private.user):
     is_benefit_end = not payment_method_exists(user)
     proper_payment_method_in_request = (
         (  # 통화 종류에 맞는 결제 정보가 요청에 들어있는지 확인
-            user["currency"] == "KRW" and item.tosspayments
+            user["currency"] == "KRW" and item.port_one
         )
         or (user["currency"] == "USD" and item.paypal)
     )
@@ -678,38 +643,32 @@ async def activate_billing(item: BillingRestore, user=router.private.user):
                     },
                 )
             )
-        if user["currency"] == "KRW":  # Tosspayments
-            if not item.tosspayments:
+        if user["currency"] == "KRW":  # PortOne
+            order_name = f"Econox {user['membership'].capitalize()} Membership"
+            amount = MEMBERSHIP[user["membership"]][user["currency"]]
+            if not item.port_one:
                 raise HTTPException(
                     status_code=402,
-                    detail="Tosspayments billing information is missing",
+                    detail="PortOne billing information is missing",
                 )
             try:
-                new_billing_key = await TosspaymentsBilling(
-                    user_id=user["id"]
-                ).get_billing_key(
-                    card_number=item.tosspayments.card_number,
-                    expiration_year=item.tosspayments.expiration_year,
-                    expiration_month=item.tosspayments.expiration_month,
-                    owner_id=item.tosspayments.owner_id,
-                )
-                payment = await TosspaymentsBilling(user_id=user["id"]).billing(
-                    new_billing_key,  # 구독료 즉시 결제
-                    order_name=f"Econox {user['membership'].capitalize()} Membership",
-                    amount=MEMBERSHIP[user["membership"]][user["currency"]],
+                payment = await PortOneBilling(user_id=user["id"]).billing(
+                    item.port_one.billing_key,  # 구독료 즉시 결제
+                    order_name=order_name,
+                    amount=amount,
                     email=user["email"],
                 )
             except httpx.HTTPStatusError:
                 raise HTTPException(
                     status_code=402,
-                    detail=f"[Tosspayments] Your payment information is incorrect.",
+                    detail=f"[PortOne] Your payment information is incorrect. or This card cannot be used for payment.",
                 )
             else:
                 sql_list.append(
                     db.SQL(
-                        "UPDATE users SET tosspayments_billing_key={new_key}, billing_method={method} WHERE id={id}",
+                        "UPDATE users SET port_one_billing_key={new_key}, billing_method={method} WHERE id={id}",
                         params={
-                            "new_key": new_billing_key,
+                            "new_key": item.port_one.billing_key,
                             "method": payment["card"]["number"],
                             "id": user["id"],
                         },
@@ -717,22 +676,15 @@ async def activate_billing(item: BillingRestore, user=router.private.user):
                 )
                 sql_list.append(
                     db.InsertSQL(
-                        "tosspayments_billings",
+                        "port_one_billings",
                         user_id=user["id"],
-                        order_id=payment["orderId"],
-                        transaction_time=datetime.fromisoformat(payment["approvedAt"]),
-                        payment_key=payment["paymentKey"],
-                        order_name=payment["orderName"],
-                        total_amount=payment["totalAmount"],
-                        supply_price=payment["suppliedAmount"],
-                        vat=payment["vat"],
-                        card_issuer=payment["card"]["issuerCode"],
-                        card_acquirer=payment["card"]["acquirerCode"],
-                        card_number_masked=payment["card"]["number"],
-                        card_approve_number=payment["card"]["approveNo"],
-                        card_type=payment["card"]["cardType"],
-                        card_owner_type=payment["card"]["ownerType"],
-                        receipt_url=payment["receipt"]["url"],
+                        payment_id=payment["id"],
+                        transaction_time=datetime.fromisoformat(
+                            payment["payment"]["paidAt"]
+                        ),
+                        pg_tx_id=payment["payment"]["pgTxId"],
+                        order_name=order_name,
+                        total_amount=amount,
                     )
                 )
             next_billing_date = calc_next_billing_date(base=now, current=now)

@@ -11,7 +11,7 @@ from backend.http import (
     APIRouter,
     PayPalAPI,
     PayPalWebhookAuth,
-    TosspaymentsBilling,
+    PortOneBilling,
     pooling,
 )
 
@@ -112,7 +112,7 @@ async def paypal_payment_webhook(event: dict = Body(...)):
 async def billing():
     """
     - 스케쥴링된 람다가 주기적으로 호출해야 하는 웹훅 API
-    - Tosspayments 유저의 반복 결제를 수행한다.
+    - 포트원 유저의 반복 결제를 수행한다.
     - 대금이 지불되지 않았거나 비활성화된 계정의 맴버십 유효기간이 지난 경우 계정을 비활성화한다.
     """
 
@@ -160,40 +160,36 @@ async def billing():
                 deactive_detail["deactivater"] += 1
             elif is_non_payer:
                 deactive_detail["non_payer"] += 1
-        # Tosspayments 결제 대상자 처리 (PayPal 결제 대상자 처리는 paypal_payment_webhook 에서 함)
+        # 포트원 결제 대상자 처리 (PayPal 결제 대상자 처리는 paypal_payment_webhook 에서 함)
         elif user["currency"] == "KRW" and user["tosspayments_billing_key"]:
             try:
-                payment = await TosspaymentsBilling(user_id=user["id"]).billing(
-                    user["tosspayments_billing_key"],
-                    order_name=f"Econox {user['membership'].capitalize()} Membership",
-                    amount=MEMBERSHIP[user["membership"]][user["currency"]],
-                    email=user["email"],
+                order_name = f"Econox {user['membership'].capitalize()} Membership"
+                amount = MEMBERSHIP[user["membership"]][user["currency"]]
+                payment = await PortOneBilling(
+                    name=user["name"], email=user["email"], phone=user["phone"]
+                ).billing(
+                    key=user["port_one_billing_key"],
+                    order_name=order_name,
+                    amount=amount,
                 )
             except httpx.HTTPStatusError as e:
                 log.info(
-                    f"[{e}] GET /webhook/billing: Tosspayments 맴버십 비용 청구 실패 - "
+                    f"[{e}] GET /webhook/billing: 포트원 맴버십 비용 청구 실패 - "
                     f"User(Email: {user['email']}, membership: {user['membership']}, next_billing_date: {user['next_billing_date']})"
                 )
                 failure += 1
                 continue
             sql_list.append(
                 db.InsertSQL(
-                    "tosspayments_billings",
+                    "port_one_billings",
                     user_id=user["id"],
-                    order_id=payment["orderId"],
-                    transaction_time=datetime.fromisoformat(payment["approvedAt"]),
-                    payment_key=payment["paymentKey"],
-                    order_name=payment["orderName"],
-                    total_amount=payment["totalAmount"],
-                    supply_price=payment["suppliedAmount"],
-                    vat=payment["vat"],
-                    card_issuer=payment["card"]["issuerCode"],
-                    card_acquirer=payment["card"]["acquirerCode"],
-                    card_number_masked=payment["card"]["number"],
-                    card_approve_number=payment["card"]["approveNo"],
-                    card_type=payment["card"]["cardType"],
-                    card_owner_type=payment["card"]["ownerType"],
-                    receipt_url=payment["receipt"]["url"],
+                    payment_id=payment["id"],
+                    transaction_time=datetime.fromisoformat(
+                        payment["payment"]["paidAt"]
+                    ),
+                    pg_tx_id=payment["payment"]["pgTxId"],
+                    order_name=order_name,
+                    total_amount=amount,
                 )
             )
             next_billing_date = calc_next_billing_date(user["base_billing_date"], now)
@@ -214,7 +210,7 @@ async def billing():
                 )
             )
             log.info(
-                f"맴버십 비용 청구 완료 [Tosspayments]: "
+                f"맴버십 비용 청구 완료 [PortOne]: "
                 f"User(Email: {user['email']}, Membership: {user['membership']})"
             )
             complete += 1

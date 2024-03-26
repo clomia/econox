@@ -1,4 +1,4 @@
---- Last commit: 2024-03-26 13:39:26 ---
+--- Last commit: 2024-03-26 16:31:27 ---
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ------------------------------------------------
@@ -48,6 +48,7 @@ CREATE TABLE port_one_billings (
     "pg_tx_id" VARCHAR(255) NOT NULL, -- PG사에서 발급
     "order_name" VARCHAR(255) NOT NULL, -- 상품명
     "total_amount" DECIMAL(15, 5) NOT NULL, -- 고객이 결제한 금액
+    "card_number_masked" VARCHAR(50) NOT NULL, -- 가려진 카드번호
     "created" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 );
 CREATE INDEX idx_port_one_billings_user_id ON port_one_billings(user_id);

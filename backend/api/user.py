@@ -111,6 +111,8 @@ async def signup(item: SignupInfo):
                 status_code=402,
                 detail=f"[PortOne] Your payment information is incorrect. or This card cannot be used for payment.",
             )
+        resp = await PortOneAPI(f"/billing-keys/{item.port_one.billing_key}").get()
+        billing_method = resp["methods"][0]["card"]["number"]
         insert_port_one_billing = db.InsertSQL(
             "port_one_billings",
             user_id=user_id,
@@ -119,9 +121,8 @@ async def signup(item: SignupInfo):
             pg_tx_id=payment["payment"]["pgTxId"],
             order_name=order_name,
             total_amount=amount,
+            card_number_masked=billing_method,
         )
-        resp = await PortOneAPI(f"/billing-keys/{item.port_one.billing_key}").get()
-        billing_method = resp["methods"][0]["card"]["number"]
     elif item.currency == "USD" and item.paypal:  # 페이팔 빌링
         # -- 빌링 성공여부 확인 --
         # DB 데이터 입력은 웹훅 API가 수행합니다.(POST /api/webhook/paypal/payment-sale-complete)
@@ -250,7 +251,7 @@ async def get_user_detail(user=router.private.user):
                     "time": datetime2utcstr(transaction["transaction_time"]),
                     "name": transaction["order_name"],
                     "amount": transaction["total_amount"],
-                    "method": "CARD",
+                    "method": transaction["card_number_masked"],
                 }
             )
     elif user["currency"] == "USD":
@@ -693,6 +694,7 @@ async def activate_billing(item: BillingRestore, user=router.private.user):
                         pg_tx_id=payment["payment"]["pgTxId"],
                         order_name=order_name,
                         total_amount=amount,
+                        card_number_masked=billing_method,
                     )
                 )
             next_billing_date = calc_next_billing_date(base=now, current=now)

@@ -12,6 +12,7 @@ from backend.http import (
     PayPalAPI,
     PayPalWebhookAuth,
     PortOneBilling,
+    PortOneAPI,
     pooling,
 )
 
@@ -172,6 +173,10 @@ async def billing():
                     order_name=order_name,
                     amount=amount,
                 )
+                resp = await PortOneAPI(
+                    f"/billing-keys/{user['port_one_billing_key']}"
+                ).get()
+                billing_method = resp["methods"][0]["card"]["number"]
             except httpx.HTTPStatusError as e:
                 log.info(
                     f"[{e}] GET /webhook/billing: 포트원 맴버십 비용 청구 실패 - "
@@ -190,6 +195,7 @@ async def billing():
                     pg_tx_id=payment["payment"]["pgTxId"],
                     order_name=order_name,
                     total_amount=amount,
+                    card_number_masked=billing_method,
                 )
             )
             next_billing_date = calc_next_billing_date(user["base_billing_date"], now)

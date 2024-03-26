@@ -516,7 +516,7 @@ async def change_payment_method(item: PaymentMethodInfo, user=router.private.use
             detail="Account is deactivated. Please activate your account first",
         )
     if user["currency"] == "KRW" and item.port_one_billing_key:
-        resp = await PortOneAPI(f"/billing-keys/{item.port_one.billing_key}").get()
+        resp = await PortOneAPI(f"/billing-keys/{item.port_one_billing_key}").get()
         billing_method = resp["methods"][0]["card"]["number"]
         await db.SQL(
             """

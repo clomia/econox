@@ -550,6 +550,9 @@ GoToHome:
 GoToConsole:
   en: "Go to Console"
   ko: "콘솔로 이동"
+BillingMethodUpdate:
+  en: "The existing payment method will be removed and a new payment method will be registered. Only the payment method will be changed, and charges will be billed on the next billing date."
+  ko: "기존 결제수단을 제거하고 새로운 결제수단을 등록합니다. 결제 수단만 변경되며 비용은 다음 결제일에 청구됩니다."
 # ------------------------------------------
 f_AutoLoginTimer:
   en: "You will be automatically logged in after {time} seconds"

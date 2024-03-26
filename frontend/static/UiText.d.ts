@@ -173,6 +173,7 @@ export interface UiText {
     IntroPage2BottomP2: "Feel free to use them for everything from spreadsheets and data analysis to AI training as you see fit." | "엑셀과 데이터 분석부터 인공지능 학습까지 원하는 용도로 마음껏 사용하세요.";
     GoToHome: "Go to Home" | "홈으로 이동";
     GoToConsole: "Go to Console" | "콘솔로 이동";
+    BillingMethodUpdate: "The existing payment method will be removed and a new payment method will be registered. Only the payment method will be changed, and charges will be billed on the next billing date." | "기존 결제수단을 제거하고 새로운 결제수단을 등록합니다. 결제 수단만 변경되며 비용은 다음 결제일에 청구됩니다.";
     f_AutoLoginTimer: "You will be automatically logged in after {time} seconds" | "{time}초 후 자동으로 로그인됩니다";
     f_NextBillingDate: "The next payment date is {m}/{d}/{y}" | "다음 결제일은 {y}년 {m}월 {d}일입니다";
     f_KRW: "₩{v}" | "{v}원";

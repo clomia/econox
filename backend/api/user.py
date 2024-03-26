@@ -420,7 +420,7 @@ async def change_membership(item: MembershipChangeRequest, user=router.private.u
         WHERE id={user_id}"""  # paypal_subscription_id 업데이트 필요
 
     if (
-        user["current_billing_date"] is None
+        user["current_billing_date"] is None or user["billing_status"] == "require"
     ):  # 결제가 필요 없는 계정이므로 맴버십만 바꾸면 됌
         await db.SQL(
             update_query_trial,

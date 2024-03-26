@@ -81,7 +81,10 @@
       membershipChangeLoader = false;
       membershipWidgetOn = false;
       let alertText: string;
-      if ($UserInfo["billing"]["registered"]) {
+      if (
+        $UserInfo["billing"]["registered"] &&
+        $UserInfo["billing"]["status"] !== "require"
+      ) {
         alertText = format($Text.f_MembershipChangeComplete, {
           oldMembership: membershipMapping[$UserInfo["membership"]],
           newMembership: membershipMapping[target],

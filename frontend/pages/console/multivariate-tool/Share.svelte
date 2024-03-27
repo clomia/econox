@@ -9,6 +9,7 @@
     Text,
     FeatureGroupSelected,
     FeatureGroups,
+    FgDefaultChartType,
   } from "../../../modules/state";
   import { api } from "../../../modules/request";
   import { format } from "../../../modules/functions";
@@ -18,7 +19,7 @@
     ratio: $Text.FgRatioChart_Name,
     granger: $Text.FgGrangerChart_Name,
     coint: $Text.FgCointChart_Name,
-  }[$FeatureGroupSelected.chart_type];
+  }[$FgDefaultChartType[$FeatureGroupSelected.id]];
 
   onMount(() => {
     document.body.style.overflow = "hidden";

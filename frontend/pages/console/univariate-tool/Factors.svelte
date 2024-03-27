@@ -16,6 +16,22 @@
 
   let listEle: HTMLElement;
 
+  const select = async (fac: FactorType) => {
+    $UnivariateFactorSelected = fac;
+    if (
+      // for typescript
+      $UnivariateElementSelected?.code &&
+      $UnivariateElementSelected?.section
+    ) {
+      await setChartSource(
+        $UnivariateElementSelected.code,
+        $UnivariateElementSelected.section,
+        fac.code,
+        fac.section.code
+      );
+    }
+  };
+
   $: ele = $UnivariateElementSelected;
   $: factors = ele
     ? $UnivariateFactors[`${ele.section}-${ele.code}`] || []
@@ -28,6 +44,17 @@
   let attr: string | string[] = "name";
   let view: any[] = [];
 
+  let beforeEle = null;
+  $: if (ele) {
+    if (beforeEle) {
+      if (ele.section !== beforeEle.section || ele.code !== beforeEle.code) {
+        query = ""; // 선택된 요소가 바뀌면 쿼리도 초기화
+        beforeEle = { ...ele };
+      }
+    } else {
+      beforeEle = ele;
+    }
+  }
   $: if (query) {
     view = attrQuerySort(factors, query, attr);
     listEle.scrollTop = 0;
@@ -43,27 +70,6 @@
       attr = "name";
     }
   };
-  const searchEventHandler = (event: any) => {
-    const inputElement = event.target as HTMLInputElement;
-    query = inputElement.value;
-  };
-
-  const select = async (fac: FactorType) => {
-    $UnivariateFactorSelected = fac;
-    query = "";
-    if (
-      // for typescript
-      $UnivariateElementSelected?.code &&
-      $UnivariateElementSelected?.section
-    ) {
-      await setChartSource(
-        $UnivariateElementSelected.code,
-        $UnivariateElementSelected.section,
-        fac.code,
-        fac.section.code
-      );
-    }
-  };
 </script>
 
 <main>
@@ -73,7 +79,7 @@
       <button class="search__attr-btn" on:click={searchAttrChange}
         >{attrBtnText}</button
       >
-      <input class="search__input" type="text" on:input={searchEventHandler} />
+      <input class="search__input" type="text" bind:value={query} />
     </div>
   {/if}
   <div class="list" bind:this={listEle}>

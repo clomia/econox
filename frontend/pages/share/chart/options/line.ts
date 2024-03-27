@@ -114,7 +114,7 @@ const _generateOption = (apiResponse: PublicFgRespType, data: string) => {
         lineStyle: {
           color: apiResponse.colormap[feature],
           opacity: 1,
-          width: 2,
+          width: 1.3,
         },
         encode: {
           x: "t",

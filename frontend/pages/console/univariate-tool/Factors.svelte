@@ -16,22 +16,6 @@
 
   let listEle: HTMLElement;
 
-  const select = async (fac: FactorType) => {
-    $UnivariateFactorSelected = fac;
-    if (
-      // for typescript
-      $UnivariateElementSelected?.code &&
-      $UnivariateElementSelected?.section
-    ) {
-      await setChartSource(
-        $UnivariateElementSelected.code,
-        $UnivariateElementSelected.section,
-        fac.code,
-        fac.section.code
-      );
-    }
-  };
-
   $: ele = $UnivariateElementSelected;
   $: factors = ele
     ? $UnivariateFactors[`${ele.section}-${ele.code}`] || []
@@ -62,6 +46,23 @@
   const searchEventHandler = (event: any) => {
     const inputElement = event.target as HTMLInputElement;
     query = inputElement.value;
+  };
+
+  const select = async (fac: FactorType) => {
+    $UnivariateFactorSelected = fac;
+    query = "";
+    if (
+      // for typescript
+      $UnivariateElementSelected?.code &&
+      $UnivariateElementSelected?.section
+    ) {
+      await setChartSource(
+        $UnivariateElementSelected.code,
+        $UnivariateElementSelected.section,
+        fac.code,
+        fac.section.code
+      );
+    }
   };
 </script>
 

@@ -150,9 +150,9 @@ export interface UiText {
     FgLineChart_Description: "Visualize all time series in a data group as an intuitive line chart." | "데이터 그룹의 모든 시계열을 직관적인 선 차트로 시각화합니다.";
     FgRatioChart_Name: "Ratio Chart" | "비율 차트";
     FgRatioChart_Description: "Visualize the proportion of each time series in the data group as an area." | "데이터 그룹에서 각 시계열이 차지하는 비율을 영역으로 시각화합니다.";
-    FgGrangerChart_Name: "Causal Inference" | "인과관계 추론";
+    FgGrangerChart_Name: "Causal Inference (Beta)" | "인과관계 추론 (Beta)";
     FgGrangerChart_Description: "By utilizing Granger causality testing, this feature mathematically assesses the extent to which one time series  can predict the future values of another. This chart suggests potential causal  relationships but does not confirm actual causality." | "그레인저 인과관계 검정을 통해 한 시계열이 다른 시계열의 미래 값을 예측하는 데 얼마나  기여하는지 수학적으로 계산합니다. 이 차트는 특정 시계열간 논리적 인과관계가 있을 수 있음을  시사할 뿐 실제 인과성을 증명하지 않습니다.";
-    FgCointChart_Name: "Association Inference" | "연관관계 추론";
+    FgCointChart_Name: "Association Inference (Beta)" | "연관관계 추론 (Beta)";
     FgCointChart_Description: "By employing cointegration testing, this feature quantitatively evaluates whether multiple time series exhibit a shared long-term trend.  This chart suggests the potential for long-term relationships between specific time series, yet it does not confirm actual association." | "공적분 검정을 통해 여러 시계열이 장기적으로 동행하는지 수학적으로 평가합니다.  이 차트는 특정 시계열들이 장기적으로 연관되어 있음을 시사할 뿐 실제 연관성을 증명하지 않습니다.";
     PublicFg404: "Data Group is empty or does not exist" | "데이터 그룹이 비어있거나 없습니다";
     PublicFg423: "Data group is private" | "데이터 그룹이 비공개 상태입니다";

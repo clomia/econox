@@ -472,8 +472,8 @@ FgRatioChart_Description:
   en: "Visualize the proportion of each time series in the data group as an area."
   ko: "데이터 그룹에서 각 시계열이 차지하는 비율을 영역으로 시각화합니다."
 FgGrangerChart_Name:
-  en: "Causal Inference"
-  ko: "인과관계 추론"
+  en: "Causal Inference (Beta)"
+  ko: "인과관계 추론 (Beta)"
 FgGrangerChart_Description:
   en: >
     By utilizing Granger causality testing, this feature mathematically assesses the extent to which one time series 
@@ -484,8 +484,8 @@ FgGrangerChart_Description:
     기여하는지 수학적으로 계산합니다. 이 차트는 특정 시계열간 논리적 인과관계가 있을 수 있음을 
     시사할 뿐 실제 인과성을 증명하지 않습니다.
 FgCointChart_Name:
-  en: "Association Inference"
-  ko: "연관관계 추론"
+  en: "Association Inference (Beta)"
+  ko: "연관관계 추론 (Beta)"
 FgCointChart_Description:
   en: >
     By employing cointegration testing, this feature quantitatively evaluates whether multiple time series exhibit a shared long-term trend. 

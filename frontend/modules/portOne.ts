@@ -7,7 +7,11 @@ import { swal } from "./functions";
  * @param user
  * @returns 빌링 키 문자열
  */
-export const getBillingKey = async (userId: string, userEmail: string) => {
+export const getBillingKey = async (
+  userId: string,
+  userEmail: string,
+  errorReload = true
+) => {
   const issueResponse = await PortOne.requestIssueBillingKey({
     storeId: "store-bd7abf6b-fb2c-4f8e-b35c-93189fb5b5e7",
     channelKey: "channel-key-19dbbf97-9a55-475d-a030-1935accc819e",
@@ -23,6 +27,10 @@ export const getBillingKey = async (userId: string, userEmail: string) => {
     return issueResponse?.billingKey;
   } else {
     await swal(issueResponse?.message || "");
-    throw Error(issueResponse?.message);
+    if (errorReload) {
+      location.reload();
+    } else {
+      throw Error(issueResponse?.message);
+    }
   }
 };

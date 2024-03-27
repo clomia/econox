@@ -12,7 +12,6 @@
     swal,
   } from "../../modules/functions";
   import type { AxiosError } from "axios";
-  import { load } from "js-yaml";
 
   let status: string;
   if ($UserInfo["billing"]["status"] === "active") {
@@ -33,36 +32,6 @@
   let loading = false; // 로딩중일 때 스크롤 잠구기
   // 위젯이 떠있거나 로딩중일 때 스크롤 잠구기
   $: document.body.style.overflow = loading ? "hidden" : "";
-
-  // tosspayments
-  let cardNumber = "";
-  let expiryDate = "";
-  let cardType = "personal";
-  let ownerId = "";
-  let message: string = "";
-  const cardNumberHandler = (event: Event) => {
-    let value = (event.target as HTMLInputElement).value.replace(/\D/g, "");
-    if (value.length > 16) {
-      value = value.slice(0, 16); // 첫 16자리만 가져옵니다.
-    }
-    value = value.replace(/(\d{4})/g, "$1  "); // 4자리마다 두 개의 띄어쓰기 추가
-    cardNumber = value.trim();
-  };
-  const expiryDateHandler = (event: Event) => {
-    let value = (event.target as HTMLInputElement).value.replace(/\D/g, "");
-    if (value.length > 4) {
-      value = value.slice(0, 4); // 첫 4자리만 가져옵니다.
-    }
-    if (value.length > 2) {
-      value = value.slice(0, 2) + " / " + value.slice(2);
-    }
-    expiryDate = value;
-  };
-  const ownerIdHandler = (event: Event) => {
-    ownerId = (event.target as HTMLInputElement).value
-      .replace(/\D/g, "")
-      .slice(0, cardType === "personal" ? 6 : 10);
-  };
 
   const billingDeactivate = async () => {
     if ($UserInfo["billing"]["currency"] === "USD" && todayIsNextBillingDate) {

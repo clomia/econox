@@ -162,7 +162,7 @@ async def billing():
             elif is_non_payer:
                 deactive_detail["non_payer"] += 1
         # 포트원 결제 대상자 처리 (PayPal 결제 대상자 처리는 paypal_payment_webhook 에서 함)
-        elif user["currency"] == "KRW" and user["tosspayments_billing_key"]:
+        elif user["currency"] == "KRW" and user["port_one_billing_key"]:
             try:
                 order_name = f"Econox {user['membership'].capitalize()} Membership"
                 amount = MEMBERSHIP[user["membership"]][user["currency"]]

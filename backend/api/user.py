@@ -30,6 +30,7 @@ from backend.calc import (
     calc_next_billing_date_adjust_membership_change,
 )
 from backend.seed import seed_sample_data
+from backend import admin
 
 
 router = APIRouter("user")
@@ -193,6 +194,18 @@ async def signup(item: SignupInfo):
     except psycopg.errors.UniqueViolation:  # email colume is unique
         raise HTTPException(status_code=409, detail="Email is already in used")
     await seed_sample_data(user_id)
+
+    loc = "국내" if item.currency == "KRW" else "해외"
+    benefit_info = ("첫 회원가입이 아닙니다." if signup_history else "첫 회원가입입니다.")
+    admin.email_alert(
+        email="clomia@econox.io",
+        title=f"[이코녹스 관리자] 회원가입 발생 - {item.membership}({loc})",
+        h1=f"{loc}에서 {item.membership}맴버십으로 회원가입했습니다.",
+        p=f"""
+        유저의 이메일은 {item.email}이며 {benefit_info}.
+        <br>이것은 backend/api/user.py의 signup함수를 통해 발송되는 메일입니다.
+        """,
+    )
     return {"first_signup_benefit": not signup_history}  # 첫 회원가입 혜택 여부
 
 

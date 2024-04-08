@@ -4,7 +4,7 @@
 
 # 다변량 시계열 분석 어플리케이션
 
-[econox.io](https://www.econox.io/) | [서비스 소개](https://www.econox.wiki/ko/tutorial)
+[econox.io](https://www.econox.io/) | [서비스 소개](https://www.econox.wiki/ko/tutorial) | [소개 자료](https://drive.google.com/file/d/1ltQsAFP2pJUXhjJ715tHQfIyVX3JJ5S0/view?usp=sharing)
 
 미래를 예측하려면 다변량 시계열이 필수입니다.  
 한 회사의 주가를 예측하려면 그 회사의 주가 뿐 아니라 금융 시장 전체의 상호작용을 파악해야 합니다.
@@ -16,6 +16,8 @@ AI 모델 개발에 필요한 금융 데이터를 찾고 있는 사람들까지
 다변량 시계열 분석 어플리케이션 Econox입니다!
 
 ### 기술 스택
+
+[서비스 아키텍처](./이코녹스 아키텍처.pdf)
 
 - Backend: FastAPI - Python
 - Frontend: Svelte - Typescript

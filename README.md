@@ -17,7 +17,11 @@ AI 모델 개발에 필요한 금융 데이터를 찾고 있는 사람들까지
 
 ### 기술 스택
 
-[서비스 아키텍처](./이코녹스 아키텍처.pdf)
+<object data="./Architecture.pdf" type="application/pdf" width="700px" height="700px">
+    <embed src="./Architecture.pdf">
+        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="./Architecture.pdf">Download PDF</a>.</p>
+    </embed>
+</object>
 
 - Backend: FastAPI - Python
 - Frontend: Svelte - Typescript

@@ -15,6 +15,8 @@ AI 모델 개발에 필요한 금융 데이터를 찾고 있는 사람들까지
 부분이 아닌 전체를 보고 직접 이해해 보세요.
 다변량 시계열 분석 어플리케이션 Econox입니다!
 
+> 서비스는 2024.05.15 부로 종료되었습니다. 대신 영상을 통해서 확인해주세요. -> https://www.youtube.com/watch?v=SqJIGNmZZ2M
+
 ### 기술 스택
 
 ![Architecture](Architecture.png)
